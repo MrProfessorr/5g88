@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const pill = document.createElement("div");
       pill.className = "tip-card-pill";
-      pill.textContent = "Max 3 tips (70–100%)";
+      pill.textContent = "5G88_Site";
 
       header.appendChild(title);
       header.appendChild(pill);
@@ -88,11 +88,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const backBtn = document.createElement("button");
       backBtn.className = "btn secondary";
-      backBtn.textContent = "⮌ Back";
+      backBtn.textContent = "Back";
 
       const genBtn = document.createElement("button");
       genBtn.className = "btn primary";
-      genBtn.textContent = "🎲 Generate";
+      genBtn.textContent = "Generate";
 
       const state = getHistoryState(card.key);
 
