@@ -2,29 +2,89 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Tips Game Generator</title>
+  <title>5G88 • Tips Game</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="page-user">
   <div class="app-shell">
+
+    <!-- HEADER -->
     <header class="app-header">
-      <h1>Tips Game Generator</h1>
-      <a href="admin.html" class="btn ghost">⚙ Admin</a>
+      <div class="app-header-left">
+        <span class="brand-logo">5G88</span>
+      </div>
+      <nav class="app-nav">
+        <button id="navHome" class="nav-link active" onclick="showHome()">Home</button>
+        <button id="navHot" class="nav-link" onclick="showHotGame()">Hot Game</button>
+        <a href="../admin/admin.html" class="btn ghost small">⚙ Admin</a>
+      </nav>
     </header>
 
     <main class="app-main">
-      <section class="card">
-        <h2 class="section-title">Product / Platform</h2>
-        <p class="text-muted small">
-          Tekan <b>Generate</b> untuk random max 3 tips (70–100%) per card.
-          Tombol <b>Back</b> untuk kembali ke tips sebelumnya.
-        </p>
+
+      <!-- ================== HOME PAGE ================== -->
+      <section id="homePage" class="home-page">
+        <div class="home-hero">
+          <!-- Ganti src dengan image promosi kamu -->
+          <img src="https://i.imgur.com/your-image-1.jpg" alt="Welcome Bonus" class="home-hero-img">
+          <img src="https://i.imgur.com/your-image-2.jpg" alt="Lucky Wheel Bonus" class="home-hero-img">
+        </div>
+
+        <article class="home-article">
+          <!-- Semua teks di sini boleh kamu edit manual di GitHub -->
+
+          <h2 class="home-title">
+            5G88 Casino Review | RM150 Slots Welcome Bonus
+          </h2>
+          <p>
+            Pasar judi online di Malaysia berkembang pesat dan 5G88 menjadi salah satu platform
+            paling dipercayai. Dengan mobile interface yang laju, bonus welcome RM150 untuk slot,
+            dan ratusan permainan menarik, pemain dapat menikmati pengalaman yang selesa dan selamat.
+          </p>
+
+          <h3>What Makes 5G88 Casino so Popular in Malaysia?</h3>
+          <p>
+            5G88 bekerja sama dengan provider ternama dan menyediakan ratusan game slot,
+            live casino, dan sportsbook. Platform ini fokus pada transaksi yang pantas,
+            interface yang stabil, dan sistem keamanan yang moden.
+          </p>
+
+          <h3>Fast and Secure Payouts</h3>
+          <p>
+            Deposit & withdrawal diproses dengan pantas melalui bank tempatan dan e-wallet.
+            Sistem enkripsi memastikan data dan transaksi pemain kekal selamat.
+          </p>
+
+          <h3>Responsible Gaming at 5G88</h3>
+          <p>
+            5G88 menyokong permainan yang bertanggungjawab. Pemain boleh tetapkan had deposit,
+            rehat sementara, dan mendapatkan bantuan sokongan jika diperlukan.
+          </p>
+
+          <h3>Conclusion: Why Play at 5G88?</h3>
+          <p>
+            Jika kamu mencari platform yang <b>stabil, selamat, dan peluang menang besar</b>,
+            5G88 adalah pilihan yang tepat. Bonus menarik, game banyak, dan support 24/7.
+          </p>
+        </article>
       </section>
 
-      <section id="tipsCardsGrid" class="cards-grid">
-        <!-- card tips akan di-render dari JS -->
+      <!-- ================== HOT GAME PAGE ================== -->
+      <section id="hotGamePage" class="hot-page" style="display:none;">
+        <section class="card">
+          <h2 class="section-title">PRODUCT / PLATFORM</h2>
+          <p class="text-muted small">
+            Tekan <b>Generate</b> untuk random max 3 tips (70–100%) per card.
+            Tombol <b>Back</b> untuk kembali ke tips sebelumnya.
+          </p>
+        </section>
+
+        <section id="tipsCardsGrid" class="cards-grid">
+          <!-- Card tips di-render dari tips-page.js seperti biasa -->
+        </section>
       </section>
+
     </main>
   </div>
 
