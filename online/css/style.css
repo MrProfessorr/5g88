@@ -617,37 +617,43 @@ input[type="checkbox"].toggle:checked::before{
     padding:11px 9px 11px;
   }
 }
-/* ====== RUNNING TEXT / TICKER DI BAWAH HEADER ====== */
+/* ===== RUNNING TEXT TIDAK KEDIP ===== */
 .ticker-bar{
   width:100%;
   overflow:hidden;
-  border-bottom:1px solid rgba(148,163,184,0.25);
   background:rgba(3,7,18,0.96);
-  box-shadow:0 8px 20px rgba(0,0,0,0.7);
+  border-bottom:1px solid rgba(148,163,184,0.25);
+  box-shadow:0 6px 20px rgba(0,0,0,0.7);
+}
+
+.ticker-wrap{
+  width:100%;
+  overflow:hidden;
 }
 
 .ticker-track{
-  display:inline-block;
-  white-space:nowrap;
-  padding:6px 0;
-  animation:ticker-move 35s linear infinite;
+  display:flex;
+  width:max-content;
+  animation:ticker-loop 40s linear infinite;
 }
 
 .ticker-track span{
+  white-space:nowrap;
   font-size:0.82rem;
   color:#e5e7eb;
-  margin-right:64px;          /* jarak antar teks */
+  margin-right:64px;
   letter-spacing:0.06em;
   text-transform:uppercase;
 }
 
-/* Animasi jalan dari kanan ke kiri */
-@keyframes ticker-move{
-  0%{
-    transform:translateX(100%);
+/* LOOP HALUS TANPA KEDIP */
+@keyframes ticker-loop{
+  from{
+    transform:translateX(0);
   }
-  100%{
-    transform:translateX(-100%);
+  to{
+    transform:translateX(-50%);
   }
 }
+
 
