@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const lines = [card.platformName || card.key, "==========="];
 
     chosen.forEach((name, idx) => {
-      const percent = randInt(70, 100);
+      const percent = randInt(70, 98);
       lines.push(`${idx + 1}. ${name} ${percent}%`);
     });
 
