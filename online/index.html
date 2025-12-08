@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Tips Game Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="page-user">
+  <div class="app-shell">
+    <header class="app-header">
+      <h1>Tips Game Generator</h1>
+      <a href="admin.html" class="btn ghost">⚙ Admin</a>
+    </header>
+
+    <main class="app-main">
+      <section class="card">
+        <h2 class="section-title">Product / Platform</h2>
+        <p class="text-muted small">
+          Tekan <b>Generate</b> untuk random max 3 tips (70–100%) per card.
+          Tombol <b>Back</b> untuk kembali ke tips sebelumnya.
+        </p>
+      </section>
+
+      <section id="tipsCardsGrid" class="cards-grid">
+        <!-- card tips akan di-render dari JS -->
+      </section>
+    </main>
+  </div>
+
+  <!-- Firebase + Script -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/tips-page.js"></script>
+</body>
+</html>
