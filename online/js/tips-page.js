@@ -1,132 +1,117 @@
-// js/tips-page.js
+// online/js/tips-page.js
 
-document.addEventListener('DOMContentLoaded', () => {
-  const tipsGrid = document.getElementById('tipsCardsGrid');
-  const tipCardsRef = db.ref('tipCards');
+document.addEventListener("DOMContentLoaded", () => {
+  const gridEl = document.getElementById("tipsCardsGrid");
 
-  // Simpan state untuk tombol Back (per card)
-  const cardStates = {}; // { cardId: { currentTips: string, previousTips: string|null } }
-
-  function randPercent(min = 70, max = 100) {
-    const diff = max - min + 1;
-    return Math.floor(Math.random() * diff) + min;
+  if (!window.firebase || !window.db) {
+    console.error("Firebase belum siap. Cek script firebase di HTML.");
+    return;
   }
 
-  function pickRandomGames(games, maxCount = 3) {
-    if (!Array.isArray(games) || games.length === 0) return [];
+  const cardsRef = db.ref("tips_cards");
 
-    const copy = games.slice();
-    // shuffle Fisher-Yates
-    for (let i = copy.length - 1; i > 0; i--) {
+  // Simpan history tips per card supaya tombol Back boleh jalan
+  const historyMap = new Map(); // key -> { history:[], index:number }
+
+  function getHistoryState(key) {
+    if (!historyMap.has(key)) {
+      historyMap.set(key, { history: [], index: -1 });
+    }
+    return historyMap.get(key);
+  }
+
+  // Random integer [min, max]
+  const randInt = (min, max) =>
+    Math.floor(Math.random() * (max - min + 1)) + min;
+
+  function generateTipsForCard(card) {
+    const games = (card.games || []).slice();
+    if (games.length === 0) return "Belum ada game.";
+
+    // shuffle
+    for (let i = games.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [copy[i], copy[j]] = [copy[j], copy[i]];
-    }
-    const count = Math.min(maxCount, copy.length);
-    return copy.slice(0, count);
-  }
-
-  function generateTipsText(cardName, games) {
-    const chosen = pickRandomGames(games, 3);
-    if (chosen.length === 0) {
-      return `${cardName.toUpperCase()}\n==========\n(no game configured)`;
+      [games[i], games[j]] = [games[j], games[i]];
     }
 
-    const lines = [];
-    lines.push(cardName.toUpperCase());
-    lines.push('==========');
+    const count = Math.min(3, games.length);
+    const chosen = games.slice(0, count);
 
-    chosen.forEach((game, idx) => {
-      const pct = randPercent(70, 100);
-      lines.push(`${idx + 1}. ${game} ${pct}%`);
+    const lines = [card.platformName || card.key, "==========="];
+
+    chosen.forEach((name, idx) => {
+      const percent = randInt(70, 100);
+      lines.push(`${idx + 1}. ${name} ${percent}%`);
     });
 
-    return lines.join('\n');
+    return lines.join("\n");
   }
 
-  function renderCards(cardsObj) {
-    tipsGrid.innerHTML = '';
+  function renderCards(snapshot) {
+    const data = snapshot.val() || {};
+    gridEl.innerHTML = "";
 
-    if (!cardsObj) {
-      tipsGrid.innerHTML = '<p class="text-muted small">Belum ada card. Silakan minta admin buat di halaman Admin.</p>';
+    const entries = Object.entries(data)
+      .map(([key, card]) => ({ key, ...card }))
+      .filter((c) => c.enabled !== false); // default aktif
+
+    if (entries.length === 0) {
+      gridEl.innerHTML =
+        '<p class="text-muted small">Belum ada card aktif. Buat dari halaman admin.</p>';
       return;
     }
 
-    Object.entries(cardsObj).forEach(([id, card]) => {
-      if (!card.active) return; // hanya card ON
+    entries.forEach((card) => {
+      const cardEl = document.createElement("article");
+      cardEl.className = "tip-card";
 
-      const games = Array.isArray(card.games) ? card.games : [];
-      const name = card.name || '(NO NAME)';
+      const header = document.createElement("div");
+      header.className = "tip-card-header";
 
-      const cardEl = document.createElement('article');
-      cardEl.className = 'tip-card';
-      cardEl.dataset.id = id;
+      const title = document.createElement("div");
+      title.className = "tip-card-title";
+      title.textContent = card.platformName || card.key;
 
-      // header
-      const header = document.createElement('div');
-      header.className = 'tip-card-header';
-
-      const title = document.createElement('div');
-      title.className = 'tip-card-title';
-      title.textContent = name;
-
-      const pill = document.createElement('div');
-      pill.className = 'tip-card-pill';
-      pill.textContent = `${games.length} game`;
+      const pill = document.createElement("div");
+      pill.className = "tip-card-pill";
+      pill.textContent = "Max 3 tips (70–100%)";
 
       header.appendChild(title);
       header.appendChild(pill);
 
-      // output
-      const output = document.createElement('pre');
-      output.className = 'tip-output';
-      output.textContent = 'Tekan GENERATE untuk lihat tips.';
+      const output = document.createElement("pre");
+      output.className = "tip-output";
+      output.textContent = "Tekan Generate untuk keluarkan tips.";
 
-      // actions
-      const actions = document.createElement('div');
-      actions.className = 'tip-actions';
+      const actions = document.createElement("div");
+      actions.className = "tip-actions";
 
-      const backBtn = document.createElement('button');
-      backBtn.className = 'btn secondary';
-      backBtn.textContent = '⮌ Back';
-      backBtn.disabled = true;
+      const backBtn = document.createElement("button");
+      backBtn.className = "btn secondary";
+      backBtn.textContent = "⮌ Back";
 
-      const genBtn = document.createElement('button');
-      genBtn.className = 'btn primary';
-      genBtn.textContent = '🎲 Generate';
+      const genBtn = document.createElement("button");
+      genBtn.className = "btn primary";
+      genBtn.textContent = "🎲 Generate";
 
-      // init state
-      cardStates[id] = {
-        currentTips: '',
-        previousTips: null
-      };
+      const state = getHistoryState(card.key);
 
-      genBtn.addEventListener('click', () => {
-        const state = cardStates[id];
-        if (!state) return;
-
-        const newTips = generateTipsText(name, games);
-
-        if (state.currentTips) {
-          state.previousTips = state.currentTips;
-        }
-        state.currentTips = newTips;
-        output.textContent = newTips;
-
-        backBtn.disabled = !state.previousTips;
+      genBtn.addEventListener("click", () => {
+        const txt = generateTipsForCard(card);
+        if (!txt) return;
+        // tambah ke history
+        state.history.push(txt);
+        state.index = state.history.length - 1;
+        output.textContent = txt;
       });
 
-      backBtn.addEventListener('click', () => {
-        const state = cardStates[id];
-        if (!state || !state.previousTips) return;
-
-        // tukar current dengan previous
-        const temp = state.currentTips;
-        state.currentTips = state.previousTips;
-        state.previousTips = temp;
-
-        output.textContent = state.currentTips;
-
-        backBtn.disabled = !state.previousTips;
+      backBtn.addEventListener("click", () => {
+        if (state.index > 0) {
+          state.index -= 1;
+          output.textContent = state.history[state.index];
+        } else {
+          output.textContent = "Belum ada tips sebelumnya.";
+        }
       });
 
       actions.appendChild(backBtn);
@@ -136,18 +121,9 @@ document.addEventListener('DOMContentLoaded', () => {
       cardEl.appendChild(output);
       cardEl.appendChild(actions);
 
-      tipsGrid.appendChild(cardEl);
+      gridEl.appendChild(cardEl);
     });
-
-    // Kalau setelah filter tidak ada card aktif
-    if (!tipsGrid.hasChildNodes()) {
-      tipsGrid.innerHTML = '<p class="text-muted small">Tidak ada card aktif. Silakan minta admin ON-kan di halaman Admin.</p>';
-    }
   }
 
-  // Listen ke Firebase (real-time)
-  tipCardsRef.on('value', snapshot => {
-    const val = snapshot.val();
-    renderCards(val);
-  });
+  cardsRef.on("value", renderCards);
 });
