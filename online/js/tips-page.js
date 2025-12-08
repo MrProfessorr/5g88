@@ -188,3 +188,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
   cardsRef.on("value", renderCards);
 });
+    // ===== NAV HOME / HOT GAME =====
+    function showHome() {
+      document.getElementById('homePage').style.display = 'block';
+      document.getElementById('hotGamePage').style.display = 'none';
+      document.getElementById('navHome').classList.add('active');
+      document.getElementById('navHot').classList.remove('active');
+    }
+
+    function showHotGame() {
+      document.getElementById('homePage').style.display = 'none';
+      document.getElementById('hotGamePage').style.display = 'block';
+      document.getElementById('navHot').classList.add('active');
+      document.getElementById('navHome').classList.remove('active');
+    }
+
+    // ===== AUTO SLIDER HOME IMAGE =====
+    document.addEventListener('DOMContentLoaded', () => {
+      const track = document.getElementById('slideTrack');
+      if (!track) return;
+
+      const slides = track.querySelectorAll('img');
+      if (slides.length <= 1) return; // kalau cuma 1 gambar, tak perlu slide
+
+      let index = 0;
+
+      setInterval(() => {
+        index++;
+        if (index >= slides.length) {
+          index = 0;
+        }
+        track.style.transform = `translateX(-${index * 100}%)`;
+      }, 3500); // 3.5s sekali tukar gambar
+    });
