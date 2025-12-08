@@ -617,3 +617,37 @@ input[type="checkbox"].toggle:checked::before{
     padding:11px 9px 11px;
   }
 }
+/* ====== RUNNING TEXT / TICKER DI BAWAH HEADER ====== */
+.ticker-bar{
+  width:100%;
+  overflow:hidden;
+  border-bottom:1px solid rgba(148,163,184,0.25);
+  background:rgba(3,7,18,0.96);
+  box-shadow:0 8px 20px rgba(0,0,0,0.7);
+}
+
+.ticker-track{
+  display:inline-block;
+  white-space:nowrap;
+  padding:6px 0;
+  animation:ticker-move 25s linear infinite;
+}
+
+.ticker-track span{
+  font-size:0.82rem;
+  color:#e5e7eb;
+  margin-right:64px;          /* jarak antar teks */
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+}
+
+/* Animasi jalan dari kanan ke kiri */
+@keyframes ticker-move{
+  0%{
+    transform:translateX(100%);
+  }
+  100%{
+    transform:translateX(-100%);
+  }
+}
+
