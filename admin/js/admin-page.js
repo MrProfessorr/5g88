@@ -1,103 +1,140 @@
-// js/admin-page.js
+// admin/js/admin-page.js
 
-document.addEventListener('DOMContentLoaded', () => {
-  const nameInput = document.getElementById('platformName');
-  const listInput = document.getElementById('gameList');
-  const saveBtn   = document.getElementById('saveCardBtn');
-  const cardsList = document.getElementById('cardsList');
+document.addEventListener("DOMContentLoaded", () => {
+  const platformInput = document.getElementById("platformName");
+  const gameListInput = document.getElementById("gameList");
+  const saveBtn       = document.getElementById("saveCardBtn");
+  const cardsListEl   = document.getElementById("cardsList");
 
-  const tipCardsRef = db.ref('tipCards');
+  if (!window.firebase || !window.db) {
+    console.error("Firebase belum siap. Cek script firebase di HTML.");
+    return;
+  }
 
-  // Simpan card baru
-  saveBtn.addEventListener('click', () => {
-    const name = (nameInput.value || '').trim();
-    const listRaw = listInput.value || '';
+  // Semua card disimpan di path ini
+  const cardsRef = db.ref("tips_cards");
 
-    if (!name) {
-      alert('Nama platform tidak boleh kosong.');
+  // Buat key dari nama platform: "MEGA888" -> "mega888"
+  const makeKey = (name) =>
+    (name || "")
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-");
+
+  // ====== SAVE CARD ======
+  saveBtn.addEventListener("click", () => {
+    const platformName = platformInput.value.trim();
+    const rawGames = gameListInput.value.split("\n");
+
+    const games = rawGames
+      .map((g) => g.trim())
+      .filter((g) => g.length > 0);
+
+    if (!platformName) {
+      alert("Isi nama platform dulu bro.");
+      platformInput.focus();
       return;
     }
-
-    // pecah text area jadi array (per baris), buang kosong
-    const games = listRaw
-      .split(/\r?\n/)
-      .map(s => s.trim())
-      .filter(s => s.length > 0);
-
     if (games.length === 0) {
-      alert('Masukkan minimal 1 nama game.');
+      alert("Isi list nama game (min 1 baris).");
+      gameListInput.focus();
       return;
     }
+
+    const key = makeKey(platformName);
 
     const payload = {
-      name,
+      platformName,
       games,
-      active: true,
-      createdAt: Date.now()
+      enabled: true,
+      updatedAt: firebase.database.ServerValue.TIMESTAMP,
     };
 
-    tipCardsRef.push(payload)
+    cardsRef
+      .child(key)
+      .set(payload)
       .then(() => {
-        nameInput.value = '';
-        listInput.value = '';
-        alert('Card berhasil disimpan.');
+        alert("Card berjaya disimpan. Cek di bawah & di halaman user.");
+        platformInput.value = "";
+        gameListInput.value = "";
       })
-      .catch(err => {
-        console.error(err);
-        alert('Gagal simpan card: ' + err.message);
+      .catch((err) => {
+        console.error("Gagal simpan card:", err);
+        alert("Gagal simpan ke Firebase. Cek console.");
       });
   });
 
-  // Render list card admin (real-time)
-  tipCardsRef.on('value', snapshot => {
-    cardsList.innerHTML = '';
-    const val = snapshot.val();
-    if (!val) {
-      cardsList.innerHTML = '<p class="text-muted small">Belum ada card. Silakan tambah.</p>';
+  // ====== RENDER LIST CARD DI ADMIN ======
+  function renderCardsList(snapshot) {
+    const data = snapshot.val() || {};
+    cardsListEl.innerHTML = "";
+
+    const entries = Object.entries(data);
+
+    if (entries.length === 0) {
+      cardsListEl.innerHTML =
+        '<p class="text-muted small">Belum ada card. Buat card baru di atas.</p>';
       return;
     }
 
-    Object.entries(val).forEach(([id, card]) => {
-      const item = document.createElement('div');
-      item.className = 'admin-card-item';
+    entries.forEach(([key, card]) => {
+      const item = document.createElement("div");
+      item.className = "admin-card-item";
 
-      const info = document.createElement('div');
-      info.className = 'admin-card-info';
-      const title = document.createElement('div');
-      title.className = 'admin-card-title';
-      title.textContent = card.name || '(tanpa nama)';
+      const info = document.createElement("div");
+      info.className = "admin-card-info";
 
-      const sub = document.createElement('div');
-      sub.className = 'admin-card-sub';
-      const count = Array.isArray(card.games) ? card.games.length : 0;
-      sub.textContent = `Games: ${count} • Status: ${card.active ? 'ON' : 'OFF'}`;
+      const title = document.createElement("div");
+      title.className = "admin-card-title";
+      title.textContent = card.platformName || key;
+
+      const sub = document.createElement("div");
+      sub.className = "admin-card-sub";
+      sub.textContent = `${card.games?.length || 0} game • status: ${
+        card.enabled ? "AKTIF" : "OFF"
+      }`;
 
       info.appendChild(title);
       info.appendChild(sub);
 
-      const switchWrap = document.createElement('div');
-      switchWrap.className = 'switch-wrap';
+      // Switch enable
+      const controls = document.createElement("div");
+      controls.className = "switch-wrap";
 
-      const label = document.createElement('span');
-      label.className = 'switch-label';
-      label.textContent = 'Tampil:';
+      const label = document.createElement("span");
+      label.className = "switch-label";
+      label.textContent = "Aktif";
 
-      const toggle = document.createElement('input');
-      toggle.type = 'checkbox';
-      toggle.className = 'toggle';
-      toggle.checked = !!card.active;
+      const toggle = document.createElement("input");
+      toggle.type = "checkbox";
+      toggle.className = "toggle";
+      toggle.checked = !!card.enabled;
 
-      toggle.addEventListener('change', () => {
-        tipCardsRef.child(id).child('active').set(toggle.checked);
+      toggle.addEventListener("change", () => {
+        cardsRef.child(key).update({ enabled: toggle.checked });
       });
 
-      switchWrap.appendChild(label);
-      switchWrap.appendChild(toggle);
+      // Tombol delete (opsional)
+      const delBtn = document.createElement("button");
+      delBtn.className = "btn secondary";
+      delBtn.style.fontSize = "0.7rem";
+      delBtn.textContent = "✖ Hapus";
+      delBtn.addEventListener("click", () => {
+        if (confirm(`Hapus card "${card.platformName}"?`)) {
+          cardsRef.child(key).remove();
+        }
+      });
+
+      controls.appendChild(label);
+      controls.appendChild(toggle);
+      controls.appendChild(delBtn);
 
       item.appendChild(info);
-      item.appendChild(switchWrap);
+      item.appendChild(controls);
 
-      cardsList.appendChild(item);
+      cardsListEl.appendChild(item);
     });
-  });
+  }
+
+  cardsRef.on("value", renderCardsList);
 });
