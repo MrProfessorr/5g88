@@ -1,8 +1,8 @@
 // admin/js/firebase-config.js  dan  online/js/firebase-config.js
 
-// ⚠️ PENTING: semua value di bawah ambil terus dari Firebase console
+// ⚠️ Semua value di bawah ambil dari Firebase console (Project Settings → Config)
 const firebaseConfig = {
-  apiKey: "PASTE_APIKEY_DI_SINI",
+  apiKey: "AIzaSyAxlfERUjAkUPcYWMkMfHaVvICWW95btSw",      // GANTI DENGAN punyamu
   authDomain: "site-b902d.firebaseapp.com",
   databaseURL: "https://site-b902d-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "site-b902d",
@@ -11,10 +11,13 @@ const firebaseConfig = {
   appId: "1:130388557538:web:23715b27aa571e7fbf28bb"
 };
 
-// Inisialisasi Firebase versi compat
+// Inisialisasi Firebase (versi compat)
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
 // Realtime Database reference global
 const db = firebase.database();
+
+// Debug supaya kita tahu file ini benar-benar jalan
+console.log("firebase-config LOADED, db =", !!db);
