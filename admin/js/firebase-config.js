@@ -17,7 +17,7 @@ if (!firebase.apps.length) {
 }
 
 // Realtime Database reference global
-const db = firebase.database();
+window.db = firebase.database();
 
 // Debug supaya kita tahu file ini benar-benar jalan
 console.log("firebase-config LOADED, db =", !!db);
