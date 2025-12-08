@@ -1,20 +1,20 @@
-// js/firebase-config.js
+// admin/js/firebase-config.js  dan  online/js/firebase-config.js
 
-// Firebase Config (COMPAT VERSION - untuk script tag)
+// ⚠️ PENTING: semua value di bawah ambil terus dari Firebase console
 const firebaseConfig = {
-  apiKey: "AIzaSyAxlfERUjAkUPcYWMkMfHaVvICWW95btSw",
+  apiKey: "PASTE_APIKEY_DI_SINI",
   authDomain: "site-b902d.firebaseapp.com",
-  databaseURL: "https://site-b902d-default-rtdb.firebaseio.com", 
+  databaseURL: "https://site-b902d-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "site-b902d",
   storageBucket: "site-b902d.firebasestorage.app",
   messagingSenderId: "130388557538",
   appId: "1:130388557538:web:23715b27aa571e7fbf28bb"
 };
 
-// Init Firebase
+// Inisialisasi Firebase versi compat
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
-// Global database reference
+// Realtime Database reference global
 const db = firebase.database();
