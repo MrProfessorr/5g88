@@ -555,18 +555,26 @@ input[type="checkbox"].toggle:checked::before{
   margin-top:0; /* header sudah punya jarak, jadi boleh 0 */
 }
 
-.home-hero{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:16px;
-  margin-bottom:24px;
+/* ===== HOME IMAGE SLIDER (1 / banyak gambar) ===== */
+.home-hero-slider{
+  width:100%;
+  max-width:900px;
+  margin:24px auto 32px;
+  overflow:hidden;
+  border-radius:22px;
+  box-shadow:0 20px 50px rgba(0,0,0,0.8);
+}
+
+.home-slide-track{
+  display:flex;
+  transition:transform 0.8s ease-in-out;
 }
 
 .home-hero-img{
   width:100%;
-  border-radius:18px;
+  flex-shrink:0;
   display:block;
-  box-shadow:0 18px 40px rgba(0,0,0,0.7);
+  border-radius:22px;
 }
 
 .home-article{
