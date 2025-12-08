@@ -93,7 +93,23 @@ body{
   border:1px solid rgba(148,163,184,0.5);
   color:var(--muted);
 }
+.app-header-left{
+  display:flex;
+  align-items:center;
+}
 
+.brand-logo-img{
+  height:32px;        /* atur tinggi logo */
+  display:block;
+}
+
+/* kalau mau logo agak ke bawah atau ke atas bisa mainkan margin:
+.brand-logo-img{
+  height:32px;
+  display:block;
+  margin-top:2px;
+}
+*/
 /* Brand kiri */
 .app-header-left .brand-logo{
   font-weight:700;
