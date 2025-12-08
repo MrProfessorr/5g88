@@ -1,19 +1,20 @@
 // js/firebase-config.js
 
-// TODO: ganti dengan config Firebase kamu
+// Firebase Config (COMPAT VERSION - untuk script tag)
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
-  projectId: "YOUR_PROJECT",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyAxlfERUjAkUPcYWMkMfHaVvICWW95btSw",
+  authDomain: "site-b902d.firebaseapp.com",
+  databaseURL: "https://site-b902d-default-rtdb.firebaseio.com", 
+  projectId: "site-b902d",
+  storageBucket: "site-b902d.firebasestorage.app",
+  messagingSenderId: "130388557538",
+  appId: "1:130388557538:web:23715b27aa571e7fbf28bb"
 };
 
-// Inisialisasi Firebase (global: firebase)
+// Init Firebase
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
+// Global database reference
 const db = firebase.database();
