@@ -3,6 +3,40 @@
 document.addEventListener("DOMContentLoaded", () => {
   const gridEl = document.getElementById("tipsCardsGrid");
 
+  // ====== TAB HOME / HOT GAME ======
+  const homePage   = document.getElementById("homePage");
+  const hotGamePage= document.getElementById("hotGamePage");
+  const navHome    = document.getElementById("navHome");
+  const navHot     = document.getElementById("navHot");
+
+  // Biar bisa dipakai di onclick HTML
+  window.showHome = function () {
+    if (!homePage || !hotGamePage) return;
+    homePage.style.display = "block";
+    hotGamePage.style.display = "none";
+
+    navHome && navHome.classList.add("active");
+    navHot && navHot.classList.remove("active");
+  };
+
+  window.showHotGame = function () {
+    if (!homePage || !hotGamePage) return;
+    homePage.style.display = "none";
+    hotGamePage.style.display = "block";
+
+    navHot && navHot.classList.add("active");
+    navHome && navHome.classList.remove("active");
+  };
+
+  // Default buka HOME dulu
+  if (homePage && hotGamePage) {
+    showHome();
+  }
+
+  // Kalau tak ada grid (misal halaman lain), tak usah lanjut
+  if (!gridEl) return;
+
+  // ====== FIREBASE CHECK ======
   if (!window.firebase || !window.db) {
     console.error("Firebase belum siap. Cek script firebase di HTML.");
     return;
@@ -10,38 +44,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const cardsRef = db.ref("tips_cards");
 
-  // ====== LOCALSTORAGE UNTUK SIMPAN TIPS TERAKHIR PER CARD ======
-  const TIPS_STORAGE_KEY = "tipsGenerator.currentTips.v1";
+  // ====== HISTORY & LOCALSTORAGE ======
+  const STORAGE_KEY = "tipsHistory.v1";
 
-  function loadAllSavedTips() {
+  // { [cardKey]: { history: [text], index:number } }
+  let historyObj = {};
+
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) historyObj = JSON.parse(raw) || {};
+  } catch (e) {
+    historyObj = {};
+  }
+
+  function saveHistory() {
     try {
-      const raw = localStorage.getItem(TIPS_STORAGE_KEY);
-      return raw ? JSON.parse(raw) : {};
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(historyObj));
     } catch (e) {
-      console.warn("Gagal parse tips dari localStorage", e);
-      return {};
+      console.warn("Gagal simpan history ke localStorage", e);
     }
   }
-
-  function saveTipsForPlatform(platformId, text) {
-    const all = loadAllSavedTips();
-    all[platformId] = text;
-    localStorage.setItem(TIPS_STORAGE_KEY, JSON.stringify(all));
-  }
-
-  function getSavedTipsForPlatform(platformId) {
-    const all = loadAllSavedTips();
-    return all[platformId] || "";
-  }
-
-  // ====== HISTORY DALAM 1 SESSION (UNTUK TOMBOL BACK) ======
-  const historyMap = new Map(); // key -> { history:[], index:number }
 
   function getHistoryState(key) {
-    if (!historyMap.has(key)) {
-      historyMap.set(key, { history: [], index: -1 });
+    if (!historyObj[key]) {
+      historyObj[key] = { history: [], index: -1 };
     }
-    return historyMap.get(key);
+    return historyObj[key];
   }
 
   // Random integer [min, max]
@@ -120,41 +148,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const state = getHistoryState(card.key);
 
-      // 🔁 Saat render, kalau ada tips tersimpan, tampilkan lagi
-      const savedTxt = getSavedTipsForPlatform(card.key);
-      if (savedTxt) {
-        output.textContent = savedTxt;
-        // Masukkan sebagai entry pertama di history session ini
-        state.history.push(savedTxt);
-        state.index = state.history.length - 1;
+      // Kalau ada history tersimpan, tampilkan last state
+      if (state.history.length > 0 && state.index >= 0) {
+        output.textContent = state.history[state.index];
       }
 
       genBtn.addEventListener("click", () => {
         const txt = generateTipsForCard(card);
         if (!txt) return;
 
-        // tambah ke history (session)
         state.history.push(txt);
         state.index = state.history.length - 1;
-
-        // tampilkan di card
         output.textContent = txt;
-
-        // 💾 SIMPAN ke localStorage supaya kekal lepas refresh
-        saveTipsForPlatform(card.key, txt);
+        saveHistory();
       });
 
       backBtn.addEventListener("click", () => {
         if (state.index > 0) {
           state.index -= 1;
-          const txt = state.history[state.index];
-          output.textContent = txt;
-
-          // update simpanan ke tips yang baru ditampilkan
-          saveTipsForPlatform(card.key, txt);
-        } else {
+          output.textContent = state.history[state.index];
+        } else if (state.history.length === 0) {
           output.textContent = "Belum ada tips sebelumnya.";
+        } else {
+          output.textContent = state.history[0];
         }
+        saveHistory();
       });
 
       actions.appendChild(backBtn);
