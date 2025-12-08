@@ -630,7 +630,7 @@ input[type="checkbox"].toggle:checked::before{
   display:inline-block;
   white-space:nowrap;
   padding:6px 0;
-  animation:ticker-move 25s linear infinite;
+  animation:ticker-move 35s linear infinite;
 }
 
 .ticker-track span{
