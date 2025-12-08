@@ -10,7 +10,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const cardsRef = db.ref("tips_cards");
 
-  // Simpan history tips per card supaya tombol Back boleh jalan
+  // ====== LOCALSTORAGE UNTUK SIMPAN TIPS TERAKHIR PER CARD ======
+  const TIPS_STORAGE_KEY = "tipsGenerator.currentTips.v1";
+
+  function loadAllSavedTips() {
+    try {
+      const raw = localStorage.getItem(TIPS_STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) {
+      console.warn("Gagal parse tips dari localStorage", e);
+      return {};
+    }
+  }
+
+  function saveTipsForPlatform(platformId, text) {
+    const all = loadAllSavedTips();
+    all[platformId] = text;
+    localStorage.setItem(TIPS_STORAGE_KEY, JSON.stringify(all));
+  }
+
+  function getSavedTipsForPlatform(platformId) {
+    const all = loadAllSavedTips();
+    return all[platformId] || "";
+  }
+
+  // ====== HISTORY DALAM 1 SESSION (UNTUK TOMBOL BACK) ======
   const historyMap = new Map(); // key -> { history:[], index:number }
 
   function getHistoryState(key) {
@@ -96,19 +120,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const state = getHistoryState(card.key);
 
+      // 🔁 Saat render, kalau ada tips tersimpan, tampilkan lagi
+      const savedTxt = getSavedTipsForPlatform(card.key);
+      if (savedTxt) {
+        output.textContent = savedTxt;
+        // Masukkan sebagai entry pertama di history session ini
+        state.history.push(savedTxt);
+        state.index = state.history.length - 1;
+      }
+
       genBtn.addEventListener("click", () => {
         const txt = generateTipsForCard(card);
         if (!txt) return;
-        // tambah ke history
+
+        // tambah ke history (session)
         state.history.push(txt);
         state.index = state.history.length - 1;
+
+        // tampilkan di card
         output.textContent = txt;
+
+        // 💾 SIMPAN ke localStorage supaya kekal lepas refresh
+        saveTipsForPlatform(card.key, txt);
       });
 
       backBtn.addEventListener("click", () => {
         if (state.index > 0) {
           state.index -= 1;
-          output.textContent = state.history[state.index];
+          const txt = state.history[state.index];
+          output.textContent = txt;
+
+          // update simpanan ke tips yang baru ditampilkan
+          saveTipsForPlatform(card.key, txt);
         } else {
           output.textContent = "Belum ada tips sebelumnya.";
         }
