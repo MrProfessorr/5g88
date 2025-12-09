@@ -752,5 +752,22 @@ input[type="checkbox"].toggle:checked::before{
 .rategame-meta{
   font-size:0.8rem;
   color:var(--muted);
+  margin-left: auto;
   white-space:nowrap;
+}
+/* === Layout khusus HP (layar sempit) === */
+@media (max-width: 640px) {
+  .rategame-header {
+    flex-direction: column;     /* judul di atas, waktu di bawah */
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .rategame-meta {
+    align-self: flex-end;       /* nempel di kanan */
+    width: 100%;
+    text-align: right;
+    white-space: normal;        /* boleh turun baris kalau perlu */
+    font-size: 0.75rem;
+  }
 }
