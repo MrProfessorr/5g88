@@ -1,39 +1,74 @@
 // online/js/tips-page.js
 
 document.addEventListener("DOMContentLoaded", () => {
-  const gridEl = document.getElementById("tipsCardsGrid");
+  const gridEl      = document.getElementById("tipsCardsGrid");
+  const homePage    = document.getElementById("homePage");
+  const hotGamePage = document.getElementById("hotGamePage");
+  const navHome     = document.getElementById("navHome");
+  const navHot      = document.getElementById("navHot");
 
-  // ====== TAB HOME / HOT GAME ======
-  const homePage   = document.getElementById("homePage");
-  const hotGamePage= document.getElementById("hotGamePage");
-  const navHome    = document.getElementById("navHome");
-  const navHot     = document.getElementById("navHot");
+  // ====== TAB HOME / HOT GAME DENGAN LOCALSTORAGE ======
+  const TAB_KEY = "tipsPageActiveTab";
 
-  // Biar bisa dipakai di onclick HTML
-  window.showHome = function () {
+  function setActiveTab(tab) {
     if (!homePage || !hotGamePage) return;
-    homePage.style.display = "block";
-    hotGamePage.style.display = "none";
 
-    navHome && navHome.classList.add("active");
-    navHot && navHot.classList.remove("active");
-  };
+    if (tab === "hot") {
+      homePage.style.display    = "none";
+      hotGamePage.style.display = "block";
 
-  window.showHotGame = function () {
-    if (!homePage || !hotGamePage) return;
-    homePage.style.display = "none";
-    hotGamePage.style.display = "block";
+      navHome && navHome.classList.remove("active");
+      navHot  && navHot.classList.add("active");
+    } else {
+      // default HOME
+      homePage.style.display    = "block";
+      hotGamePage.style.display = "none";
 
-    navHot && navHot.classList.add("active");
-    navHome && navHome.classList.remove("active");
-  };
+      navHome && navHome.classList.add("active");
+      navHot  && navHot.classList.remove("active");
+      tab = "home";
+    }
 
-  // Default buka HOME dulu
-  if (homePage && hotGamePage) {
-    showHome();
+    try {
+      localStorage.setItem(TAB_KEY, tab);
+    } catch (e) {
+      console.warn("Gagal simpan tab aktif", e);
+    }
   }
 
-  // Kalau tak ada grid (misal halaman lain), tak usah lanjut
+  // dipakai di onclick HTML
+  window.showHome = function () {
+    setActiveTab("home");
+  };
+  window.showHotGame = function () {
+    setActiveTab("hot");
+  };
+
+  // baca tab terakhir saat load
+  let initialTab = "home";
+  try {
+    const saved = localStorage.getItem(TAB_KEY);
+    if (saved === "hot" || saved === "home") initialTab = saved;
+  } catch (e) {
+    console.warn("Gagal baca tab aktif", e);
+  }
+  setActiveTab(initialTab);
+
+  // ====== AUTO SLIDER HOME IMAGE ======
+  const track = document.getElementById("slideTrack");
+  if (track) {
+    const slides = track.querySelectorAll("img");
+    if (slides.length > 1) {
+      let index = 0;
+      setInterval(() => {
+        index++;
+        if (index >= slides.length) index = 0;
+        track.style.transform = `translateX(-${index * 100}%)`;
+      }, 3500); // 3.5s sekali tukar gambar
+    }
+  }
+
+  // ====== KALAU TAK ADA GRID, STOP DI SINI ======
   if (!gridEl) return;
 
   // ====== FIREBASE CHECK ======
@@ -44,12 +79,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const cardsRef = db.ref("tips_cards");
 
-  // ====== HISTORY & LOCALSTORAGE ======
+  // ====== HISTORY & LOCALSTORAGE UNTUK TIPS ======
   const STORAGE_KEY = "tipsHistory.v1";
 
   // { [cardKey]: { history: [text], index:number } }
   let historyObj = {};
-
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) historyObj = JSON.parse(raw) || {};
@@ -86,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
       [games[i], games[j]] = [games[j], games[i]];
     }
 
-    const count = Math.min(3, games.length);
+    const count  = Math.min(3, games.length);
     const chosen = games.slice(0, count);
 
     const lines = [card.platformName || card.key, "==========="];
@@ -188,36 +222,3 @@ document.addEventListener("DOMContentLoaded", () => {
 
   cardsRef.on("value", renderCards);
 });
-    // ===== NAV HOME / HOT GAME =====
-    function showHome() {
-      document.getElementById('homePage').style.display = 'block';
-      document.getElementById('hotGamePage').style.display = 'none';
-      document.getElementById('navHome').classList.add('active');
-      document.getElementById('navHot').classList.remove('active');
-    }
-
-    function showHotGame() {
-      document.getElementById('homePage').style.display = 'none';
-      document.getElementById('hotGamePage').style.display = 'block';
-      document.getElementById('navHot').classList.add('active');
-      document.getElementById('navHome').classList.remove('active');
-    }
-
-    // ===== AUTO SLIDER HOME IMAGE =====
-    document.addEventListener('DOMContentLoaded', () => {
-      const track = document.getElementById('slideTrack');
-      if (!track) return;
-
-      const slides = track.querySelectorAll('img');
-      if (slides.length <= 1) return; // kalau cuma 1 gambar, tak perlu slide
-
-      let index = 0;
-
-      setInterval(() => {
-        index++;
-        if (index >= slides.length) {
-          index = 0;
-        }
-        track.style.transform = `translateX(-${index * 100}%)`;
-      }, 3500); // 3.5s sekali tukar gambar
-    });
