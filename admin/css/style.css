@@ -300,8 +300,23 @@ textarea{
   display:flex;
   flex-direction:column;
   gap:8px;
-}
 
+  /* ✅ LIMIT TINGGI + SCROLL */
+  max-height: 420px;     /* kira-kira tinggi 6 row */
+  overflow-y: auto;
+  padding-right: 6px;   /* bagi ruang untuk scrollbar */
+}
+.admin-card-list::-webkit-scrollbar{
+  width:6px;
+}
+.admin-card-list::-webkit-scrollbar-track{
+  background:#020617;
+  border-radius:10px;
+}
+.admin-card-list::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#facc15,#f59e0b);
+  border-radius:10px;
+}
 .admin-card-item{
   display:flex;
   align-items:center;
