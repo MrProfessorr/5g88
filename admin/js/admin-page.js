@@ -11,17 +11,29 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // Semua card disimpan di path ini
+  // ====== REF FIREBASE ======
   const cardsRef = db.ref("tips_cards");
 
-  // Buat key dari nama platform: "MEGA888" -> "mega888"
+  // ====== ELEMEN MODAL EDIT GAME LIST ======
+  const gamesModal        = document.getElementById("gamesModal");
+  const gamesModalTitle   = document.getElementById("gamesModalTitle");
+  const gamesModalTextarea= document.getElementById("gamesModalTextarea");
+  const gamesModalEditBtn = document.getElementById("gamesModalEditBtn");
+  const gamesModalSaveBtn = document.getElementById("gamesModalSaveBtn");
+
+  let currentEditKey  = null;
+  let currentEditCard = null;
+
+  // Helper: buat key dari nama platform: "MEGA888" -> "mega888"
   const makeKey = (name) =>
     (name || "")
       .trim()
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-");
 
-  // ====== SAVE CARD ======
+  // =========================================================
+  // SAVE CARD BARU
+  // =========================================================
   saveBtn.addEventListener("click", () => {
     const platformName = platformInput.value.trim();
     const rawGames = gameListInput.value.split("\n");
@@ -64,7 +76,77 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   });
 
-  // ====== RENDER LIST CARD DI ADMIN ======
+  // =========================================================
+  // MODAL: OPEN / CLOSE
+  // =========================================================
+  function openGamesModal(key, card) {
+    currentEditKey  = key;
+    currentEditCard = card;
+
+    const platformName = card.platformName || key;
+
+    gamesModalTitle.textContent = `Daftar Game • ${platformName}`;
+    gamesModalTextarea.value = (card.games || []).join("\n");
+    gamesModalTextarea.disabled = true;
+
+    // mode awal: hanya Edit yang kelihatan
+    gamesModalEditBtn.style.display = "inline-flex";
+    gamesModalSaveBtn.style.display = "none";
+
+    if (gamesModal) {
+      gamesModal.classList.add("show");
+    }
+  }
+
+  function closeGamesModal() {
+    if (gamesModal) {
+      gamesModal.classList.remove("show");
+    }
+    currentEditKey  = null;
+    currentEditCard = null;
+  }
+
+  // supaya bisa dipanggil dari HTML (backdrop & tombol ✕)
+  window.closeGamesModal = closeGamesModal;
+
+  // Tombol EDIT di modal
+  if (gamesModalEditBtn) {
+    gamesModalEditBtn.addEventListener("click", () => {
+      gamesModalTextarea.disabled = false;
+      gamesModalTextarea.focus();
+
+      gamesModalEditBtn.style.display = "none";
+      gamesModalSaveBtn.style.display = "inline-flex";
+    });
+  }
+
+  // Tombol SAVE di modal
+  if (gamesModalSaveBtn) {
+    gamesModalSaveBtn.addEventListener("click", () => {
+      if (!currentEditKey) return;
+
+      const lines = gamesModalTextarea.value
+        .split("\n")
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0);
+
+      cardsRef
+        .child(currentEditKey)
+        .update({ games: lines, updatedAt: firebase.database.ServerValue.TIMESTAMP })
+        .then(() => {
+          alert("List game berjaya dikemas kini.");
+          closeGamesModal();
+        })
+        .catch((err) => {
+          console.error("Gagal update games:", err);
+          alert("Gagal simpan perubahan. Cek console.");
+        });
+    });
+  }
+
+  // =========================================================
+  // RENDER LIST CARD DI ADMIN
+  // =========================================================
   function renderCardsList(snapshot) {
     const data = snapshot.val() || {};
     cardsListEl.innerHTML = "";
@@ -81,6 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const item = document.createElement("div");
       item.className = "admin-card-item";
 
+      // ---- Kiri: info card + Views ----
       const info = document.createElement("div");
       info.className = "admin-card-info";
 
@@ -90,14 +173,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const sub = document.createElement("div");
       sub.className = "admin-card-sub";
-      sub.textContent = `${card.games?.length || 0} game • status: ${
-        card.enabled ? "AKTIF" : "OFF"
-      }`;
+
+      const totalGame = card.games?.length || 0;
+      const statusTxt = card.enabled === false ? "OFF" : "AKTIF";
+
+      const stats = document.createElement("span");
+      stats.textContent = `${totalGame} game • status: ${statusTxt}`;
+
+      const viewBtn = document.createElement("button");
+      viewBtn.type = "button";
+      viewBtn.className = "btn ghost view-small";
+      viewBtn.textContent = "Views";
+      viewBtn.addEventListener("click", () => {
+        openGamesModal(key, card);
+      });
+
+      sub.appendChild(stats);
+      sub.appendChild(viewBtn);
 
       info.appendChild(title);
       info.appendChild(sub);
 
-      // Switch enable
+      // ---- Kanan: switch Aktif + Hapus ----
       const controls = document.createElement("div");
       controls.className = "switch-wrap";
 
@@ -114,13 +211,12 @@ document.addEventListener("DOMContentLoaded", () => {
         cardsRef.child(key).update({ enabled: toggle.checked });
       });
 
-      // Tombol delete (opsional)
       const delBtn = document.createElement("button");
       delBtn.className = "btn secondary";
       delBtn.style.fontSize = "0.7rem";
       delBtn.textContent = "✖ Hapus";
       delBtn.addEventListener("click", () => {
-        if (confirm(`Hapus card "${card.platformName}"?`)) {
+        if (confirm(`Hapus card "${card.platformName || key}"?`)) {
           cardsRef.child(key).remove();
         }
       });
@@ -129,6 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
       controls.appendChild(toggle);
       controls.appendChild(delBtn);
 
+      // gabungkan ke item
       item.appendChild(info);
       item.appendChild(controls);
 
@@ -136,5 +233,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // listen realtime
   cardsRef.on("value", renderCardsList);
 });
