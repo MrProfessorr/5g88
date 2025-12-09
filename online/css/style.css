@@ -659,55 +659,80 @@ input[type="checkbox"].toggle:checked::before{
   }
 }
 
-/* ====== PROMO / FREE CREDIT BANNER ====== */
+/* ================= PROMO / FREE CREDIT GRID ================= */
+
 .promo-grid{
-  margin:18px auto 24px;
-  max-width:1200px;
   display:grid;
   grid-template-columns:repeat(2, minmax(0,1fr));
-  gap:14px;
+  gap:12px;
+  margin-bottom:18px;
 }
 
-@media (min-width:768px){
+/* Desktop: 4 card satu baris */
+@media (min-width:900px){
   .promo-grid{
-    grid-template-columns:repeat(3, minmax(0,1fr));
-  }
-}
-
-@media (min-width:1024px){
-  .promo-grid{
-    grid-template-columns:repeat(4, minmax(0,1fr)); /* max 4 per baris */
+    grid-template-columns:repeat(4, minmax(0,1fr));
   }
 }
 
 .promo-card{
-  background:transparent;
+  position:relative;
   border-radius:16px;
   overflow:hidden;
-  display:flex;
-  flex-direction:column;
-  align-items:stretch;
-  gap:8px;
+  cursor:pointer;
+  box-shadow:0 12px 36px rgba(0,0,0,0.7);
+  transition:transform .18s ease, box-shadow .18s ease;
+  background:transparent;      /* ✅ Tiada border */
 }
 
-.promo-card-img-wrap{
-  border-radius:16px;
-  overflow:hidden;
+.promo-card:hover{
+  transform:translateY(-4px) scale(1.02);
+  box-shadow:0 18px 48px rgba(0,0,0,0.9);
 }
 
-.promo-card-img{
+/* Gambar promo */
+.promo-card img{
   width:100%;
+  height:auto;
   display:block;
+  object-fit:cover;
   border-radius:16px;
 }
 
-.promo-card-footer{
+/* Overlay butang CLAIM */
+.promo-claim{
+  position:absolute;
+  inset:0;
   display:flex;
-  justify-content:flex-end;
+  align-items:flex-end;
+  justify-content:center;
+  padding:12px;
+  background:linear-gradient(
+    to top,
+    rgba(0,0,0,0.75),
+    rgba(0,0,0,0.05),
+    transparent
+  );
+  pointer-events:none;
 }
 
-.promo-claim-btn{
-  min-width:110px;
-  font-size:0.78rem;
-  padding-inline:14px;
+.promo-claim button{
+  pointer-events:auto;
+  border:none;
+  padding:8px 18px;
+  border-radius:999px;
+  font-size:0.75rem;
+  font-weight:700;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  cursor:pointer;
+  background:linear-gradient(135deg,#facc15,#f59e0b);
+  color:#020617;
+  box-shadow:0 0 22px rgba(250,204,21,0.6);
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+
+.promo-claim button:hover{
+  transform:scale(1.08);
+  box-shadow:0 0 32px rgba(250,204,21,0.9);
 }
