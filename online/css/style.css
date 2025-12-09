@@ -742,3 +742,15 @@ input[type="checkbox"].toggle:checked::before{
   transform:scale(1.08);
   box-shadow:0 0 32px rgba(250,204,21,0.9);
 }
+.rategame-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+
+.rategame-meta{
+  font-size:0.8rem;
+  color:var(--muted);
+  white-space:nowrap;
+}
