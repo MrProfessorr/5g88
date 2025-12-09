@@ -107,58 +107,96 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const cardsRef  = db.ref("tips_cards");
   const promosRef = db.ref("promo_banners");
+  let promoSliderTimer = null;
+// ================== PROMO BANNER (FREE CREDIT) ==================
+function renderPromos(snapshot) {
+  if (!promoGridEl) return;
 
-  // ================== PROMO BANNER (FREE CREDIT) ==================
-  function renderPromos(snapshot) {
-    if (!promoGridEl) return;
+  // bersihkan timer lama kalau ada
+  if (promoSliderTimer) {
+    clearInterval(promoSliderTimer);
+    promoSliderTimer = null;
+  }
 
-    const data = snapshot.val() || {};
-    promoGridEl.innerHTML = "";
+  const data = snapshot.val() || {};
+  promoGridEl.innerHTML = "";
 
-    const entries = Object.entries(data);
+  const entries = Object.entries(data);
 
-    if (entries.length === 0) {
-      return;
+  if (entries.length === 0) {
+    return;
+  }
+
+  const cardsDom = []; // simpan DOM card untuk slider
+
+  entries.forEach(([key, promo]) => {
+    const imageUrl  = promo.imageUrl || "";
+    const targetUrl = promo.targetUrl || "#";
+    const title     = promo.title || "";
+    const caption   = promo.caption || ""; // caption dari DB
+
+    if (!imageUrl) return; // kalau tak ada gambar, skip
+
+    const card = document.createElement("article");
+    card.className = "promo-card";
+
+    // Hanya gambar yang dapat diklik (ke link claim)
+    const link = document.createElement("a");
+    link.className = "promo-card-link";
+    link.href   = targetUrl;
+    link.target = "_blank";
+    link.rel    = "noopener noreferrer";
+
+    const img = document.createElement("img");
+    img.src = imageUrl;
+    img.alt = title || caption || "Promo";
+    img.className = "promo-card-img";
+
+    link.appendChild(img);
+    card.appendChild(link);
+
+    // Caption di bawah gambar (bukan link)
+    if (caption || title) {
+      const captionEl = document.createElement("div");
+      captionEl.className = "promo-card-caption";
+      captionEl.textContent = caption || title;
+      card.appendChild(captionEl);
     }
 
-    entries.forEach(([key, promo]) => {
-      const imageUrl  = promo.imageUrl || "";
-      const targetUrl = promo.targetUrl || "#";
-      const title     = promo.title || "";
-      const caption   = promo.caption || "";  // caption dari DB
+    promoGridEl.appendChild(card);
+    cardsDom.push(card);
+  });
 
-      if (!imageUrl) return; // kalau tak ada gambar, skip
+  // Kalau card <= 4 → tampil biasa, tidak usah slider
+  if (cardsDom.length <= 4) {
+    return;
+  }
 
-      const card = document.createElement("article");
-      card.className = "promo-card";
+  // ========= SLIDER: tampil 4 card sekaligus, auto ganti setiap 3 detik =========
+  const pageSize   = 4;                                    // 4 banner per halaman
+  const totalPages = Math.ceil(cardsDom.length / pageSize);
+  let currentPage  = 0;
 
-      // Hanya gambar yang dapat diklik (ke link claim)
-      const link = document.createElement("a");
-      link.className = "promo-card-link";
-      link.href   = targetUrl;
-      link.target = "_blank";
-      link.rel    = "noopener noreferrer";
-
-      const img = document.createElement("img");
-      img.src = imageUrl;
-      img.alt = title || caption || "Promo";
-      img.className = "promo-card-img";
-
-      link.appendChild(img);
-      card.appendChild(link);
-
-      // Caption di bawah gambar (bukan link)
-      if (caption || title) {
-        const captionEl = document.createElement("div");
-        captionEl.className = "promo-card-caption";
-        captionEl.textContent = caption || title;
-        card.appendChild(captionEl);
+  function showPage(pageIndex) {
+    cardsDom.forEach((card, idx) => {
+      const pIndex = Math.floor(idx / pageSize);
+      if (pIndex === pageIndex) {
+        card.style.display = "";       // ikut display default (flex/block dari CSS)
+      } else {
+        card.style.display = "none";   // sembunyikan
       }
-
-      promoGridEl.appendChild(card);
     });
   }
 
+  // tampilkan halaman pertama
+  showPage(currentPage);
+
+  // auto ganti halaman setiap 3 detik
+  promoSliderTimer = setInterval(() => {
+    currentPage = (currentPage + 1) % totalPages;
+    showPage(currentPage);
+  }, 3000);
+}
   // listen realtime banner
   promosRef.on("value", renderPromos);
 
