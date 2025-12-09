@@ -736,3 +736,39 @@ input[type="checkbox"].toggle:checked::before{
   transform:scale(1.08);
   box-shadow:0 0 32px rgba(250,204,21,0.9);
 }
+.promo-grid{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-bottom:14px;
+}
+
+.promo-card{
+  border-radius:16px;
+  overflow:hidden;
+  background:linear-gradient(135deg, #020617, #020b1f);
+  border:1px solid rgba(30,64,175,0.9);
+  box-shadow:0 20px 45px rgba(0,0,0,0.9);
+  padding:8px;
+}
+
+.promo-card-link{
+  display:block;
+  border-radius:12px;
+  overflow:hidden;
+}
+
+.promo-card-img{
+  width:100%;
+  display:block;
+  border-radius:12px;
+}
+
+/* Caption teks di bawah gambar */
+.promo-card-caption{
+  margin-top:6px;
+  font-size:0.85rem;
+  color:#facc15;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+}
