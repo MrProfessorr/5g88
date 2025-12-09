@@ -2,7 +2,7 @@
 
 document.addEventListener("DOMContentLoaded", () => {
   const gridEl      = document.getElementById("tipsCardsGrid");
-  const promoGridEl = document.getElementById("promoGrid");   // ⬅ container promo
+  const promoGridEl = document.getElementById("promoGrid");
   const homePage    = document.getElementById("homePage");
   const hotGamePage = document.getElementById("hotGamePage");
   const navHome     = document.getElementById("navHome");
@@ -76,11 +76,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const cardsRef  = db.ref("tips_cards");
-  const promosRef = db.ref("promo_banners"); // ⬅ tempat simpan banner Free Credit
+  const promosRef = db.ref("promo_banners");
 
   // ================== PROMO BANNER (FREE CREDIT) ==================
   function renderPromos(snapshot) {
-    if (!promoGridEl) return; // kalau belum buat container, skip
+    if (!promoGridEl) return;
 
     const data = snapshot.val() || {};
     promoGridEl.innerHTML = "";
@@ -88,7 +88,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const entries = Object.entries(data);
 
     if (entries.length === 0) {
-      // tidak wajib tampil teks kalau mau kosong
       return;
     }
 
@@ -96,10 +95,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const imageUrl  = promo.imageUrl || "";
       const targetUrl = promo.targetUrl || "#";
       const title     = promo.title || "";
+      const caption   = promo.caption || "";  // ✅ ambil caption dari DB
+
+      if (!imageUrl) return; // kalau tak ada gambar, skip
 
       const card = document.createElement("article");
       card.className = "promo-card";
 
+      // Hanya gambar yang dapat diklik (ke link claim)
       const link = document.createElement("a");
       link.className = "promo-card-link";
       link.href   = targetUrl;
@@ -108,16 +111,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const img = document.createElement("img");
       img.src = imageUrl;
-      img.alt = title;
+      img.alt = title || caption || "Promo";
       img.className = "promo-card-img";
 
-      const claimBtn = document.createElement("div");
-      claimBtn.className = "promo-claim-badge";
-      claimBtn.textContent = "CLAIM";
-
       link.appendChild(img);
-      link.appendChild(claimBtn);
       card.appendChild(link);
+
+      // ✅ Caption di bawah gambar (bukan tombol / link)
+      if (caption || title) {
+        const captionEl = document.createElement("div");
+        captionEl.className = "promo-card-caption";
+        captionEl.textContent = caption || title;
+        card.appendChild(captionEl);
+      }
+
       promoGridEl.appendChild(card);
     });
   }
