@@ -10,46 +10,41 @@
   <div class="app-shell">
 
     <!-- HEADER -->
-<header class="app-header">
-  <div class="app-header-left">
-    <img src="https://i.imgur.com/QrxyBjc.png" alt="5G88" class="brand-logo-img">
-  </div>
-  <nav class="app-nav">
-    <button id="navHome" class="nav-link active" onclick="showHome()">Home</button>
-    <button id="navHot" class="nav-link" onclick="showHotGame()">Hot Game</button>
-  </nav>
-</header>
-  <!-- RUNNING TEXT / TICKER -->
-  <div class="ticker-bar">
-    <div class="ticker-track">
-      <span>🎰 Selamat datang di 5G88 x EVO VIP — Platform kasino online Malaysia yang stabil & selamat.</span>
-      <span>🎁 Bonus Welcome Slots RM150 • Lucky Wheel Bonus hingga RM688 untuk ahli baru.</span>
-      <span>🔒 Main dengan tenang — transaksi cepat, support 24/7, dan sistem keselamatan moden.</span>
+    <header class="app-header">
+      <div class="app-header-left">
+        <img src="https://i.imgur.com/QrxyBjc.png" alt="5G88" class="brand-logo-img">
+      </div>
+      <nav class="app-nav">
+        <button id="navHome" class="nav-link active" onclick="showHome()">Home</button>
+        <button id="navHot" class="nav-link" onclick="showHotGame()">Hot Game</button>
+      </nav>
+    </header>
+
+    <!-- RUNNING TEXT / TICKER -->
+    <div class="ticker-bar">
+      <div class="ticker-track">
+        <span>🎰 Selamat datang di 5G88 x EVO VIP — Platform kasino online Malaysia yang stabil & selamat.</span>
+        <span>🎁 Bonus Welcome Slots RM150 • Lucky Wheel Bonus hingga RM688 untuk ahli baru.</span>
+        <span>🔒 Main dengan tenang — transaksi cepat, support 24/7, dan sistem keselamatan moden.</span>
+      </div>
     </div>
-  </div>
-      <!-- ==== FREE CREDIT / PROMO BANNER ==== -->
-  <section id="promoGrid" class="promo-grid">
-    <!-- Isi dari Firebase (render di tips-page.js) -->
-  </section>
+
     <main class="app-main">
 
       <!-- ================== HOME PAGE ================== -->
-           <section id="homePage" class="home-page">
+      <section id="homePage" class="home-page">
         <!-- SLIDER 1 Gambar (bisa banyak, auto slide) -->
         <div class="home-hero-slider">
           <div class="home-slide-track" id="slideTrack">
-            <!-- SEKARANG: 1 gambar saja -->
             <img src="https://i.imgur.com/GbxXLJP.png" alt="Welcome Bonus" class="home-hero-img">
             <img src="https://i.imgur.com/tlui7YP.png" alt="Welcome Bonus" class="home-hero-img">
             <img src="https://i.imgur.com/9KPb1wG.png" alt="Welcome Bonus" class="home-hero-img">
             <img src="https://i.imgur.com/O0bV43a.png" alt="Welcome Bonus" class="home-hero-img">
             <img src="https://i.imgur.com/3rfNaGk.png" alt="Welcome Bonus" class="home-hero-img">
-
           </div>
         </div>
-        <article class="home-article">
-          <!-- Semua teks di sini boleh kamu edit manual di GitHub -->
 
+        <article class="home-article">
           <h2 class="home-title">
             5G88 Casino Review | RM150 Slots Welcome Bonus
           </h2>
@@ -88,6 +83,13 @@
 
       <!-- ================== HOT GAME PAGE ================== -->
       <section id="hotGamePage" class="hot-page" style="display:none;">
+
+        <!-- GRID PROMO / FREE CREDIT (diisi dari Firebase promo_banners) -->
+        <section id="promoGrid" class="promo-grid">
+          <!-- Card promo akan di-render oleh tips-page.js -->
+        </section>
+
+        <!-- CARD PRODUCT / PLATFORM -->
         <section class="card">
           <h2 class="section-title">PRODUCT / PLATFORM</h2>
           <p class="text-muted small">
@@ -97,7 +99,7 @@
         </section>
 
         <section id="tipsCardsGrid" class="cards-grid">
-          <!-- Card tips di-render dari tips-page.js seperti biasa -->
+          <!-- Card tips di-render dari tips-page.js -->
         </section>
       </section>
 
