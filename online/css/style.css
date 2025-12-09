@@ -702,7 +702,6 @@ input[type="checkbox"].toggle:checked::before{
   height:auto;
   display:block;
   object-fit:cover;
-  border-radius:16px;
 }
 
 /* Overlay butang CLAIM */
