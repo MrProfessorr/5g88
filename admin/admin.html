@@ -62,7 +62,8 @@
           + Tambah Banner
         </button>
 
-        <div id="promoList" class="admin-card-list" style="margin-top:12px;">
+        <!-- ✅ tambah class admin-card-list--promo supaya max 4 row -->
+        <div id="promoList" class="admin-card-list admin-card-list--promo" style="margin-top:12px;">
           <!-- list promo dari JS -->
         </div>
       </section>
@@ -104,7 +105,13 @@
       <div class="modal-body">
         <label class="form-label">
           Judul (opsional)
-          <input type="text" id="promoTitle" placeholder="Contoh: FREE RM5 NEW REGISTER">
+          <input type="text" id="promoTitle" placeholder="Contoh: FREE RM5">
+        </label>
+
+        <!-- ✅ input caption baru -->
+        <label class="form-label">
+          Caption Promo (tampil di bawah gambar)
+          <input type="text" id="promoCaption" placeholder="Contoh: NEW MEMBER FREE CREDIT RM5">
         </label>
 
         <label class="form-label">
@@ -114,7 +121,7 @@
 
         <label class="form-label">
           Link Claim (akan dibuka tab baru)
-          <input type="text" id="promoTargetUrl" placeholder="https://5g88-xxxx.vercel.app/claim">
+          <input type="text" id="promoTargetUrl" placeholder="https://5g88.baby/signup?...">
         </label>
       </div>
       <div class="modal-footer">
