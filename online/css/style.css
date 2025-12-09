@@ -122,12 +122,12 @@ body{
 .app-nav{
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:10px;
 }
 
 .nav-link{
   border:none;
-  padding:6px 14px;
+  padding:6px 10px;
   border-radius:999px;
   background:transparent;
   color:#e5e7eb;
@@ -143,7 +143,7 @@ body{
 }
 
 .nav-link.active{
-  background:radial-gradient(circle at top,#facc15,#f59e0b);
+  background: radial-gradient(circle at 0 0, #fef9c3 0, transparent 45%), linear-gradient(135deg, var(--accent), var(--accent-soft));
   color:#020617;
   box-shadow:0 0 18px rgba(250,204,21,0.4);
 }
