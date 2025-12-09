@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const promoModal        = document.getElementById("promoModal");
   const promoModalTitle   = document.getElementById("promoModalTitle");
   const promoTitleInput   = document.getElementById("promoTitle");
+  const promoCaptionInput = document.getElementById("promoCaption");   // ✅ baru
   const promoImageInput   = document.getElementById("promoImageUrl");
   const promoTargetInput  = document.getElementById("promoTargetUrl");
   const promoModalSaveBtn = document.getElementById("promoModalSaveBtn");
@@ -49,12 +50,10 @@ document.addEventListener("DOMContentLoaded", () => {
   function setupMultiInputKey(el) {
     if (!el) return;
     el.addEventListener("keydown", (e) => {
-      // Ctrl+Enter / Cmd+Enter -> forced line break
       if ((e.key === "Enter" && (e.ctrlKey || e.metaKey))) {
         e.preventDefault();
         document.execCommand("insertLineBreak");
       }
-      // Enter biasa tetap boleh (biar rasa textarea)
     });
   }
 
@@ -66,7 +65,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!raw) return [];
     let text = String(raw).replace(/\u00A0/g, " ").trim();
 
-    // Format array: 'AAA','BBB' atau "AAA","BBB"
     const quoted = text.match(/(['"])(.*?)\1/g);
     if (quoted && quoted.length) {
       return quoted
@@ -74,7 +72,6 @@ document.addEventListener("DOMContentLoaded", () => {
         .filter(Boolean);
     }
 
-    // Format biasa: newline / koma / titik koma
     return text
       .split(/[\n\r,;]+/)
       .map((s) => s.trim())
@@ -140,7 +137,6 @@ document.addEventListener("DOMContentLoaded", () => {
     gamesModalTitle.textContent = `Daftar Game • ${card.platformName || key}`;
     setBoxFromGames(gamesModalBox, card.games || []);
 
-    // mode view dulu
     gamesModalBox.setAttribute("contenteditable", "false");
     gamesModalEditBtn.style.display = "inline-flex";
     gamesModalSaveBtn.style.display = "none";
@@ -154,7 +150,6 @@ document.addEventListener("DOMContentLoaded", () => {
     currentEditKey = null;
   }
 
-  // supaya onclick="closeGamesModal()" di HTML jalan
   window.closeGamesModal = closeGamesModalInternal;
 
   if (gamesModalEditBtn && gamesModalSaveBtn && gamesModalBox) {
@@ -238,14 +233,12 @@ document.addEventListener("DOMContentLoaded", () => {
         cardsRef.child(key).update({ enabled: toggle.checked });
       });
 
-      // Tombol kecil Views
       const viewBtn = document.createElement("button");
       viewBtn.className = "btn ghost small";
       viewBtn.style.fontSize = "0.7rem";
       viewBtn.textContent = "Views";
       viewBtn.addEventListener("click", () => openGamesModal(key, card));
 
-      // Tombol delete
       const delBtn = document.createElement("button");
       delBtn.className = "btn secondary";
       delBtn.style.fontSize = "0.7rem";
@@ -274,10 +267,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==================================================
 
   function resetPromoForm() {
-    if (!promoTitleInput || !promoImageInput || !promoTargetInput) return;
-    promoTitleInput.value  = "";
-    promoImageInput.value  = "";
-    promoTargetInput.value = "";
+    if (!promoTitleInput || !promoCaptionInput || !promoImageInput || !promoTargetInput) return;
+    promoTitleInput.value   = "";
+    promoCaptionInput.value = "";
+    promoImageInput.value   = "";
+    promoTargetInput.value  = "";
   }
 
   function openPromoNewModal() {
@@ -292,9 +286,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!promoModal) return;
     currentPromoKey = key;
     promoModalTitle.textContent = "Edit Banner";
-    promoTitleInput.value  = data.title     || "";
-    promoImageInput.value  = data.imageUrl  || "";
-    promoTargetInput.value = data.targetUrl || "";
+    promoTitleInput.value   = data.title   || "";
+    promoCaptionInput.value = data.caption || "";
+    promoImageInput.value   = data.imageUrl  || "";
+    promoTargetInput.value  = data.targetUrl || "";
     promoModal.classList.add(MODAL_OPEN_CLASS);
   }
 
@@ -304,15 +299,15 @@ document.addEventListener("DOMContentLoaded", () => {
     currentPromoKey = null;
   }
 
-  // biar bisa dipanggil dari HTML (onclick)
   window.openPromoNewModal = openPromoNewModal;
   window.closePromoModal   = closePromoModalInternal;
 
   if (promoModalSaveBtn) {
     promoModalSaveBtn.addEventListener("click", () => {
-      const title     = (promoTitleInput.value || "").trim();
-      const imageUrl  = (promoImageInput.value || "").trim();
-      const targetUrl = (promoTargetInput.value || "").trim();
+      const title     = (promoTitleInput.value   || "").trim();
+      const caption   = (promoCaptionInput.value || "").trim();
+      const imageUrl  = (promoImageInput.value   || "").trim();
+      const targetUrl = (promoTargetInput.value  || "").trim();
 
       if (!imageUrl) {
         alert("Isi URL gambar dulu bro.");
@@ -327,6 +322,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const payload = {
         title,
+        caption,
         imageUrl,
         targetUrl,
         enabled: true,
@@ -368,7 +364,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const item = document.createElement("div");
       item.className = "admin-card-item";
 
-      // Thumbnail gambar
       const thumbWrap = document.createElement("div");
       thumbWrap.style.display = "flex";
       thumbWrap.style.alignItems = "center";
@@ -382,7 +377,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       thumbWrap.appendChild(thumb);
 
-      // Info text
       const info = document.createElement("div");
       info.className = "admin-card-info";
 
@@ -392,12 +386,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const sub = document.createElement("div");
       sub.className = "admin-card-sub";
-      sub.textContent = promo.targetUrl || "";
+      sub.textContent = promo.caption || promo.targetUrl || "";
 
       info.appendChild(titleEl);
       info.appendChild(sub);
 
-      // Controls tombol
       const controls = document.createElement("div");
       controls.className = "switch-wrap";
 
