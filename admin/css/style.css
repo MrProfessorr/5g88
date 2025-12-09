@@ -811,3 +811,8 @@ input[type="checkbox"].toggle:checked::before{
   object-fit:contain;
   display:block;
 }
+/* promo list admin: max 4 row + scroll */
+.admin-card-list--promo{
+  max-height: 280px;   /* kira-kira 4 item */
+  overflow-y: auto;
+}
