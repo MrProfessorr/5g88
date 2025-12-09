@@ -21,12 +21,18 @@
           Nama Platform / Product
           <input type="text" id="platformName" placeholder="Contoh: MEGA888, 918KISS, PUSSY888, PLAYTECH">
         </label>
-
-        <label class="form-label">
-          List Nama Game (satu per baris)
-          <textarea id="gameList" rows="6"
-            placeholder="COYOTE CASH&#10;IRISH LUCK&#10;SIX ACROBATS"></textarea>
-        </label>
+<label class="form-label">
+  List Nama Game (satu per baris)
+  <div id="gameListBox"
+       class="multi-input"
+       contenteditable="true"
+       spellcheck="false"
+       placeholder="COYOTE CASH&#10;IRISH LUCK&#10;SIX ACROBATS"></div>
+  <small class="text-muted small">
+    • Enter / Ctrl+Enter untuk turun baris.  
+    • Boleh paste format array: 'GAME1','GAME2' atau "GAME1","GAME2".
+  </small>
+</label>
 
         <button id="saveCardBtn" class="btn primary full">💾 Save Card</button>
         <p class="text-muted small">
@@ -54,7 +60,10 @@
     <div class="modal-body">
       <label class="form-label">
         List Nama Game (satu per baris)
-        <textarea id="gamesModalTextarea" rows="10" spellcheck="false"></textarea>
+        <div id="gamesModalBox"
+     class="multi-input"
+     contenteditable="false"
+     spellcheck="false"></div>
       </label>
     </div>
     <div class="modal-footer">
