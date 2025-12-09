@@ -129,12 +129,12 @@ document.addEventListener("DOMContentLoaded", () => {
     gamesModalEditBtn.style.display = "inline-flex";
     gamesModalSaveBtn.style.display = "none";
 
-    gamesModal.classList.add("open");
+    gamesModal.classList.add("show");
   }
 
   function closeGamesModalInternal() {
     if (!gamesModal) return;
-    gamesModal.classList.remove("open");
+    gamesModal.classList.remove("show");
     currentEditKey = null;
   }
 
