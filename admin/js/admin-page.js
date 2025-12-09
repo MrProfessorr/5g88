@@ -1,7 +1,7 @@
 // admin/js/admin-page.js
 
 document.addEventListener("DOMContentLoaded", () => {
-  const MODAL_OPEN_CLASS = "open";
+  const MODAL_OPEN_CLASS = "show";
 
   // ===== ELEMENT CARD PLATFORM =====
   const platformInput = document.getElementById("platformName");
