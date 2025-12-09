@@ -683,6 +683,9 @@ input[type="checkbox"].toggle:checked::before{
   box-shadow:0 12px 36px rgba(0,0,0,0.7);
   transition:transform .18s ease, box-shadow .18s ease;
   background:transparent;      /* ✅ Tiada border */
+  text-align: center;
+  font-weight: 700;
+}
 }
 
 .promo-card:hover{
