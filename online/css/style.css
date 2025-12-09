@@ -659,4 +659,55 @@ input[type="checkbox"].toggle:checked::before{
   }
 }
 
+/* ====== PROMO / FREE CREDIT BANNER ====== */
+.promo-grid{
+  margin:18px auto 24px;
+  max-width:1200px;
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0,1fr));
+  gap:14px;
+}
 
+@media (min-width:768px){
+  .promo-grid{
+    grid-template-columns:repeat(3, minmax(0,1fr));
+  }
+}
+
+@media (min-width:1024px){
+  .promo-grid{
+    grid-template-columns:repeat(4, minmax(0,1fr)); /* max 4 per baris */
+  }
+}
+
+.promo-card{
+  background:transparent;
+  border-radius:16px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  gap:8px;
+}
+
+.promo-card-img-wrap{
+  border-radius:16px;
+  overflow:hidden;
+}
+
+.promo-card-img{
+  width:100%;
+  display:block;
+  border-radius:16px;
+}
+
+.promo-card-footer{
+  display:flex;
+  justify-content:flex-end;
+}
+
+.promo-claim-btn{
+  min-width:110px;
+  font-size:0.78rem;
+  padding-inline:14px;
+}
