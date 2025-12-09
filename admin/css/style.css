@@ -497,3 +497,90 @@ input[type="checkbox"].toggle:checked::before{
     padding:11px 9px 11px;
   }
 }
+/* ===== ADMIN CARD SUB + VIEWS BTN ===== */
+.admin-card-sub{
+  font-size:0.78rem;
+  color:var(--muted);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+.admin-card-sub span{
+  white-space:nowrap;
+}
+.btn.view-small{
+  padding:4px 10px;
+  font-size:0.7rem;
+  text-transform:uppercase;
+}
+
+/* ===== MODAL EDIT GAME LIST ===== */
+.modal{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:50;
+}
+.modal.show{
+  display:flex;
+}
+
+.modal-backdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(15,23,42,0.8);
+  backdrop-filter:blur(3px);
+}
+
+.modal-dialog{
+  position:relative;
+  width:100%;
+  max-width:480px;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(56,189,248,0.25) 0, transparent 55%),
+    radial-gradient(circle at 100% 0%, rgba(250,204,21,0.25) 0, transparent 55%),
+    linear-gradient(145deg,#020617 0,#020817 40%,#020617 100%);
+  border-radius:18px;
+  padding:14px 16px 14px;
+  box-shadow:0 24px 60px rgba(0,0,0,0.95);
+  border:1px solid rgba(148,163,184,0.4);
+}
+
+.modal-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:8px;
+}
+.modal-header h3{
+  font-size:0.9rem;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:#e5e7eb;
+}
+
+.modal-close{
+  border:none;
+  background:transparent;
+  color:var(--muted);
+  cursor:pointer;
+  font-size:0.9rem;
+  padding:4px;
+}
+.modal-close:hover{
+  color:#f9fafb;
+}
+
+.modal-body{
+  margin-top:4px;
+}
+
+.modal-footer{
+  margin-top:10px;
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+}
