@@ -8,6 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const navHome     = document.getElementById("navHome");
   const navHot      = document.getElementById("navHot");
 
+  // ⬇️ Elemen teks waktu RATE GAME di header kanan
+  const rateGameTimeEl = document.getElementById("rateGameTime");
+
   // ====== TAB HOME / HOT GAME DENGAN LOCALSTORAGE ======
   const TAB_KEY = "tipsPageActiveTab";
 
@@ -55,6 +58,33 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   setActiveTab(initialTab);
 
+  // ====== RATE GAME TIME (REALTIME CLOCK) ======
+  function updateRateGameTime() {
+    if (!rateGameTimeEl) return;
+
+    const now = new Date();
+
+    const pad = (n) => String(n).padStart(2, "0");
+
+    const hours = pad(now.getHours());
+    const mins  = pad(now.getMinutes());
+    const secs  = pad(now.getSeconds());
+
+    const day   = pad(now.getDate());
+    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const month = months[now.getMonth()];
+    const year  = now.getFullYear();
+
+    rateGameTimeEl.textContent =
+      `RATE GAME : ${hours}:${mins}:${secs} ${day} ${month} ${year}`;
+  }
+
+  // jalanin jam kalau elemen ada
+  if (rateGameTimeEl) {
+    updateRateGameTime();
+    setInterval(updateRateGameTime, 1000);
+  }
+
   // ====== AUTO SLIDER HOME IMAGE ======
   const track = document.getElementById("slideTrack");
   if (track) {
@@ -95,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const imageUrl  = promo.imageUrl || "";
       const targetUrl = promo.targetUrl || "#";
       const title     = promo.title || "";
-      const caption   = promo.caption || "";  // ✅ ambil caption dari DB
+      const caption   = promo.caption || "";  // caption dari DB
 
       if (!imageUrl) return; // kalau tak ada gambar, skip
 
@@ -117,7 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
       link.appendChild(img);
       card.appendChild(link);
 
-      // ✅ Caption di bawah gambar (bukan tombol / link)
+      // Caption di bawah gambar (bukan link)
       if (caption || title) {
         const captionEl = document.createElement("div");
         captionEl.className = "promo-card-caption";
