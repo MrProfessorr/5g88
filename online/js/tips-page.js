@@ -8,10 +8,78 @@ document.addEventListener("DOMContentLoaded", () => {
   const navHome     = document.getElementById("navHome");
   const navHot      = document.getElementById("navHot");
 
-  // ⬇️ Elemen teks waktu RATE GAME di header kanan
+  // Elemen teks waktu RATE GAME di header kanan
   const rateGameTimeEl = document.getElementById("rateGameTime");
 
-  // ====== TAB HOME / HOT GAME DENGAN LOCALSTORAGE ======
+  /* =====================================================
+   *          LANGUAGE SWITCHER (FLAG DROPDOWN)
+   * ===================================================== */
+  const LANG_KEY   = "tipsPageLang";
+  const langButton = document.getElementById("langButton");
+  const langMenu   = document.getElementById("langMenu");
+  const langFlag   = document.getElementById("langFlag");
+
+  const LANGS = {
+    en: { label: "ENGLISH",   flag: "🇬🇧" },
+    zh: { label: "CHINA",     flag: "🇨🇳" },
+    id: { label: "INDONESIA", flag: "🇮🇩" },
+    vi: { label: "VIETNAM",   flag: "🇻🇳" },
+    sg: { label: "SINGAPORE", flag: "🇸🇬" },
+    th: { label: "THAILAND",  flag: "🇹🇭" },
+  };
+
+  function applyLanguage(code){
+    const lang = LANGS[code] || LANGS.id;
+
+    // set attribute di <html> (kalau nanti mau styling/per teks per bahasa)
+    document.documentElement.setAttribute("data-lang", code);
+
+    // ganti icon bendera di tombol bulat
+    if (langFlag) langFlag.textContent = lang.flag;
+
+    // simpan ke localStorage
+    try { localStorage.setItem(LANG_KEY, code); } catch(e){}
+
+    // Contoh: kalau mau ubah tulisan nav per bahasa, bisa di sini
+    // (sekarang aku biarkan tetap HOME / HOT GAME)
+    if (navHome) navHome.textContent = "HOME";
+    if (navHot)  navHot.textContent  = "HOT GAME";
+  }
+
+  if (langButton && langMenu){
+    // buka/tutup dropdown saat tombol bendera ditekan
+    langButton.addEventListener("click", () => {
+      langMenu.classList.toggle("open");
+    });
+
+    // pilih salah satu bahasa
+    langMenu.addEventListener("click", (e) => {
+      const btn = e.target.closest("button[data-lang]");
+      if (!btn) return;
+      const code = btn.getAttribute("data-lang");
+      applyLanguage(code);
+      langMenu.classList.remove("open");
+    });
+
+    // klik di luar dropdown -> tutup menu
+    document.addEventListener("click", (e) => {
+      if (!langMenu.contains(e.target) && !langButton.contains(e.target)){
+        langMenu.classList.remove("open");
+      }
+    });
+
+    // set bahasa awal dari localStorage / default INDONESIA
+    let initialLang = "id";
+    try {
+      const saved = localStorage.getItem(LANG_KEY);
+      if (saved && LANGS[saved]) initialLang = saved;
+    } catch(e){}
+    applyLanguage(initialLang);
+  }
+
+  /* =====================================================
+   *      TAB HOME / HOT GAME + LOCALSTORAGE
+   * ===================================================== */
   const TAB_KEY = "tipsPageActiveTab";
 
   function setActiveTab(tab) {
@@ -58,7 +126,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   setActiveTab(initialTab);
 
-  // ====== RATE GAME TIME (REALTIME CLOCK) ======
+  /* =====================================================
+   *          RATE GAME TIME (REALTIME CLOCK)
+   * ===================================================== */
   function updateRateGameTime() {
     if (!rateGameTimeEl) return;
 
@@ -79,13 +149,14 @@ document.addEventListener("DOMContentLoaded", () => {
       `RATE GAME : ${hours}:${mins}:${secs} ${day} ${month} ${year}`;
   }
 
-  // jalanin jam kalau elemen ada
   if (rateGameTimeEl) {
     updateRateGameTime();
     setInterval(updateRateGameTime, 1000);
   }
 
-  // ====== AUTO SLIDER HOME IMAGE ======
+  /* =====================================================
+   *                AUTO SLIDER HOME IMAGE
+   * ===================================================== */
   const track = document.getElementById("slideTrack");
   if (track) {
     const slides = track.querySelectorAll("img");
@@ -99,7 +170,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // ====== FIREBASE CHECK ======
+  /* =====================================================
+   *                FIREBASE CHECK
+   * ===================================================== */
   if (!window.firebase || !window.db) {
     console.error("Firebase belum siap. Cek script firebase di HTML.");
     return;
@@ -108,7 +181,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const cardsRef  = db.ref("tips_cards");
   const promosRef = db.ref("promo_banners");
 
-  // ================== PROMO BANNER (FREE CREDIT) ==================
+  /* =====================================================
+   *          PROMO BANNER (FREE CREDIT)
+   * ===================================================== */
   function renderPromos(snapshot) {
     if (!promoGridEl) return;
 
@@ -162,10 +237,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // listen realtime banner
   promosRef.on("value", renderPromos);
 
-  // ====== KALAU TAK ADA GRID TIPS, STOP BAGIAN TIPS ======
+  /* =====================================================
+   *          TIPS GENERATOR (CARD PLATFORM)
+   * ===================================================== */
+
+  // kalau tak ada grid tips, stop
   if (!gridEl) return;
 
-  // ====== HISTORY & LOCALSTORAGE UNTUK TIPS ======
   const STORAGE_KEY = "tipsHistory.v1";
 
   // { [cardKey]: { history: [text], index:number } }
