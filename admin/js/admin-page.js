@@ -1,30 +1,33 @@
 // admin/js/admin-page.js
 
 document.addEventListener("DOMContentLoaded", () => {
-  const platformInput     = document.getElementById("platformName");
-  const gameListBox       = document.getElementById("gameListBox");
-  const saveBtn           = document.getElementById("saveCardBtn");
-  const cardsListEl       = document.getElementById("cardsList");
+  const MODAL_OPEN_CLASS = "open";
 
-  // Elemen modal game list
+  // ===== ELEMENT CARD PLATFORM =====
+  const platformInput = document.getElementById("platformName");
+  const gameListBox   = document.getElementById("gameListBox");
+  const saveBtn       = document.getElementById("saveCardBtn");
+  const cardsListEl   = document.getElementById("cardsList");
+
+  // Modal VIEW / EDIT list game
   const gamesModal        = document.getElementById("gamesModal");
   const gamesModalTitle   = document.getElementById("gamesModalTitle");
   const gamesModalBox     = document.getElementById("gamesModalBox");
   const gamesModalEditBtn = document.getElementById("gamesModalEditBtn");
   const gamesModalSaveBtn = document.getElementById("gamesModalSaveBtn");
+  let currentEditKey = null; // card yang sedang di-edit di modal
 
-  // Elemen promo
+  // ===== ELEMENT PROMO BANNER =====
   const promoListEl       = document.getElementById("promoList");
   const promoModal        = document.getElementById("promoModal");
   const promoModalTitle   = document.getElementById("promoModalTitle");
   const promoTitleInput   = document.getElementById("promoTitle");
   const promoImageInput   = document.getElementById("promoImageUrl");
   const promoTargetInput  = document.getElementById("promoTargetUrl");
-  const promoSaveBtn      = document.getElementById("promoModalSaveBtn");
+  const promoModalSaveBtn = document.getElementById("promoModalSaveBtn");
+  let currentPromoKey     = null;
 
-  let currentEditKey  = null; // card tips yang sedang di-edit di modal games
-  let currentPromoKey = null; // promo yang sedang di-edit
-
+  // ===== FIREBASE CHECK =====
   if (!window.firebase || !window.db) {
     console.error("Firebase belum siap. Cek script firebase di HTML.");
     return;
@@ -34,28 +37,36 @@ document.addEventListener("DOMContentLoaded", () => {
   const promosRef = db.ref("promo_banners");
 
   // ========= Helpers umum =========
+
+  // Bikin key dari nama platform
   const makeKey = (name) =>
     (name || "")
       .trim()
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-");
 
+  // Setup Ctrl+Enter di contenteditable
   function setupMultiInputKey(el) {
     if (!el) return;
     el.addEventListener("keydown", (e) => {
-      if ((e.key === "Enter" && e.ctrlKey) || (e.key === "Enter" && e.metaKey)) {
+      // Ctrl+Enter / Cmd+Enter -> forced line break
+      if ((e.key === "Enter" && (e.ctrlKey || e.metaKey))) {
         e.preventDefault();
         document.execCommand("insertLineBreak");
       }
+      // Enter biasa tetap boleh (biar rasa textarea)
     });
   }
+
   setupMultiInputKey(gameListBox);
   setupMultiInputKey(gamesModalBox);
 
+  // Parse text jadi array nama game
   function parseGamesText(raw) {
     if (!raw) return [];
     let text = String(raw).replace(/\u00A0/g, " ").trim();
 
+    // Format array: 'AAA','BBB' atau "AAA","BBB"
     const quoted = text.match(/(['"])(.*?)\1/g);
     if (quoted && quoted.length) {
       return quoted
@@ -63,6 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .filter(Boolean);
     }
 
+    // Format biasa: newline / koma / titik koma
     return text
       .split(/[\n\r,;]+/)
       .map((s) => s.trim())
@@ -81,42 +93,44 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ========= SAVE CARD BARU =========
-  saveBtn.addEventListener("click", () => {
-    const platformName = platformInput.value.trim();
-    const games        = getGamesFromBox(gameListBox);
+  if (saveBtn) {
+    saveBtn.addEventListener("click", () => {
+      const platformName = platformInput.value.trim();
+      const games        = getGamesFromBox(gameListBox);
 
-    if (!platformName) {
-      alert("Isi nama platform dulu bro.");
-      platformInput.focus();
-      return;
-    }
-    if (games.length === 0) {
-      alert("Isi list nama game (min 1).");
-      gameListBox.focus();
-      return;
-    }
+      if (!platformName) {
+        alert("Isi nama platform dulu bro.");
+        platformInput.focus();
+        return;
+      }
+      if (games.length === 0) {
+        alert("Isi list nama game (min 1).");
+        gameListBox.focus();
+        return;
+      }
 
-    const key = makeKey(platformName);
-    const payload = {
-      platformName,
-      games,
-      enabled: true,
-      updatedAt: firebase.database.ServerValue.TIMESTAMP,
-    };
+      const key = makeKey(platformName);
+      const payload = {
+        platformName,
+        games,
+        enabled: true,
+        updatedAt: firebase.database.ServerValue.TIMESTAMP,
+      };
 
-    cardsRef
-      .child(key)
-      .set(payload)
-      .then(() => {
-        alert("Card berjaya disimpan. Cek di bawah & di halaman user.");
-        platformInput.value    = "";
-        gameListBox.textContent = "";
-      })
-      .catch((err) => {
-        console.error("Gagal simpan card:", err);
-        alert("Gagal simpan ke Firebase. Cek console.");
-      });
-  });
+      cardsRef
+        .child(key)
+        .set(payload)
+        .then(() => {
+          alert("Card berjaya disimpan. Cek di bawah & di halaman user.");
+          platformInput.value = "";
+          gameListBox.textContent = "";
+        })
+        .catch((err) => {
+          console.error("Gagal simpan card:", err);
+          alert("Gagal simpan ke Firebase. Cek console.");
+        });
+    });
+  }
 
   // ========= MODAL VIEW / EDIT DAFTAR GAME =========
   function openGamesModal(key, card) {
@@ -126,18 +140,21 @@ document.addEventListener("DOMContentLoaded", () => {
     gamesModalTitle.textContent = `Daftar Game • ${card.platformName || key}`;
     setBoxFromGames(gamesModalBox, card.games || []);
 
+    // mode view dulu
     gamesModalBox.setAttribute("contenteditable", "false");
     gamesModalEditBtn.style.display = "inline-flex";
     gamesModalSaveBtn.style.display = "none";
 
-    gamesModal.classList.add("open");
+    gamesModal.classList.add(MODAL_OPEN_CLASS);
   }
 
   function closeGamesModalInternal() {
     if (!gamesModal) return;
-    gamesModal.classList.remove("open");
+    gamesModal.classList.remove(MODAL_OPEN_CLASS);
     currentEditKey = null;
   }
+
+  // supaya onclick="closeGamesModal()" di HTML jalan
   window.closeGamesModal = closeGamesModalInternal;
 
   if (gamesModalEditBtn && gamesModalSaveBtn && gamesModalBox) {
@@ -221,12 +238,14 @@ document.addEventListener("DOMContentLoaded", () => {
         cardsRef.child(key).update({ enabled: toggle.checked });
       });
 
+      // Tombol kecil Views
       const viewBtn = document.createElement("button");
       viewBtn.className = "btn ghost small";
       viewBtn.style.fontSize = "0.7rem";
       viewBtn.textContent = "Views";
       viewBtn.addEventListener("click", () => openGamesModal(key, card));
 
+      // Tombol delete
       const delBtn = document.createElement("button");
       delBtn.className = "btn secondary";
       delBtn.style.fontSize = "0.7rem";
@@ -250,41 +269,58 @@ document.addEventListener("DOMContentLoaded", () => {
 
   cardsRef.on("value", renderCardsList);
 
-  // ========= PROMO BANNERS (FREE CREDIT) =========
-  function openPromoModal(data, key) {
-    currentPromoKey = key || null;
-    promoModalTitle.textContent = key ? "Edit Promo Banner" : "Tambah Promo Banner";
+  // ==================================================
+  // ============  PROMO BANNER / FREE CREDIT =========
+  // ==================================================
 
-    promoTitleInput.value  = (data && data.title)     || "";
-    promoImageInput.value  = (data && data.imageUrl)  || "";
-    promoTargetInput.value = (data && data.targetUrl) || "";
+  function resetPromoForm() {
+    if (!promoTitleInput || !promoImageInput || !promoTargetInput) return;
+    promoTitleInput.value  = "";
+    promoImageInput.value  = "";
+    promoTargetInput.value = "";
+  }
 
-    promoModal.classList.add("open");
+  function openPromoNewModal() {
+    if (!promoModal) return;
+    currentPromoKey = null;
+    promoModalTitle.textContent = "Tambah Banner";
+    resetPromoForm();
+    promoModal.classList.add(MODAL_OPEN_CLASS);
+  }
+
+  function openPromoEditModal(key, data) {
+    if (!promoModal) return;
+    currentPromoKey = key;
+    promoModalTitle.textContent = "Edit Banner";
+    promoTitleInput.value  = data.title     || "";
+    promoImageInput.value  = data.imageUrl  || "";
+    promoTargetInput.value = data.targetUrl || "";
+    promoModal.classList.add(MODAL_OPEN_CLASS);
   }
 
   function closePromoModalInternal() {
-    promoModal.classList.remove("open");
+    if (!promoModal) return;
+    promoModal.classList.remove(MODAL_OPEN_CLASS);
     currentPromoKey = null;
   }
 
-  window.openPromoNewModal = function () {
-    openPromoModal(null, null);
-  };
-  window.closePromoModal = closePromoModalInternal;
+  // biar bisa dipanggil dari HTML (onclick)
+  window.openPromoNewModal = openPromoNewModal;
+  window.closePromoModal   = closePromoModalInternal;
 
-  if (promoSaveBtn) {
-    promoSaveBtn.addEventListener("click", () => {
-      const title     = promoTitleInput.value.trim();
-      const imageUrl  = promoImageInput.value.trim();
-      const targetUrl = promoTargetInput.value.trim();
+  if (promoModalSaveBtn) {
+    promoModalSaveBtn.addEventListener("click", () => {
+      const title     = (promoTitleInput.value || "").trim();
+      const imageUrl  = (promoImageInput.value || "").trim();
+      const targetUrl = (promoTargetInput.value || "").trim();
 
       if (!imageUrl) {
-        alert("URL gambar wajib diisi.");
+        alert("Isi URL gambar dulu bro.");
         promoImageInput.focus();
         return;
       }
       if (!targetUrl) {
-        alert("Link claim wajib diisi.");
+        alert("Isi Link Claim dulu bro.");
         promoTargetInput.focus();
         return;
       }
@@ -293,27 +329,24 @@ document.addEventListener("DOMContentLoaded", () => {
         title,
         imageUrl,
         targetUrl,
-        buttonText: "CLAIM",
         enabled: true,
         updatedAt: firebase.database.ServerValue.TIMESTAMP,
       };
 
-      let op;
-      if (currentPromoKey) {
-        op = promosRef.child(currentPromoKey).update(payload);
-      } else {
-        // pakai push untuk id unik
-        const ref = promosRef.push();
-        payload.order = Date.now();
-        op = ref.set(payload);
-      }
+      const ref = currentPromoKey
+        ? promosRef.child(currentPromoKey)
+        : promosRef.push();
 
-      op.then(() => {
-        closePromoModalInternal();
-      }).catch((err) => {
-        console.error("Gagal simpan promo:", err);
-        alert("Gagal simpan promo. Cek console.");
-      });
+      ref
+        .set(payload)
+        .then(() => {
+          alert("Promo banner berjaya disimpan.");
+          closePromoModalInternal();
+        })
+        .catch((err) => {
+          console.error("Gagal simpan promo banner:", err);
+          alert("Gagal simpan promo. Cek console.");
+        });
     });
   }
 
@@ -324,72 +357,75 @@ document.addEventListener("DOMContentLoaded", () => {
     promoListEl.innerHTML = "";
 
     const entries = Object.entries(data);
-    if (entries.length === 0) {
+
+    if (!entries.length) {
       promoListEl.innerHTML =
-        '<p class="text-muted small">Belum ada promo banner. Tekan "Tambah Banner".</p>';
+        '<p class="text-muted small">Belum ada banner. Tekan "Tambah Banner".</p>';
       return;
     }
 
-    entries
-      .map(([key, val]) => ({ key, ...val }))
-      .sort((a, b) => (a.order || 0) - (b.order || 0))
-      .forEach((p) => {
-        const item = document.createElement("div");
-        item.className = "admin-card-item";
+    entries.forEach(([key, promo]) => {
+      const item = document.createElement("div");
+      item.className = "admin-card-item";
 
-        const info = document.createElement("div");
-        info.className = "admin-card-info";
+      // Thumbnail gambar
+      const thumbWrap = document.createElement("div");
+      thumbWrap.style.display = "flex";
+      thumbWrap.style.alignItems = "center";
 
-        const title = document.createElement("div");
-        title.className = "admin-card-title";
-        title.textContent = p.title || "Promo Banner";
+      const thumb = document.createElement("img");
+      thumb.src = promo.imageUrl || "";
+      thumb.alt = promo.title || "";
+      thumb.style.maxWidth = "140px";
+      thumb.style.borderRadius = "10px";
+      thumb.style.objectFit = "cover";
 
-        const sub = document.createElement("div");
-        sub.className = "admin-card-sub";
-        sub.textContent = (p.enabled === false ? "OFF" : "AKTIF") +
-          " • " + (p.imageUrl || "").slice(0, 40);
+      thumbWrap.appendChild(thumb);
 
-        info.appendChild(title);
-        info.appendChild(sub);
+      // Info text
+      const info = document.createElement("div");
+      info.className = "admin-card-info";
 
-        const controls = document.createElement("div");
-        controls.className = "switch-wrap";
+      const titleEl = document.createElement("div");
+      titleEl.className = "admin-card-title";
+      titleEl.textContent = promo.title || "(Tanpa judul)";
 
-        const toggle = document.createElement("input");
-        toggle.type = "checkbox";
-        toggle.className = "toggle";
-        toggle.checked = p.enabled !== false;
-        toggle.addEventListener("change", () => {
-          promosRef.child(p.key).update({ enabled: toggle.checked });
-        });
+      const sub = document.createElement("div");
+      sub.className = "admin-card-sub";
+      sub.textContent = promo.targetUrl || "";
 
-        const editBtn = document.createElement("button");
-        editBtn.className = "btn ghost small";
-        editBtn.style.fontSize = "0.7rem";
-        editBtn.textContent = "Edit";
-        editBtn.addEventListener("click", () => {
-          openPromoModal(p, p.key);
-        });
+      info.appendChild(titleEl);
+      info.appendChild(sub);
 
-        const delBtn = document.createElement("button");
-        delBtn.className = "btn secondary";
-        delBtn.style.fontSize = "0.7rem";
-        delBtn.textContent = "✖ Hapus";
-        delBtn.addEventListener("click", () => {
-          if (confirm(`Hapus promo "${p.title || p.key}" ?`)) {
-            promosRef.child(p.key).remove();
-          }
-        });
+      // Controls tombol
+      const controls = document.createElement("div");
+      controls.className = "switch-wrap";
 
-        controls.appendChild(toggle);
-        controls.appendChild(editBtn);
-        controls.appendChild(delBtn);
+      const editBtn = document.createElement("button");
+      editBtn.className = "btn secondary";
+      editBtn.style.fontSize = "0.7rem";
+      editBtn.textContent = "Edit";
+      editBtn.addEventListener("click", () => openPromoEditModal(key, promo));
 
-        item.appendChild(info);
-        item.appendChild(controls);
-
-        promoListEl.appendChild(item);
+      const delBtn = document.createElement("button");
+      delBtn.className = "btn secondary";
+      delBtn.style.fontSize = "0.7rem";
+      delBtn.textContent = "✖ Hapus";
+      delBtn.addEventListener("click", () => {
+        if (confirm("Hapus banner ini?")) {
+          promosRef.child(key).remove();
+        }
       });
+
+      controls.appendChild(editBtn);
+      controls.appendChild(delBtn);
+
+      item.appendChild(thumbWrap);
+      item.appendChild(info);
+      item.appendChild(controls);
+
+      promoListEl.appendChild(item);
+    });
   }
 
   promosRef.on("value", renderPromoList);
