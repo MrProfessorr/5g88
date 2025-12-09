@@ -43,6 +43,26 @@
       </section>
     </main>
   </div>
+  
+  <div id="gamesModal" class="modal">
+  <div class="modal-backdrop" onclick="closeGamesModal()"></div>
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3 id="gamesModalTitle">Daftar Game</h3>
+      <button type="button" class="modal-close" onclick="closeGamesModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <label class="form-label">
+        List Nama Game (satu per baris)
+        <textarea id="gamesModalTextarea" rows="10" spellcheck="false"></textarea>
+      </label>
+    </div>
+    <div class="modal-footer">
+      <button type="button" id="gamesModalEditBtn" class="btn secondary">Edit</button>
+      <button type="button" id="gamesModalSaveBtn" class="btn primary" style="display:none;">Save</button>
+    </div>
+  </div>
+</div>
 
   <!-- Firebase + Script -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
