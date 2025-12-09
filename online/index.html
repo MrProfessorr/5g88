@@ -88,9 +88,17 @@
           <!-- Card promo akan di-render oleh tips-page.js -->
         </section>
 
-        <!-- CARD PRODUCT / PLATFORM -->
-        <section class="card">
-          <h2 class="section-title">PERCENTAGE GAME</h2>
+        <!-- CARD PRODUCT / PLATFORM + RATE GAME TIME -->
+        <section class="card percentage-card">
+          <div class="rategame-header">
+            <h2 class="section-title">PERCENTAGE GAME</h2>
+
+            <!-- Waktu di kanan (diisi dari JS) -->
+            <span id="rateGameTime" class="rategame-meta">
+              RATE GAME : --:--:-- -- --- ----
+            </span>
+          </div>
+
           <p class="text-muted small">
             Click <b>Generate</b> to get today's <b>Percentage!</b> game — Good luck and win big.
           </p>
