@@ -1,20 +1,19 @@
 // admin/js/admin-page.js
 
 document.addEventListener("DOMContentLoaded", () => {
-  const platformInput = document.getElementById("platformName");
-  const gameListBox   = document.getElementById("gameListBox");
-  const saveBtn       = document.getElementById("saveCardBtn");
-  const cardsListEl   = document.getElementById("cardsList");
+  const platformInput     = document.getElementById("platformName");
+  const gameListBox       = document.getElementById("gameListBox");
+  const saveBtn           = document.getElementById("saveCardBtn");
+  const cardsListEl       = document.getElementById("cardsList");
 
-  // Elemen modal (opsional, kalau ada)
-  const viewModal      = document.getElementById("viewGameModal");
-  const viewTitleEl    = document.getElementById("viewGameTitle");
-  const viewGameBox    = document.getElementById("viewGameListBox");
-  const viewEditBtn    = document.getElementById("viewGameEditBtn");
-  const viewSaveBtn    = document.getElementById("viewGameSaveBtn");
-  const viewCloseBtns  = document.querySelectorAll("[data-close-view-modal]");
+  // Elemen modal
+  const gamesModal        = document.getElementById("gamesModal");
+  const gamesModalTitle   = document.getElementById("gamesModalTitle");
+  const gamesModalBox     = document.getElementById("gamesModalBox");
+  const gamesModalEditBtn = document.getElementById("gamesModalEditBtn");
+  const gamesModalSaveBtn = document.getElementById("gamesModalSaveBtn");
 
-  let currentEditKey = null; // key card yang lagi dibuka di modal
+  let currentEditKey = null; // card yang sedang di-edit di modal
 
   if (!window.firebase || !window.db) {
     console.error("Firebase belum siap. Cek script firebase di HTML.");
@@ -23,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const cardsRef = db.ref("tips_cards");
 
-  // ========= Helper =========
+  // ========= Helpers =========
 
   // Bikin key dari nama platform
   const makeKey = (name) =>
@@ -32,29 +31,28 @@ document.addEventListener("DOMContentLoaded", () => {
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-");
 
-  // Setup Ctrl+Enter untuk insert line break di contenteditable
+  // Setup Ctrl+Enter di contenteditable
   function setupMultiInputKey(el) {
     if (!el) return;
     el.addEventListener("keydown", (e) => {
-      // Ctrl+Enter / Cmd+Enter -> paksa linebreak
+      // Ctrl+Enter / Cmd+Enter -> forced line break
       if ((e.key === "Enter" && e.ctrlKey) || (e.key === "Enter" && e.metaKey)) {
         e.preventDefault();
-        // sebagian besar browser masih support ini
         document.execCommand("insertLineBreak");
       }
-      // Enter biasa tetap boleh (biar berasa seperti textarea)
+      // Enter biasa tetap boleh (biar rasa textarea)
     });
   }
 
   setupMultiInputKey(gameListBox);
-  setupMultiInputKey(viewGameBox);
+  setupMultiInputKey(gamesModalBox);
 
-  // Parse teks jadi array nama game
+  // Parse text jadi array nama game
   function parseGamesText(raw) {
     if (!raw) return [];
     let text = String(raw).replace(/\u00A0/g, " ").trim();
 
-    // Kalau format array: 'AAA','BBB' atau "AAA","BBB"
+    // Format array: 'AAA','BBB' atau "AAA","BBB"
     const quoted = text.match(/(['"])(.*?)\1/g);
     if (quoted && quoted.length) {
       return quoted
@@ -62,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .filter(Boolean);
     }
 
-    // Kalau biasa: baris / koma / titik koma
+    // Format biasa: newline / koma / titik koma
     return text
       .split(/[\n\r,;]+/)
       .map((s) => s.trim())
@@ -118,39 +116,42 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   });
 
-  // ========= MODAL VIEW / EDIT LIST GAME =========
-  function openViewModal(key, card) {
-    if (!viewModal || !viewGameBox) return;
+  // ========= MODAL VIEW / EDIT DAFTAR GAME =========
+  function openGamesModal(key, card) {
+    if (!gamesModal || !gamesModalBox) return;
 
     currentEditKey = key;
-    viewTitleEl.textContent = card.platformName || key;
-    setBoxFromGames(viewGameBox, card.games || []);
+    gamesModalTitle.textContent = `Daftar Game • ${card.platformName || key}`;
+    setBoxFromGames(gamesModalBox, card.games || []);
 
-    // mode baca dulu
-    viewGameBox.setAttribute("contenteditable", "false");
-    viewEditBtn.style.display = "inline-flex";
-    viewSaveBtn.style.display = "none";
+    // mode view dulu
+    gamesModalBox.setAttribute("contenteditable", "false");
+    gamesModalEditBtn.style.display = "inline-flex";
+    gamesModalSaveBtn.style.display = "none";
 
-    viewModal.classList.add("open");
+    gamesModal.classList.add("open");
   }
 
-  function closeViewModal() {
-    if (!viewModal) return;
-    viewModal.classList.remove("open");
+  function closeGamesModalInternal() {
+    if (!gamesModal) return;
+    gamesModal.classList.remove("open");
     currentEditKey = null;
   }
 
-  if (viewEditBtn && viewSaveBtn && viewGameBox) {
-    viewEditBtn.addEventListener("click", () => {
-      viewGameBox.setAttribute("contenteditable", "true");
-      viewGameBox.focus();
-      viewEditBtn.style.display = "none";
-      viewSaveBtn.style.display = "inline-flex";
+  // supaya onclick="closeGamesModal()" di HTML jalan
+  window.closeGamesModal = closeGamesModalInternal;
+
+  if (gamesModalEditBtn && gamesModalSaveBtn && gamesModalBox) {
+    gamesModalEditBtn.addEventListener("click", () => {
+      gamesModalBox.setAttribute("contenteditable", "true");
+      gamesModalBox.focus();
+      gamesModalEditBtn.style.display = "none";
+      gamesModalSaveBtn.style.display = "inline-flex";
     });
 
-    viewSaveBtn.addEventListener("click", () => {
+    gamesModalSaveBtn.addEventListener("click", () => {
       if (!currentEditKey) return;
-      const games = getGamesFromBox(viewGameBox);
+      const games = getGamesFromBox(gamesModalBox);
       if (games.length === 0) {
         if (!confirm("Semua game kosong. Kosongkan list untuk card ini?")) {
           return;
@@ -164,19 +165,13 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .then(() => {
           alert("List game berjaya diupdate.");
-          closeViewModal();
+          closeGamesModalInternal();
         })
         .catch((err) => {
           console.error("Gagal update list games:", err);
           alert("Gagal update. Cek console.");
         });
     });
-  }
-
-  if (viewCloseBtns) {
-    viewCloseBtns.forEach((btn) =>
-      btn.addEventListener("click", closeViewModal)
-    );
   }
 
   // ========= RENDER LIST CARD DI ADMIN =========
@@ -227,14 +222,14 @@ document.addEventListener("DOMContentLoaded", () => {
         cardsRef.child(key).update({ enabled: toggle.checked });
       });
 
-      // tombol kecil Views
+      // Tombol kecil Views
       const viewBtn = document.createElement("button");
       viewBtn.className = "btn ghost small";
       viewBtn.style.fontSize = "0.7rem";
       viewBtn.textContent = "Views";
-      viewBtn.addEventListener("click", () => openViewModal(key, card));
+      viewBtn.addEventListener("click", () => openGamesModal(key, card));
 
-      // tombol delete
+      // Tombol delete
       const delBtn = document.createElement("button");
       delBtn.className = "btn secondary";
       delBtn.style.fontSize = "0.7rem";
