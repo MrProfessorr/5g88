@@ -14,25 +14,28 @@
     </header>
 
     <main class="app-main">
-      <!-- Form tambah card -->
+      <!-- ===== FORM TAMBAH CARD ===== -->
       <section class="card admin-panel">
         <h2>Buat / Tambah Card Baru</h2>
+
         <label class="form-label">
           Nama Platform / Product
-          <input type="text" id="platformName" placeholder="Contoh: MEGA888, 918KISS, PUSSY888, PLAYTECH">
+          <input type="text" id="platformName"
+                 placeholder="Contoh: MEGA888, 918KISS, PUSSY888, PLAYTECH">
         </label>
-<label class="form-label">
-  List Nama Game (satu per baris)
-  <div id="gameListBox"
-       class="multi-input"
-       contenteditable="true"
-       spellcheck="false"
-       placeholder="COYOTE CASH&#10;IRISH LUCK&#10;SIX ACROBATS"></div>
-  <small class="text-muted small">
-    • Enter / Ctrl+Enter untuk turun baris.  
-    • Boleh paste format array: 'GAME1','GAME2' atau "GAME1","GAME2".
-  </small>
-</label>
+
+        <label class="form-label">
+          List Nama Game (satu per baris)
+          <div id="gameListBox"
+               class="multi-input"
+               contenteditable="true"
+               spellcheck="false"
+               placeholder="COYOTE CASH&#10;IRISH LUCK&#10;SIX ACROBATS"></div>
+          <small class="text-muted small">
+            • Enter / Ctrl+Enter untuk turun baris.  
+            • Boleh paste format array: 'GAME1','GAME2' atau "GAME1","GAME2".
+          </small>
+        </label>
 
         <button id="saveCardBtn" class="btn primary full">💾 Save Card</button>
         <p class="text-muted small">
@@ -40,38 +43,85 @@
         </p>
       </section>
 
-      <!-- Daftar card -->
+      <!-- ===== DAFTAR CARD / PLATFORM ===== -->
       <section class="card admin-panel">
         <h2>Daftar Card / Platform</h2>
         <div id="cardsList" class="admin-card-list">
           <!-- diisi dari JS -->
         </div>
       </section>
+
+      <!-- ===== FREE CREDIT / PROMO BANNER ADMIN ===== -->
+      <section class="card admin-panel">
+        <h2>Free Credit / Promo Banner</h2>
+        <p class="text-muted small">
+          Banner ini muncul di halaman Hot Game di bawah ticker bar.
+        </p>
+
+        <button type="button" class="btn primary" onclick="openPromoNewModal()">
+          + Tambah Banner
+        </button>
+
+        <div id="promoList" class="admin-card-list" style="margin-top:12px;">
+          <!-- list promo dari JS -->
+        </div>
+      </section>
     </main>
   </div>
-  
-<div id="gamesModal" class="modal">
-  <div class="modal-backdrop" onclick="closeGamesModal()"></div>
-  <div class="modal-dialog">
-    <div class="modal-header">
-      <h3 id="gamesModalTitle">Daftar Game</h3>
-      <button type="button" class="modal-close" onclick="closeGamesModal()">✕</button>
-    </div>
-    <div class="modal-body">
-      <label class="form-label">
-        List Nama Game (satu per baris)
-        <div id="gamesModalBox"
-             class="multi-input"
-             contenteditable="false"
-             spellcheck="false"></div>
-      </label>
-    </div>
-    <div class="modal-footer">
-      <button type="button" id="gamesModalEditBtn" class="btn secondary">Edit</button>
-      <button type="button" id="gamesModalSaveBtn" class="btn primary" style="display:none;">Save</button>
+
+  <!-- ===== MODAL LIST GAME PER CARD ===== -->
+  <div id="gamesModal" class="modal">
+    <div class="modal-backdrop" onclick="closeGamesModal()"></div>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="gamesModalTitle">Daftar Game</h3>
+        <button type="button" class="modal-close" onclick="closeGamesModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">
+          List Nama Game (satu per baris)
+          <div id="gamesModalBox"
+               class="multi-input"
+               contenteditable="false"
+               spellcheck="false"></div>
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="gamesModalEditBtn" class="btn secondary">Edit</button>
+        <button type="button" id="gamesModalSaveBtn" class="btn primary" style="display:none;">Save</button>
+      </div>
     </div>
   </div>
-</div>
+
+  <!-- ===== MODAL PROMO BANNER ===== -->
+  <div id="promoModal" class="modal">
+    <div class="modal-backdrop" onclick="closePromoModal()"></div>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="promoModalTitle">Promo Banner</h3>
+        <button type="button" class="modal-close" onclick="closePromoModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">
+          Judul (opsional)
+          <input type="text" id="promoTitle" placeholder="Contoh: FREE RM5 NEW REGISTER">
+        </label>
+
+        <label class="form-label">
+          URL Gambar (PNG/JPG)
+          <input type="text" id="promoImageUrl" placeholder="https://i.imgur.com/xxxx.png">
+        </label>
+
+        <label class="form-label">
+          Link Claim (akan dibuka tab baru)
+          <input type="text" id="promoTargetUrl" placeholder="https://5g88-xxxx.vercel.app/claim">
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="promoModalSaveBtn" class="btn primary">Save</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Firebase + Script -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
