@@ -17,16 +17,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const gamesModalSaveBtn = document.getElementById("gamesModalSaveBtn");
   let currentEditKey = null; // card yang sedang di-edit di modal
 
-  // ===== ELEMENT PROMO BANNER =====
+  // ===== ELEMENT PROMO BANNER (FREE CREDIT kecil) =====
   const promoListEl       = document.getElementById("promoList");
   const promoModal        = document.getElementById("promoModal");
   const promoModalTitle   = document.getElementById("promoModalTitle");
   const promoTitleInput   = document.getElementById("promoTitle");
-  const promoCaptionInput = document.getElementById("promoCaption");   // ✅ baru
+  const promoCaptionInput = document.getElementById("promoCaption");
   const promoImageInput   = document.getElementById("promoImageUrl");
   const promoTargetInput  = document.getElementById("promoTargetUrl");
   const promoModalSaveBtn = document.getElementById("promoModalSaveBtn");
   let currentPromoKey     = null;
+
+  // ===== ELEMENT PROMOTION BANNER BESAR =====
+  const promoBigListEl       = document.getElementById("promoBigList");
+  const promoBigModal        = document.getElementById("promoBigModal");
+  const promoBigModalTitle   = document.getElementById("promoBigModalTitle");
+  const promoBigTitleInput   = document.getElementById("promoBigTitle");
+  const promoBigCaptionInput = document.getElementById("promoBigCaption");
+  const promoBigImageInput   = document.getElementById("promoBigImageUrl");
+  const promoBigTargetInput  = document.getElementById("promoBigTargetUrl");
+  const promoBigModalSaveBtn = document.getElementById("promoBigModalSaveBtn");
+  let currentPromoBigKey     = null;
 
   // ===== FIREBASE CHECK =====
   if (!window.firebase || !window.db) {
@@ -34,19 +45,18 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  const cardsRef  = db.ref("tips_cards");
-  const promosRef = db.ref("promo_banners");
+  const cardsRef   = db.ref("tips_cards");
+  const promosRef  = db.ref("promo_banners");   // free credit kecil
+  const promoBigRef= db.ref("promotions");      // promotion besar (tab PROMOTION)
 
   // ========= Helpers umum =========
 
-  // Bikin key dari nama platform
   const makeKey = (name) =>
     (name || "")
       .trim()
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-");
 
-  // Setup Ctrl+Enter di contenteditable
   function setupMultiInputKey(el) {
     if (!el) return;
     el.addEventListener("keydown", (e) => {
@@ -60,7 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setupMultiInputKey(gameListBox);
   setupMultiInputKey(gamesModalBox);
 
-  // Parse text jadi array nama game
   function parseGamesText(raw) {
     if (!raw) return [];
     let text = String(raw).replace(/\u00A0/g, " ").trim();
@@ -422,4 +431,166 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   promosRef.on("value", renderPromoList);
+
+  // ==================================================
+  // ============  PROMOTION BANNER BESAR =============
+  // ==================================================
+
+  function resetBigPromoForm() {
+    if (!promoBigTitleInput || !promoBigCaptionInput || !promoBigImageInput || !promoBigTargetInput) return;
+    promoBigTitleInput.value   = "";
+    promoBigCaptionInput.value = "";
+    promoBigImageInput.value   = "";
+    promoBigTargetInput.value  = "";
+  }
+
+  function openBigPromoNewModal() {
+    if (!promoBigModal) return;
+    currentPromoBigKey = null;
+    promoBigModalTitle.textContent = "Tambah Promotion";
+    resetBigPromoForm();
+    promoBigModal.classList.add(MODAL_OPEN_CLASS);
+  }
+
+  function openBigPromoEditModal(key, data) {
+    if (!promoBigModal) return;
+    currentPromoBigKey = key;
+    promoBigModalTitle.textContent = "Edit Promotion";
+
+    promoBigTitleInput.value   = data.title    || "";
+    promoBigCaptionInput.value = data.caption  || "";
+    promoBigImageInput.value   = data.imageUrl || "";
+    promoBigTargetInput.value  = data.targetUrl|| "";
+
+    promoBigModal.classList.add(MODAL_OPEN_CLASS);
+  }
+
+  function closeBigPromoModalInternal() {
+    if (!promoBigModal) return;
+    promoBigModal.classList.remove(MODAL_OPEN_CLASS);
+    currentPromoBigKey = null;
+  }
+
+  window.openBigPromoNewModal = openBigPromoNewModal;
+  window.closeBigPromoModal   = closeBigPromoModalInternal;
+
+  if (promoBigModalSaveBtn) {
+    promoBigModalSaveBtn.addEventListener("click", () => {
+      const title     = (promoBigTitleInput.value   || "").trim();
+      const caption   = (promoBigCaptionInput.value || "").trim();
+      const imageUrl  = (promoBigImageInput.value   || "").trim();
+      const targetUrl = (promoBigTargetInput.value  || "").trim();
+
+      if (!imageUrl) {
+        alert("Isi URL gambar dulu bro.");
+        promoBigImageInput.focus();
+        return;
+      }
+      if (!targetUrl) {
+        alert("Isi Link Tab Baru dulu bro.");
+        promoBigTargetInput.focus();
+        return;
+      }
+
+      const payload = {
+        title,
+        caption,
+        imageUrl,
+        targetUrl,
+        enabled: true,
+        updatedAt: firebase.database.ServerValue.TIMESTAMP,
+      };
+
+      const ref = currentPromoBigKey
+        ? promoBigRef.child(currentPromoBigKey)
+        : promoBigRef.push();
+
+      ref
+        .set(payload)
+        .then(() => {
+          alert("Promotion banner berjaya disimpan.");
+          closeBigPromoModalInternal();
+        })
+        .catch((err) => {
+          console.error("Gagal simpan promotion banner:", err);
+          alert("Gagal simpan promotion. Cek console.");
+        });
+    });
+  }
+
+  function renderBigPromoList(snapshot) {
+    if (!promoBigListEl) return;
+
+    const data = snapshot.val() || {};
+    promoBigListEl.innerHTML = "";
+
+    const entries = Object.entries(data);
+
+    if (!entries.length) {
+      promoBigListEl.innerHTML =
+        '<p class="text-muted small">Belum ada promotion. Tekan "Tambah Promotion".</p>';
+      return;
+    }
+
+    entries.forEach(([key, promo]) => {
+      const item = document.createElement("div");
+      item.className = "admin-card-item";
+
+      const thumbWrap = document.createElement("div");
+      thumbWrap.style.display = "flex";
+      thumbWrap.style.alignItems = "center";
+
+      const thumb = document.createElement("img");
+      thumb.src = promo.imageUrl || "";
+      thumb.alt = promo.title || "";
+      thumb.style.maxWidth = "160px";
+      thumb.style.borderRadius = "10px";
+      thumb.style.objectFit = "cover";
+      thumbWrap.appendChild(thumb);
+
+      const info = document.createElement("div");
+      info.className = "admin-card-info";
+
+      const titleEl = document.createElement("div");
+      titleEl.className = "admin-card-title";
+      titleEl.textContent = promo.title || "(Tanpa judul)";
+
+      const sub = document.createElement("div");
+      sub.className = "admin-card-sub";
+      sub.textContent = promo.caption || promo.targetUrl || "";
+
+      info.appendChild(titleEl);
+      info.appendChild(sub);
+
+      const controls = document.createElement("div");
+      controls.className = "switch-wrap";
+
+      const editBtn = document.createElement("button");
+      editBtn.className = "btn secondary";
+      editBtn.style.fontSize = "0.7rem";
+      editBtn.textContent = "Edit";
+      editBtn.addEventListener("click", () => openBigPromoEditModal(key, promo));
+
+      const delBtn = document.createElement("button");
+      delBtn.className = "btn secondary";
+      delBtn.style.fontSize = "0.7rem";
+      delBtn.textContent = "✖ Hapus";
+      delBtn.addEventListener("click", () => {
+        if (confirm("Hapus promotion ini?")) {
+          promoBigRef.child(key).remove();
+        }
+      });
+
+      controls.appendChild(editBtn);
+      controls.appendChild(delBtn);
+
+      item.appendChild(thumbWrap);
+      item.appendChild(info);
+      item.appendChild(controls);
+
+      promoBigListEl.appendChild(item);
+    });
+  }
+
+  promoBigRef.on("value", renderBigPromoList);
 });
