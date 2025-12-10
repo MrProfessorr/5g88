@@ -15,7 +15,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const gamesModalBox     = document.getElementById("gamesModalBox");
   const gamesModalEditBtn = document.getElementById("gamesModalEditBtn");
   const gamesModalSaveBtn = document.getElementById("gamesModalSaveBtn");
-  let currentEditKey = null; // card yang sedang di-edit di modal
+  let currentEditKey      = null; // card yang sedang di-edit di modal
+
+  // ===== NAV TABS TOGGLE =====
+  const navHomeToggle    = document.getElementById("navHomeToggle");
+  const navHotToggle     = document.getElementById("navHotToggle");
+  const navPromoToggle   = document.getElementById("navPromoToggle");
+  const navPartnerToggle = document.getElementById("navPartnerToggle");
 
   // ===== ELEMENT PROMO BANNER (FREE CREDIT kecil) =====
   const promoListEl       = document.getElementById("promoList");
@@ -60,6 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const promosRef   = db.ref("promo_banners");   // free credit kecil
   const promoBigRef = db.ref("promotions");      // promotion besar (tab PROMOTION)
   const partnersRef = db.ref("partnerships");    // partnership untuk tab PARTNERSHIP
+  const navTabsRef  = db.ref("nav_tabs");        // setting tombol nav
 
   // ========= Helpers umum =========
 
@@ -72,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function setupMultiInputKey(el) {
     if (!el) return;
     el.addEventListener("keydown", (e) => {
-      if ((e.key === "Enter" && (e.ctrlKey || e.metaKey))) {
+      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
         document.execCommand("insertLineBreak");
       }
@@ -233,7 +240,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const sub = document.createElement("div");
       sub.className = "admin-card-sub";
       sub.textContent = `${card.games?.length || 0} game • status: ${
-        card.enabled ? "AKTIF" : "OFF"
+        card.enabled === false ? "OFF" : "AKTIF"
       }`;
 
       info.appendChild(title);
@@ -249,7 +256,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const toggle = document.createElement("input");
       toggle.type = "checkbox";
       toggle.className = "toggle";
-      toggle.checked = !!card.enabled;
+      toggle.checked = card.enabled !== false;
       toggle.addEventListener("change", () => {
         cardsRef.child(key).update({ enabled: toggle.checked });
       });
@@ -282,6 +289,44 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   cardsRef.on("value", renderCardsList);
+
+  // ==================================================
+  // ============  NAVIGATION TABS ADMIN  =============
+  // ==================================================
+
+  function renderNavTabs(snapshot) {
+    const data = snapshot.val() || {};
+    const defaults = { home: true, hot: true, promo: true, partner: true };
+    const cfg = { ...defaults, ...data };
+
+    if (navHomeToggle)    navHomeToggle.checked    = !!cfg.home;
+    if (navHotToggle)     navHotToggle.checked     = !!cfg.hot;
+    if (navPromoToggle)   navPromoToggle.checked   = !!cfg.promo;
+    if (navPartnerToggle) navPartnerToggle.checked = !!cfg.partner;
+  }
+
+  if (navHomeToggle) {
+    navHomeToggle.addEventListener("change", () => {
+      navTabsRef.update({ home: navHomeToggle.checked });
+    });
+  }
+  if (navHotToggle) {
+    navHotToggle.addEventListener("change", () => {
+      navTabsRef.update({ hot: navHotToggle.checked });
+    });
+  }
+  if (navPromoToggle) {
+    navPromoToggle.addEventListener("change", () => {
+      navTabsRef.update({ promo: navPromoToggle.checked });
+    });
+  }
+  if (navPartnerToggle) {
+    navPartnerToggle.addEventListener("change", () => {
+      navTabsRef.update({ partner: navPartnerToggle.checked });
+    });
+  }
+
+  navTabsRef.on("value", renderNavTabs);
 
   // ==================================================
   // ============  PROMO BANNER / FREE CREDIT =========
@@ -346,24 +391,35 @@ document.addEventListener("DOMContentLoaded", () => {
         caption,
         imageUrl,
         targetUrl,
-        enabled: true,
         updatedAt: firebase.database.ServerValue.TIMESTAMP,
       };
 
-      const ref = currentPromoKey
-        ? promosRef.child(currentPromoKey)
-        : promosRef.push();
-
-      ref
-        .set(payload)
-        .then(() => {
-          alert("Promo banner berjaya disimpan.");
-          closePromoModalInternal();
+      if (currentPromoKey) {
+        // update saja, biar properti enabled tidak berubah
+        promosRef.child(currentPromoKey).update(payload)
+          .then(() => {
+            alert("Promo banner berjaya diupdate.");
+            closePromoModalInternal();
+          })
+          .catch((err) => {
+            console.error("Gagal update promo banner:", err);
+            alert("Gagal update promo. Cek console.");
+          });
+      } else {
+        // record baru -> enabled: true
+        promosRef.push().set({
+          ...payload,
+          enabled: true
         })
-        .catch((err) => {
-          console.error("Gagal simpan promo banner:", err);
-          alert("Gagal simpan promo. Cek console.");
-        });
+          .then(() => {
+            alert("Promo banner berjaya disimpan.");
+            closePromoModalInternal();
+          })
+          .catch((err) => {
+            console.error("Gagal simpan promo banner:", err);
+            alert("Gagal simpan promo. Cek console.");
+          });
+      }
     });
   }
 
@@ -415,6 +471,18 @@ document.addEventListener("DOMContentLoaded", () => {
       const controls = document.createElement("div");
       controls.className = "switch-wrap";
 
+      const activeLabel = document.createElement("span");
+      activeLabel.className = "switch-label";
+      activeLabel.textContent = "Aktif";
+
+      const toggle = document.createElement("input");
+      toggle.type = "checkbox";
+      toggle.className = "toggle";
+      toggle.checked = promo.enabled !== false;
+      toggle.addEventListener("change", () => {
+        promosRef.child(key).update({ enabled: toggle.checked });
+      });
+
       const editBtn = document.createElement("button");
       editBtn.className = "btn secondary";
       editBtn.style.fontSize = "0.7rem";
@@ -431,6 +499,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
+      controls.appendChild(activeLabel);
+      controls.appendChild(toggle);
       controls.appendChild(editBtn);
       controls.appendChild(delBtn);
 
@@ -445,7 +515,7 @@ document.addEventListener("DOMContentLoaded", () => {
   promosRef.on("value", renderPromoList);
 
   // ==================================================
-  // ============  PROMOTION BANNER BESAR ==============
+  // ============  PROMOTION BANNER BESAR =============
   // ==================================================
 
   function resetBigPromoForm() {
@@ -509,24 +579,33 @@ document.addEventListener("DOMContentLoaded", () => {
         caption,
         imageUrl,
         targetUrl,
-        enabled: true,
         updatedAt: firebase.database.ServerValue.TIMESTAMP,
       };
 
-      const ref = currentPromoBigKey
-        ? promoBigRef.child(currentPromoBigKey)
-        : promoBigRef.push();
-
-      ref
-        .set(payload)
-        .then(() => {
-          alert("Promotion banner berjaya disimpan.");
-          closeBigPromoModalInternal();
+      if (currentPromoBigKey) {
+        promoBigRef.child(currentPromoBigKey).update(payload)
+          .then(() => {
+            alert("Promotion banner berjaya diupdate.");
+            closeBigPromoModalInternal();
+          })
+          .catch((err) => {
+            console.error("Gagal update promotion banner:", err);
+            alert("Gagal update promotion. Cek console.");
+          });
+      } else {
+        promoBigRef.push().set({
+          ...payload,
+          enabled: true
         })
-        .catch((err) => {
-          console.error("Gagal simpan promotion banner:", err);
-          alert("Gagal simpan promotion. Cek console.");
-        });
+          .then(() => {
+            alert("Promotion banner berjaya disimpan.");
+            closeBigPromoModalInternal();
+          })
+          .catch((err) => {
+            console.error("Gagal simpan promotion banner:", err);
+            alert("Gagal simpan promotion. Cek console.");
+          });
+      }
     });
   }
 
@@ -577,6 +656,18 @@ document.addEventListener("DOMContentLoaded", () => {
       const controls = document.createElement("div");
       controls.className = "switch-wrap";
 
+      const activeLabel = document.createElement("span");
+      activeLabel.className = "switch-label";
+      activeLabel.textContent = "Aktif";
+
+      const toggle = document.createElement("input");
+      toggle.type = "checkbox";
+      toggle.className = "toggle";
+      toggle.checked = promo.enabled !== false;
+      toggle.addEventListener("change", () => {
+        promoBigRef.child(key).update({ enabled: toggle.checked });
+      });
+
       const editBtn = document.createElement("button");
       editBtn.className = "btn secondary";
       editBtn.style.fontSize = "0.7rem";
@@ -593,6 +684,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
+      controls.appendChild(activeLabel);
+      controls.appendChild(toggle);
       controls.appendChild(editBtn);
       controls.appendChild(delBtn);
 
@@ -677,20 +770,30 @@ document.addEventListener("DOMContentLoaded", () => {
         updatedAt: firebase.database.ServerValue.TIMESTAMP,
       };
 
-      const ref = currentPartnerKey
-        ? partnersRef.child(currentPartnerKey)
-        : partnersRef.push();
-
-      ref
-        .set(payload)
-        .then(() => {
-          alert("Partnership berjaya disimpan.");
-          closePartnerModalInternal();
+      if (currentPartnerKey) {
+        partnersRef.child(currentPartnerKey).update(payload)
+          .then(() => {
+            alert("Partnership berjaya diupdate.");
+            closePartnerModalInternal();
+          })
+          .catch((err) => {
+            console.error("Gagal update partnership:", err);
+            alert("Gagal update partnership. Cek console.");
+          });
+      } else {
+        partnersRef.push().set({
+          ...payload,
+          enabled: true
         })
-        .catch((err) => {
-          console.error("Gagal simpan partnership:", err);
-          alert("Gagal simpan partnership. Cek console.");
-        });
+          .then(() => {
+            alert("Partnership berjaya disimpan.");
+            closePartnerModalInternal();
+          })
+          .catch((err) => {
+            console.error("Gagal simpan partnership:", err);
+            alert("Gagal simpan partnership. Cek console.");
+          });
+      }
     });
   }
 
@@ -733,7 +836,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const sub = document.createElement("div");
       sub.className = "admin-card-sub";
-      const ratingText = p.rating != null ? `${Number(p.rating).toFixed(1)} ★` : "No rating";
+      const ratingText = p.rating != null
+        ? `${Number(p.rating).toFixed(1)} ★`
+        : "No rating";
       sub.textContent = `${ratingText} • ${p.joinUrl || ""}`;
 
       info.appendChild(titleEl);
@@ -741,6 +846,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const controls = document.createElement("div");
       controls.className = "switch-wrap";
+
+      const activeLabel = document.createElement("span");
+      activeLabel.className = "switch-label";
+      activeLabel.textContent = "Aktif";
+
+      const toggle = document.createElement("input");
+      toggle.type = "checkbox";
+      toggle.className = "toggle";
+      toggle.checked = p.enabled !== false;
+      toggle.addEventListener("change", () => {
+        partnersRef.child(key).update({ enabled: toggle.checked });
+      });
 
       const editBtn = document.createElement("button");
       editBtn.className = "btn secondary";
@@ -758,6 +875,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
+      controls.appendChild(activeLabel);
+      controls.appendChild(toggle);
       controls.appendChild(editBtn);
       controls.appendChild(delBtn);
 
