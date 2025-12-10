@@ -1,35 +1,47 @@
 // online/js/tips-page.js
 
 document.addEventListener("DOMContentLoaded", () => {
-  const gridEl      = document.getElementById("tipsCardsGrid");
-  const promoGridEl = document.getElementById("promoGrid");
-  const homePage    = document.getElementById("homePage");
-  const hotGamePage = document.getElementById("hotGamePage");
-  const navHome     = document.getElementById("navHome");
-  const navHot      = document.getElementById("navHot");
+  const gridEl        = document.getElementById("tipsCardsGrid");
+  const promoGridEl   = document.getElementById("promoGrid");
+  const promoBigGridEl= document.getElementById("promoBigGrid"); // ✅ grid untuk PROMOTION
+
+  const homePage      = document.getElementById("homePage");
+  const hotGamePage   = document.getElementById("hotGamePage");
+  const promoPage     = document.getElementById("promoPage");
+
+  const navHome       = document.getElementById("navHome");
+  const navHot        = document.getElementById("navHot");
+  const navPromo      = document.getElementById("navPromo");
 
   // ⬇️ Elemen teks waktu RATE GAME di header kanan
   const rateGameTimeEl = document.getElementById("rateGameTime");
 
-  // ====== TAB HOME / HOT GAME DENGAN LOCALSTORAGE ======
+  // ====== TAB HOME / HOT GAME / PROMOTION DENGAN LOCALSTORAGE ======
   const TAB_KEY = "tipsPageActiveTab";
 
   function setActiveTab(tab) {
     if (!homePage || !hotGamePage) return;
 
-    if (tab === "hot") {
-      homePage.style.display    = "none";
-      hotGamePage.style.display = "block";
+    // sembunyikan semua page dulu
+    homePage.style.display    = "none";
+    hotGamePage.style.display = "none";
+    if (promoPage) promoPage.style.display = "none";
 
-      navHome && navHome.classList.remove("active");
-      navHot  && navHot.classList.add("active");
+    // reset active nav
+    navHome  && navHome.classList.remove("active");
+    navHot   && navHot.classList.remove("active");
+    navPromo && navPromo.classList.remove("active");
+
+    if (tab === "hot") {
+      hotGamePage.style.display = "block";
+      navHot && navHot.classList.add("active");
+    } else if (tab === "promo") {
+      if (promoPage) promoPage.style.display = "block";
+      navPromo && navPromo.classList.add("active");
     } else {
       // default HOME
-      homePage.style.display    = "block";
-      hotGamePage.style.display = "none";
-
+      homePage.style.display = "block";
       navHome && navHome.classList.add("active");
-      navHot  && navHot.classList.remove("active");
       tab = "home";
     }
 
@@ -47,12 +59,17 @@ document.addEventListener("DOMContentLoaded", () => {
   window.showHotGame = function () {
     setActiveTab("hot");
   };
+  window.showPromotion = function () {
+    setActiveTab("promo");
+  };
 
   // baca tab terakhir saat load
   let initialTab = "home";
   try {
     const saved = localStorage.getItem(TAB_KEY);
-    if (saved === "hot" || saved === "home") initialTab = saved;
+    if (saved === "hot" || saved === "home" || saved === "promo") {
+      initialTab = saved;
+    }
   } catch (e) {
     console.warn("Gagal baca tab aktif", e);
   }
@@ -63,23 +80,21 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!rateGameTimeEl) return;
 
     const now = new Date();
-
     const pad = (n) => String(n).padStart(2, "0");
 
     const hours = pad(now.getHours());
     const mins  = pad(now.getMinutes());
     const secs  = pad(now.getSeconds());
 
-    const day   = pad(now.getDate());
+    const day    = pad(now.getDate());
     const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-    const month = months[now.getMonth()];
-    const year  = now.getFullYear();
+    const month  = months[now.getMonth()];
+    const year   = now.getFullYear();
 
     rateGameTimeEl.textContent =
       `RATE GAME : ${hours}:${mins}:${secs} ${day} ${month} ${year}`;
   }
 
-  // jalanin jam kalau elemen ada
   if (rateGameTimeEl) {
     updateRateGameTime();
     setInterval(updateRateGameTime, 1000);
@@ -95,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
         index++;
         if (index >= slides.length) index = 0;
         track.style.transform = `translateX(-${index * 100}%)`;
-      }, 3500); // 3.5s sekali tukar gambar
+      }, 3500);
     }
   }
 
@@ -105,100 +120,158 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  const cardsRef  = db.ref("tips_cards");
-  const promosRef = db.ref("promo_banners");
+  const cardsRef    = db.ref("tips_cards");
+  const promosRef   = db.ref("promo_banners"); // FREE CREDIT kecil
+  const promoBigRef = db.ref("promotions");    // PROMOTION besar
+
   let promoSliderTimer = null;
-// ================== PROMO BANNER (FREE CREDIT) ==================
-function renderPromos(snapshot) {
-  if (!promoGridEl) return;
 
-  // bersihkan timer lama kalau ada
-  if (promoSliderTimer) {
-    clearInterval(promoSliderTimer);
-    promoSliderTimer = null;
-  }
+  // ================== PROMO BANNER (FREE CREDIT) ==================
+  function renderPromos(snapshot) {
+    if (!promoGridEl) return;
 
-  const data = snapshot.val() || {};
-  promoGridEl.innerHTML = "";
-
-  const entries = Object.entries(data);
-
-  if (entries.length === 0) {
-    return;
-  }
-
-  const cardsDom = []; // simpan DOM card untuk slider
-
-  entries.forEach(([key, promo]) => {
-    const imageUrl  = promo.imageUrl || "";
-    const targetUrl = promo.targetUrl || "#";
-    const title     = promo.title || "";
-    const caption   = promo.caption || ""; // caption dari DB
-
-    if (!imageUrl) return; // kalau tak ada gambar, skip
-
-    const card = document.createElement("article");
-    card.className = "promo-card";
-
-    // Hanya gambar yang dapat diklik (ke link claim)
-    const link = document.createElement("a");
-    link.className = "promo-card-link";
-    link.href   = targetUrl;
-    link.target = "_blank";
-    link.rel    = "noopener noreferrer";
-
-    const img = document.createElement("img");
-    img.src = imageUrl;
-    img.alt = title || caption || "Promo";
-    img.className = "promo-card-img";
-
-    link.appendChild(img);
-    card.appendChild(link);
-
-    // Caption di bawah gambar (bukan link)
-    if (caption || title) {
-      const captionEl = document.createElement("div");
-      captionEl.className = "promo-card-caption";
-      captionEl.textContent = caption || title;
-      card.appendChild(captionEl);
+    // bersihkan timer lama kalau ada
+    if (promoSliderTimer) {
+      clearInterval(promoSliderTimer);
+      promoSliderTimer = null;
     }
 
-    promoGridEl.appendChild(card);
-    cardsDom.push(card);
-  });
+    const data = snapshot.val() || {};
+    promoGridEl.innerHTML = "";
 
-  // Kalau card <= 4 → tampil biasa, tidak usah slider
-  if (cardsDom.length <= 4) {
-    return;
+    const entries = Object.entries(data);
+    if (entries.length === 0) return;
+
+    const cardsDom = []; // simpan DOM card untuk slider
+
+    entries.forEach(([key, promo]) => {
+      const imageUrl  = promo.imageUrl || "";
+      const targetUrl = promo.targetUrl || "#";
+      const title     = promo.title || "";
+      const caption   = promo.caption || "";
+
+      if (!imageUrl) return; // kalau tak ada gambar, skip
+
+      const card = document.createElement("article");
+      card.className = "promo-card";
+
+      const link = document.createElement("a");
+      link.className = "promo-card-link";
+      link.href   = targetUrl;
+      link.target = "_blank";
+      link.rel    = "noopener noreferrer";
+
+      const img = document.createElement("img");
+      img.src = imageUrl;
+      img.alt = title || caption || "Promo";
+      img.className = "promo-card-img";
+
+      link.appendChild(img);
+      card.appendChild(link);
+
+      // Caption di bawah gambar
+      if (caption || title) {
+        const captionEl = document.createElement("div");
+        captionEl.className = "promo-card-caption";
+        captionEl.textContent = caption || title;
+        card.appendChild(captionEl);
+      }
+
+      promoGridEl.appendChild(card);
+      cardsDom.push(card);
+    });
+
+    // Kalau banner <= 4 → tampil biasa, tidak usah slider
+    if (cardsDom.length <= 4) return;
+
+    // ========= SLIDER: tampil 4 card sekaligus, auto ganti setiap 3 detik =========
+    const pageSize   = 4;
+    const totalPages = Math.ceil(cardsDom.length / pageSize);
+    let currentPage  = 0;
+
+    function showPage(pageIndex) {
+      cardsDom.forEach((card, idx) => {
+        const pIndex = Math.floor(idx / pageSize);
+        card.style.display = pIndex === pageIndex ? "" : "none";
+      });
+    }
+
+    showPage(currentPage);
+
+    promoSliderTimer = setInterval(() => {
+      currentPage = (currentPage + 1) % totalPages;
+      showPage(currentPage);
+    }, 3000);
   }
 
-  // ========= SLIDER: tampil 4 card sekaligus, auto ganti setiap 3 detik =========
-  const pageSize   = 4;                                    // 4 banner per halaman
-  const totalPages = Math.ceil(cardsDom.length / pageSize);
-  let currentPage  = 0;
+  promosRef.on("value", renderPromos);
 
-  function showPage(pageIndex) {
-    cardsDom.forEach((card, idx) => {
-      const pIndex = Math.floor(idx / pageSize);
-      if (pIndex === pageIndex) {
-        card.style.display = "";       // ikut display default (flex/block dari CSS)
-      } else {
-        card.style.display = "none";   // sembunyikan
+  // ================== PROMOTION BANNER BESAR (TAB PROMOTION) ==================
+  function renderPromoBig(snapshot) {
+    if (!promoBigGridEl) return;
+
+    const data = snapshot.val() || {};
+    promoBigGridEl.innerHTML = "";
+
+    const entries = Object.entries(data)
+      .filter(([key, promo]) => promo && promo.enabled !== false);
+
+    if (!entries.length) {
+      promoBigGridEl.innerHTML =
+        '<p class="text-muted small">Belum ada promotion aktif.</p>';
+      return;
+    }
+
+    entries.forEach(([key, promo]) => {
+      const imageUrl  = promo.imageUrl || "";
+      const targetUrl = promo.targetUrl || "#";
+      const title     = promo.title || "";
+      const caption   = promo.caption || "";
+
+      if (!imageUrl) return;
+
+      const card = document.createElement("article");
+      card.className = "promo-big-card";
+
+      const link = document.createElement("a");
+      link.className = "promo-big-link";
+      link.href   = targetUrl;
+      link.target = "_blank";
+      link.rel    = "noopener noreferrer";
+
+      const img = document.createElement("img");
+      img.src = imageUrl;
+      img.alt = title || caption || "Promotion";
+      img.className = "promo-big-img";
+
+      link.appendChild(img);
+      card.appendChild(link);
+
+      if (title || caption) {
+        const captionBox = document.createElement("div");
+        captionBox.className = "promo-big-caption";
+
+        if (title) {
+          const titleEl = document.createElement("div");
+          titleEl.className = "promo-big-title";
+          titleEl.textContent = title;
+          captionBox.appendChild(titleEl);
+        }
+        if (caption) {
+          const capEl = document.createElement("div");
+          capEl.className = "promo-big-text";
+          capEl.textContent = caption;
+          captionBox.appendChild(capEl);
+        }
+
+        card.appendChild(captionBox);
       }
+
+      promoBigGridEl.appendChild(card);
     });
   }
 
-  // tampilkan halaman pertama
-  showPage(currentPage);
-
-  // auto ganti halaman setiap 3 detik
-  promoSliderTimer = setInterval(() => {
-    currentPage = (currentPage + 1) % totalPages;
-    showPage(currentPage);
-  }, 3000);
-}
-  // listen realtime banner
-  promosRef.on("value", renderPromos);
+  promoBigRef.on("value", renderPromoBig);
 
   // ====== KALAU TAK ADA GRID TIPS, STOP BAGIAN TIPS ======
   if (!gridEl) return;
