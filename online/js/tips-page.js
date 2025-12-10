@@ -16,45 +16,54 @@ document.addEventListener("DOMContentLoaded", () => {
   const navPromo   = document.getElementById("navPromo");
   const navPartner = document.getElementById("navPartner");
 
-  // Elemen teks waktu RATE GAME di header kanan
   const rateGameTimeEl = document.getElementById("rateGameTime");
 
   // ====== TAB HOME / HOT / PROMO / PARTNER (LOCALSTORAGE) ======
   const TAB_KEY = "tipsPageActiveTab";
+  let currentTab = "home";
+
+  try {
+    const saved = localStorage.getItem(TAB_KEY);
+    if (["home", "hot", "promo", "partner"].includes(saved)) {
+      currentTab = saved;
+    }
+  } catch (e) {
+    console.warn("Gagal baca tab awal dari localStorage", e);
+  }
 
   function setActiveTab(tab) {
-    if (!homePage || !hotGamePage) return;
+    currentTab = tab;
 
-    // sembunyikan semua section
-    homePage.style.display    = "none";
-    hotGamePage.style.display = "none";
+    if (homePage)    homePage.style.display    = "none";
+    if (hotGamePage) hotGamePage.style.display = "none";
     if (promoPage)   promoPage.style.display   = "none";
     if (partnerPage) partnerPage.style.display = "none";
 
-    // reset nav
     navHome    && navHome.classList.remove("active");
     navHot     && navHot.classList.remove("active");
     navPromo   && navPromo.classList.remove("active");
     navPartner && navPartner.classList.remove("active");
 
-    if (tab === "hot") {
+    if (tab === "hot" && hotGamePage && navHot && navHot.style.display !== "none") {
       hotGamePage.style.display = "block";
-      navHot && navHot.classList.add("active");
-    } else if (tab === "promo") {
-      if (promoPage) promoPage.style.display = "block";
-      navPromo && navPromo.classList.add("active");
-    } else if (tab === "partner") {
-      if (partnerPage) partnerPage.style.display = "block";
-      navPartner && navPartner.classList.add("active");
+      navHot.classList.add("active");
+    } else if (tab === "promo" && promoPage && navPromo && navPromo.style.display !== "none") {
+      promoPage.style.display = "block";
+      navPromo.classList.add("active");
+    } else if (tab === "partner" && partnerPage && navPartner && navPartner.style.display !== "none") {
+      partnerPage.style.display = "block";
+      navPartner.classList.add("active");
     } else {
-      // default HOME
-      homePage.style.display = "block";
-      navHome && navHome.classList.add("active");
-      tab = "home";
+      if (homePage && navHome && navHome.style.display !== "none") {
+        homePage.style.display = "block";
+        navHome.classList.add("active");
+        currentTab = "home";
+        tab = "home";
+      }
     }
 
     try {
-      localStorage.setItem(TAB_KEY, tab);
+      localStorage.setItem(TAB_KEY, currentTab);
     } catch (e) {
       console.warn("Gagal simpan tab aktif", e);
     }
@@ -73,18 +82,11 @@ document.addEventListener("DOMContentLoaded", () => {
   window.showPartner = function () {
     setActiveTab("partner");
   };
+  // alias kalau nanti di HTML kamu pakai showPartnership()
+  window.showPartnership = window.showPartner;
 
-  // baca tab terakhir saat load
-  let initialTab = "home";
-  try {
-    const saved = localStorage.getItem(TAB_KEY);
-    if (["home", "hot", "promo", "partner"].includes(saved)) {
-      initialTab = saved;
-    }
-  } catch (e) {
-    console.warn("Gagal baca tab aktif", e);
-  }
-  setActiveTab(initialTab);
+  // sementara sebelum baca config nav_tabs, pakai tab dari localStorage
+  setActiveTab(currentTab);
 
   // ====== RATE GAME TIME (REALTIME CLOCK) ======
   function updateRateGameTime() {
@@ -132,27 +134,66 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const cardsRef     = db.ref("tips_cards");
-  const promosRef    = db.ref("promo_banners"); // FREE CREDIT kecil
-  const promoBigRef  = db.ref("promotions");    // PROMOTION besar
-  const partnersRef  = db.ref("partnerships");  // PARTNERSHIP
+  const promosRef    = db.ref("promo_banners");
+  const promoBigRef  = db.ref("promotions");
+  const partnersRef  = db.ref("partnerships");
+  const navTabsRef   = db.ref("nav_tabs");
 
   let promoSliderTimer = null;
+
+  // ====== NAV TABS CONFIG DARI FIREBASE ======
+  function applyNavConfig(cfgRaw) {
+    const defaults = { home: true, hot: true, promo: true, partner: true };
+    const cfg = { ...defaults, ...(cfgRaw || {}) };
+
+    if (navHome) {
+      navHome.style.display = cfg.home ? "" : "none";
+    }
+    if (homePage && !cfg.home) homePage.style.display = "none";
+
+    if (navHot) {
+      navHot.style.display = cfg.hot ? "" : "none";
+    }
+    if (hotGamePage && !cfg.hot) hotGamePage.style.display = "none";
+
+    if (navPromo) {
+      navPromo.style.display = cfg.promo ? "" : "none";
+    }
+    if (promoPage && !cfg.promo) promoPage.style.display = "none";
+
+    if (navPartner) {
+      navPartner.style.display = cfg.partner ? "" : "none";
+    }
+    if (partnerPage && !cfg.partner) partnerPage.style.display = "none";
+
+    let wanted = currentTab;
+    if (!cfg[wanted]) {
+      const order = ["home", "hot", "promo", "partner"];
+      wanted = order.find((t) => cfg[t]) || "home";
+    }
+    setActiveTab(wanted);
+  }
+
+  navTabsRef.on("value", (snap) => {
+    applyNavConfig(snap.val());
+  });
 
   // ================== PROMO BANNER (FREE CREDIT) ==================
   function renderPromos(snapshot) {
     if (!promoGridEl) return;
 
-    // bersihkan timer lama kalau ada
     if (promoSliderTimer) {
       clearInterval(promoSliderTimer);
       promoSliderTimer = null;
     }
 
-    const data = snapshot.val() || {};
+    const raw = snapshot.val() || {};
     promoGridEl.innerHTML = "";
 
-    const entries = Object.entries(data);
-    if (entries.length === 0) return;
+    const entries = Object.entries(raw)
+      .filter(([k, promo]) => promo && promo.enabled !== false);
+
+    if (!entries.length) return;
 
     const cardsDom = [];
 
@@ -192,10 +233,8 @@ document.addEventListener("DOMContentLoaded", () => {
       cardsDom.push(card);
     });
 
-    // Kalau banner <= 4 → tampil biasa, tidak usah slider
     if (cardsDom.length <= 4) return;
 
-    // ========= SLIDER: tampil 4 card sekaligus =========
     const pageSize   = 4;
     const totalPages = Math.ceil(cardsDom.length / pageSize);
     let currentPage  = 0;
@@ -291,10 +330,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const data = snapshot.val() || {};
     partnerGridEl.innerHTML = "";
 
-    const entries = Object.entries(data);
+    const entries = Object.entries(data)
+      .filter(([key, p]) => p && p.enabled !== false);
+
     if (!entries.length) {
       partnerGridEl.innerHTML =
-        '<p class="text-muted small">Belum ada partnership. Hubungi admin untuk menambah brand.</p>';
+        '<p class="text-muted small">Belum ada partnership aktif.</p>';
       return;
     }
 
@@ -309,7 +350,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const card = document.createElement("article");
       card.className = "partner-card";
 
-      // badge rating di pojok atas kanan
       if (rating !== null) {
         const badge = document.createElement("div");
         badge.className = "partner-rating";
@@ -317,7 +357,6 @@ document.addEventListener("DOMContentLoaded", () => {
         card.appendChild(badge);
       }
 
-      // logo
       const logoWrap = document.createElement("div");
       logoWrap.className = "partner-logo-wrap";
 
@@ -329,7 +368,6 @@ document.addEventListener("DOMContentLoaded", () => {
       logoWrap.appendChild(img);
       card.appendChild(logoWrap);
 
-      // optional nama brand
       if (name) {
         const nameEl = document.createElement("div");
         nameEl.className = "partner-name";
@@ -337,7 +375,6 @@ document.addEventListener("DOMContentLoaded", () => {
         card.appendChild(nameEl);
       }
 
-      // tombol join now
       const joinLink = document.createElement("a");
       joinLink.href   = joinUrl;
       joinLink.target = "_blank";
@@ -364,7 +401,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // ====== HISTORY & LOCALSTORAGE UNTUK TIPS ======
   const STORAGE_KEY = "tipsHistory.v1";
 
-  // { [cardKey]: { history: [text], index:number } }
   let historyObj = {};
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -388,7 +424,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return historyObj[key];
   }
 
-  // Random integer [min, max]
   const randInt = (min, max) =>
     Math.floor(Math.random() * (max - min + 1)) + min;
 
@@ -396,7 +431,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const games = (card.games || []).slice();
     if (games.length === 0) return "Belum ada game.";
 
-    // shuffle
     for (let i = games.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [games[i], games[j]] = [games[j], games[i]];
@@ -421,7 +455,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const entries = Object.entries(data)
       .map(([key, card]) => ({ key, ...card }))
-      .filter((c) => c.enabled !== false); // default aktif
+      .filter((c) => c.enabled !== false);
 
     if (entries.length === 0) {
       gridEl.innerHTML =
