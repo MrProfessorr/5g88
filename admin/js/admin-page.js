@@ -492,7 +492,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const delBtn = document.createElement("button");
       delBtn.className = "btn secondary";
       delBtn.style.fontSize = "0.7rem";
-      delBtn.textContent = "✖ Hapus";
+      delBtn.textContent = "Delete";
       delBtn.addEventListener("click", () => {
         if (confirm("Hapus banner ini?")) {
           promosRef.child(key).remove();
