@@ -17,8 +17,9 @@
       <nav class="app-nav">
         <button id="navHome" class="nav-link active" onclick="showHome()">Home</button>
         <button id="navHot" class="nav-link" onclick="showHotGame()">Hot Game</button>
-        <!-- ✅ tombol baru PROMOTION -->
         <button id="navPromo" class="nav-link" onclick="showPromotion()">Promotion</button>
+        <!-- ✅ tombol baru PARTNERSHIP -->
+        <button id="navPartner" class="nav-link" onclick="showPartner()">Partnership</button>
       </nav>
     </header>
 
@@ -116,13 +117,28 @@
         <section class="card">
           <h2 class="section-title">PROMOTION</h2>
           <p class="text-muted small">
-            Special promotion & bonus untuk ahli 5G88. Klik banner untuk info lebih lanjut.
+            Special promotion &amp; bonus untuk ahli 5G88. Klik banner untuk info lebih lanjut.
           </p>
         </section>
 
         <!-- Grid 3 kolom di desktop, auto responsif -->
         <section id="promoBigGrid" class="promo-big-grid">
           <!-- Banner promotion besar akan di-render oleh tips-page.js -->
+        </section>
+      </section>
+
+      <!-- ================== PARTNERSHIP PAGE ================== -->
+      <section id="partnerPage" class="partner-page" style="display:none;">
+        <section class="card">
+          <h2 class="section-title">PARTNERSHIP</h2>
+          <p class="text-muted small">
+            Partner pilihan 5G88. Pilih brand kesukaan anda dan tekan <b>Join Now</b> untuk daftar.
+          </p>
+        </section>
+
+        <!-- Grid 4 kolom di desktop -->
+        <section id="partnerGrid" class="partner-grid">
+          <!-- Card partnership akan di-render oleh tips-page.js -->
         </section>
       </section>
 
