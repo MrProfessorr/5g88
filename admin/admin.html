@@ -83,6 +83,22 @@
           <!-- list promotion besar dari JS -->
         </div>
       </section>
+
+      <!-- ===== PARTNERSHIP ADMIN ===== -->
+      <section class="card admin-panel">
+        <h2>Partnership</h2>
+        <p class="text-muted small">
+          Tambah logo partner, rating, dan link <b>Join Now</b> (tampil di tab PARTNERSHIP).
+        </p>
+
+        <button type="button" class="btn primary" onclick="openPartnerNewModal()">
+          + Tambah Partnership
+        </button>
+
+        <div id="partnerList" class="admin-card-list" style="margin-top:12px; max-height:260px; overflow-y:auto;">
+          <!-- list partnership dari JS -->
+        </div>
+      </section>
     </main>
   </div>
 
@@ -177,6 +193,41 @@
       </div>
       <div class="modal-footer">
         <button type="button" id="promoBigModalSaveBtn" class="btn primary">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL PARTNERSHIP ===== -->
+  <div id="partnerModal" class="modal">
+    <div class="modal-backdrop" onclick="closePartnerModal()"></div>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="partnerModalTitle">Partnership</h3>
+        <button type="button" class="modal-close" onclick="closePartnerModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">
+          Nama Partner (opsional)
+          <input type="text" id="partnerName" placeholder="Contoh: K138">
+        </label>
+
+        <label class="form-label">
+          Rating (0.0 – 5.0)
+          <input type="number" id="partnerRating" step="0.1" min="0" max="5" placeholder="3.8">
+        </label>
+
+        <label class="form-label">
+          URL Logo (PNG/JPG)
+          <input type="text" id="partnerLogoUrl" placeholder="https://...logo.png">
+        </label>
+
+        <label class="form-label">
+          Link Join Now (tab baru)
+          <input type="text" id="partnerJoinUrl" placeholder="https://link-join.com/">
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="partnerModalSaveBtn" class="btn primary">Save</button>
       </div>
     </div>
   </div>
