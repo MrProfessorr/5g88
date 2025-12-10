@@ -18,6 +18,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const rateGameTimeEl = document.getElementById("rateGameTime");
 
+  // ====== CONTAINER FLOATING BUTTONS ======
+  const floatingLeftEl  = document.getElementById("floatingLeft");
+  const floatingRightEl = document.getElementById("floatingRight");
+
   // ====== TAB HOME / HOT / PROMO / PARTNER (LOCALSTORAGE) ======
   const TAB_KEY = "tipsPageActiveTab";
   let currentTab = "home";
@@ -138,6 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const promoBigRef  = db.ref("promotions");
   const partnersRef  = db.ref("partnerships");
   const navTabsRef   = db.ref("nav_tabs");
+  const floatingRef  = db.ref("floating_buttons"); // 🔥 config tombol floating
 
   let promoSliderTimer = null;
 
@@ -177,6 +182,58 @@ document.addEventListener("DOMContentLoaded", () => {
   navTabsRef.on("value", (snap) => {
     applyNavConfig(snap.val());
   });
+
+  // ================== FLOATING BUTTONS (WA / TG / JOIN US) ==================
+  function renderFloatingButtons(snapshot) {
+    const data = snapshot.val() || {};
+    const wa   = data.whatsapp || {};
+    const tg   = data.telegram || {};
+    const join = data.join     || {};
+
+    if (floatingLeftEl)  floatingLeftEl.innerHTML  = "";
+    if (floatingRightEl) floatingRightEl.innerHTML = "";
+
+    // Helper buat bikin 1 tombol
+    function createFloatingBtn(cfg, extraClass, labelText) {
+      if (!cfg || !cfg.enabled || !cfg.link) return null;
+      const a = document.createElement("a");
+      a.href   = cfg.link;
+      a.target = "_blank";
+      a.rel    = "noopener noreferrer";
+      a.className = "floating-btn " + (extraClass || "");
+
+      if (cfg.iconUrl) {
+        const img = document.createElement("img");
+        img.src = cfg.iconUrl;
+        img.alt = labelText || "icon";
+        img.className = "floating-btn-img";
+        a.appendChild(img);
+      } else {
+        const span = document.createElement("span");
+        span.className = "floating-btn-label";
+        span.textContent = labelText || "BTN";
+        a.appendChild(span);
+      }
+
+      return a;
+    }
+
+    // WhatsApp & Telegram di kiri bawah (stack)
+    if (floatingLeftEl) {
+      const waBtn = createFloatingBtn(wa, "floating-wa", "WA");
+      const tgBtn = createFloatingBtn(tg, "floating-tg", "TG");
+      if (waBtn) floatingLeftEl.appendChild(waBtn);
+      if (tgBtn) floatingLeftEl.appendChild(tgBtn);
+    }
+
+    // Join Us di kanan bawah
+    if (floatingRightEl) {
+      const joinBtn = createFloatingBtn(join, "floating-join", "JOIN");
+      if (joinBtn) floatingRightEl.appendChild(joinBtn);
+    }
+  }
+
+  floatingRef.on("value", renderFloatingButtons);
 
   // ================== PROMO BANNER (FREE CREDIT) ==================
   function renderPromos(snapshot) {
