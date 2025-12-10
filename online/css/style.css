@@ -770,3 +770,54 @@ input[type="checkbox"].toggle:checked::before{
     font-size: 0.75rem;
   }
 }
+/* === PROMOTION BIG GRID === */
+.promo-big-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap:16px;
+}
+
+.promo-big-card{
+  background: linear-gradient(135deg, rgba(15,23,42,.9), rgba(24,24,27,.9));
+  border-radius:18px;
+  padding:10px;
+  box-shadow:0 10px 25px rgba(0,0,0,.45);
+  border:1px solid rgba(148,163,184,.35);
+  overflow:hidden;
+}
+
+.promo-big-link{
+  display:block;
+  border-radius:12px;
+  overflow:hidden;
+}
+
+.promo-big-img{
+  width:100%;
+  display:block;
+  object-fit:cover;
+}
+
+.promo-big-caption{
+  margin-top:8px;
+  font-size:.8rem;
+  color:#e5e7eb;
+}
+
+.promo-big-title{
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+
+.promo-big-text{
+  margin-top:2px;
+  color:#9ca3af;
+}
+
+/* Pastikan di desktop bisa 3 kolom */
+@media (min-width: 992px){
+  .promo-big-grid{
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
