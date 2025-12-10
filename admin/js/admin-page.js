@@ -3,22 +3,21 @@
 document.addEventListener("DOMContentLoaded", () => {
   const MODAL_OPEN_CLASS = "show";
 
-  // ===== ELEMENT CARD PLATFORM =====
-  const platformInput = document.getElementById("platformName");
-  const gameListBox   = document.getElementById("gameListBox");
-  const saveBtn       = document.getElementById("saveCardBtn");
-  const cardsListEl   = document.getElementById("cardsList");
+  // ===== ELEMENT MODAL PLATFORM / PRODUCT =====
+  const platformModal      = document.getElementById("platformModal");
+  const platformModalTitle = document.getElementById("platformModalTitle");
+  const platformInput      = document.getElementById("platformName");
+  const gameListBox        = document.getElementById("gameListBox");
+  const platformSaveBtn    = document.getElementById("platformModalSaveBtn");
+  const cardsListEl        = document.getElementById("cardsList");
 
-  // Modal TAMBAH PLATFORM
-  const platformModal = document.getElementById("platformModal");
-
-  // Modal VIEW / EDIT list game
+  // Modal VIEW / EDIT list game per card
   const gamesModal        = document.getElementById("gamesModal");
   const gamesModalTitle   = document.getElementById("gamesModalTitle");
   const gamesModalBox     = document.getElementById("gamesModalBox");
   const gamesModalEditBtn = document.getElementById("gamesModalEditBtn");
   const gamesModalSaveBtn = document.getElementById("gamesModalSaveBtn");
-  let currentEditKey      = null; // card yang sedang di-edit di modal
+  let currentEditKey      = null; // card yang sedang di-edit di gamesModal
 
   // ===== NAV TABS TOGGLE =====
   const navHomeToggle    = document.getElementById("navHomeToggle");
@@ -66,10 +65,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const cardsRef    = db.ref("tips_cards");
-  const promosRef   = db.ref("promo_banners");   // free credit kecil
-  const promoBigRef = db.ref("promotions");      // promotion besar (tab PROMOTION)
-  const partnersRef = db.ref("partnerships");    // partnership untuk tab PARTNERSHIP
-  const navTabsRef  = db.ref("nav_tabs");        // setting tombol nav
+  const promosRef   = db.ref("promo_banners");
+  const promoBigRef = db.ref("promotions");
+  const partnersRef = db.ref("partnerships");
+  const navTabsRef  = db.ref("nav_tabs");
 
   // ========= Helpers umum =========
 
@@ -120,13 +119,20 @@ document.addEventListener("DOMContentLoaded", () => {
     el.textContent = (games || []).join("\n");
   }
 
-  // ===== MODAL TAMBAH PLATFORM BARU =====
+  // ==================================================
+  // ============  MODAL PLATFORM / PRODUCT  ==========
+  // ==================================================
+
+  function resetPlatformForm() {
+    if (!platformInput || !gameListBox) return;
+    platformInput.value = "";
+    gameListBox.textContent = "";
+  }
+
   function openPlatformNewModal() {
     if (!platformModal) return;
-
-    if (platformInput) platformInput.value = "";
-    if (gameListBox)   gameListBox.textContent = "";
-
+    platformModalTitle.textContent = "Tambah Platform";
+    resetPlatformForm();
     platformModal.classList.add(MODAL_OPEN_CLASS);
   }
 
@@ -138,20 +144,19 @@ document.addEventListener("DOMContentLoaded", () => {
   window.openPlatformNewModal = openPlatformNewModal;
   window.closePlatformModal   = closePlatformModalInternal;
 
-  // ========= SAVE CARD BARU =========
-  if (saveBtn) {
-    saveBtn.addEventListener("click", () => {
-      const platformName = (platformInput?.value || "").trim();
+  if (platformSaveBtn) {
+    platformSaveBtn.addEventListener("click", () => {
+      const platformName = (platformInput.value || "").trim();
       const games        = getGamesFromBox(gameListBox);
 
       if (!platformName) {
         alert("Isi nama platform dulu bro.");
-        platformInput && platformInput.focus();
+        platformInput.focus();
         return;
       }
       if (games.length === 0) {
         alert("Isi list nama game (min 1).");
-        gameListBox && gameListBox.focus();
+        gameListBox.focus();
         return;
       }
 
@@ -167,23 +172,21 @@ document.addEventListener("DOMContentLoaded", () => {
         .child(key)
         .set(payload)
         .then(() => {
-          alert("Card berjaya disimpan. Cek di bawah & di halaman user.");
-          if (platformInput) platformInput.value = "";
-          if (gameListBox)   gameListBox.textContent = "";
-
-          // tutup modal jika ada
-          if (platformModal) {
-            platformModal.classList.remove(MODAL_OPEN_CLASS);
-          }
+          alert("Platform berjaya disimpan. Cek di list & di halaman user.");
+          resetPlatformForm();
+          closePlatformModalInternal();
         })
         .catch((err) => {
-          console.error("Gagal simpan card:", err);
+          console.error("Gagal simpan platform:", err);
           alert("Gagal simpan ke Firebase. Cek console.");
         });
     });
   }
 
-  // ========= MODAL VIEW / EDIT DAFTAR GAME =========
+  // ==================================================
+  // ==========  MODAL VIEW / EDIT LIST GAME  =========
+  // ==================================================
+
   function openGamesModal(key, card) {
     if (!gamesModal || !gamesModalBox) return;
 
@@ -239,7 +242,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ========= RENDER LIST CARD DI ADMIN =========
+  // ==================================================
+  // ===========  RENDER LIST CARD PLATFORM  ==========
+  // ==================================================
+
   function renderCardsList(snapshot) {
     const data = snapshot.val() || {};
     cardsListEl.innerHTML = "";
@@ -248,7 +254,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (entries.length === 0) {
       cardsListEl.innerHTML =
-        '<p class="text-muted small">Belum ada card. Tekan "Tambah Platform" untuk buat card baru.</p>';
+        '<p class="text-muted small">Belum ada platform. Tekan "Tambah Platform".</p>';
       return;
     }
 
