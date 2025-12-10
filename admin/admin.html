@@ -14,7 +14,7 @@
     </header>
 
     <main class="app-main">
-      <!-- ===== PLATFORM / PRODUCT ===== -->
+      <!-- ===== PLATFORM / PRODUCT (SATU CARD) ===== -->
       <section class="card admin-panel">
         <h2>Platform / Product</h2>
         <p class="text-muted small">
@@ -24,12 +24,10 @@
         <button type="button" class="btn primary" onclick="openPlatformNewModal()">
           + Tambah Platform
         </button>
-      </section>
 
-      <!-- ===== DAFTAR CARD / PLATFORM ===== -->
-      <section class="card admin-panel">
-        <h2>Daftar Card / Platform</h2>
-        <div id="cardsList" class="admin-card-list">
+        <div id="cardsList"
+             class="admin-card-list"
+             style="margin-top:12px;">
           <!-- diisi dari JS -->
         </div>
       </section>
@@ -112,8 +110,9 @@
           + Tambah Banner
         </button>
 
-        <!-- list promo kecil (FREE CREDIT) -->
-        <div id="promoList" class="admin-card-list admin-card-list--promo" style="margin-top:12px;">
+        <div id="promoList"
+             class="admin-card-list admin-card-list--promo"
+             style="margin-top:12px;">
           <!-- list promo dari JS -->
         </div>
       </section>
@@ -129,7 +128,9 @@
           + Tambah Promotion
         </button>
 
-        <div id="promoBigList" class="admin-card-list" style="margin-top:12px; max-height:260px; overflow-y:auto;">
+        <div id="promoBigList"
+             class="admin-card-list"
+             style="margin-top:12px; max-height:260px; overflow-y:auto;">
           <!-- list promotion besar dari JS -->
         </div>
       </section>
@@ -145,21 +146,23 @@
           + Tambah Partnership
         </button>
 
-        <div id="partnerList" class="admin-card-list" style="margin-top:12px; max-height:260px; overflow-y:auto;">
+        <div id="partnerList"
+             class="admin-card-list"
+             style="margin-top:12px; max-height:260px; overflow-y:auto;">
           <!-- list partnership dari JS -->
         </div>
       </section>
     </main>
   </div>
-  <!-- ===== MODAL TAMBAH PLATFORM / CARD BARU ===== -->
+
+  <!-- ===== MODAL TAMBAH PLATFORM / PRODUCT ===== -->
   <div id="platformModal" class="modal">
     <div class="modal-backdrop" onclick="closePlatformModal()"></div>
     <div class="modal-dialog">
       <div class="modal-header">
-        <h3>Tambah Platform / Card Baru</h3>
+        <h3 id="platformModalTitle">Tambah Platform</h3>
         <button type="button" class="modal-close" onclick="closePlatformModal()">✕</button>
       </div>
-
       <div class="modal-body">
         <label class="form-label">
           Nama Platform / Product
@@ -180,14 +183,15 @@
           </small>
         </label>
       </div>
-
       <div class="modal-footer">
-        <button type="button" id="saveCardBtn" class="btn primary">💾 Save Card</button>
+        <button type="button" id="platformModalSaveBtn" class="btn primary">
+          Save
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- ===== MODAL LIST GAME PER CARD ===== -->
+  <!-- ===== MODAL LIST GAME PER CARD (VIEW / EDIT) ===== -->
   <div id="gamesModal" class="modal">
     <div class="modal-backdrop" onclick="closeGamesModal()"></div>
     <div class="modal-dialog">
@@ -225,7 +229,6 @@
           <input type="text" id="promoTitle" placeholder="Contoh: FREE RM5">
         </label>
 
-        <!-- input caption baru -->
         <label class="form-label">
           Caption Promo (tampil di bawah gambar)
           <input type="text" id="promoCaption" placeholder="Contoh: NEW MEMBER FREE CREDIT RM5">
