@@ -1,241 +1,66 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>Admin Tips Game</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body class="page-admin">
-  <div class="app-shell">
-    <header class="app-header">
-      <h1>Admin Tips Game</h1>
-      <a href="index.html" class="btn ghost">⮌ Ke Halaman User</a>
-    </header>
-
-    <main class="app-main">
-      <!-- ===== FORM TAMBAH CARD ===== -->
+      <!-- ===== NAVIGATION TABS ON/OFF ===== -->
       <section class="card admin-panel">
-        <h2>Buat / Tambah Card Baru</h2>
-
-        <label class="form-label">
-          Nama Platform / Product
-          <input type="text" id="platformName"
-                 placeholder="Contoh: MEGA888, 918KISS, PUSSY888, PLAYTECH">
-        </label>
-
-        <label class="form-label">
-          List Nama Game (satu per baris)
-          <div id="gameListBox"
-               class="multi-input"
-               contenteditable="true"
-               spellcheck="false"
-               placeholder="COYOTE CASH&#10;IRISH LUCK&#10;SIX ACROBATS"></div>
-          <small class="text-muted small">
-            • Enter / Ctrl+Enter untuk turun baris.  
-            • Boleh paste format array: 'GAME1','GAME2' atau "GAME1","GAME2".
-          </small>
-        </label>
-
-        <button id="saveCardBtn" class="btn primary full">💾 Save Card</button>
+        <h2>Navigation Tabs</h2>
         <p class="text-muted small">
-          * Data disimpan di Firebase, tidak hilang walau ganti device / clear cache.
-        </p>
-      </section>
-
-      <!-- ===== DAFTAR CARD / PLATFORM ===== -->
-      <section class="card admin-panel">
-        <h2>Daftar Card / Platform</h2>
-        <div id="cardsList" class="admin-card-list">
-          <!-- diisi dari JS -->
-        </div>
-      </section>
-
-      <!-- ===== FREE CREDIT / PROMO BANNER ADMIN ===== -->
-      <section class="card admin-panel">
-        <h2>Free Credit / Promo Banner</h2>
-        <p class="text-muted small">
-          Banner ini muncul di halaman Hot Game di bawah ticker bar.
+          Pilih tab mana yang ingin ditampilkan di halaman user
+          (HOME / HOT GAME / PROMOTION / PARTNERSHIP).
         </p>
 
-        <button type="button" class="btn primary" onclick="openPromoNewModal()">
-          + Tambah Banner
-        </button>
+        <div class="admin-card-list">
+          <!-- HOME -->
+          <div class="admin-card-item">
+            <div class="admin-card-info">
+              <div class="admin-card-title">HOME</div>
+              <div class="admin-card-sub">
+                Halaman artikel & slider utama.
+              </div>
+            </div>
+            <div class="switch-wrap">
+              <span class="switch-label">Aktif</span>
+              <input type="checkbox" id="navHomeToggle" class="toggle">
+            </div>
+          </div>
 
-        <!-- list promo kecil (FREE CREDIT) -->
-        <div id="promoList" class="admin-card-list admin-card-list--promo" style="margin-top:12px;">
-          <!-- list promo dari JS -->
+          <!-- HOT GAME -->
+          <div class="admin-card-item">
+            <div class="admin-card-info">
+              <div class="admin-card-title">HOT GAME</div>
+              <div class="admin-card-sub">
+                Halaman tips percentage + free credit banner.
+              </div>
+            </div>
+            <div class="switch-wrap">
+              <span class="switch-label">Aktif</span>
+              <input type="checkbox" id="navHotToggle" class="toggle">
+            </div>
+          </div>
+
+          <!-- PROMOTION -->
+          <div class="admin-card-item">
+            <div class="admin-card-info">
+              <div class="admin-card-title">PROMOTION</div>
+              <div class="admin-card-sub">
+                Grid promotion banner besar.
+              </div>
+            </div>
+            <div class="switch-wrap">
+              <span class="switch-label">Aktif</span>
+              <input type="checkbox" id="navPromoToggle" class="toggle">
+            </div>
+          </div>
+
+          <!-- PARTNERSHIP -->
+          <div class="admin-card-item">
+            <div class="admin-card-info">
+              <div class="admin-card-title">PARTNERSHIP</div>
+              <div class="admin-card-sub">
+                Logo partner + tombol Join Now.
+              </div>
+            </div>
+            <div class="switch-wrap">
+              <span class="switch-label">Aktif</span>
+              <input type="checkbox" id="navPartnerToggle" class="toggle">
+            </div>
+          </div>
         </div>
       </section>
-
-      <!-- ===== PROMOTION BANNER BESAR ADMIN ===== -->
-      <section class="card admin-panel">
-        <h2>Promotion Banner (Big)</h2>
-        <p class="text-muted small">
-          Banner ini muncul di tab <b>PROMOTION</b> (grid 3 gambar per baris di desktop).
-        </p>
-
-        <button type="button" class="btn primary" onclick="openBigPromoNewModal()">
-          + Tambah Promotion
-        </button>
-
-        <div id="promoBigList" class="admin-card-list" style="margin-top:12px; max-height:260px; overflow-y:auto;">
-          <!-- list promotion besar dari JS -->
-        </div>
-      </section>
-
-      <!-- ===== PARTNERSHIP ADMIN ===== -->
-      <section class="card admin-panel">
-        <h2>Partnership</h2>
-        <p class="text-muted small">
-          Tambah logo partner, rating, dan link <b>Join Now</b> (tampil di tab PARTNERSHIP).
-        </p>
-
-        <button type="button" class="btn primary" onclick="openPartnerNewModal()">
-          + Tambah Partnership
-        </button>
-
-        <div id="partnerList" class="admin-card-list" style="margin-top:12px; max-height:260px; overflow-y:auto;">
-          <!-- list partnership dari JS -->
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <!-- ===== MODAL LIST GAME PER CARD ===== -->
-  <div id="gamesModal" class="modal">
-    <div class="modal-backdrop" onclick="closeGamesModal()"></div>
-    <div class="modal-dialog">
-      <div class="modal-header">
-        <h3 id="gamesModalTitle">Daftar Game</h3>
-        <button type="button" class="modal-close" onclick="closeGamesModal()">✕</button>
-      </div>
-      <div class="modal-body">
-        <label class="form-label">
-          List Nama Game (satu per baris)
-          <div id="gamesModalBox"
-               class="multi-input"
-               contenteditable="false"
-               spellcheck="false"></div>
-        </label>
-      </div>
-      <div class="modal-footer">
-        <button type="button" id="gamesModalEditBtn" class="btn secondary">Edit</button>
-        <button type="button" id="gamesModalSaveBtn" class="btn primary" style="display:none;">Save</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== MODAL PROMO BANNER KECIL (FREE CREDIT) ===== -->
-  <div id="promoModal" class="modal">
-    <div class="modal-backdrop" onclick="closePromoModal()"></div>
-    <div class="modal-dialog">
-      <div class="modal-header">
-        <h3 id="promoModalTitle">Promo Banner</h3>
-        <button type="button" class="modal-close" onclick="closePromoModal()">✕</button>
-      </div>
-      <div class="modal-body">
-        <label class="form-label">
-          Judul (opsional)
-          <input type="text" id="promoTitle" placeholder="Contoh: FREE RM5">
-        </label>
-
-        <!-- input caption baru -->
-        <label class="form-label">
-          Caption Promo (tampil di bawah gambar)
-          <input type="text" id="promoCaption" placeholder="Contoh: NEW MEMBER FREE CREDIT RM5">
-        </label>
-
-        <label class="form-label">
-          URL Gambar (PNG/JPG)
-          <input type="text" id="promoImageUrl" placeholder="https://i.imgur.com/xxxx.png">
-        </label>
-
-        <label class="form-label">
-          Link Claim (akan dibuka tab baru)
-          <input type="text" id="promoTargetUrl" placeholder="https://5g88.baby/signup?...">
-        </label>
-      </div>
-      <div class="modal-footer">
-        <button type="button" id="promoModalSaveBtn" class="btn primary">Save</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== MODAL PROMOTION BANNER BESAR ===== -->
-  <div id="promoBigModal" class="modal">
-    <div class="modal-backdrop" onclick="closeBigPromoModal()"></div>
-    <div class="modal-dialog">
-      <div class="modal-header">
-        <h3 id="promoBigModalTitle">Promotion Banner</h3>
-        <button type="button" class="modal-close" onclick="closeBigPromoModal()">✕</button>
-      </div>
-      <div class="modal-body">
-        <label class="form-label">
-          Judul (opsional)
-          <input type="text" id="promoBigTitle" placeholder="Contoh: WELCOME BONUS 200%">
-        </label>
-
-        <label class="form-label">
-          Caption (tampil di bawah gambar)
-          <input type="text" id="promoBigCaption" placeholder="Contoh: BONUS HINGGA RM388 UNTUK MEMBER BARU">
-        </label>
-
-        <label class="form-label">
-          URL Gambar (PNG/JPG)
-          <input type="text" id="promoBigImageUrl" placeholder="https://i.imgur.com/xxxx.png">
-        </label>
-
-        <label class="form-label">
-          Link Tab Baru (target url)
-          <input type="text" id="promoBigTargetUrl" placeholder="https://5g88.baby/signup">
-        </label>
-      </div>
-      <div class="modal-footer">
-        <button type="button" id="promoBigModalSaveBtn" class="btn primary">Save</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== MODAL PARTNERSHIP ===== -->
-  <div id="partnerModal" class="modal">
-    <div class="modal-backdrop" onclick="closePartnerModal()"></div>
-    <div class="modal-dialog">
-      <div class="modal-header">
-        <h3 id="partnerModalTitle">Partnership</h3>
-        <button type="button" class="modal-close" onclick="closePartnerModal()">✕</button>
-      </div>
-      <div class="modal-body">
-        <label class="form-label">
-          Nama Partner (opsional)
-          <input type="text" id="partnerName" placeholder="Contoh: K138">
-        </label>
-
-        <label class="form-label">
-          Rating (0.0 – 5.0)
-          <input type="number" id="partnerRating" step="0.1" min="0" max="5" placeholder="3.8">
-        </label>
-
-        <label class="form-label">
-          URL Logo (PNG/JPG)
-          <input type="text" id="partnerLogoUrl" placeholder="https://...logo.png">
-        </label>
-
-        <label class="form-label">
-          Link Join Now (tab baru)
-          <input type="text" id="partnerJoinUrl" placeholder="https://link-join.com/">
-        </label>
-      </div>
-      <div class="modal-footer">
-        <button type="button" id="partnerModalSaveBtn" class="btn primary">Save</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Firebase + Script -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-  <script src="js/firebase-config.js"></script>
-  <script src="js/admin-page.js"></script>
-</body>
-</html>
