@@ -219,19 +219,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // WhatsApp & Telegram di kiri bawah (stack)
-  if (floatingLeftEl) {
-    const waBtn   = createFloatingBtn(wa,   "floating-wa",   "WA");
-    const tgBtn   = createFloatingBtn(tg,   "floating-tg",   "TG");
-    const joinBtn = createFloatingBtn(join, "floating-join", "JOIN");
+    if (floatingLeftEl) {
+      const waBtn = createFloatingBtn(wa, "floating-wa", "WA");
+      const tgBtn = createFloatingBtn(tg, "floating-tg", "TG");
+      if (waBtn) floatingLeftEl.appendChild(waBtn);
+      if (tgBtn) floatingLeftEl.appendChild(tgBtn);
+    }
 
-    if (waBtn)   floatingLeftEl.appendChild(waBtn);
-    if (tgBtn)   floatingLeftEl.appendChild(tgBtn);
-    if (joinBtn) floatingLeftEl.appendChild(joinBtn);
-  }
-
-  // optional: kosongkan kanan supaya tak ada apa-apa
-  if (floatingRightEl) {
-    floatingRightEl.innerHTML = "";
+    // Join Us di kanan bawah
+    if (floatingRightEl) {
+      const joinBtn = createFloatingBtn(join, "floating-join", "JOIN");
+      if (joinBtn) floatingRightEl.appendChild(joinBtn);
+    }
   }
 
   floatingRef.on("value", renderFloatingButtons);
