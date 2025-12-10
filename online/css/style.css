@@ -644,7 +644,7 @@ input[type="checkbox"].toggle:checked::before{
 
 .ticker-track span{
   font-size:0.82rem;
-  color:#e5e7eb;
+  color:gold;
   margin-right:64px;          /* jarak antar teks */
   letter-spacing:0.06em;
   text-transform:uppercase;
@@ -782,7 +782,7 @@ input[type="checkbox"].toggle:checked::before{
   border-radius:18px;
   padding:10px;
   box-shadow:0 10px 25px rgba(0,0,0,.45);
-  border:1px solid rgba(148,163,184,.35);
+  border:1px solid gold;
   overflow:hidden;
 }
 
@@ -801,18 +801,20 @@ input[type="checkbox"].toggle:checked::before{
 .promo-big-caption{
   margin-top:8px;
   font-size:.8rem;
-  color:#e5e7eb;
+  color:gold;
 }
 
 .promo-big-title{
   font-weight:700;
   letter-spacing:.04em;
   text-transform:uppercase;
+  text-align: center;
 }
 
 .promo-big-text{
   margin-top:2px;
   color:#9ca3af;
+  text-align: center;
 }
 
 /* Pastikan di desktop bisa 3 kolom */
