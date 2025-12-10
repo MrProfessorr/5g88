@@ -677,7 +677,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const delBtn = document.createElement("button");
       delBtn.className = "btn secondary";
       delBtn.style.fontSize = "0.7rem";
-      delBtn.textContent = "✖ Hapus";
+      delBtn.textContent = "Delete";
       delBtn.addEventListener("click", () => {
         if (confirm("Hapus promotion ini?")) {
           promoBigRef.child(key).remove();
@@ -868,7 +868,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const delBtn = document.createElement("button");
       delBtn.className = "btn secondary";
       delBtn.style.fontSize = "0.7rem";
-      delBtn.textContent = "✖ Hapus";
+      delBtn.textContent = "Delete";
       delBtn.addEventListener("click", () => {
         if (confirm("Hapus partnership ini?")) {
           partnersRef.child(key).remove();
