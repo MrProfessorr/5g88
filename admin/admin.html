@@ -98,6 +98,101 @@
           </div>
         </div>
       </section>
+            <!-- ===== FLOATING BUTTONS (WA / TG / JOIN US) ===== -->
+      <section class="card admin-panel">
+        <h2>Floating Buttons</h2>
+        <p class="text-muted small">
+          Atur tombol WhatsApp, Telegram dan Join Us yang muncul di pojok halaman user.
+        </p>
+
+        <div class="admin-card-list">
+
+          <!-- WHATSAPP -->
+          <div class="admin-card-item">
+            <div class="admin-card-info">
+              <div class="admin-card-title">WhatsApp</div>
+              <div class="admin-card-sub">
+                Tombol chat di kiri bawah.
+              </div>
+
+              <label class="form-label small">
+                Link WhatsApp  
+                <input type="text" id="waLink"
+                  placeholder="Contoh: https://wa.me/60123456789?text=Halo%205G88">
+              </label>
+
+              <label class="form-label small">
+                Icon PNG (opsional)  
+                <input type="text" id="waIcon"
+                  placeholder="https://.../whatsapp-icon.png">
+              </label>
+            </div>
+            <div class="switch-wrap">
+              <span class="switch-label">Aktif</span>
+              <input type="checkbox" id="waEnabled" class="toggle">
+            </div>
+          </div>
+
+          <!-- TELEGRAM -->
+          <div class="admin-card-item">
+            <div class="admin-card-info">
+              <div class="admin-card-title">Telegram</div>
+              <div class="admin-card-sub">
+                Tombol Telegram di kiri bawah (di atas WhatsApp).
+              </div>
+
+              <label class="form-label small">
+                Link Telegram  
+                <input type="text" id="tgLink"
+                  placeholder="Contoh: https://t.me/YourChannel">
+              </label>
+
+              <label class="form-label small">
+                Icon PNG (opsional)  
+                <input type="text" id="tgIcon"
+                  placeholder="https://.../telegram-icon.png">
+              </label>
+            </div>
+            <div class="switch-wrap">
+              <span class="switch-label">Aktif</span>
+              <input type="checkbox" id="tgEnabled" class="toggle">
+            </div>
+          </div>
+
+          <!-- JOIN US -->
+          <div class="admin-card-item">
+            <div class="admin-card-info">
+              <div class="admin-card-title">Join Us</div>
+              <div class="admin-card-sub">
+                Tombol Join Us di kanan bawah (buka tab baru).
+              </div>
+
+              <label class="form-label small">
+                Link Join Us  
+                <input type="text" id="joinLink"
+                  placeholder="Contoh: https://5g88.baby/signup">
+              </label>
+
+              <label class="form-label small">
+                Icon PNG (opsional)  
+                <input type="text" id="joinIcon"
+                  placeholder="https://.../join-icon.png">
+              </label>
+            </div>
+            <div class="switch-wrap">
+              <span class="switch-label">Aktif</span>
+              <input type="checkbox" id="joinEnabled" class="toggle">
+            </div>
+          </div>
+
+        </div>
+
+        <div style="margin-top:12px; text-align:right;">
+          <button type="button" class="btn primary" id="floatingSaveBtn">
+            💾 Save Floating Buttons
+          </button>
+        </div>
+      </section>
 
       <!-- ===== FREE CREDIT / PROMO BANNER ADMIN ===== -->
       <section class="card admin-panel">
