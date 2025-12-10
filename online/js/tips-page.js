@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const day    = pad(now.getDate());
     const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
     const month  = months[now.getMonth()];
-    the year   = now.getFullYear();
+    const year   = now.getFullYear();
 
     rateGameTimeEl.textContent =
       `RATE GAME : ${hours}:${mins}:${secs} ${day} ${month} ${year}`;
