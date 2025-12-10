@@ -25,6 +25,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const navPromoToggle   = document.getElementById("navPromoToggle");
   const navPartnerToggle = document.getElementById("navPartnerToggle");
 
+  // ===== ELEMENT FLOATING BUTTONS (WA / TG / JOIN) =====
+  const waEnabled       = document.getElementById("waEnabled");
+  const waLinkInput     = document.getElementById("waLink");
+  const waIconInput     = document.getElementById("waIcon");
+
+  const tgEnabled       = document.getElementById("tgEnabled");
+  const tgLinkInput     = document.getElementById("tgLink");
+  const tgIconInput     = document.getElementById("tgIcon");
+
+  const joinEnabled     = document.getElementById("joinEnabled");
+  const joinLinkInput   = document.getElementById("joinLink");
+  const joinIconInput   = document.getElementById("joinIcon");
+
+  const floatingSaveBtn = document.getElementById("floatingSaveBtn");
+
   // ===== ELEMENT PROMO BANNER (FREE CREDIT kecil) =====
   const promoListEl       = document.getElementById("promoList");
   const promoModal        = document.getElementById("promoModal");
@@ -69,6 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const promoBigRef = db.ref("promotions");
   const partnersRef = db.ref("partnerships");
   const navTabsRef  = db.ref("nav_tabs");
+  const floatingRef = db.ref("floating_buttons"); // <-- baru
 
   // ========= Helpers umum =========
 
@@ -359,6 +375,69 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   navTabsRef.on("value", renderNavTabs);
+
+  // ==================================================
+  // ============  FLOATING BUTTONS ADMIN  ============
+  // ==================================================
+
+  function renderFloatingButtons(snapshot) {
+    const data = snapshot.val() || {};
+    const wa   = data.whatsapp || {};
+    const tg   = data.telegram || {};
+    const join = data.join     || {};
+
+    if (waEnabled)      waEnabled.checked   = !!wa.enabled;
+    if (waLinkInput)    waLinkInput.value   = wa.link     || "";
+    if (waIconInput)    waIconInput.value   = wa.iconUrl  || "";
+
+    if (tgEnabled)      tgEnabled.checked   = !!tg.enabled;
+    if (tgLinkInput)    tgLinkInput.value   = tg.link     || "";
+    if (tgIconInput)    tgIconInput.value   = tg.iconUrl  || "";
+
+    if (joinEnabled)    joinEnabled.checked = !!join.enabled;
+    if (joinLinkInput)  joinLinkInput.value = join.link   || "";
+    if (joinIconInput)  joinIconInput.value = join.iconUrl|| "";
+  }
+
+  floatingRef.on("value", renderFloatingButtons);
+
+  if (floatingSaveBtn) {
+    floatingSaveBtn.addEventListener("click", () => {
+      const waLink   = (waLinkInput?.value   || "").trim();
+      const waIcon   = (waIconInput?.value   || "").trim();
+      const tgLink   = (tgLinkInput?.value   || "").trim();
+      const tgIcon   = (tgIconInput?.value   || "").trim();
+      const joinLink = (joinLinkInput?.value || "").trim();
+      const joinIcon = (joinIconInput?.value || "").trim();
+
+      const payload = {
+        whatsapp: {
+          enabled: !!waEnabled?.checked && !!waLink,
+          link: waLink,
+          iconUrl: waIcon
+        },
+        telegram: {
+          enabled: !!tgEnabled?.checked && !!tgLink,
+          link: tgLink,
+          iconUrl: tgIcon
+        },
+        join: {
+          enabled: !!joinEnabled?.checked && !!joinLink,
+          link: joinLink,
+          iconUrl: joinIcon
+        }
+      };
+
+      floatingRef.set(payload)
+        .then(() => {
+          alert("Setting floating buttons berjaya disimpan.");
+        })
+        .catch((err) => {
+          console.error("Gagal simpan floating buttons:", err);
+          alert("Gagal simpan floating buttons. Cek console.");
+        });
+    });
+  }
 
   // ==================================================
   // ============  PROMO BANNER / FREE CREDIT =========
