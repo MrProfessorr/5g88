@@ -62,9 +62,25 @@
           + Tambah Banner
         </button>
 
-        <!-- ✅ tambah class admin-card-list--promo supaya max 4 row -->
+        <!-- list promo kecil (FREE CREDIT) -->
         <div id="promoList" class="admin-card-list admin-card-list--promo" style="margin-top:12px;">
           <!-- list promo dari JS -->
+        </div>
+      </section>
+
+      <!-- ===== PROMOTION BANNER BESAR ADMIN ===== -->
+      <section class="card admin-panel">
+        <h2>Promotion Banner (Big)</h2>
+        <p class="text-muted small">
+          Banner ini muncul di tab <b>PROMOTION</b> (grid 3 gambar per baris di desktop).
+        </p>
+
+        <button type="button" class="btn primary" onclick="openBigPromoNewModal()">
+          + Tambah Promotion
+        </button>
+
+        <div id="promoBigList" class="admin-card-list" style="margin-top:12px; max-height:260px; overflow-y:auto;">
+          <!-- list promotion besar dari JS -->
         </div>
       </section>
     </main>
@@ -94,7 +110,7 @@
     </div>
   </div>
 
-  <!-- ===== MODAL PROMO BANNER ===== -->
+  <!-- ===== MODAL PROMO BANNER KECIL (FREE CREDIT) ===== -->
   <div id="promoModal" class="modal">
     <div class="modal-backdrop" onclick="closePromoModal()"></div>
     <div class="modal-dialog">
@@ -108,7 +124,7 @@
           <input type="text" id="promoTitle" placeholder="Contoh: FREE RM5">
         </label>
 
-        <!-- ✅ input caption baru -->
+        <!-- input caption baru -->
         <label class="form-label">
           Caption Promo (tampil di bawah gambar)
           <input type="text" id="promoCaption" placeholder="Contoh: NEW MEMBER FREE CREDIT RM5">
@@ -126,6 +142,41 @@
       </div>
       <div class="modal-footer">
         <button type="button" id="promoModalSaveBtn" class="btn primary">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL PROMOTION BANNER BESAR ===== -->
+  <div id="promoBigModal" class="modal">
+    <div class="modal-backdrop" onclick="closeBigPromoModal()"></div>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="promoBigModalTitle">Promotion Banner</h3>
+        <button type="button" class="modal-close" onclick="closeBigPromoModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">
+          Judul (opsional)
+          <input type="text" id="promoBigTitle" placeholder="Contoh: WELCOME BONUS 200%">
+        </label>
+
+        <label class="form-label">
+          Caption (tampil di bawah gambar)
+          <input type="text" id="promoBigCaption" placeholder="Contoh: BONUS HINGGA RM388 UNTUK MEMBER BARU">
+        </label>
+
+        <label class="form-label">
+          URL Gambar (PNG/JPG)
+          <input type="text" id="promoBigImageUrl" placeholder="https://i.imgur.com/xxxx.png">
+        </label>
+
+        <label class="form-label">
+          Link Tab Baru (target url)
+          <input type="text" id="promoBigTargetUrl" placeholder="https://5g88.baby/signup">
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="promoBigModalSaveBtn" class="btn primary">Save</button>
       </div>
     </div>
   </div>
