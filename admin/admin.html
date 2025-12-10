@@ -14,33 +14,16 @@
     </header>
 
     <main class="app-main">
-      <!-- ===== FORM TAMBAH CARD ===== -->
+      <!-- ===== PLATFORM / PRODUCT ===== -->
       <section class="card admin-panel">
-        <h2>Buat / Tambah Card Baru</h2>
-
-        <label class="form-label">
-          Nama Platform / Product
-          <input type="text" id="platformName"
-                 placeholder="Contoh: MEGA888, 918KISS, PUSSY888, PLAYTECH">
-        </label>
-
-        <label class="form-label">
-          List Nama Game (satu per baris)
-          <div id="gameListBox"
-               class="multi-input"
-               contenteditable="true"
-               spellcheck="false"
-               placeholder="COYOTE CASH&#10;IRISH LUCK&#10;SIX ACROBATS"></div>
-          <small class="text-muted small">
-            • Enter / Ctrl+Enter untuk turun baris.  
-            • Boleh paste format array: 'GAME1','GAME2' atau "GAME1","GAME2".
-          </small>
-        </label>
-
-        <button id="saveCardBtn" class="btn primary full">💾 Save Card</button>
+        <h2>Platform / Product</h2>
         <p class="text-muted small">
-          * Data disimpan di Firebase, tidak hilang walau ganti device / clear cache.
+          Tambah platform + list game untuk Percentage Tips.
         </p>
+
+        <button type="button" class="btn primary" onclick="openPlatformNewModal()">
+          + Tambah Platform
+        </button>
       </section>
 
       <!-- ===== DAFTAR CARD / PLATFORM ===== -->
@@ -167,6 +150,41 @@
         </div>
       </section>
     </main>
+  </div>
+  <!-- ===== MODAL TAMBAH PLATFORM / CARD BARU ===== -->
+  <div id="platformModal" class="modal">
+    <div class="modal-backdrop" onclick="closePlatformModal()"></div>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Tambah Platform / Card Baru</h3>
+        <button type="button" class="modal-close" onclick="closePlatformModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <label class="form-label">
+          Nama Platform / Product
+          <input type="text" id="platformName"
+                 placeholder="Contoh: MEGA888, 918KISS, PUSSY888, PLAYTECH">
+        </label>
+
+        <label class="form-label">
+          List Nama Game (satu per baris)
+          <div id="gameListBox"
+               class="multi-input"
+               contenteditable="true"
+               spellcheck="false"
+               placeholder="COYOTE CASH&#10;IRISH LUCK&#10;SIX ACROBATS"></div>
+          <small class="text-muted small">
+            • Enter / Ctrl+Enter untuk turun baris.  
+            • Boleh paste format array: 'GAME1','GAME2' atau "GAME1","GAME2".
+          </small>
+        </label>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" id="saveCardBtn" class="btn primary">💾 Save Card</button>
+      </div>
+    </div>
   </div>
 
   <!-- ===== MODAL LIST GAME PER CARD ===== -->
