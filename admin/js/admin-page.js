@@ -9,6 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const saveBtn       = document.getElementById("saveCardBtn");
   const cardsListEl   = document.getElementById("cardsList");
 
+  // Modal TAMBAH PLATFORM
+  const platformModal = document.getElementById("platformModal");
+
   // Modal VIEW / EDIT list game
   const gamesModal        = document.getElementById("gamesModal");
   const gamesModalTitle   = document.getElementById("gamesModalTitle");
@@ -117,20 +120,38 @@ document.addEventListener("DOMContentLoaded", () => {
     el.textContent = (games || []).join("\n");
   }
 
+  // ===== MODAL TAMBAH PLATFORM BARU =====
+  function openPlatformNewModal() {
+    if (!platformModal) return;
+
+    if (platformInput) platformInput.value = "";
+    if (gameListBox)   gameListBox.textContent = "";
+
+    platformModal.classList.add(MODAL_OPEN_CLASS);
+  }
+
+  function closePlatformModalInternal() {
+    if (!platformModal) return;
+    platformModal.classList.remove(MODAL_OPEN_CLASS);
+  }
+
+  window.openPlatformNewModal = openPlatformNewModal;
+  window.closePlatformModal   = closePlatformModalInternal;
+
   // ========= SAVE CARD BARU =========
   if (saveBtn) {
     saveBtn.addEventListener("click", () => {
-      const platformName = platformInput.value.trim();
+      const platformName = (platformInput?.value || "").trim();
       const games        = getGamesFromBox(gameListBox);
 
       if (!platformName) {
         alert("Isi nama platform dulu bro.");
-        platformInput.focus();
+        platformInput && platformInput.focus();
         return;
       }
       if (games.length === 0) {
         alert("Isi list nama game (min 1).");
-        gameListBox.focus();
+        gameListBox && gameListBox.focus();
         return;
       }
 
@@ -147,8 +168,13 @@ document.addEventListener("DOMContentLoaded", () => {
         .set(payload)
         .then(() => {
           alert("Card berjaya disimpan. Cek di bawah & di halaman user.");
-          platformInput.value = "";
-          gameListBox.textContent = "";
+          if (platformInput) platformInput.value = "";
+          if (gameListBox)   gameListBox.textContent = "";
+
+          // tutup modal jika ada
+          if (platformModal) {
+            platformModal.classList.remove(MODAL_OPEN_CLASS);
+          }
         })
         .catch((err) => {
           console.error("Gagal simpan card:", err);
@@ -222,7 +248,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (entries.length === 0) {
       cardsListEl.innerHTML =
-        '<p class="text-muted small">Belum ada card. Buat card baru di atas.</p>';
+        '<p class="text-muted small">Belum ada card. Tekan "Tambah Platform" untuk buat card baru.</p>';
       return;
     }
 
@@ -395,7 +421,6 @@ document.addEventListener("DOMContentLoaded", () => {
       };
 
       if (currentPromoKey) {
-        // update saja, biar properti enabled tidak berubah
         promosRef.child(currentPromoKey).update(payload)
           .then(() => {
             alert("Promo banner berjaya diupdate.");
@@ -406,7 +431,6 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Gagal update promo. Cek console.");
           });
       } else {
-        // record baru -> enabled: true
         promosRef.push().set({
           ...payload,
           enabled: true
