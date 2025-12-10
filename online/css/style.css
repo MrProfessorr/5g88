@@ -307,7 +307,7 @@ body.page-admin .app-header::after{
 .btn.secondary{
   background:linear-gradient(135deg, rgba(15,23,42,0.95), #020617);
   color:var(--accent-2);
-  border:1px solid #ff6161;
+  border: 1px solid rgba(56, 189, 248, 0.5);
   box-shadow:0 8px 24px rgba(15,23,42,0.9);
 }
 .btn.secondary:hover{
