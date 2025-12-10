@@ -6,8 +6,8 @@
   --card:#020819;
   --card-soft:#0b1220;
   --accent:#facc15;      /* gold utama */
-  --accent-soft:#fbbf24; /* gold soft */
-  --accent-2:#38bdf8;    /* neon biru */
+  --accent-soft:#38bdf8; /* gold soft */
+  --accent-2:#ff6161;    /* neon biru */
   --accent-2-soft:#0ea5e9;
   --ink:#e5e7eb;
   --muted:#9ca3af;
@@ -307,7 +307,7 @@ body.page-admin .app-header::after{
 .btn.secondary{
   background:linear-gradient(135deg, rgba(15,23,42,0.95), #020617);
   color:var(--accent-2);
-  border:1px solid rgba(56,189,248,0.5);
+  border:1px solid #ff6161;
   box-shadow:0 8px 24px rgba(15,23,42,0.9);
 }
 .btn.secondary:hover{
