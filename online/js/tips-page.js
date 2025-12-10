@@ -22,6 +22,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const floatingLeftEl  = document.getElementById("floatingLeft");
   const floatingRightEl = document.getElementById("floatingRight");
 
+  // 🔽 STATE COLLAPSE UNTUK FLOATING BUTTONS (WA / TG / JOIN)
+  const FLOAT_COLLAPSE_KEY = "tipsFloatingContactsCollapsed.v1";
+  let floatingCollapsed = false;
+  try {
+    floatingCollapsed = localStorage.getItem(FLOAT_COLLAPSE_KEY) === "1";
+  } catch (e) {
+    floatingCollapsed = false;
+  }
+
   // ====== TAB HOME / HOT / PROMO / PARTNER (LOCALSTORAGE) ======
   const TAB_KEY = "tipsPageActiveTab";
   let currentTab = "home";
@@ -106,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const day    = pad(now.getDate());
     const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
     const month  = months[now.getMonth()];
-    const year   = now.getFullYear();
+    the year   = now.getFullYear();
 
     rateGameTimeEl.textContent =
       `RATE GAME : ${hours}:${mins}:${secs} ${day} ${month} ${year}`;
@@ -184,58 +193,103 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ================== FLOATING BUTTONS (WA / TG / JOIN US) ==================
-function renderFloatingButtons(snapshot) {
-  const data = snapshot.val() || {};
-  const wa   = data.whatsapp || {};
-  const tg   = data.telegram || {};
-  const join = data.join     || {};
+  function renderFloatingButtons(snapshot) {
+    const data = snapshot.val() || {};
+    const wa   = data.whatsapp || {};
+    const tg   = data.telegram || {};
+    const join = data.join     || {};
 
-  if (floatingLeftEl)  floatingLeftEl.innerHTML  = "";
-  if (floatingRightEl) floatingRightEl.innerHTML = ""; // dikosongkan
-
-  // ✅ Helper buat 1 tombol
-  function createFloatingBtn(cfg, extraClass, labelText) {
-    if (!cfg || !cfg.enabled || !cfg.link) return null;
-
-    const a = document.createElement("a");
-    a.href   = cfg.link;
-    a.target = "_blank";
-    a.rel    = "noopener noreferrer";
-    a.className = "floating-btn " + (extraClass || "");
-
-    if (cfg.iconUrl) {
-      const img = document.createElement("img");
-      img.src = cfg.iconUrl;
-      img.alt = labelText || "icon";
-      img.className = "floating-btn-img";
-      a.appendChild(img);
-    } else {
-      const span = document.createElement("span");
-      span.className = "floating-btn-label";
-      span.textContent = labelText || "BTN";
-      a.appendChild(span);
+    if (floatingLeftEl) {
+      floatingLeftEl.innerHTML = "";
+      // apply class collapsed sesuai state
+      if (floatingCollapsed) {
+        floatingLeftEl.classList.add("collapsed");
+      } else {
+        floatingLeftEl.classList.remove("collapsed");
+      }
+    }
+    if (floatingRightEl) {
+      floatingRightEl.innerHTML = ""; // kanan tidak dipakai
     }
 
-    return a;
-  }
+    // Helper buat 1 tombol
+    function createFloatingBtn(cfg, extraClass, labelText) {
+      if (!cfg || !cfg.enabled || !cfg.link) return null;
 
-  // ✅ SEMUA TOMBOL DI KIRI: WA → TG → JOIN
-  if (floatingLeftEl) {
+      const a = document.createElement("a");
+      a.href   = cfg.link;
+      a.target = "_blank";
+      a.rel    = "noopener noreferrer";
+      a.className = "floating-btn " + (extraClass || "");
+
+      if (cfg.iconUrl) {
+        const img = document.createElement("img");
+        img.src = cfg.iconUrl;
+        img.alt = labelText || "icon";
+        img.className = "floating-btn-img";
+        a.appendChild(img);
+      } else {
+        const span = document.createElement("span");
+        span.className = "floating-btn-label";
+        span.textContent = labelText || "BTN";
+        a.appendChild(span);
+      }
+
+      return a;
+    }
+
+    if (!floatingLeftEl) return;
+
+    // stack untuk WA / TG / JOIN
+    const stack = document.createElement("div");
+    stack.className = "floating-stack";
+
     const waBtn   = createFloatingBtn(wa,   "floating-wa",   "WA");
     const tgBtn   = createFloatingBtn(tg,   "floating-tg",   "TG");
     const joinBtn = createFloatingBtn(join, "floating-join", "JOIN");
 
-    if (waBtn)   floatingLeftEl.appendChild(waBtn);   // 1️⃣
-    if (tgBtn)   floatingLeftEl.appendChild(tgBtn);   // 2️⃣
-    if (joinBtn) floatingLeftEl.appendChild(joinBtn); // 3️⃣
-  }
+    if (waBtn)   stack.appendChild(waBtn);   // 1
+    if (tgBtn)   stack.appendChild(tgBtn);   // 2
+    if (joinBtn) stack.appendChild(joinBtn); // 3
 
-  // ✅ Pastikan kanan kosong
-  if (floatingRightEl) {
-    floatingRightEl.innerHTML = "";
-  }
-}
+    floatingLeftEl.appendChild(stack);
 
+    // ===== tombol panah toggle di bawah =====
+    const toggleBtn = document.createElement("button");
+    toggleBtn.type = "button";
+    toggleBtn.className = "floating-toggle";
+    toggleBtn.setAttribute("aria-label", "Toggle contact buttons");
+
+    const svgUp = `
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M7 14l5-5 5 5" />
+      </svg>`;
+    const svgDown = `
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M7 10l5 5 5-5" />
+      </svg>`;
+
+    function updateArrowIcon() {
+      toggleBtn.innerHTML = floatingCollapsed ? svgDown : svgUp;
+    }
+
+    updateArrowIcon();
+
+    toggleBtn.addEventListener("click", () => {
+      floatingCollapsed = !floatingCollapsed;
+
+      if (floatingCollapsed) {
+        floatingLeftEl.classList.add("collapsed");
+        try { localStorage.setItem(FLOAT_COLLAPSE_KEY, "1"); } catch (e) {}
+      } else {
+        floatingLeftEl.classList.remove("collapsed");
+        try { localStorage.setItem(FLOAT_COLLAPSE_KEY, "0"); } catch (e) {}
+      }
+      updateArrowIcon();
+    });
+
+    floatingLeftEl.appendChild(toggleBtn);
+  }
 
   floatingRef.on("value", renderFloatingButtons);
 
