@@ -17,6 +17,8 @@
       <nav class="app-nav">
         <button id="navHome" class="nav-link active" onclick="showHome()">Home</button>
         <button id="navHot" class="nav-link" onclick="showHotGame()">Hot Game</button>
+        <!-- ✅ tombol baru PROMOTION -->
+        <button id="navPromo" class="nav-link" onclick="showPromotion()">Promotion</button>
       </nav>
     </header>
 
@@ -83,7 +85,7 @@
       <!-- ================== HOT GAME PAGE ================== -->
       <section id="hotGamePage" class="hot-page" style="display:none;">
 
-        <!-- GRID PROMO / FREE CREDIT -->
+        <!-- GRID PROMO / FREE CREDIT (SLIDER 4 ITEM) -->
         <section id="promoGrid" class="promo-grid">
           <!-- Card promo akan di-render oleh tips-page.js -->
         </section>
@@ -106,6 +108,21 @@
 
         <section id="tipsCardsGrid" class="cards-grid">
           <!-- Card tips di-render dari tips-page.js -->
+        </section>
+      </section>
+
+      <!-- ================== PROMOTION PAGE (BANNER BESAR) ================== -->
+      <section id="promoPage" class="promo-page" style="display:none;">
+        <section class="card">
+          <h2 class="section-title">PROMOTION</h2>
+          <p class="text-muted small">
+            Special promotion & bonus untuk ahli 5G88. Klik banner untuk info lebih lanjut.
+          </p>
+        </section>
+
+        <!-- Grid 3 kolom di desktop, auto responsif -->
+        <section id="promoBigGrid" class="promo-big-grid">
+          <!-- Banner promotion besar akan di-render oleh tips-page.js -->
         </section>
       </section>
 
