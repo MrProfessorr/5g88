@@ -560,7 +560,7 @@ input[type="checkbox"].toggle:checked::before{
 .home-hero-slider{
   width:100%;
   max-width:900px;
-  margin:24px auto 32px;
+  margin:0 auto 32px;
   overflow:hidden;
   border-radius:22px;
   box-shadow:0 20px 50px rgba(0,0,0,0.8);
