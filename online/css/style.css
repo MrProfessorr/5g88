@@ -894,3 +894,73 @@ input[type="checkbox"].toggle:checked::before{
   width:100%;
   font-size:.8rem;
 }
+/* ===================== FLOATING BUTTONS ===================== */
+
+.floating-buttons-left,
+.floating-buttons-right {
+  position: fixed;
+  bottom: 1.5rem;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* kiri bawah: WA + TG */
+.floating-buttons-left {
+  left: 1.5rem;
+}
+
+/* kanan bawah: JOIN US */
+.floating-buttons-right {
+  right: 1.5rem;
+}
+
+.floating-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  border: 1px solid rgba(250, 204, 21, 0.7);
+  background:
+    radial-gradient(circle at 30% 0, #facc15 0, #fbbf24 28%, transparent 45%),
+    radial-gradient(circle at 70% 120%, #0ea5e9 0, #020617 55%);
+  box-shadow:
+    0 0 15px rgba(250, 204, 21, 0.4),
+    0 12px 25px rgba(0, 0, 0, 0.6);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+
+.floating-btn:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow:
+    0 0 18px rgba(250, 204, 21, 0.7),
+    0 16px 35px rgba(0, 0, 0, 0.75);
+  filter: brightness(1.05);
+}
+
+.floating-btn-img {
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
+}
+
+.floating-btn-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #0f172a;
+}
+
+/* Responsif: kecilkan di mobile */
+@media (max-width: 640px) {
+  .floating-btn {
+    width: 52px;
+    height: 52px;
+  }
+}
