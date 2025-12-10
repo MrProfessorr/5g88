@@ -977,8 +977,8 @@ input[type="checkbox"].toggle:checked::before{
 }
 
 .floating-toggle{
-  width: 46px;
-  height: 46px;
+  width: 30px;
+  height: 15px;
   border-radius: 999px;
   border: none;
   cursor: pointer;
