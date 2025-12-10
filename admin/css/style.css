@@ -171,7 +171,6 @@ body.page-admin .app-header::after{
   font-size:0.82rem;
   font-weight:600;
   letter-spacing:0.04em;
-  text-transform:uppercase;
   display:inline-flex;
   align-items:center;
   justify-content:center;
@@ -237,7 +236,6 @@ body.page-admin .app-header::after{
 }
 .btn.secondary:hover{
   background:linear-gradient(135deg, #020617, #020b1f);
-  transform:translateY(-1px);
   box-shadow:0 12px 30px rgba(15,23,42,0.95);
 }
 .btn.secondary:active{
