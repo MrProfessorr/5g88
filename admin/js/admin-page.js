@@ -39,15 +39,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const promoBigModalSaveBtn = document.getElementById("promoBigModalSaveBtn");
   let currentPromoBigKey     = null;
 
+  // ===== ELEMENT PARTNERSHIP =====
+  const partnerListEl       = document.getElementById("partnerList");
+  const partnerModal        = document.getElementById("partnerModal");
+  const partnerModalTitle   = document.getElementById("partnerModalTitle");
+  const partnerNameInput    = document.getElementById("partnerName");
+  const partnerRatingInput  = document.getElementById("partnerRating");
+  const partnerLogoInput    = document.getElementById("partnerLogoUrl");
+  const partnerJoinInput    = document.getElementById("partnerJoinUrl");
+  const partnerModalSaveBtn = document.getElementById("partnerModalSaveBtn");
+  let currentPartnerKey     = null;
+
   // ===== FIREBASE CHECK =====
   if (!window.firebase || !window.db) {
     console.error("Firebase belum siap. Cek script firebase di HTML.");
     return;
   }
 
-  const cardsRef   = db.ref("tips_cards");
-  const promosRef  = db.ref("promo_banners");   // free credit kecil
-  const promoBigRef= db.ref("promotions");      // promotion besar (tab PROMOTION)
+  const cardsRef    = db.ref("tips_cards");
+  const promosRef   = db.ref("promo_banners");   // free credit kecil
+  const promoBigRef = db.ref("promotions");      // promotion besar (tab PROMOTION)
+  const partnersRef = db.ref("partnerships");    // partnership untuk tab PARTNERSHIP
 
   // ========= Helpers umum =========
 
@@ -82,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     return text
-      .split(/[\n\r,;]+/)
+      .split(/[\n\r,;]+/g)
       .map((s) => s.trim())
       .filter(Boolean);
   }
@@ -433,7 +445,7 @@ document.addEventListener("DOMContentLoaded", () => {
   promosRef.on("value", renderPromoList);
 
   // ==================================================
-  // ============  PROMOTION BANNER BESAR =============
+  // ============  PROMOTION BANNER BESAR ==============
   // ==================================================
 
   function resetBigPromoForm() {
@@ -593,4 +605,169 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   promoBigRef.on("value", renderBigPromoList);
+
+  // ==================================================
+  // ===============  PARTNERSHIP ADMIN  ===============
+  // ==================================================
+
+  function resetPartnerForm() {
+    if (!partnerNameInput || !partnerRatingInput || !partnerLogoInput || !partnerJoinInput) return;
+    partnerNameInput.value   = "";
+    partnerRatingInput.value = "";
+    partnerLogoInput.value   = "";
+    partnerJoinInput.value   = "";
+  }
+
+  function openPartnerNewModal() {
+    if (!partnerModal) return;
+    currentPartnerKey = null;
+    partnerModalTitle.textContent = "Tambah Partnership";
+    resetPartnerForm();
+    partnerModal.classList.add(MODAL_OPEN_CLASS);
+  }
+
+  function openPartnerEditModal(key, data) {
+    if (!partnerModal) return;
+    currentPartnerKey = key;
+    partnerModalTitle.textContent = "Edit Partnership";
+
+    partnerNameInput.value   = data.name    || "";
+    partnerRatingInput.value = data.rating  != null ? data.rating : "";
+    partnerLogoInput.value   = data.logoUrl || "";
+    partnerJoinInput.value   = data.joinUrl || "";
+
+    partnerModal.classList.add(MODAL_OPEN_CLASS);
+  }
+
+  function closePartnerModalInternal() {
+    if (!partnerModal) return;
+    partnerModal.classList.remove(MODAL_OPEN_CLASS);
+    currentPartnerKey = null;
+  }
+
+  window.openPartnerNewModal = openPartnerNewModal;
+  window.closePartnerModal   = closePartnerModalInternal;
+
+  if (partnerModalSaveBtn) {
+    partnerModalSaveBtn.addEventListener("click", () => {
+      const name    = (partnerNameInput.value   || "").trim();
+      const ratingS = (partnerRatingInput.value || "").trim();
+      const logoUrl = (partnerLogoInput.value   || "").trim();
+      const joinUrl = (partnerJoinInput.value   || "").trim();
+
+      if (!logoUrl) {
+        alert("Isi URL logo dulu bro.");
+        partnerLogoInput.focus();
+        return;
+      }
+      if (!joinUrl) {
+        alert("Isi Link Join Now dulu bro.");
+        partnerJoinInput.focus();
+        return;
+      }
+
+      let rating = parseFloat(ratingS);
+      if (!isFinite(rating)) rating = 0;
+
+      const payload = {
+        name,
+        rating,
+        logoUrl,
+        joinUrl,
+        updatedAt: firebase.database.ServerValue.TIMESTAMP,
+      };
+
+      const ref = currentPartnerKey
+        ? partnersRef.child(currentPartnerKey)
+        : partnersRef.push();
+
+      ref
+        .set(payload)
+        .then(() => {
+          alert("Partnership berjaya disimpan.");
+          closePartnerModalInternal();
+        })
+        .catch((err) => {
+          console.error("Gagal simpan partnership:", err);
+          alert("Gagal simpan partnership. Cek console.");
+        });
+    });
+  }
+
+  function renderPartnerList(snapshot) {
+    if (!partnerListEl) return;
+
+    const data = snapshot.val() || {};
+    partnerListEl.innerHTML = "";
+
+    const entries = Object.entries(data);
+    if (!entries.length) {
+      partnerListEl.innerHTML =
+        '<p class="text-muted small">Belum ada partnership. Tekan "Tambah Partnership".</p>';
+      return;
+    }
+
+    entries.forEach(([key, p]) => {
+      const item = document.createElement("div");
+      item.className = "admin-card-item";
+
+      const thumbWrap = document.createElement("div");
+      thumbWrap.style.display = "flex";
+      thumbWrap.style.alignItems = "center";
+
+      const thumb = document.createElement("img");
+      thumb.src = p.logoUrl || "";
+      thumb.alt = p.name || "";
+      thumb.style.maxWidth = "140px";
+      thumb.style.borderRadius = "10px";
+      thumb.style.objectFit = "cover";
+
+      thumbWrap.appendChild(thumb);
+
+      const info = document.createElement("div");
+      info.className = "admin-card-info";
+
+      const titleEl = document.createElement("div");
+      titleEl.className = "admin-card-title";
+      titleEl.textContent = p.name || "(Tanpa nama)";
+
+      const sub = document.createElement("div");
+      sub.className = "admin-card-sub";
+      const ratingText = p.rating != null ? `${Number(p.rating).toFixed(1)} ★` : "No rating";
+      sub.textContent = `${ratingText} • ${p.joinUrl || ""}`;
+
+      info.appendChild(titleEl);
+      info.appendChild(sub);
+
+      const controls = document.createElement("div");
+      controls.className = "switch-wrap";
+
+      const editBtn = document.createElement("button");
+      editBtn.className = "btn secondary";
+      editBtn.style.fontSize = "0.7rem";
+      editBtn.textContent = "Edit";
+      editBtn.addEventListener("click", () => openPartnerEditModal(key, p));
+
+      const delBtn = document.createElement("button");
+      delBtn.className = "btn secondary";
+      delBtn.style.fontSize = "0.7rem";
+      delBtn.textContent = "✖ Hapus";
+      delBtn.addEventListener("click", () => {
+        if (confirm("Hapus partnership ini?")) {
+          partnersRef.child(key).remove();
+        }
+      });
+
+      controls.appendChild(editBtn);
+      controls.appendChild(delBtn);
+
+      item.appendChild(thumbWrap);
+      item.appendChild(info);
+      item.appendChild(controls);
+
+      partnerListEl.appendChild(item);
+    });
+  }
+
+  partnersRef.on("value", renderPartnerList);
 });
