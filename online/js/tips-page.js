@@ -1,36 +1,41 @@
 // online/js/tips-page.js
 
 document.addEventListener("DOMContentLoaded", () => {
-  const gridEl        = document.getElementById("tipsCardsGrid");
-  const promoGridEl   = document.getElementById("promoGrid");
-  const promoBigGridEl= document.getElementById("promoBigGrid"); // ✅ grid untuk PROMOTION
+  const gridEl         = document.getElementById("tipsCardsGrid");
+  const promoGridEl    = document.getElementById("promoGrid");
+  const promoBigGridEl = document.getElementById("promoBigGrid");
+  const partnerGridEl  = document.getElementById("partnerGrid");
 
-  const homePage      = document.getElementById("homePage");
-  const hotGamePage   = document.getElementById("hotGamePage");
-  const promoPage     = document.getElementById("promoPage");
+  const homePage    = document.getElementById("homePage");
+  const hotGamePage = document.getElementById("hotGamePage");
+  const promoPage   = document.getElementById("promoPage");
+  const partnerPage = document.getElementById("partnerPage");
 
-  const navHome       = document.getElementById("navHome");
-  const navHot        = document.getElementById("navHot");
-  const navPromo      = document.getElementById("navPromo");
+  const navHome    = document.getElementById("navHome");
+  const navHot     = document.getElementById("navHot");
+  const navPromo   = document.getElementById("navPromo");
+  const navPartner = document.getElementById("navPartner");
 
-  // ⬇️ Elemen teks waktu RATE GAME di header kanan
+  // Elemen teks waktu RATE GAME di header kanan
   const rateGameTimeEl = document.getElementById("rateGameTime");
 
-  // ====== TAB HOME / HOT GAME / PROMOTION DENGAN LOCALSTORAGE ======
+  // ====== TAB HOME / HOT / PROMO / PARTNER (LOCALSTORAGE) ======
   const TAB_KEY = "tipsPageActiveTab";
 
   function setActiveTab(tab) {
     if (!homePage || !hotGamePage) return;
 
-    // sembunyikan semua page dulu
+    // sembunyikan semua section
     homePage.style.display    = "none";
     hotGamePage.style.display = "none";
-    if (promoPage) promoPage.style.display = "none";
+    if (promoPage)   promoPage.style.display   = "none";
+    if (partnerPage) partnerPage.style.display = "none";
 
-    // reset active nav
-    navHome  && navHome.classList.remove("active");
-    navHot   && navHot.classList.remove("active");
-    navPromo && navPromo.classList.remove("active");
+    // reset nav
+    navHome    && navHome.classList.remove("active");
+    navHot     && navHot.classList.remove("active");
+    navPromo   && navPromo.classList.remove("active");
+    navPartner && navPartner.classList.remove("active");
 
     if (tab === "hot") {
       hotGamePage.style.display = "block";
@@ -38,6 +43,9 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (tab === "promo") {
       if (promoPage) promoPage.style.display = "block";
       navPromo && navPromo.classList.add("active");
+    } else if (tab === "partner") {
+      if (partnerPage) partnerPage.style.display = "block";
+      navPartner && navPartner.classList.add("active");
     } else {
       // default HOME
       homePage.style.display = "block";
@@ -62,12 +70,15 @@ document.addEventListener("DOMContentLoaded", () => {
   window.showPromotion = function () {
     setActiveTab("promo");
   };
+  window.showPartner = function () {
+    setActiveTab("partner");
+  };
 
   // baca tab terakhir saat load
   let initialTab = "home";
   try {
     const saved = localStorage.getItem(TAB_KEY);
-    if (saved === "hot" || saved === "home" || saved === "promo") {
+    if (["home", "hot", "promo", "partner"].includes(saved)) {
       initialTab = saved;
     }
   } catch (e) {
@@ -120,9 +131,10 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  const cardsRef    = db.ref("tips_cards");
-  const promosRef   = db.ref("promo_banners"); // FREE CREDIT kecil
-  const promoBigRef = db.ref("promotions");    // PROMOTION besar
+  const cardsRef     = db.ref("tips_cards");
+  const promosRef    = db.ref("promo_banners"); // FREE CREDIT kecil
+  const promoBigRef  = db.ref("promotions");    // PROMOTION besar
+  const partnersRef  = db.ref("partnerships");  // PARTNERSHIP
 
   let promoSliderTimer = null;
 
@@ -142,7 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const entries = Object.entries(data);
     if (entries.length === 0) return;
 
-    const cardsDom = []; // simpan DOM card untuk slider
+    const cardsDom = [];
 
     entries.forEach(([key, promo]) => {
       const imageUrl  = promo.imageUrl || "";
@@ -150,7 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const title     = promo.title || "";
       const caption   = promo.caption || "";
 
-      if (!imageUrl) return; // kalau tak ada gambar, skip
+      if (!imageUrl) return;
 
       const card = document.createElement("article");
       card.className = "promo-card";
@@ -169,7 +181,6 @@ document.addEventListener("DOMContentLoaded", () => {
       link.appendChild(img);
       card.appendChild(link);
 
-      // Caption di bawah gambar
       if (caption || title) {
         const captionEl = document.createElement("div");
         captionEl.className = "promo-card-caption";
@@ -184,7 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Kalau banner <= 4 → tampil biasa, tidak usah slider
     if (cardsDom.length <= 4) return;
 
-    // ========= SLIDER: tampil 4 card sekaligus, auto ganti setiap 3 detik =========
+    // ========= SLIDER: tampil 4 card sekaligus =========
     const pageSize   = 4;
     const totalPages = Math.ceil(cardsDom.length / pageSize);
     let currentPage  = 0;
@@ -272,6 +283,80 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   promoBigRef.on("value", renderPromoBig);
+
+  // ================== PARTNERSHIP (TAB PARTNERSHIP) ==================
+  function renderPartners(snapshot) {
+    if (!partnerGridEl) return;
+
+    const data = snapshot.val() || {};
+    partnerGridEl.innerHTML = "";
+
+    const entries = Object.entries(data);
+    if (!entries.length) {
+      partnerGridEl.innerHTML =
+        '<p class="text-muted small">Belum ada partnership. Hubungi admin untuk menambah brand.</p>';
+      return;
+    }
+
+    entries.forEach(([key, p]) => {
+      const logoUrl = p.logoUrl || "";
+      const joinUrl = p.joinUrl || "#";
+      const name    = p.name || "";
+      const rating  = p.rating != null ? Number(p.rating).toFixed(1) : null;
+
+      if (!logoUrl) return;
+
+      const card = document.createElement("article");
+      card.className = "partner-card";
+
+      // badge rating di pojok atas kanan
+      if (rating !== null) {
+        const badge = document.createElement("div");
+        badge.className = "partner-rating";
+        badge.textContent = rating + " ★";
+        card.appendChild(badge);
+      }
+
+      // logo
+      const logoWrap = document.createElement("div");
+      logoWrap.className = "partner-logo-wrap";
+
+      const img = document.createElement("img");
+      img.src = logoUrl;
+      img.alt = name || "Partner";
+      img.className = "partner-logo";
+
+      logoWrap.appendChild(img);
+      card.appendChild(logoWrap);
+
+      // optional nama brand
+      if (name) {
+        const nameEl = document.createElement("div");
+        nameEl.className = "partner-name";
+        nameEl.textContent = name;
+        card.appendChild(nameEl);
+      }
+
+      // tombol join now
+      const joinLink = document.createElement("a");
+      joinLink.href   = joinUrl;
+      joinLink.target = "_blank";
+      joinLink.rel    = "noopener noreferrer";
+      joinLink.className = "partner-join-link";
+
+      const joinBtn = document.createElement("button");
+      joinBtn.type = "button";
+      joinBtn.className = "btn partner-join-btn";
+      joinBtn.textContent = "Join Now";
+
+      joinLink.appendChild(joinBtn);
+      card.appendChild(joinLink);
+
+      partnerGridEl.appendChild(card);
+    });
+  }
+
+  partnersRef.on("value", renderPartners);
 
   // ====== KALAU TAK ADA GRID TIPS, STOP BAGIAN TIPS ======
   if (!gridEl) return;
@@ -379,7 +464,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const state = getHistoryState(card.key);
 
-      // Kalau ada history tersimpan, tampilkan last state
       if (state.history.length > 0 && state.index >= 0) {
         output.textContent = state.history[state.index];
       }
