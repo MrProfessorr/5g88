@@ -61,6 +61,7 @@ body{
   background:linear-gradient(90deg,#020617 0,#050b17 60%,#111827 100%);
   box-shadow:0 8px 24px rgba(0,0,0,0.75);
   z-index:999;
+  flex-wrap: nowrap;
 }
 
 /* Glow garis bawah */
