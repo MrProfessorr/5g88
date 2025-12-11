@@ -995,3 +995,46 @@ input[type="checkbox"].toggle:checked::before{
   height: 22px;
   fill: #0f172a;
 }
+/* ===== BACK TO TOP BUTTON ===== */
+.back-to-top {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  border: 1px solid rgba(250,204,21,0.8);
+
+  background:
+    radial-gradient(circle at 30% 0, #facc15 0, #fbbf24 30%, transparent 55%),
+    radial-gradient(circle at 70% 120%, #0ea5e9 0, #020617 55%);
+  box-shadow:
+    0 0 15px rgba(250,204,21,0.6),
+    0 10px 25px rgba(0, 0, 0, 0.7);
+
+  color: #facc15;
+  font-size: 22px;
+  font-weight: bold;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+
+  transition: opacity .25s ease, transform .25s ease;
+  z-index: 999;
+}
+
+.back-to-top.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.back-to-top.hide {
+  opacity: 0;
+  pointer-events: none;
+}
