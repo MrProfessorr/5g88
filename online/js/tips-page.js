@@ -15,6 +15,65 @@ document.addEventListener("DOMContentLoaded", () => {
   const navHot     = document.getElementById("navHot");
   const navPromo   = document.getElementById("navPromo");
   const navPartner = document.getElementById("navPartner");
+    // === NAV RESPONSIVE: extra nav-link masuk ke icon kiri di HP ===
+  const mainNav       = document.getElementById("mainNav");
+  const navLeftWrap   = document.getElementById("navLeftWrap");
+  const navLeftBtn    = document.getElementById("navLeftBtn");
+  const navLeftDrop   = document.getElementById("navLeftDropdown");
+
+  // toggle dropdown kiri
+  if (navLeftBtn && navLeftWrap) {
+    navLeftBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      navLeftWrap.classList.toggle("open");
+    });
+
+    // klik di luar → tutup dropdown
+    document.addEventListener("click", (e) => {
+      if (!navLeftWrap.contains(e.target)) {
+        navLeftWrap.classList.remove("open");
+      }
+    });
+  }
+
+  // fungsi pindah nav-link ke dropdown bila layar kecil
+  function redistributeNav() {
+    if (!mainNav || !navLeftDrop) return;
+
+    // ambil SEMUA nav-link (yang di navbar & yang di dropdown)
+    const allBtns = [
+      ...mainNav.querySelectorAll(".nav-link"),
+      ...navLeftDrop.querySelectorAll(".nav-link"),
+    ];
+
+    // kosongkan dulu
+    mainNav.innerHTML = "";
+    navLeftDrop.innerHTML = "";
+
+    if (window.innerWidth <= 768) {
+      // di HP: hanya beberapa yang stay di bar utama
+      // contoh: 3 pertama di bar, sisanya ke dropdown
+      allBtns.forEach((btn, idx) => {
+        if (idx < 3) {
+          mainNav.appendChild(btn);
+        } else {
+          navLeftDrop.appendChild(btn);
+        }
+      });
+    } else {
+      // di desktop: semua nav-link balik ke bar utama, dropdown kosong
+      allBtns.forEach((btn) => {
+        mainNav.appendChild(btn);
+      });
+    }
+  }
+
+  // panggil sekali saat load
+  redistributeNav();
+  // panggil lagi kalau ukuran layar berubah
+  window.addEventListener("resize", () => {
+    redistributeNav();
+  });
 
   const rateGameTimeEl = document.getElementById("rateGameTime");
 
