@@ -1160,3 +1160,72 @@ input[type="checkbox"].toggle:checked::before{
     gap:4px;
   }
 }
+/* ===== BOTTOM NAV ICON BAR ===== */
+.bottom-nav{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  z-index:999;
+  padding:4px 10px calc(6px + env(safe-area-inset-bottom));
+  background:linear-gradient(90deg,#020617 0,#050b17 60%,#111827 100%);
+  border-top:1px solid rgba(148,163,184,0.35);
+  box-shadow:0 -8px 24px rgba(0,0,0,0.85);
+
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  gap:6px;
+}
+
+.bottom-nav-item{
+  flex:1;
+  max-width:120px;
+  border:none;
+  background:transparent;
+  cursor:pointer;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+
+  padding:4px 4px 2px;
+  border-radius:999px;
+  color:#e5e7eb;
+  transition:background .15s ease, transform .12s ease, box-shadow .12s ease;
+}
+
+.bottom-nav-icon{
+  height:30px;         /* ✨ tinggi icon 30px */
+  width:auto;
+  display:block;
+}
+
+.bottom-nav-label{
+  font-size:0.65rem;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+}
+
+.bottom-nav-item.active{
+  background:radial-gradient(circle at 0 0,#fef9c3 0,transparent 45%),
+             linear-gradient(135deg,var(--accent),var(--accent-soft));
+  color:#020617;
+  box-shadow:0 0 16px rgba(250,204,21,0.55);
+}
+
+.bottom-nav-item:hover{
+  transform:translateY(-1px);
+}
+
+/* beri ruang supaya konten tidak ketutup bar bawah */
+body.page-user{
+  padding-bottom:72px;
+}
+
+/* kalau back-to-top bertabrakan, naikkan sedikit */
+.back-to-top{
+  bottom:80px; /* dulu 18px, sekarang di atas bottom-nav */
+}
