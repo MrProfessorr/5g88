@@ -15,7 +15,7 @@
     <img src="https://i.imgur.com/QrxyBjc.png" alt="5G88" class="brand-logo-img">
   </div>
 
-  <!-- NAV DESKTOP / TABLET -->
+  <!-- NAV UTAMA -->
   <nav class="app-nav" id="mainNav">
     <button id="navHome"    class="nav-link active" onclick="showHome()">HOME</button>
     <button id="navHot"     class="nav-link"        onclick="showHotGame()">HOT GAME</button>
@@ -23,23 +23,17 @@
     <button id="navPartner" class="nav-link"        onclick="showPartner()">PARTNERSHIP</button>
   </nav>
 
-  <!-- NAV MOBILE: ICON + DROPDOWN -->
-  <div class="nav-more-wrap">
+  <!-- ICON MENU + DROPDOWN (ISINYA DIISI DARI JS) -->
+  <div class="nav-more-wrap" id="navMoreWrap">
     <button id="navMoreBtn" class="nav-more-btn" aria-label="Menu">
-      <!-- SVG icon yang kamu kirim -->
       <svg viewBox="0 0 32 32" width="26" height="26">
         <path fill="currentColor"
           d="M11 16.745c0-.414.336-.75.75-.75h9.5c.414 0 .75.336.75.75s-.336.75-.75.75h-9.5c-.414 0-.75-.336-.75-.75zm-9-5c0-.414.336-.75.75-.75h18.5c.414 0 .75.336.75.75s-.336.75-.75.75h-18.5c-.414 0-.75-.336-.75-.75zm4-5c0-.414.336-.75.75-.75h14.5c.414 0 .75.336.75.75s-.336.75-.75.75h-14.5c-.414 0-.75-.336-.75-.75z" />
       </svg>
     </button>
 
-    <!-- dropdown muncul dari kanan ke kiri -->
-    <div id="navDropdown" class="nav-dropdown">
-      <button class="nav-link" onclick="showHome()">HOME</button>
-      <button class="nav-link" onclick="showHotGame()">HOT GAME</button>
-      <button class="nav-link" onclick="showPromotion()">PROMOTION</button>
-      <button class="nav-link" onclick="showPartner()">PARTNERSHIP</button>
-    </div>
+    <!-- ❗ kosong, nanti JS yang pindahkan button ke sini -->
+    <div id="navDropdown" class="nav-dropdown"></div>
   </div>
 </header>
 
