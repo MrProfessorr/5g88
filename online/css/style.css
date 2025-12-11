@@ -1079,28 +1079,19 @@ input[type="checkbox"].toggle:checked::before{
 
 /* tombol bulat */
 .nav-left-btn{
-  width:36px;
-  height:36px;
-  border-radius:999px;
-  border:1px solid rgba(250,204,21,0.7);
-  background:
-    radial-gradient(circle at 30% 0, #facc15 0, #fbbf24 28%, transparent 45%),
-    radial-gradient(circle at 70% 120%, #0ea5e9 0, #020617 55%);
-  box-shadow:
-    0 0 12px rgba(250,204,21,0.45),
-    0 10px 22px rgba(0,0,0,0.65);
+  background:transparent;
   display:flex;
   align-items:center;
   justify-content:center;
   cursor:pointer;
-  color:#0f172a;
+  color:#e5e7eb;
   padding:0;
 }
 
 .nav-left-btn svg{
-  width:20px;
-  height:20px;
-  fill:#0f172a;
+  width:24px;
+  height:24px;
+  fill:#e5e7eb;
 }
 
 /* dropdown yang muncul di bawah ikon kiri */
