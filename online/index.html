@@ -10,18 +10,38 @@
   <div class="app-shell">
 
     <!-- HEADER -->
-    <header class="app-header">
-      <div class="app-header-left">
-        <img src="https://i.imgur.com/QrxyBjc.png" alt="5G88" class="brand-logo-img">
-      </div>
-      <nav class="app-nav">
-        <button id="navHome" class="nav-link active" onclick="showHome()">Home</button>
-        <button id="navHot" class="nav-link" onclick="showHotGame()">Hot Game</button>
-        <button id="navPromo" class="nav-link" onclick="showPromotion()">Promotion</button>
-        <!-- ✅ tombol baru PARTNERSHIP -->
-        <button id="navPartner" class="nav-link" onclick="showPartner()">Partnership</button>
-      </nav>
-    </header>
+<header class="app-header">
+  <div class="app-header-left">
+    <img src="https://i.imgur.com/QrxyBjc.png" alt="5G88" class="brand-logo-img">
+  </div>
+
+  <!-- NAV DESKTOP / TABLET -->
+  <nav class="app-nav" id="mainNav">
+    <button id="navHome"    class="nav-link active" onclick="showHome()">HOME</button>
+    <button id="navHot"     class="nav-link"        onclick="showHotGame()">HOT GAME</button>
+    <button id="navPromo"   class="nav-link"        onclick="showPromotion()">PROMOTION</button>
+    <button id="navPartner" class="nav-link"        onclick="showPartner()">PARTNERSHIP</button>
+  </nav>
+
+  <!-- NAV MOBILE: ICON + DROPDOWN -->
+  <div class="nav-more-wrap">
+    <button id="navMoreBtn" class="nav-more-btn" aria-label="Menu">
+      <!-- SVG icon yang kamu kirim -->
+      <svg viewBox="0 0 32 32" width="26" height="26">
+        <path fill="currentColor"
+          d="M11 16.745c0-.414.336-.75.75-.75h9.5c.414 0 .75.336.75.75s-.336.75-.75.75h-9.5c-.414 0-.75-.336-.75-.75zm-9-5c0-.414.336-.75.75-.75h18.5c.414 0 .75.336.75.75s-.336.75-.75.75h-18.5c-.414 0-.75-.336-.75-.75zm4-5c0-.414.336-.75.75-.75h14.5c.414 0 .75.336.75.75s-.336.75-.75.75h-14.5c-.414 0-.75-.336-.75-.75z" />
+      </svg>
+    </button>
+
+    <!-- dropdown muncul dari kanan ke kiri -->
+    <div id="navDropdown" class="nav-dropdown">
+      <button class="nav-link" onclick="showHome()">HOME</button>
+      <button class="nav-link" onclick="showHotGame()">HOT GAME</button>
+      <button class="nav-link" onclick="showPromotion()">PROMOTION</button>
+      <button class="nav-link" onclick="showPartner()">PARTNERSHIP</button>
+    </div>
+  </div>
+</header>
 
     <!-- RUNNING TEXT / TICKER -->
     <div class="ticker-bar">
