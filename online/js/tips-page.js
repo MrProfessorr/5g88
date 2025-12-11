@@ -15,8 +15,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const navHot     = document.getElementById("navHot");
   const navPromo   = document.getElementById("navPromo");
   const navPartner = document.getElementById("navPartner");
-  const navMoreBtn   = document.getElementById("navMoreBtn");
-  const navDropdown  = document.getElementById("navDropdown");
+  
+  const mainNav     = document.getElementById("mainNav");
+  const navMoreWrap = document.getElementById("navMoreWrap");
+  const navMoreBtn  = document.getElementById("navMoreBtn");
+  const navDropdown = document.getElementById("navDropdown");
+
+  // simpan urutan asli button nav
+  const allNavButtons = mainNav
+    ? Array.from(mainNav.querySelectorAll(".nav-link"))
+    : [];
 
   const rateGameTimeEl = document.getElementById("rateGameTime");
 
