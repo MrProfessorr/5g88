@@ -4,26 +4,48 @@
   <meta charset="UTF-8">
   <title>5G88 • Tips Game</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="page-user">
   <div class="app-shell">
 
-    <!-- HEADER -->
+    <!-- ================== HEADER ================== -->
     <header class="app-header">
+
+      <!-- ICON MENU KIRI (MOBILE) -->
+      <div class="nav-left-wrap" id="navLeftWrap">
+        <button id="navLeftBtn" class="nav-left-btn" aria-label="Menu">
+          <svg viewBox="0 0 24 24">
+            <path fill="currentColor"
+              d="M14 19h-14v-1h14v1zm9.247-8.609l-3.247 4.049-3.263-4.062-.737.622 4 5 4-5-.753-.609zm-9.247 2.609h-14v-1h14v1zm0-6h-14v-1h14v1z"/>
+          </svg>
+        </button>
+
+        <!-- Dropdown isi nav-link (auto dari JS) -->
+        <div id="navLeftDropdown" class="nav-left-dropdown"></div>
+      </div>
+
+      <!-- LOGO -->
       <div class="app-header-left">
         <img src="https://i.imgur.com/QrxyBjc.png" alt="5G88" class="brand-logo-img">
       </div>
-      <nav class="app-nav">
+
+      <!-- NAV UTAMA -->
+      <nav class="app-nav" id="mainNav">
         <button id="navHome" class="nav-link active" onclick="showHome()">Home</button>
         <button id="navHot" class="nav-link" onclick="showHotGame()">Hot Game</button>
         <button id="navPromo" class="nav-link" onclick="showPromotion()">Promo</button>
-        <!-- ✅ tombol baru PARTNERSHIP -->
         <button id="navPartner" class="nav-link" onclick="showPartner()">Partnership</button>
+
+        <!-- Kalau bro tambah nav baru, contoh:
+        <button class="nav-link" onclick="showAll()">All Site</button>
+        … JS auto masukkan ke dropdown bila tak muat screen kecil -->
       </nav>
+
     </header>
 
-    <!-- RUNNING TEXT / TICKER -->
+    <!-- ================== RUNNING TEXT ================== -->
     <div class="ticker-bar">
       <div class="ticker-track">
         <span>🎰 Welcome to Company 5G88 — Malaysia’s Trusted & Best Online Casino Platform.</span>
@@ -32,20 +54,24 @@
       </div>
     </div>
 
+    <!-- ================== MAIN CONTENT ================== -->
     <main class="app-main">
 
-      <!-- ================== HOME PAGE ================== -->
+      <!-- ========== HOME PAGE ========== -->
       <section id="homePage" class="home-page">
+
+        <!-- SLIDER -->
         <div class="home-hero-slider">
           <div class="home-slide-track" id="slideTrack">
-            <img src="https://i.imgur.com/GbxXLJP.png" alt="Welcome Bonus" class="home-hero-img" loading="lazy">
-            <img src="https://i.imgur.com/tlui7YP.png" alt="Welcome Bonus" class="home-hero-img" loading="lazy">
-            <img src="https://i.imgur.com/9KPb1wG.png" alt="Welcome Bonus" class="home-hero-img" loading="lazy">
-            <img src="https://i.imgur.com/O0bV43a.png" alt="Welcome Bonus" class="home-hero-img" loading="lazy">
-            <img src="https://i.imgur.com/3rfNaGk.png" alt="Welcome Bonus" class="home-hero-img" loading="lazy">
+            <img src="https://i.imgur.com/GbxXLJP.png" class="home-hero-img" loading="lazy">
+            <img src="https://i.imgur.com/tlui7YP.png" class="home-hero-img" loading="lazy">
+            <img src="https://i.imgur.com/9KPb1wG.png" class="home-hero-img" loading="lazy">
+            <img src="https://i.imgur.com/O0bV43a.png" class="home-hero-img" loading="lazy">
+            <img src="https://i.imgur.com/3rfNaGk.png" class="home-hero-img" loading="lazy">
           </div>
         </div>
 
+        <!-- ARTICLE -->
         <article class="home-article">
           <h2 class="home-title">
             5G88 Casino Review | RM150 Slots Welcome Bonus
@@ -83,78 +109,61 @@
         </article>
       </section>
 
-      <!-- ================== HOT GAME PAGE ================== -->
+      <!-- ========== HOT GAME PAGE ========== -->
       <section id="hotGamePage" class="hot-page" style="display:none;">
 
-        <!-- GRID PROMO / FREE CREDIT (SLIDER 4 ITEM) -->
-        <section id="promoGrid" class="promo-grid">
-          <!-- Card promo akan di-render oleh tips-page.js -->
-        </section>
+        <section id="promoGrid" class="promo-grid"></section>
 
-        <!-- CARD PRODUCT / PLATFORM + RATE GAME TIME -->
         <section class="card percentage-card">
           <div class="rategame-header">
             <h2 class="section-title">PERCENTAGE GAME</h2>
-
-            <!-- Waktu di kanan (diisi dari JS) -->
-            <span id="rateGameTime" class="rategame-meta">
-              RATE GAME : --:--:-- -- --- ----
-            </span>
+            <span id="rateGameTime" class="rategame-meta">RATE GAME : --</span>
           </div>
-
           <p class="text-muted small">
-            Click <b>Generate</b> to get today's <b>Percentage!</b> game — Good luck and win big.
+            Click <b>Generate</b> untuk keluarkan Percentage hari ini.
           </p>
         </section>
 
-        <section id="tipsCardsGrid" class="cards-grid">
-          <!-- Card tips di-render dari tips-page.js -->
-        </section>
+        <section id="tipsCardsGrid" class="cards-grid"></section>
       </section>
 
-      <!-- ================== PROMOTION PAGE (BANNER BESAR) ================== -->
+      <!-- ========== PROMOTION PAGE ========== -->
       <section id="promoPage" class="promo-page" style="display:none;">
         <section class="card">
           <h2 class="section-title">PROMOTION</h2>
-          <p class="text-muted small">
-            Special promotion &amp; bonus untuk ahli 5G88. Klik banner untuk info lebih lanjut.
-          </p>
+          <p class="text-muted small">Klik banner untuk info.</p>
         </section>
 
-        <!-- Grid 3 kolom di desktop, auto responsif -->
-        <section id="promoBigGrid" class="promo-big-grid">
-          <!-- Banner promotion besar akan di-render oleh tips-page.js -->
-        </section>
+        <section id="promoBigGrid" class="promo-big-grid"></section>
       </section>
 
-      <!-- ================== PARTNERSHIP PAGE ================== -->
+      <!-- ========== PARTNERSHIP PAGE ========== -->
       <section id="partnerPage" class="partner-page" style="display:none;">
         <section class="card">
           <h2 class="section-title">PARTNERSHIP</h2>
-          <p class="text-muted small">
-            Partner pilihan 5G88. Pilih brand kesukaan anda dan tekan <b>Join Now</b> untuk daftar.
-          </p>
+          <p class="text-muted small">Tekan Join Now untuk daftar.</p>
         </section>
 
-        <!-- Grid 4 kolom di desktop -->
-        <section id="partnerGrid" class="partner-grid">
-          <!-- Card partnership akan di-render oleh tips-page.js -->
-        </section>
+        <section id="partnerGrid" class="partner-grid"></section>
       </section>
 
     </main>
 
-    <!-- ================== FLOATING BUTTONS ================== -->
-    <!-- kiri bawah: WhatsApp & Telegram -->
+    <!-- FLOATING BUTTONS -->
     <div id="floatingLeft" class="floating-buttons-left"></div>
     <div id="floatingRight" class="floating-buttons-right"></div>
+
   </div>
+
+  <!-- BACK TO TOP -->
   <button id="backToTop" class="back-to-top" aria-label="Back to top">↑</button>
 
-  <!-- Firebase + Script -->
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
   <script src="js/firebase-config.js"></script>
   <script src="js/tips-page.js"></script>
+
 </body>
 </html>
