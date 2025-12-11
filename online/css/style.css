@@ -1042,3 +1042,26 @@ input[type="checkbox"].toggle:checked::before{
     opacity: 0.5;   /* kurang inner glow */
   }
 }
+/* === CENTER LOGO ONLY ON MOBILE === */
+@media (max-width: 768px) {
+  .app-header {
+    justify-content: center !important;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .app-header-left {
+    width: 100%;
+    display: flex;
+    justify-content: center; /* logo ke tengah */
+  }
+
+  .brand-logo-img {
+    margin: 0 auto;
+  }
+
+  .app-nav {
+    justify-content: center;
+    width: 100%;
+  }
+}
