@@ -136,6 +136,7 @@ body{
   text-transform:uppercase;
   cursor:pointer;
   transition:background .2s, color .2s, box-shadow .2s;
+  white-space: nowrap;
 }
 
 .nav-link:hover{
@@ -1002,13 +1003,6 @@ input[type="checkbox"].toggle:checked::before{
   align-items: center;
   flex-wrap: nowrap;
 }
-
-.app-nav .nav-link {
-  white-space: nowrap;          /* teks tidak turun baris */
-  padding: 0.45rem 1.1rem;
-  font-size: 0.8rem;
-}
-
 /* ICON MENU + WRAP */
 .nav-more-wrap {
   margin-left: 0.5rem;
