@@ -120,6 +120,14 @@ body{
   color:#facc15;
   font-size:1.1rem;
 }
+.app-nav-wrap{
+  flex: 1 1 auto;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap: 8px;
+  min-width: 0;                  /* biar bisa mengecil */
+}
 
 /* Nav kanan */
 .app-nav{
