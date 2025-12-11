@@ -1113,19 +1113,19 @@ input[type="checkbox"].toggle:checked::before{
   font-size: 0.8rem;
 }
 
-/* RESPONSIVE KECIL: font diperkecil sedikit saja, nav tetap ada */
+/* ====== RESPONSIVE HEADER (HP) – masih 1 baris ====== */
 @media (max-width:768px){
   .app-header{
-    padding:10px 12px;
-    gap:8px;
+    padding: 10px 10px;
+    gap: 10px;
   }
 
   .brand-logo-img{
-    height:28px;
+    height: 28px;
   }
 
   .nav-link{
-    padding:4px 8px;
-    font-size:0.75rem;
+    padding: 4px 8px;
+    font-size: 0.75rem;
   }
 }
