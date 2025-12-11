@@ -1012,26 +1012,28 @@ input[type="checkbox"].toggle:checked::before{
   fill: #0f172a;
 }
 /* === NAV UTAMA === */
-/* ICON MENU + WRAP */
-.nav-more-wrap {
-  flex:0 0 auto;
-  margin-left: 0.5rem;
+.nav-more-wrap{
+  flex: 0 0 auto;
   position: relative;
-  display: none;                /* default: disembunyikan, JS yg aktifkan */
+  display: none;                 /* default disembunyikan, JS yang hidupkan kalau ada item di dropdown */
 }
 
-.nav-more-btn {
-  border: none;
-  outline: none;
-  background: rgba(15,23,42,0.85);
-  color: #facc15;
+.nav-more-btn{
+  width: 38px;
+  height: 38px;
   border-radius: 999px;
-  padding: 0.35rem 0.6rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 12px rgba(250,204,21,0.4);
-  cursor: pointer;
+  border: 1px solid rgba(250,204,21,0.8);
+  background:
+    radial-gradient(circle at 30% 0, #facc15 0, #fbbf24 30%, transparent 55%),
+    radial-gradient(circle at 70% 120%, #0ea5e9 0, #020617 55%);
+  box-shadow:
+    0 0 16px rgba(250,204,21,0.45),
+    0 10px 24px rgba(0,0,0,0.7);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  padding:0;
 }
 
 /* DROPDOWN MENU (isi: nav-link yang overflow) */
@@ -1055,7 +1057,45 @@ input[type="checkbox"].toggle:checked::before{
   transition: 0.18s ease-out;
   z-index: 50;
 }
+.nav-more-btn svg{
+  width:18px;
+  height:18px;
+  fill:#facc15;
+  transition: transform .18s ease;
+}
+.nav-more-dropdown{
+  position:absolute;
+  top: 120%;
+  right: 0;
+  min-width: 150px;
+  padding:6px;
+  border-radius:14px;
+  background: radial-gradient(circle at top, #020617 0, #020617 45%, #000 100%);
+  border:1px solid rgba(148,163,184,0.5);
+  box-shadow:0 18px 40px rgba(0,0,0,0.9);
+  display:none;                  /* dibuka pakai class .open */
+}
 
+/* Saat JS tambahkan class .open ke .nav-more-wrap */
+.nav-more-wrap.open .nav-more-dropdown{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.nav-more-wrap.open .nav-more-btn svg{
+  transform: rotate(90deg);      /* efek kecil kalau dropdown terbuka */
+}
+
+/* Tombol nav di dalam dropdown */
+.nav-more-dropdown .nav-link{
+  width:100%;
+  justify-content:flex-start;
+  text-align:left;
+  padding:6px 10px;
+  border-radius:10px;
+  font-size:0.78rem;
+}
 .nav-dropdown .nav-link {
   width: 100%;
   justify-content: flex-start;
