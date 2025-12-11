@@ -102,6 +102,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // sementara sebelum baca config nav_tabs, pakai tab dari localStorage
   setActiveTab(currentTab);
+    // ====== NAV MOBILE DROPDOWN (ICON SVG) ======
+  if (navMoreBtn && navDropdown) {
+    // toggle buka / tutup
+    navMoreBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      navDropdown.classList.toggle("open");
+    });
+
+    // klik di dalam dropdown: tetap jalan fungsi onclick tombol + tutup dropdown
+    navDropdown.addEventListener("click", () => {
+      navDropdown.classList.remove("open");
+    });
+
+    // klik di luar dropdown -> tutup
+    window.addEventListener("click", (e) => {
+      if (!e.target.closest(".nav-more-wrap")) {
+        navDropdown.classList.remove("open");
+      }
+    });
+
+    // kalau resize ke desktop, pastikan dropdown close
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 768) {
+        navDropdown.classList.remove("open");
+      }
+    });
+  }
 
   // ====== RATE GAME TIME (REALTIME CLOCK) ======
   function updateRateGameTime() {
