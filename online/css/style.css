@@ -1000,19 +1000,20 @@ input[type="checkbox"].toggle:checked::before{
   display: flex;
   gap: 0.75rem;
   align-items: center;
+  flex-wrap: nowrap;
 }
 
 .app-nav .nav-link {
-  white-space: nowrap;         /* ❗ teks tidak turun baris */
+  white-space: nowrap;          /* teks tidak turun baris */
   padding: 0.45rem 1.1rem;
   font-size: 0.8rem;
 }
 
-/* Container icon menu + dropdown */
+/* ICON MENU + WRAP */
 .nav-more-wrap {
-  margin-left: auto;
+  margin-left: 0.5rem;
   position: relative;
-  display: none;               /* default: hidden di desktop */
+  display: none;                /* default: disembunyikan, JS yg aktifkan */
 }
 
 .nav-more-btn {
@@ -1029,7 +1030,7 @@ input[type="checkbox"].toggle:checked::before{
   cursor: pointer;
 }
 
-/* Dropdown mobile */
+/* DROPDOWN MENU (isi: nav-link yang overflow) */
 .nav-dropdown {
   position: absolute;
   right: 0;
@@ -1063,13 +1064,11 @@ input[type="checkbox"].toggle:checked::before{
   transform: translateY(0) scale(1);
 }
 
-/* === RESPONSIVE: MOBILE === */
+/* RESPONSIVE KECIL: font diperkecil sedikit saja, nav tetap ada */
 @media (max-width: 768px) {
-  .app-nav {
-    display: none;          /* nav bar biasa disembunyikan */
-  }
-  .nav-more-wrap {
-    display: flex;          /* icon menu muncul */
+  .app-nav .nav-link {
+    padding: 0.35rem 0.8rem;
+    font-size: 0.75rem;
   }
 
   .app-header {
