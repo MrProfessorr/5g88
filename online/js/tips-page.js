@@ -15,6 +15,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const navHot     = document.getElementById("navHot");
   const navPromo   = document.getElementById("navPromo");
   const navPartner = document.getElementById("navPartner");
+  const navMoreBtn   = document.getElementById("navMoreBtn");
+  const navDropdown  = document.getElementById("navDropdown");
 
   const rateGameTimeEl = document.getElementById("rateGameTime");
 
