@@ -1030,3 +1030,15 @@ input[type="checkbox"].toggle:checked::before{
   opacity: 0;
   pointer-events: none;
 }
+@media (max-width: 768px){
+  .card,
+  .tip-card,
+  .promo-card,
+  .promo-big-card {
+    box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+  }
+  .card::after,
+  .tip-card::before {
+    opacity: 0.5;   /* kurang inner glow */
+  }
+}
