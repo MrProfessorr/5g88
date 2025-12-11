@@ -1056,13 +1056,14 @@ input[type="checkbox"].toggle:checked::before{
 }
 
 /* RESPONSIVE KECIL: font diperkecil sedikit saja, nav tetap ada */
-@media (max-width: 768px) {
-  .app-nav .nav-link {
-    padding: 0.35rem 0.8rem;
-    font-size: 0.75rem;
+@media (max-width: 768px){
+  .app-header{
+    gap: 0.5rem;
+    padding-right: 0.8rem;
   }
 
-  .app-header {
-    padding-right: 0.8rem;
+  .app-nav .nav-link{
+    padding: 0.35rem 0.8rem;
+    font-size: 0.75rem;
   }
 }
