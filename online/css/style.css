@@ -1015,7 +1015,8 @@ input[type="checkbox"].toggle:checked::before{
 .nav-more-wrap{
   flex: 0 0 auto;
   position: relative;
-  display: none;                 /* default disembunyikan, JS yang hidupkan kalau ada item di dropdown */
+  display: none;                 /* default hidden, JS akan show kalau dropdown ada isi */
+  margin-left: 8px;
 }
 
 .nav-more-btn{
@@ -1029,11 +1030,11 @@ input[type="checkbox"].toggle:checked::before{
   box-shadow:
     0 0 16px rgba(250,204,21,0.45),
     0 10px 24px rgba(0,0,0,0.7);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  padding:0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
 }
 
 /* DROPDOWN MENU (isi: nav-link yang overflow) */
@@ -1058,22 +1059,23 @@ input[type="checkbox"].toggle:checked::before{
   z-index: 50;
 }
 .nav-more-btn svg{
-  width:18px;
-  height:18px;
-  fill:#facc15;
+  width: 18px;
+  height: 18px;
+  fill: #facc15;
   transition: transform .18s ease;
 }
-.nav-more-dropdown{
-  position:absolute;
+.nav-dropdown{
+  position: absolute;
   top: 120%;
   right: 0;
   min-width: 150px;
-  padding:6px;
-  border-radius:14px;
-  background: radial-gradient(circle at top, #020617 0, #020617 45%, #000 100%);
-  border:1px solid rgba(148,163,184,0.5);
-  box-shadow:0 18px 40px rgba(0,0,0,0.9);
-  display:none;                  /* dibuka pakai class .open */
+  padding: 6px;
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at top, #020617 0, #020617 45%, #000 100%);
+  border: 1px solid rgba(148,163,184,0.5);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.9);
+  display: none;                 /* dibuka pakai class .open di wrapper */
 }
 
 /* Saat JS tambahkan class .open ke .nav-more-wrap */
@@ -1084,7 +1086,7 @@ input[type="checkbox"].toggle:checked::before{
 }
 
 .nav-more-wrap.open .nav-more-btn svg{
-  transform: rotate(90deg);      /* efek kecil kalau dropdown terbuka */
+  transform: rotate(90deg);
 }
 
 /* Tombol nav di dalam dropdown */
@@ -1096,10 +1098,13 @@ input[type="checkbox"].toggle:checked::before{
   border-radius:10px;
   font-size:0.78rem;
 }
-.nav-dropdown .nav-link {
+.nav-dropdown .nav-link{
   width: 100%;
   justify-content: flex-start;
   text-align: left;
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 0.78rem;
 }
 
 .nav-dropdown.open {
