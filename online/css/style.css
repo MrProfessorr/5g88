@@ -1101,7 +1101,7 @@ input[type="checkbox"].toggle:checked::before{
   left:0;
   min-width:170px;
   padding:6px;
-  border-radius:14px;
+  border-radius:10px;
   background:rgba(15,23,42,0.98);
   box-shadow:0 18px 40px rgba(0,0,0,0.9);
   border:1px solid rgba(148,163,184,0.7);
