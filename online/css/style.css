@@ -1056,6 +1056,11 @@ input[type="checkbox"].toggle:checked::before{
   pointer-events: auto;
   transform: translateY(0) scale(1);
 }
+.app-nav .nav-link{
+  white-space: nowrap;
+  padding: 0.45rem 1.1rem;
+  font-size: 0.8rem;
+}
 
 /* RESPONSIVE KECIL: font diperkecil sedikit saja, nav tetap ada */
 @media (max-width: 768px){
