@@ -1001,9 +1001,9 @@ input[type="checkbox"].toggle:checked::before{
   bottom: 18px;
   right: 10px;
   width: 50px;
-  height: 48px;
+  height: 20px;
   border-radius: 999px;
-  border: 1px solid rgba(250,204,21,0.8);
+  border: none;
   color:#0f172a;
   font-size: 15px;
   font-weight: bold;
@@ -1016,6 +1016,7 @@ input[type="checkbox"].toggle:checked::before{
   pointer-events: none;
   transition: opacity .25s ease, transform .25s ease;
   z-index: 999;
+  box-shadow: 0 0 14px rgba(250, 204, 21, 0.7);
 }
 
 .back-to-top.show {
