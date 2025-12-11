@@ -1000,6 +1000,7 @@ input[type="checkbox"].toggle:checked::before{
 /* === NAV UTAMA === */
 /* ICON MENU + WRAP */
 .nav-more-wrap {
+  flex:0 0 auto;
   margin-left: 0.5rem;
   position: relative;
   display: none;                /* default: disembunyikan, JS yg aktifkan */
