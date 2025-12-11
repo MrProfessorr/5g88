@@ -102,29 +102,90 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // sementara sebelum baca config nav_tabs, pakai tab dari localStorage
   setActiveTab(currentTab);
-    // ====== NAV MOBILE DROPDOWN (ICON SVG) ======
+  // ====== NAV MOBILE DROPDOWN (ICON SVG) + AUTO OVERFLOW ======
+  function redistributeNav() {
+    if (!mainNav || !navDropdown) return;
+
+    const header = document.querySelector(".app-header");
+    if (!header) return;
+
+    const logo = header.querySelector(".brand-logo-img");
+
+    // reset: pindahkan semua button kembali ke nav utama
+    allNavButtons.forEach((btn) => {
+      if (!mainNav.contains(btn)) mainNav.appendChild(btn);
+    });
+    navDropdown.innerHTML = "";
+
+    // hitung lebar yang boleh dipakai nav utama
+    const headerWidth = header.clientWidth;
+    const logoWidth   = logo ? logo.clientWidth : 0;
+    const moreWidth   = 60; // kira-kira lebar icon menu
+    const paddingSafe = 24;
+
+    let availableWidth = headerWidth - logoWidth - paddingSafe;
+
+    // kalau nanti perlu menu "more", kurangi space utk icon
+    let useMoreButton = false;
+    if (mainNav.scrollWidth > availableWidth) {
+      useMoreButton = true;
+      availableWidth -= moreWidth;
+    }
+
+    // kalau muat semua item
+    if (mainNav.scrollWidth <= availableWidth) {
+      if (navMoreWrap) navMoreWrap.style.display = "none";
+      return;
+    }
+
+    // butuh dropdown
+    if (navMoreWrap) navMoreWrap.style.display = "flex";
+
+    const minVisible = 1; // minimal berapa button yg selalu di luar (HOME)
+
+    let i = allNavButtons.length - 1;
+    while (mainNav.scrollWidth > availableWidth && i >= minVisible) {
+      const btn = allNavButtons[i];
+      if (mainNav.contains(btn)) {
+        // pindah ke dropdown (di depan supaya urutan tetap)
+        navDropdown.insertBefore(btn, navDropdown.firstChild);
+      }
+      i--;
+    }
+
+    // kalau entah gimana dropdown kosong, sembunyikan icon
+    if (!navDropdown.children.length && navMoreWrap) {
+      navMoreWrap.style.display = "none";
+    }
+  }
+
+  // toggle buka/tutup dropdown saat icon di klik
   if (navMoreBtn && navDropdown) {
-    // toggle buka / tutup
     navMoreBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       navDropdown.classList.toggle("open");
     });
 
-    // klik di dalam dropdown: tetap jalan fungsi onclick tombol + tutup dropdown
+    // klik di dalam dropdown → tutup (tapi onclick button tetap jalan)
     navDropdown.addEventListener("click", () => {
       navDropdown.classList.remove("open");
     });
 
-    // klik di luar dropdown -> tutup
+    // klik di luar → tutup
     window.addEventListener("click", (e) => {
       if (!e.target.closest(".nav-more-wrap")) {
         navDropdown.classList.remove("open");
       }
     });
+  }
 
-    // kalau resize ke desktop, pastikan dropdown close
+  // panggil saat load + saat resize
+  if (mainNav) {
+    redistributeNav();
     window.addEventListener("resize", () => {
-      if (window.innerWidth > 768) {
+      redistributeNav();
+      // kalau pindah ke desktop, pastikan dropdown tertutup
+      if (window.innerWidth > 768 && navDropdown) {
         navDropdown.classList.remove("open");
       }
     });
