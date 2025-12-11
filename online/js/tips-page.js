@@ -652,3 +652,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
   cardsRef.on("value", renderCards);
 });
+
+let scrollTimer;
+const btn = document.getElementById("backToTop");
+
+window.addEventListener("scroll", () => {
+
+  // scroll jauh dari atas → tampilkan tombol
+  if (window.scrollY > 200) {
+    btn.classList.add("show");
+    btn.classList.remove("hide");
+  } else {
+    btn.classList.remove("show");
+    btn.classList.add("hide");
+  }
+
+  // reset timer bila scroll
+  clearTimeout(scrollTimer);
+
+  // hilangkan bila user berhenti scroll 1 detik
+  scrollTimer = setTimeout(() => {
+    if (window.scrollY > 200) {
+      btn.classList.add("hide");
+      btn.classList.remove("show");
+    }
+  }, 1000); // 1 second berhenti scroll
+});
+
+// klik → smooth scroll to top
+btn.addEventListener("click", () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
