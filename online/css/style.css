@@ -1078,7 +1078,6 @@ input[type="checkbox"].toggle:checked::before{
   justify-content:center;
   cursor:pointer;
   color:#e5e7eb;
-  padding:0;
 }
 
 .nav-left-btn svg{
