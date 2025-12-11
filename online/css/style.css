@@ -606,13 +606,29 @@ input[type="checkbox"].toggle:checked::before{
   font-size:0.95rem;
 }
 
-/* ====== RESPONSIVE ====== */
 @media (max-width:768px){
+  /* header tetap 1 baris (row) supaya icon + nav sejajar */
   .app-header{
-    flex-direction:column;
-    align-items:flex-start;
+    flex-direction:row;
+    align-items:center;
+    justify-content:center;
     padding:12px 16px;
   }
+
+  /* logo di tengah */
+  .app-header-left{
+    flex:1;
+    display:flex;
+    justify-content:center;
+  }
+
+  /* nav di tengah juga */
+  .app-nav{
+    flex:1;
+    justify-content:center;
+    gap:6px;
+  }
+
   .app-main{
     padding:0 10px 24px;
     margin-top:18px;
@@ -1042,30 +1058,6 @@ input[type="checkbox"].toggle:checked::before{
     opacity: 0.5;   /* kurang inner glow */
   }
 }
-/* === CENTER LOGO ONLY ON MOBILE === */
-@media (max-width: 768px) {
-  .app-header {
-    justify-content: center !important;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .app-header-left {
-    width: 100%;
-    display: flex;
-    justify-content: center; /* logo ke tengah */
-  }
-
-  .brand-logo-img {
-    margin: 0 auto;
-  }
-
-  .app-nav {
-    justify-content: center;
-    width: 100%;
-  }
-}
-/* === NAV LEFT MENU ICON (MOBILE) === */
 
 /* posisi absolut di kiri header */
 .nav-left-wrap{
@@ -1073,8 +1065,9 @@ input[type="checkbox"].toggle:checked::before{
   left:16px;
   top:50%;
   transform:translateY(-50%);
-  display:none;               /* default: hidden (desktop) */
+  display:flex;                 /* default: hidden (desktop) */
   z-index:1100;
+  align-items:center; 
 }
 
 /* tombol bulat */
