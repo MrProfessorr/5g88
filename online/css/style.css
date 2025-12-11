@@ -995,3 +995,84 @@ input[type="checkbox"].toggle:checked::before{
   height: 22px;
   fill: #0f172a;
 }
+/* === NAV UTAMA === */
+.app-nav {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.app-nav .nav-link {
+  white-space: nowrap;         /* ❗ teks tidak turun baris */
+  padding: 0.45rem 1.1rem;
+  font-size: 0.8rem;
+}
+
+/* Container icon menu + dropdown */
+.nav-more-wrap {
+  margin-left: auto;
+  position: relative;
+  display: none;               /* default: hidden di desktop */
+}
+
+.nav-more-btn {
+  border: none;
+  outline: none;
+  background: rgba(15,23,42,0.85);
+  color: #facc15;
+  border-radius: 999px;
+  padding: 0.35rem 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 12px rgba(250,204,21,0.4);
+  cursor: pointer;
+}
+
+/* Dropdown mobile */
+.nav-dropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 0.5rem;
+  background: radial-gradient(circle at top, #1f2937 0, #020617 70%);
+  border-radius: 16px;
+  padding: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 170px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+  transform-origin: top right;
+  transform: translateY(-8px) scale(0.95);
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.18s ease-out;
+  z-index: 50;
+}
+
+.nav-dropdown .nav-link {
+  width: 100%;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.nav-dropdown.open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+/* === RESPONSIVE: MOBILE === */
+@media (max-width: 768px) {
+  .app-nav {
+    display: none;          /* nav bar biasa disembunyikan */
+  }
+  .nav-more-wrap {
+    display: flex;          /* icon menu muncul */
+  }
+
+  .app-header {
+    padding-right: 0.8rem;
+  }
+}
