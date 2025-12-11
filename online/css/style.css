@@ -123,6 +123,7 @@ body{
   display:flex;
   align-items:center;
   gap:2px;
+  flex-wrap: nowrap;
 }
 
 .nav-link{
