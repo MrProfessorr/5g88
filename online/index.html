@@ -31,16 +31,12 @@
         <img src="https://i.imgur.com/QrxyBjc.png" alt="5G88" class="brand-logo-img">
       </div>
 
-      <!-- NAV UTAMA -->
+      <!-- NAV UTAMA (boleh disembunyikan di CSS kalau mau) -->
       <nav class="app-nav" id="mainNav">
         <button id="navHome" class="nav-link active" onclick="showHome()">Home</button>
         <button id="navHot" class="nav-link" onclick="showHotGame()">Hot Game</button>
         <button id="navPromo" class="nav-link" onclick="showPromotion()">Promo</button>
         <button id="navPartner" class="nav-link" onclick="showPartner()">Partnership</button>
-
-        <!-- Kalau bro tambah nav baru, contoh:
-        <button class="nav-link" onclick="showAll()">All Site</button>
-        … JS auto masukkan ke dropdown bila tak muat screen kecil -->
       </nav>
 
     </header>
@@ -158,6 +154,34 @@
   <!-- BACK TO TOP -->
   <button id="backToTop" class="back-to-top" aria-label="Back to top">↑</button>
 
+  <!-- ===== BOTTOM NAV ICON BAR ===== -->
+  <nav class="bottom-nav">
+    <button class="bottom-nav-item active" data-tab="home"
+            onclick="handleBottomNavClick('home')">
+      <!-- ganti URL icon dengan PNG kamu -->
+      <img src="https://i.imgur.com/nFN3jlH.png" alt="Home" class="bottom-nav-icon">
+      <span class="bottom-nav-label">HOME</span>
+    </button>
+
+    <button class="bottom-nav-item" data-tab="hot"
+            onclick="handleBottomNavClick('hot')">
+      <img src="https://i.imgur.com/bHDNh3q.png" alt="Hot Game" class="bottom-nav-icon">
+      <span class="bottom-nav-label">HOT GAME</span>
+    </button>
+
+    <button class="bottom-nav-item" data-tab="promo"
+            onclick="handleBottomNavClick('promo')">
+      <img src="https://i.imgur.com/6mM9WNr.png" alt="Promo" class="bottom-nav-icon">
+      <span class="bottom-nav-label">PROMO</span>
+    </button>
+
+    <button class="bottom-nav-item" data-tab="partner"
+            onclick="handleBottomNavClick('partner')">
+      <img src="https://i.imgur.com/kjvnj4Z.png" alt="Partnership" class="bottom-nav-icon">
+      <span class="bottom-nav-label">PARTNERSHIP</span>
+    </button>
+  </nav>
+
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -165,5 +189,5 @@
   <script src="js/firebase-config.js"></script>
   <script src="js/tips-page.js"></script>
 
-</body>
-</html>
+  <!-- Script kecil untuk bottom nav -->
+  <script>
