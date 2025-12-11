@@ -49,19 +49,19 @@ body{
 
 /* HEADER FULL BAR */
 .app-header{
-  position:relative;
-  width:100%;
-  margin:0;
-  padding:16px 40px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  border-bottom:1px solid rgba(248,250,252,0.06);
-  background:linear-gradient(90deg,#020617 0,#050b17 60%,#111827 100%);
-  box-shadow:0 8px 24px rgba(0,0,0,0.75);
-  z-index:999;
-  flex-wrap: nowrap;
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;   /* logo kiri, nav di tengah, icon di kanan */
+  gap: 16px;
+  border-bottom: 1px solid rgba(248,250,252,0.06);
+  background: linear-gradient(90deg,#020617 0,#050b17 60%,#111827 100%);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.75);
+  flex-wrap: nowrap;             /* ❗ JANGAN boleh turun baris */
+  z-index: 999;
 }
 
 /* Glow garis bawah */
@@ -94,8 +94,11 @@ body{
   border:1px solid rgba(148,163,184,0.5);
   color:var(--muted);
 }
+/* Logo blok kiri */
 .app-header-left{
   flex: 0 0 auto;
+  display:flex;
+  align-items:center;
 }
 
 .brand-logo-img{
@@ -131,16 +134,16 @@ body{
 
 .nav-link{
   border:none;
-  padding:6px 10px;
+  padding: 6px 10px;
   border-radius:999px;
   background:transparent;
   color:#e5e7eb;
-  font-size:0.85rem;
+  font-size:0.8rem;
   letter-spacing:0.12em;
   text-transform:uppercase;
   cursor:pointer;
+  white-space: nowrap;           /* ❗ teks HOME / HOT GAME tidak patah */
   transition:background .2s, color .2s, box-shadow .2s;
-  white-space: nowrap;
 }
 
 .nav-link:hover{
@@ -1063,14 +1066,18 @@ input[type="checkbox"].toggle:checked::before{
 }
 
 /* RESPONSIVE KECIL: font diperkecil sedikit saja, nav tetap ada */
-@media (max-width: 768px){
+@media (max-width:768px){
   .app-header{
-    gap: 0.5rem;
-    padding-right: 0.8rem;
+    padding:10px 12px;
+    gap:8px;
   }
 
-  .app-nav .nav-link{
-    padding: 0.35rem 0.8rem;
-    font-size: 0.75rem;
+  .brand-logo-img{
+    height:28px;
+  }
+
+  .nav-link{
+    padding:4px 8px;
+    font-size:0.75rem;
   }
 }
