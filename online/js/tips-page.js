@@ -227,6 +227,7 @@ document.addEventListener("DOMContentLoaded", () => {
         img.src = cfg.iconUrl;
         img.alt = labelText || "icon";
         img.className = "floating-btn-img";
+        img.loading = "lazy";
         a.appendChild(img);
       } else {
         const span = document.createElement("span");
@@ -333,6 +334,7 @@ document.addEventListener("DOMContentLoaded", () => {
       img.src = imageUrl;
       img.alt = title || caption || "Promo";
       img.className = "promo-card-img";
+      img.loading = "lazy";
 
       link.appendChild(img);
       card.appendChild(link);
@@ -408,6 +410,7 @@ document.addEventListener("DOMContentLoaded", () => {
       img.src = imageUrl;
       img.alt = title || caption || "Promotion";
       img.className = "promo-big-img";
+      img.loading = "lazy";
 
       link.appendChild(img);
       card.appendChild(link);
@@ -479,6 +482,7 @@ document.addEventListener("DOMContentLoaded", () => {
       img.src = logoUrl;
       img.alt = name || "Partner";
       img.className = "partner-logo";
+      img.loading = "lazy";
 
       logoWrap.appendChild(img);
       card.appendChild(logoWrap);
