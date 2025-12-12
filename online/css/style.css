@@ -1158,16 +1158,13 @@ body.page-user{
   display:flex;
   align-items:center;
   justify-content:flex-start;
-  gap:12px;
-
-  padding:12px 12px;
+  gap:2px;
+  padding:12px 5px;
   background: rgba(255,255,255,0.05);
   border-radius: 10px;
-
   border:none;
   cursor:pointer;
   transition: background .2s, transform .12s;
-
   text-align:left;
   letter-spacing:.08em;
 }
@@ -1178,16 +1175,12 @@ body.page-user{
 }
 
 .side-menu-ico{
-  width:34px;
-  height:34px;
   flex:0 0 34px;
-  border-radius:10px;
-  background:rgba(15,23,42,.65);
-  border:1px solid rgba(250,204,21,.25);
   display:flex;
   align-items:center;
   justify-content:center;
   overflow:hidden;
+  border:none;
 }
 
 .side-menu-ico img{
