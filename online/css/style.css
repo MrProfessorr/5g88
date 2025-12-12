@@ -1151,7 +1151,7 @@ body.page-user{
   margin-top: 12px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 3px;
 }
 /* ===== SIDEBAR ITEM (ICON LEFT + TEXT) ===== */
 .side-menu-item{
@@ -1172,11 +1172,9 @@ body.page-user{
 
 .side-menu-item:hover{
   background: rgba(255,255,255,0.15);
-  transform: translateY(-1px);
 }
 .side-menu-item.active{
-  background: rgba(250,204,21,0.14);
-  border: 1px solid rgba(250,204,21,0.35);
+  background: #65739b52;
   color: gold;
 }
 
