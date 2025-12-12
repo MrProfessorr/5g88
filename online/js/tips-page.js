@@ -11,18 +11,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const promoPage   = document.getElementById("promoPage");
   const partnerPage = document.getElementById("partnerPage");
 
-  // ❌ Hindari flash: semua section disembunyikan dulu
+  // ✅ Hindari flash: semua section disembunyikan dulu
   if (homePage)    homePage.style.display    = "none";
   if (hotGamePage) hotGamePage.style.display = "none";
   if (promoPage)   promoPage.style.display   = "none";
   if (partnerPage) partnerPage.style.display = "none";
 
   // ===== BOTTOM NAV (ikon di bawah) =====
-  const bottomNavItems  = document.querySelectorAll(".bottom-nav-item");
-  const bottomHomeBtn   = document.querySelector('.bottom-nav-item[data-tab="home"]');
-  const bottomHotBtn    = document.querySelector('.bottom-nav-item[data-tab="hot"]');
-  const bottomPromoBtn  = document.querySelector('.bottom-nav-item[data-tab="promo"]');
-  const bottomPartnerBtn= document.querySelector('.bottom-nav-item[data-tab="partner"]');
+  const bottomNavItems   = document.querySelectorAll(".bottom-nav-item");
+  const bottomHomeBtn    = document.querySelector('.bottom-nav-item[data-tab="home"]');
+  const bottomHotBtn     = document.querySelector('.bottom-nav-item[data-tab="hot"]');
+  const bottomPromoBtn   = document.querySelector('.bottom-nav-item[data-tab="promo"]');
+  const bottomPartnerBtn = document.querySelector('.bottom-nav-item[data-tab="partner"]');
 
   function updateBottomNavActive(tab) {
     if (!bottomNavItems || !bottomNavItems.length) return;
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
     floatingCollapsed = false;
   }
 
-  // ====== SIDEBAR NAV (icon kiri header) ======
+  // ====== SIDEBAR NAV ======
   const sideMenuBtn   = document.getElementById("sideMenuBtn");
   const sideMenu      = document.getElementById("sideMenu");
   const sideMenuClose = document.getElementById("sideMenuClose");
@@ -64,15 +64,9 @@ document.addEventListener("DOMContentLoaded", () => {
     sideOverlay.classList.remove("show");
   }
 
-  if (sideMenuBtn) {
-    sideMenuBtn.addEventListener("click", openSidebar);
-  }
-  if (sideMenuClose) {
-    sideMenuClose.addEventListener("click", closeSidebar);
-  }
-  if (sideOverlay) {
-    sideOverlay.addEventListener("click", closeSidebar);
-  }
+  if (sideMenuBtn)   sideMenuBtn.addEventListener("click", openSidebar);
+  if (sideMenuClose) sideMenuClose.addEventListener("click", closeSidebar);
+  if (sideOverlay)   sideOverlay.addEventListener("click", closeSidebar);
 
   // ====== TAB HOME / HOT / PROMO / PARTNER (LOCALSTORAGE) ======
   const TAB_KEY = "tipsPageActiveTab";
@@ -80,9 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   try {
     const saved = localStorage.getItem(TAB_KEY);
-    if (["home", "hot", "promo", "partner"].includes(saved)) {
-      currentTab = saved;
-    }
+    if (["home", "hot", "promo", "partner"].includes(saved)) currentTab = saved;
   } catch (e) {
     console.warn("Gagal baca tab awal dari localStorage", e);
   }
@@ -95,11 +87,17 @@ document.addEventListener("DOMContentLoaded", () => {
     return order.find(t => navConfig[t]) || "home";
   }
 
+  // ✅ Active gold untuk sidebar
+  function updateSidebarActive(tab){
+    if (!sideMenuList) return;
+    sideMenuList.querySelectorAll(".side-menu-item").forEach(btn=>{
+      btn.classList.toggle("active", btn.dataset.tab === tab);
+    });
+  }
+
   function setActiveTab(tab) {
     // kalau tab dimatikan dari admin, pindah ke tab pertama yang aktif
-    if (!navConfig[tab]) {
-      tab = getFirstEnabledTab();
-    }
+    if (!navConfig[tab]) tab = getFirstEnabledTab();
     currentTab = tab;
 
     // sembunyikan semua section
@@ -116,21 +114,16 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (tab === "partner" && partnerPage && navConfig.partner) {
       partnerPage.style.display = "block";
     } else if (homePage && navConfig.home) {
-      // default HOME
       homePage.style.display = "block";
-      tab = "home";
       currentTab = "home";
     }
 
     // simpan tab ke localStorage
-    try {
-      localStorage.setItem(TAB_KEY, currentTab);
-    } catch (e) {
-      console.warn("Gagal simpan tab aktif", e);
-    }
+    try { localStorage.setItem(TAB_KEY, currentTab); } catch (e) {}
 
-    // update icon bottom-nav
+    // update active bottom + sidebar
     updateBottomNavActive(currentTab);
+    updateSidebarActive(currentTab);
   }
 
   // ==== fungsi global dipanggil dari HTML bottom nav ====
@@ -138,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setActiveTab(tab);
   };
 
-  // ==== fallback fungsi lama (kalau nanti dipakai) ====
+  // ==== fallback lama ====
   window.showHome        = () => setActiveTab("home");
   window.showHotGame     = () => setActiveTab("hot");
   window.showPromotion   = () => setActiveTab("promo");
@@ -146,46 +139,50 @@ document.addEventListener("DOMContentLoaded", () => {
   window.showPartnership = window.showPartner;
 
   // ====== BUILDER SIDEBAR: ambil dari bottom-nav otomatis ======
-function buildSidebarItems() {
-  if (!sideMenuList) return;
-  sideMenuList.innerHTML = "";
+  function buildSidebarItems() {
+    if (!sideMenuList) return;
+    sideMenuList.innerHTML = "";
 
-  const bottomButtons = document.querySelectorAll(".bottom-nav-item");
+    const bottomButtons = document.querySelectorAll(".bottom-nav-item");
 
-  bottomButtons.forEach((btn) => {
-    // kalau button dah di-hide (admin OFF), skip terus
-    if (btn.style.display === "none") return;
+    bottomButtons.forEach((btn) => {
+      // kalau button dah di-hide (admin OFF), skip terus
+      if (btn.style.display === "none") return;
 
-    const tab = btn.dataset.tab;
-    const label = btn.querySelector(".bottom-nav-label")?.textContent?.trim() || tab.toUpperCase();
+      const tab = btn.dataset.tab;
+      const label = btn.querySelector(".bottom-nav-label")?.textContent?.trim() || tab.toUpperCase();
+      const iconSrc = btn.querySelector("img")?.getAttribute("src") || "";
 
-    // ambil icon src dari bottom nav
-    const iconSrc = btn.querySelector("img")?.getAttribute("src") || "";
+      const item = document.createElement("button");
+      item.type = "button";
+      item.className = "side-menu-item";
+      item.dataset.tab = tab; // ✅ penting untuk active state
 
-    const item = document.createElement("button");
-    item.type = "button";
-    item.className = "side-menu-item";
+      item.innerHTML = `
+        <span class="side-menu-ico">
+          ${iconSrc ? `<img src="${iconSrc}" alt="">` : ""}
+        </span>
+        <span class="side-menu-text">${label}</span>
+      `;
 
-    item.innerHTML = `
-      <span class="side-menu-ico">
-        ${iconSrc ? `<img src="${iconSrc}" alt="">` : ""}
-      </span>
-      <span class="side-menu-text">${label}</span>
-    `;
+      item.addEventListener("click", () => {
+        window.handleBottomNavClick(tab);
+        closeSidebar(); // ✅ FIX: dulu closeSideMenu() sebab error
+      });
 
-    item.addEventListener("click", () => {
-      window.handleBottomNavClick(tab);
-      closeSideMenu();
+      sideMenuList.appendChild(item);
     });
 
-    sideMenuList.appendChild(item);
-  });
-}
+    // ✅ pastikan highlight ikut tab semasa
+    updateSidebarActive(currentTab);
+  }
+
+  // ====== set tab awal (sebelum firebase nav_tabs datang) ======
+  setActiveTab(currentTab);
 
   // ====== RATE GAME TIME (REALTIME CLOCK) ======
   function updateRateGameTime() {
     if (!rateGameTimeEl) return;
-
     const now = new Date();
     const pad = (n) => String(n).padStart(2, "0");
 
@@ -198,8 +195,7 @@ function buildSidebarItems() {
     const month  = months[now.getMonth()];
     const year   = now.getFullYear();
 
-    rateGameTimeEl.textContent =
-      `RATE GAME : ${hours}:${mins}:${secs} ${day} ${month} ${year}`;
+    rateGameTimeEl.textContent = `RATE GAME : ${hours}:${mins}:${secs} ${day} ${month} ${year}`;
   }
 
   if (rateGameTimeEl) {
@@ -214,8 +210,7 @@ function buildSidebarItems() {
     if (slides.length > 1) {
       let index = 0;
       setInterval(() => {
-        index++;
-        if (index >= slides.length) index = 0;
+        index = (index + 1) % slides.length;
         track.style.transform = `translateX(-${index * 100}%)`;
       }, 3500);
     }
@@ -231,7 +226,7 @@ function buildSidebarItems() {
   const promosRef    = db.ref("promo_banners");
   const promoBigRef  = db.ref("promotions");
   const partnersRef  = db.ref("partnerships");
-  const navTabsRef   = db.ref("nav_tabs");        // admin config
+  const navTabsRef   = db.ref("nav_tabs");
   const floatingRef  = db.ref("floating_buttons");
 
   let promoSliderTimer = null;
@@ -242,35 +237,26 @@ function buildSidebarItems() {
     navConfig = { ...defaults, ...(cfgRaw || {}) };
 
     // kontrol tombol bottom-nav
-    if (bottomHomeBtn) {
-      bottomHomeBtn.style.display = navConfig.home ? "" : "none";
-    }
-    if (bottomHotBtn) {
-      bottomHotBtn.style.display = navConfig.hot ? "" : "none";
-    }
-    if (bottomPromoBtn) {
-      bottomPromoBtn.style.display = navConfig.promo ? "" : "none";
-    }
-    if (bottomPartnerBtn) {
-      bottomPartnerBtn.style.display = navConfig.partner ? "" : "none";
-    }
+    if (bottomHomeBtn)    bottomHomeBtn.style.display    = navConfig.home    ? "" : "none";
+    if (bottomHotBtn)     bottomHotBtn.style.display     = navConfig.hot     ? "" : "none";
+    if (bottomPromoBtn)   bottomPromoBtn.style.display   = navConfig.promo   ? "" : "none";
+    if (bottomPartnerBtn) bottomPartnerBtn.style.display = navConfig.partner ? "" : "none";
 
     // pastikan tab aktif tidak OFF
     setActiveTab(currentTab);
 
-    // rebuild sidebar list supaya ikut config baru
+    // rebuild sidebar ikut config terbaru
     buildSidebarItems();
   }
 
-  // listen realtime nav_tabs
   navTabsRef.on("value", (snap) => {
     applyNavConfig(snap.val());
   });
 
-  // panggil sekali untuk sidebar awal (kalau nav_tabs belum datang)
+  // ✅ kalau bro tak nak “flash sidebar”, comment line bawah
   buildSidebarItems();
 
-  // ================== FLOATING BUTTONS (WA / TG / JOIN US) ==================
+  // ================== FLOATING BUTTONS ==================
   function renderFloatingButtons(snapshot) {
     const data = snapshot.val() || {};
     const wa   = data.whatsapp || {};
@@ -279,11 +265,7 @@ function buildSidebarItems() {
 
     if (floatingLeftEl) {
       floatingLeftEl.innerHTML = "";
-      if (floatingCollapsed) {
-        floatingLeftEl.classList.add("collapsed");
-      } else {
-        floatingLeftEl.classList.remove("collapsed");
-      }
+      floatingLeftEl.classList.toggle("collapsed", floatingCollapsed);
     }
     if (floatingRightEl) {
       floatingRightEl.innerHTML = "";
@@ -335,14 +317,8 @@ function buildSidebarItems() {
     toggleBtn.className = "floating-toggle";
     toggleBtn.setAttribute("aria-label", "Toggle contact buttons");
 
-    const svgUp = `
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M7 14l5-5 5 5" />
-      </svg>`;
-    const svgDown = `
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M7 10l5 5 5-5" />
-      </svg>`;
+    const svgUp = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 14l5-5 5 5" /></svg>`;
+    const svgDown = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5" /></svg>`;
 
     function updateArrowIcon() {
       toggleBtn.innerHTML = floatingCollapsed ? svgDown : svgUp;
@@ -352,14 +328,8 @@ function buildSidebarItems() {
 
     toggleBtn.addEventListener("click", () => {
       floatingCollapsed = !floatingCollapsed;
-
-      if (floatingCollapsed) {
-        floatingLeftEl.classList.add("collapsed");
-        try { localStorage.setItem(FLOAT_COLLAPSE_KEY, "1"); } catch (e) {}
-      } else {
-        floatingLeftEl.classList.remove("collapsed");
-        try { localStorage.setItem(FLOAT_COLLAPSE_KEY, "0"); } catch (e) {}
-      }
+      floatingLeftEl.classList.toggle("collapsed", floatingCollapsed);
+      try { localStorage.setItem(FLOAT_COLLAPSE_KEY, floatingCollapsed ? "1" : "0"); } catch (e) {}
       updateArrowIcon();
     });
 
@@ -368,7 +338,7 @@ function buildSidebarItems() {
 
   floatingRef.on("value", renderFloatingButtons);
 
-  // ================== PROMO BANNER (FREE CREDIT) ==================
+  // ================== PROMO BANNER ==================
   function renderPromos(snapshot) {
     if (!promoGridEl) return;
 
@@ -380,9 +350,7 @@ function buildSidebarItems() {
     const raw = snapshot.val() || {};
     promoGridEl.innerHTML = "";
 
-    const entries = Object.entries(raw)
-      .filter(([k, promo]) => promo && promo.enabled !== false);
-
+    const entries = Object.entries(raw).filter(([k, promo]) => promo && promo.enabled !== false);
     if (!entries.length) return;
 
     const cardsDom = [];
@@ -392,7 +360,6 @@ function buildSidebarItems() {
       const targetUrl = promo.targetUrl || "#";
       const title     = promo.title || "";
       const caption   = promo.caption || "";
-
       if (!imageUrl) return;
 
       const card = document.createElement("article");
@@ -447,19 +414,17 @@ function buildSidebarItems() {
 
   promosRef.on("value", renderPromos);
 
-  // ================== PROMOTION BANNER BESAR (TAB PROMOTION) ==================
+  // ================== PROMOTION BIG ==================
   function renderPromoBig(snapshot) {
     if (!promoBigGridEl) return;
 
     const data = snapshot.val() || {};
     promoBigGridEl.innerHTML = "";
 
-    const entries = Object.entries(data)
-      .filter(([key, promo]) => promo && promo.enabled !== false);
+    const entries = Object.entries(data).filter(([key, promo]) => promo && promo.enabled !== false);
 
     if (!entries.length) {
-      promoBigGridEl.innerHTML =
-        '<p class="text-muted small">Belum ada promotion aktif.</p>';
+      promoBigGridEl.innerHTML = '<p class="text-muted small">Belum ada promotion aktif.</p>';
       return;
     }
 
@@ -468,7 +433,6 @@ function buildSidebarItems() {
       const targetUrl = promo.targetUrl || "#";
       const title     = promo.title || "";
       const caption   = promo.caption || "";
-
       if (!imageUrl) return;
 
       const card = document.createElement("article");
@@ -515,19 +479,17 @@ function buildSidebarItems() {
 
   promoBigRef.on("value", renderPromoBig);
 
-  // ================== PARTNERSHIP (TAB PARTNERSHIP) ==================
+  // ================== PARTNERSHIP ==================
   function renderPartners(snapshot) {
     if (!partnerGridEl) return;
 
     const data = snapshot.val() || {};
     partnerGridEl.innerHTML = "";
 
-    const entries = Object.entries(data)
-      .filter(([key, p]) => p && p.enabled !== false);
+    const entries = Object.entries(data).filter(([key, p]) => p && p.enabled !== false);
 
     if (!entries.length) {
-      partnerGridEl.innerHTML =
-        '<p class="text-muted small">Belum ada partnership aktif.</p>';
+      partnerGridEl.innerHTML = '<p class="text-muted small">Belum ada partnership aktif.</p>';
       return;
     }
 
@@ -536,7 +498,6 @@ function buildSidebarItems() {
       const joinUrl = p.joinUrl || "#";
       const name    = p.name || "";
       const rating  = p.rating != null ? Number(p.rating).toFixed(1) : null;
-
       if (!logoUrl) return;
 
       const card = document.createElement("article");
@@ -593,7 +554,6 @@ function buildSidebarItems() {
 
   // ====== HISTORY & LOCALSTORAGE UNTUK TIPS ======
   const STORAGE_KEY = "tipsHistory.v1";
-
   let historyObj = {};
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -603,22 +563,15 @@ function buildSidebarItems() {
   }
 
   function saveHistory() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(historyObj));
-    } catch (e) {
-      console.warn("Gagal simpan history ke localStorage", e);
-    }
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(historyObj)); } catch (e) {}
   }
 
   function getHistoryState(key) {
-    if (!historyObj[key]) {
-      historyObj[key] = { history: [], index: -1 };
-    }
+    if (!historyObj[key]) historyObj[key] = { history: [], index: -1 };
     return historyObj[key];
   }
 
-  const randInt = (min, max) =>
-    Math.floor(Math.random() * (max - min + 1)) + min;
+  const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
   function generateTipsForCard(card) {
     const games = (card.games || []).slice();
@@ -631,7 +584,6 @@ function buildSidebarItems() {
 
     const count  = Math.min(3, games.length);
     const chosen = games.slice(0, count);
-
     const lines = [card.platformName || card.key, "==========="];
 
     chosen.forEach((name, idx) => {
@@ -651,8 +603,7 @@ function buildSidebarItems() {
       .filter((c) => c.enabled !== false);
 
     if (entries.length === 0) {
-      gridEl.innerHTML =
-        '<p class="text-muted small">Belum ada card aktif. Buat dari halaman admin.</p>';
+      gridEl.innerHTML = '<p class="text-muted small">Belum ada card aktif. Buat dari halaman admin.</p>';
       return;
     }
 
@@ -691,9 +642,7 @@ function buildSidebarItems() {
 
       const state = getHistoryState(card.key);
 
-      if (state.history.length > 0 && state.index >= 0) {
-        output.textContent = state.history[state.index];
-      }
+      if (state.history.length > 0 && state.index >= 0) output.textContent = state.history[state.index];
 
       genBtn.addEventListener("click", () => {
         const txt = generateTipsForCard(card);
