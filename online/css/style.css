@@ -47,60 +47,37 @@ body{
   padding:0 0 28px;
 }
 
-/* HEADER FULL BAR */
+/* ===== HEADER: cuma logo di tengah ===== */
 .app-header{
   position:relative;
   width:100%;
   margin:0;
-  padding:16px 40px;
+  padding:12px 16px;
   display:flex;
   align-items:center;
-  justify-content:space-between;
-  gap:10px;
+  justify-content:center; /* ⬅ logo di tengah */
   border-bottom:1px solid rgba(248,250,252,0.06);
   background:linear-gradient(90deg,#020617 0,#050b17 60%,#111827 100%);
   box-shadow:0 8px 24px rgba(0,0,0,0.75);
   z-index:999;
 }
 
-/* Glow garis bawah */
-.app-header::after{
-  content:"";
-  position:absolute;
-  left:0;
-  bottom:0;
-  width:40%;
-  height:2px;
-  background:linear-gradient(90deg, var(--accent), transparent);
-  opacity:0.8;
-}
-
-/* Kalau mau pakai <h1> di header */
-.app-header h1{
-  font-size:1.45rem;
-  letter-spacing:0.18em;
-  text-transform:uppercase;
-  color:#f9fafb;
-  text-shadow:0 0 12px rgba(250,204,21,0.4);
-  white-space:nowrap;
-}
-
-/* Badge kecil di header kalau mau dipakai nanti */
-.app-header-badge{
-  font-size:0.7rem;
-  padding:3px 8px;
-  border-radius:999px;
-  border:1px solid rgba(148,163,184,0.5);
-  color:var(--muted);
-}
 .app-header-left{
   display:flex;
   align-items:center;
+  justify-content:center;
+  width:100%;
 }
 
 .brand-logo-img{
-  height:32px;        /* atur tinggi logo */
+  height:32px;
   display:block;
+  margin:0 auto;
+}
+
+.app-header-left{
+  display:flex;
+  align-items:center;
 }
 
 /* kalau mau logo agak ke bawah atau ke atas bisa mainkan margin:
@@ -110,45 +87,6 @@ body{
   margin-top:2px;
 }
 */
-/* Brand kiri */
-.app-header-left .brand-logo{
-  font-weight:700;
-  letter-spacing:0.25em;
-  color:#facc15;
-  font-size:1.1rem;
-}
-
-/* Nav kanan */
-.app-nav{
-  display:flex;
-  align-items:center;
-  gap:2px;
-}
-
-.nav-link{
-  border:none;
-  padding:6px 10px;
-  border-radius:999px;
-  background:transparent;
-  color:#e5e7eb;
-  font-size:0.85rem;
-  letter-spacing:0.12em;
-  text-transform:uppercase;
-  cursor:pointer;
-  transition:background .2s, color .2s, box-shadow .2s;
-  white-space: nowrap;
-}
-
-.nav-link:hover{
-  background:rgba(248,250,252,0.04);
-}
-
-.nav-link.active{
-  background: radial-gradient(circle at 0 0, #fef9c3 0, transparent 45%), linear-gradient(135deg, var(--accent), var(--accent-soft));
-  color:#020617;
-  box-shadow:0 0 18px rgba(250,204,21,0.4);
-}
-
 .btn.ghost.small{
   padding:6px 14px;
   font-size:0.8rem;
@@ -1056,108 +994,6 @@ input[type="checkbox"].toggle:checked::before{
   .card::after,
   .tip-card::before {
     opacity: 0.5;   /* kurang inner glow */
-  }
-}
-
-/* posisi absolut di kiri header */
-.nav-left-wrap{
-  position:absolute;
-  left:16px;
-  top:50%;
-  transform:translateY(-50%);
-  display:flex;                 /* default: hidden (desktop) */
-  z-index:1100;
-  align-items:center; 
-}
-
-/* tombol bulat */
-.nav-left-btn{
-  background:transparent;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  color:#e5e7eb;
-}
-
-.nav-left-btn svg{
-  width:24px;
-  height:24px;
-  fill:#e5e7eb;
-}
-
-/* dropdown yang muncul di bawah ikon kiri */
-.nav-left-dropdown{
-  position:absolute;
-  top:115%;
-  left:0;
-  min-width:170px;
-  padding:6px;
-  border-radius:10px;
-  background:rgba(15,23,42,0.98);
-  box-shadow:0 18px 40px rgba(0,0,0,0.9);
-  border:1px solid rgba(148,163,184,0.7);
-  display:flex;
-  flex-direction:column;
-  gap:4px;
-
-  opacity:0;
-  pointer-events:none;
-  transform:translateY(10px) scale(0.96);
-  transition:opacity .18s ease, transform .18s ease;
-}
-
-/* saat open */
-.nav-left-wrap.open .nav-left-dropdown{
-  opacity:1;
-  pointer-events:auto;
-  transform:translateY(4px) scale(1);
-}
-
-/* style nav-link di dalam dropdown */
-.nav-left-dropdown .nav-link{
-  display:flex;
-  width:100%;
-  justify-content:flex-start;
-  text-align:left;
-  padding:8px 10px;
-  border-radius:10px;
-  background:transparent;
-}
-
-/* highlight active di dropdown */
-.nav-left-dropdown .nav-link.active{
-  background: radial-gradient(circle at 0 0, #fef9c3 0, transparent 45%),
-              linear-gradient(135deg, var(--accent), var(--accent-soft));
-  color:#020617;
-  box-shadow:0 0 14px rgba(250,204,21,0.45);
-}
-
-/* === MOBILE BEHAVIOUR === */
-@media (max-width: 768px){
-  /* ikon kiri hanya tampil di HP */
-  .nav-left-wrap{
-    display:flex;
-  }
-
-  /* logo tetap center di HP */
-  .app-header{
-    justify-content:center;
-  }
-  .app-header-left{
-    display:flex;
-    justify-content:center;
-    width:100%;
-  }
-  .brand-logo-img{
-    margin:0 auto;
-  }
-
-  /* nav bar di HP */
-  .app-nav{
-    flex-wrap:nowrap;
-    justify-content:center;
-    gap:4px;
   }
 }
 /* ===== BOTTOM NAV ICON BAR ===== */
