@@ -12,10 +12,31 @@
 
     <!-- ================== HEADER (LOGO SAJA, CENTER) ================== -->
     <header class="app-header">
+              <!-- ICON MENU KIRI (NEW) -->
+<button id="sideMenuBtn" class="side-menu-btn">
+  <svg viewBox="0 0 24 24">
+    <path fill="currentColor"
+      d="M14 19h-14v-1h14v1zm9.247-8.609l-3.247 4.049-3.263-4.062-.737.622 4 5 4-5-.753-.609zm-9.247 2.609h-14v-1h14v1zm0-6h-14v-1h14v1z"/>
+  </svg>
+</button>
       <div class="app-header-left">
         <img src="https://i.imgur.com/QrxyBjc.png" alt="5G88" class="brand-logo-img">
       </div>
     </header>
+<!-- ==== SIDEBAR NAV (AUTO LIST) ==== -->
+<div id="sideMenu" class="side-menu">
+  <div class="side-menu-header">
+    <span>Navigation</span>
+    <button id="sideMenuClose" class="side-menu-close">✕</button>
+  </div>
+
+  <div id="sideMenuList" class="side-menu-list">
+    <!-- JS akan isi nav-link LIST di sini automatik -->
+  </div>
+</div>
+
+<!-- overlay gelap -->
+<div id="sideOverlay" class="side-overlay"></div>
 
     <!-- ================== RUNNING TEXT ================== -->
     <div class="ticker-bar">
