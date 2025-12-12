@@ -129,6 +129,19 @@ body.page-admin .app-header::after{
     inset 0 0 0 1px rgba(148,163,184,0.12);
   margin-bottom:10px;
 }
+/* ====== CARD / PANEL ====== */
+.card-promo{
+  position:relative;
+  overflow:hidden;
+  background:transparent;
+  border-radius:16px;
+  border:1px solid rgba(15,23,42,0.9);
+  padding:14px 14px 16px;
+  box-shadow:
+    0 30px 80px rgba(0,0,0,0.85),
+    inset 0 0 0 1px rgba(148,163,184,0.12);
+  margin-bottom:10px;
+}
 
 /* highlight border subtle */
 .card::before{
@@ -168,6 +181,13 @@ body.page-admin .app-header::after{
     color: white;
     text-align: center;
 }
+.title-promo{
+  font-size:1.8rem;
+  text-transform:uppercase;
+  letter-spacing:0.10em;
+  color:gold;
+  text-align: center;
+}
 .section-title{
   font-size:1.8rem;
   text-transform:uppercase;
@@ -184,6 +204,10 @@ body.page-admin .app-header::after{
 }
 .small-card{
   font-size:0.8rem;
+}
+.small-promo{
+  font-size:0.8rem;
+  text-align: center;
 }
 
 /* ====== BUTTONS ====== */
