@@ -164,13 +164,15 @@ body.page-admin .app-header::after{
   margin-bottom:6px;
   text-transform:uppercase;
   letter-spacing:0.14em;
-  color:#e5e7eb;
+  color:gold;
+  text-align: center;
 }
 .text-muted{
   color:var(--muted);
 }
 .small{
   font-size:0.8rem;
+  text-align: center;
 }
 
 /* ====== BUTTONS ====== */
