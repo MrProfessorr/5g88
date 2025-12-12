@@ -182,6 +182,9 @@ body.page-admin .app-header::after{
   font-size:0.8rem;
   text-align: center;
 }
+.small-card{
+  font-size:0.8rem;
+}
 
 /* ====== BUTTONS ====== */
 .btn{
