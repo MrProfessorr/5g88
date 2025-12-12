@@ -146,54 +146,41 @@ document.addEventListener("DOMContentLoaded", () => {
   window.showPartnership = window.showPartner;
 
   // ====== BUILDER SIDEBAR: ambil dari bottom-nav otomatis ======
-  function buildSidebarItems() {
-    if (!sideMenuList) return;
+function buildSidebarItems() {
+  if (!sideMenuList) return;
+  sideMenuList.innerHTML = "";
 
-    sideMenuList.innerHTML = "";
+  const bottomButtons = document.querySelectorAll(".bottom-nav-item");
 
-    if (!bottomNavItems || !bottomNavItems.length) {
-      const p = document.createElement("p");
-      p.className = "text-muted small";
-      p.textContent = "Menu tidak tersedia.";
-      sideMenuList.appendChild(p);
-      return;
-    }
+  bottomButtons.forEach((btn) => {
+    // kalau button dah di-hide (admin OFF), skip terus
+    if (btn.style.display === "none") return;
 
-    let any = false;
+    const tab = btn.dataset.tab;
+    const label = btn.querySelector(".bottom-nav-label")?.textContent?.trim() || tab.toUpperCase();
 
-    bottomNavItems.forEach(btn => {
-      // skip yang hidden (OFF dari admin)
-      if (btn.style.display === "none") return;
+    // ambil icon src dari bottom nav
+    const iconSrc = btn.querySelector("img")?.getAttribute("src") || "";
 
-      const tab = btn.dataset.tab;
-      if (!tab) return;
+    const item = document.createElement("button");
+    item.type = "button";
+    item.className = "side-menu-item";
 
-      const labelSpan = btn.querySelector(".bottom-nav-label");
-      const label = labelSpan
-        ? labelSpan.textContent.trim()
-        : (btn.textContent || tab).trim();
+    item.innerHTML = `
+      <span class="side-menu-ico">
+        ${iconSrc ? `<img src="${iconSrc}" alt="">` : ""}
+      </span>
+      <span class="side-menu-text">${label}</span>
+    `;
 
-      const item = document.createElement("button");
-      item.type = "button";
-      item.className = "side-menu-item";
-      item.textContent = label || tab.toUpperCase();
-
-      item.addEventListener("click", () => {
-        setActiveTab(tab);
-        closeSidebar();
-      });
-
-      sideMenuList.appendChild(item);
-      any = true;
+    item.addEventListener("click", () => {
+      window.handleBottomNavClick(tab);
+      closeSideMenu();
     });
 
-    if (!any) {
-      const p = document.createElement("p");
-      p.className = "text-muted small";
-      p.textContent = "Menu tidak tersedia.";
-      sideMenuList.appendChild(p);
-    }
-  }
+    sideMenuList.appendChild(item);
+  });
+}
 
   // ====== RATE GAME TIME (REALTIME CLOCK) ======
   function updateRateGameTime() {
