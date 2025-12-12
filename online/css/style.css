@@ -730,6 +730,7 @@ input[type="checkbox"].toggle:checked::before{
   display:grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap:16px;
+  margin-bottom: 15px;
 }
 
 .promo-big-card{
