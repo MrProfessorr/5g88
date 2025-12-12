@@ -11,12 +11,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const promoPage   = document.getElementById("promoPage");
   const partnerPage = document.getElementById("partnerPage");
 
+  // ❌ Hindari flash: semua section disembunyikan dulu
+  if (homePage)    homePage.style.display    = "none";
+  if (hotGamePage) hotGamePage.style.display = "none";
+  if (promoPage)   promoPage.style.display   = "none";
+  if (partnerPage) partnerPage.style.display = "none";
+
   // ===== BOTTOM NAV (ikon di bawah) =====
-  const bottomNavItems = document.querySelectorAll(".bottom-nav-item");
-  const bottomHomeBtn    = document.querySelector('.bottom-nav-item[data-tab="home"]');
-  const bottomHotBtn     = document.querySelector('.bottom-nav-item[data-tab="hot"]');
-  const bottomPromoBtn   = document.querySelector('.bottom-nav-item[data-tab="promo"]');
-  const bottomPartnerBtn = document.querySelector('.bottom-nav-item[data-tab="partner"]');
+  const bottomNavItems  = document.querySelectorAll(".bottom-nav-item");
+  const bottomHomeBtn   = document.querySelector('.bottom-nav-item[data-tab="home"]');
+  const bottomHotBtn    = document.querySelector('.bottom-nav-item[data-tab="hot"]');
+  const bottomPromoBtn  = document.querySelector('.bottom-nav-item[data-tab="promo"]');
+  const bottomPartnerBtn= document.querySelector('.bottom-nav-item[data-tab="partner"]');
 
   function updateBottomNavActive(tab) {
     if (!bottomNavItems || !bottomNavItems.length) return;
@@ -38,6 +44,34 @@ document.addEventListener("DOMContentLoaded", () => {
     floatingCollapsed = localStorage.getItem(FLOAT_COLLAPSE_KEY) === "1";
   } catch (e) {
     floatingCollapsed = false;
+  }
+
+  // ====== SIDEBAR NAV (icon kiri header) ======
+  const sideMenuBtn   = document.getElementById("sideMenuBtn");
+  const sideMenu      = document.getElementById("sideMenu");
+  const sideMenuClose = document.getElementById("sideMenuClose");
+  const sideOverlay   = document.getElementById("sideOverlay");
+  const sideMenuList  = document.getElementById("sideMenuList");
+
+  function openSidebar() {
+    if (!sideMenu || !sideOverlay) return;
+    sideMenu.classList.add("open");
+    sideOverlay.classList.add("show");
+  }
+  function closeSidebar() {
+    if (!sideMenu || !sideOverlay) return;
+    sideMenu.classList.remove("open");
+    sideOverlay.classList.remove("show");
+  }
+
+  if (sideMenuBtn) {
+    sideMenuBtn.addEventListener("click", openSidebar);
+  }
+  if (sideMenuClose) {
+    sideMenuClose.addEventListener("click", closeSidebar);
+  }
+  if (sideOverlay) {
+    sideOverlay.addEventListener("click", closeSidebar);
   }
 
   // ====== TAB HOME / HOT / PROMO / PARTNER (LOCALSTORAGE) ======
@@ -105,14 +139,61 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // ==== fallback fungsi lama (kalau nanti dipakai) ====
-  window.showHome       = () => setActiveTab("home");
-  window.showHotGame    = () => setActiveTab("hot");
-  window.showPromotion  = () => setActiveTab("promo");
-  window.showPartner    = () => setActiveTab("partner");
+  window.showHome        = () => setActiveTab("home");
+  window.showHotGame     = () => setActiveTab("hot");
+  window.showPromotion   = () => setActiveTab("promo");
+  window.showPartner     = () => setActiveTab("partner");
   window.showPartnership = window.showPartner;
 
-  // set tab awal sebelum nav_tabs Firebase datang
-  setActiveTab(currentTab);
+  // ====== BUILDER SIDEBAR: ambil dari bottom-nav otomatis ======
+  function buildSidebarItems() {
+    if (!sideMenuList) return;
+
+    sideMenuList.innerHTML = "";
+
+    if (!bottomNavItems || !bottomNavItems.length) {
+      const p = document.createElement("p");
+      p.className = "text-muted small";
+      p.textContent = "Menu tidak tersedia.";
+      sideMenuList.appendChild(p);
+      return;
+    }
+
+    let any = false;
+
+    bottomNavItems.forEach(btn => {
+      // skip yang hidden (OFF dari admin)
+      if (btn.style.display === "none") return;
+
+      const tab = btn.dataset.tab;
+      if (!tab) return;
+
+      const labelSpan = btn.querySelector(".bottom-nav-label");
+      const label = labelSpan
+        ? labelSpan.textContent.trim()
+        : (btn.textContent || tab).trim();
+
+      const item = document.createElement("button");
+      item.type = "button";
+      item.className = "side-menu-item";
+      item.textContent = label || tab.toUpperCase();
+
+      item.addEventListener("click", () => {
+        setActiveTab(tab);
+        closeSidebar();
+      });
+
+      sideMenuList.appendChild(item);
+      any = true;
+    });
+
+    if (!any) {
+      const p = document.createElement("p");
+      p.className = "text-muted small";
+      p.textContent = "Menu tidak tersedia.";
+      sideMenuList.appendChild(p);
+    }
+  }
 
   // ====== RATE GAME TIME (REALTIME CLOCK) ======
   function updateRateGameTime() {
@@ -163,21 +244,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const promosRef    = db.ref("promo_banners");
   const promoBigRef  = db.ref("promotions");
   const partnersRef  = db.ref("partnerships");
-  const navTabsRef   = db.ref("nav_tabs");        // << admin config
+  const navTabsRef   = db.ref("nav_tabs");        // admin config
   const floatingRef  = db.ref("floating_buttons");
 
   let promoSliderTimer = null;
 
-  // ====== NAV TABS CONFIG DARI FIREBASE (ngatur section + bottom-nav) ======
+  // ====== NAV TABS CONFIG DARI FIREBASE ======
   function applyNavConfig(cfgRaw) {
     const defaults = { home: true, hot: true, promo: true, partner: true };
     navConfig = { ...defaults, ...(cfgRaw || {}) };
-
-    // kontrol section
-    if (homePage)    homePage.style.display    = navConfig.home    ? homePage.style.display    : "none";
-    if (hotGamePage) hotGamePage.style.display = navConfig.hot     ? hotGamePage.style.display : "none";
-    if (promoPage)   promoPage.style.display   = navConfig.promo   ? promoPage.style.display   : "none";
-    if (partnerPage) partnerPage.style.display = navConfig.partner ? partnerPage.style.display : "none";
 
     // kontrol tombol bottom-nav
     if (bottomHomeBtn) {
@@ -193,13 +268,20 @@ document.addEventListener("DOMContentLoaded", () => {
       bottomPartnerBtn.style.display = navConfig.partner ? "" : "none";
     }
 
-    // pastikan tab aktif tidak dalam keadaan OFF
+    // pastikan tab aktif tidak OFF
     setActiveTab(currentTab);
+
+    // rebuild sidebar list supaya ikut config baru
+    buildSidebarItems();
   }
 
+  // listen realtime nav_tabs
   navTabsRef.on("value", (snap) => {
     applyNavConfig(snap.val());
   });
+
+  // panggil sekali untuk sidebar awal (kalau nav_tabs belum datang)
+  buildSidebarItems();
 
   // ================== FLOATING BUTTONS (WA / TG / JOIN US) ==================
   function renderFloatingButtons(snapshot) {
