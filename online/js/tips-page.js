@@ -49,7 +49,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // ====== SIDEBAR NAV ======
   const sideMenuBtn   = document.getElementById("sideMenuBtn");
   const sideMenu      = document.getElementById("sideMenu");
-  const sideMenuClose = document.getElementById("sideMenuClose");
   const sideOverlay   = document.getElementById("sideOverlay");
   const sideMenuList  = document.getElementById("sideMenuList");
 
@@ -65,7 +64,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (sideMenuBtn)   sideMenuBtn.addEventListener("click", openSidebar);
-  if (sideMenuClose) sideMenuClose.addEventListener("click", closeSidebar);
   if (sideOverlay)   sideOverlay.addEventListener("click", closeSidebar);
 
   // ====== TAB HOME / HOT / PROMO / PARTNER (LOCALSTORAGE) ======
