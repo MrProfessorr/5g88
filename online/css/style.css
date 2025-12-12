@@ -161,7 +161,13 @@ body.page-admin .app-header::after{
   position:relative;
   z-index:1;
 }
-
+.title-card {
+    font-size: 1.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+    color: white;
+    text-align: center;
+}
 .section-title{
   font-size:1.8rem;
   text-transform:uppercase;
