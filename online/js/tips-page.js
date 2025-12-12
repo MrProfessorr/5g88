@@ -11,13 +11,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const promoPage   = document.getElementById("promoPage");
   const partnerPage = document.getElementById("partnerPage");
 
-  const navHome    = document.getElementById("navHome");
-  const navHot     = document.getElementById("navHot");
-  const navPromo   = document.getElementById("navPromo");
-  const navPartner = document.getElementById("navPartner");
-
-  // === BOTTOM NAV (ikon di bawah layar) ===
+  // ===== BOTTOM NAV (ikon di bawah) =====
   const bottomNavItems = document.querySelectorAll(".bottom-nav-item");
+  const bottomHomeBtn    = document.querySelector('.bottom-nav-item[data-tab="home"]');
+  const bottomHotBtn     = document.querySelector('.bottom-nav-item[data-tab="hot"]');
+  const bottomPromoBtn   = document.querySelector('.bottom-nav-item[data-tab="promo"]');
+  const bottomPartnerBtn = document.querySelector('.bottom-nav-item[data-tab="partner"]');
 
   function updateBottomNavActive(tab) {
     if (!bottomNavItems || !bottomNavItems.length) return;
@@ -27,70 +26,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // === NAV RESPONSIVE: extra nav-link masuk ke icon kiri di HP ===
-  const mainNav       = document.getElementById("mainNav");
-  const navLeftWrap   = document.getElementById("navLeftWrap");
-  const navLeftBtn    = document.getElementById("navLeftBtn");
-  const navLeftDrop   = document.getElementById("navLeftDropdown");
-
-  // toggle dropdown kiri
-  if (navLeftBtn && navLeftWrap) {
-    navLeftBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      navLeftWrap.classList.toggle("open");
-    });
-
-    // klik di luar → tutup dropdown
-    document.addEventListener("click", (e) => {
-      if (!navLeftWrap.contains(e.target)) {
-        navLeftWrap.classList.remove("open");
-      }
-    });
-  }
-
-  // fungsi pindah nav-link ke dropdown bila layar kecil
-  function redistributeNav() {
-    if (!mainNav || !navLeftDrop) return;
-
-    // ambil SEMUA nav-link (yang di navbar & yang di dropdown)
-    const allBtns = [
-      ...mainNav.querySelectorAll(".nav-link"),
-      ...navLeftDrop.querySelectorAll(".nav-link"),
-    ];
-
-    // kosongkan dulu
-    mainNav.innerHTML = "";
-    navLeftDrop.innerHTML = "";
-
-    if (window.innerWidth <= 768) {
-      // di HP: hanya beberapa yang stay di bar utama
-      allBtns.forEach((btn, idx) => {
-        if (idx < 3) {
-          mainNav.appendChild(btn);
-        } else {
-          navLeftDrop.appendChild(btn);
-        }
-      });
-    } else {
-      // di desktop: semua nav-link balik ke bar utama, dropdown kosong
-      allBtns.forEach((btn) => {
-        mainNav.appendChild(btn);
-      });
-    }
-  }
-
-  // panggil sekali saat load
-  redistributeNav();
-  // panggil lagi kalau ukuran layar berubah
-  window.addEventListener("resize", redistributeNav);
-
   const rateGameTimeEl = document.getElementById("rateGameTime");
 
-  // ====== CONTAINER FLOATING BUTTONS ====== 
+  // ====== CONTAINER FLOATING BUTTONS ======
   const floatingLeftEl  = document.getElementById("floatingLeft");
   const floatingRightEl = document.getElementById("floatingRight");
 
-  // 🔽 STATE COLLAPSE UNTUK FLOATING BUTTONS (WA / TG / JOIN)
   const FLOAT_COLLAPSE_KEY = "tipsFloatingContactsCollapsed.v1";
   let floatingCollapsed = false;
   try {
@@ -112,37 +53,39 @@ document.addEventListener("DOMContentLoaded", () => {
     console.warn("Gagal baca tab awal dari localStorage", e);
   }
 
+  // config dari Firebase (nav_tabs)
+  let navConfig = { home: true, hot: true, promo: true, partner: true };
+
+  function getFirstEnabledTab() {
+    const order = ["home", "hot", "promo", "partner"];
+    return order.find(t => navConfig[t]) || "home";
+  }
+
   function setActiveTab(tab) {
+    // kalau tab dimatikan dari admin, pindah ke tab pertama yang aktif
+    if (!navConfig[tab]) {
+      tab = getFirstEnabledTab();
+    }
     currentTab = tab;
 
-    // sembunyikan semua page
+    // sembunyikan semua section
     if (homePage)    homePage.style.display    = "none";
     if (hotGamePage) hotGamePage.style.display = "none";
     if (promoPage)   promoPage.style.display   = "none";
     if (partnerPage) partnerPage.style.display = "none";
 
-    // reset active top nav
-    navHome    && navHome.classList.remove("active");
-    navHot     && navHot.classList.remove("active");
-    navPromo   && navPromo.classList.remove("active");
-    navPartner && navPartner.classList.remove("active");
-
-    if (tab === "hot" && hotGamePage && navHot && navHot.style.display !== "none") {
+    // tampilkan section sesuai tab
+    if (tab === "hot" && hotGamePage && navConfig.hot) {
       hotGamePage.style.display = "block";
-      navHot.classList.add("active");
-    } else if (tab === "promo" && promoPage && navPromo && navPromo.style.display !== "none") {
+    } else if (tab === "promo" && promoPage && navConfig.promo) {
       promoPage.style.display = "block";
-      navPromo.classList.add("active");
-    } else if (tab === "partner" && partnerPage && navPartner && navPartner.style.display !== "none") {
+    } else if (tab === "partner" && partnerPage && navConfig.partner) {
       partnerPage.style.display = "block";
-      navPartner.classList.add("active");
-    } else {
-      if (homePage && navHome && navHome.style.display !== "none") {
-        homePage.style.display = "block";
-        navHome.classList.add("active");
-        currentTab = "home";
-        tab = "home";
-      }
+    } else if (homePage && navConfig.home) {
+      // default HOME
+      homePage.style.display = "block";
+      tab = "home";
+      currentTab = "home";
     }
 
     // simpan tab ke localStorage
@@ -152,32 +95,23 @@ document.addEventListener("DOMContentLoaded", () => {
       console.warn("Gagal simpan tab aktif", e);
     }
 
-    // update bottom nav icon
+    // update icon bottom-nav
     updateBottomNavActive(currentTab);
   }
 
-  // fungsi dipakai dari HTML (bottom nav / apa-apa)
-  window.showHome = function () {
-    setActiveTab("home");
-  };
-  window.showHotGame = function () {
-    setActiveTab("hot");
-  };
-  window.showPromotion = function () {
-    setActiveTab("promo");
-  };
-  window.showPartner = function () {
-    setActiveTab("partner");
-  };
-  window.showPartnership = window.showPartner;
-
-  // === GLOBAL untuk bottom nav icon ===
+  // ==== fungsi global dipanggil dari HTML bottom nav ====
   window.handleBottomNavClick = function (tab) {
-    // cukup panggil setActiveTab, semua UI sync (page + top nav + bottom nav)
     setActiveTab(tab);
   };
 
-  // sementara sebelum baca config nav_tabs, pakai tab dari localStorage
+  // ==== fallback fungsi lama (kalau nanti dipakai) ====
+  window.showHome       = () => setActiveTab("home");
+  window.showHotGame    = () => setActiveTab("hot");
+  window.showPromotion  = () => setActiveTab("promo");
+  window.showPartner    = () => setActiveTab("partner");
+  window.showPartnership = window.showPartner;
+
+  // set tab awal sebelum nav_tabs Firebase datang
   setActiveTab(currentTab);
 
   // ====== RATE GAME TIME (REALTIME CLOCK) ======
@@ -229,42 +163,38 @@ document.addEventListener("DOMContentLoaded", () => {
   const promosRef    = db.ref("promo_banners");
   const promoBigRef  = db.ref("promotions");
   const partnersRef  = db.ref("partnerships");
-  const navTabsRef   = db.ref("nav_tabs");
-  const floatingRef  = db.ref("floating_buttons"); // 🔥 config tombol floating
+  const navTabsRef   = db.ref("nav_tabs");        // << admin config
+  const floatingRef  = db.ref("floating_buttons");
 
   let promoSliderTimer = null;
 
-  // ====== NAV TABS CONFIG DARI FIREBASE ======
+  // ====== NAV TABS CONFIG DARI FIREBASE (ngatur section + bottom-nav) ======
   function applyNavConfig(cfgRaw) {
     const defaults = { home: true, hot: true, promo: true, partner: true };
-    const cfg = { ...defaults, ...(cfgRaw || {}) };
+    navConfig = { ...defaults, ...(cfgRaw || {}) };
 
-    if (navHome) {
-      navHome.style.display = cfg.home ? "" : "none";
-    }
-    if (homePage && !cfg.home) homePage.style.display = "none";
+    // kontrol section
+    if (homePage)    homePage.style.display    = navConfig.home    ? homePage.style.display    : "none";
+    if (hotGamePage) hotGamePage.style.display = navConfig.hot     ? hotGamePage.style.display : "none";
+    if (promoPage)   promoPage.style.display   = navConfig.promo   ? promoPage.style.display   : "none";
+    if (partnerPage) partnerPage.style.display = navConfig.partner ? partnerPage.style.display : "none";
 
-    if (navHot) {
-      navHot.style.display = cfg.hot ? "" : "none";
+    // kontrol tombol bottom-nav
+    if (bottomHomeBtn) {
+      bottomHomeBtn.style.display = navConfig.home ? "" : "none";
     }
-    if (hotGamePage && !cfg.hot) hotGamePage.style.display = "none";
+    if (bottomHotBtn) {
+      bottomHotBtn.style.display = navConfig.hot ? "" : "none";
+    }
+    if (bottomPromoBtn) {
+      bottomPromoBtn.style.display = navConfig.promo ? "" : "none";
+    }
+    if (bottomPartnerBtn) {
+      bottomPartnerBtn.style.display = navConfig.partner ? "" : "none";
+    }
 
-    if (navPromo) {
-      navPromo.style.display = cfg.promo ? "" : "none";
-    }
-    if (promoPage && !cfg.promo) promoPage.style.display = "none";
-
-    if (navPartner) {
-      navPartner.style.display = cfg.partner ? "" : "none";
-    }
-    if (partnerPage && !cfg.partner) partnerPage.style.display = "none";
-
-    let wanted = currentTab;
-    if (!cfg[wanted]) {
-      const order = ["home", "hot", "promo", "partner"];
-      wanted = order.find((t) => cfg[t]) || "home";
-    }
-    setActiveTab(wanted);
+    // pastikan tab aktif tidak dalam keadaan OFF
+    setActiveTab(currentTab);
   }
 
   navTabsRef.on("value", (snap) => {
@@ -280,7 +210,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (floatingLeftEl) {
       floatingLeftEl.innerHTML = "";
-      // apply class collapsed sesuai state
       if (floatingCollapsed) {
         floatingLeftEl.classList.add("collapsed");
       } else {
@@ -288,10 +217,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
     if (floatingRightEl) {
-      floatingRightEl.innerHTML = ""; // kanan tidak dipakai
+      floatingRightEl.innerHTML = "";
     }
 
-    // Helper buat 1 tombol
     function createFloatingBtn(cfg, extraClass, labelText) {
       if (!cfg || !cfg.enabled || !cfg.link) return null;
 
@@ -320,7 +248,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!floatingLeftEl) return;
 
-    // stack untuk WA / TG / JOIN
     const stack = document.createElement("div");
     stack.className = "floating-stack";
 
@@ -334,7 +261,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     floatingLeftEl.appendChild(stack);
 
-    // ===== tombol panah toggle di bawah =====
     const toggleBtn = document.createElement("button");
     toggleBtn.type = "button";
     toggleBtn.className = "floating-toggle";
@@ -736,13 +662,12 @@ document.addEventListener("DOMContentLoaded", () => {
   cardsRef.on("value", renderCards);
 });
 
-// ===== BACK TO TOP BUTTON (di luar DOMContentLoaded supaya ringan) =====
+// ===== BACK TO TOP BUTTON =====
 let scrollTimer;
 const btn = document.getElementById("backToTop");
 
 if (btn) {
   window.addEventListener("scroll", () => {
-    // scroll jauh dari atas → tampilkan tombol
     if (window.scrollY > 200) {
       btn.classList.add("show");
       btn.classList.remove("hide");
@@ -751,19 +676,16 @@ if (btn) {
       btn.classList.add("hide");
     }
 
-    // reset timer bila scroll
     clearTimeout(scrollTimer);
 
-    // hilangkan bila user berhenti scroll 1 detik
     scrollTimer = setTimeout(() => {
       if (window.scrollY > 200) {
         btn.classList.add("hide");
         btn.classList.remove("show");
       }
-    }, 1000); // 1 second berhenti scroll
+    }, 1000);
   });
 
-  // klik → smooth scroll to top
   btn.addEventListener("click", () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
