@@ -160,10 +160,9 @@ body.page-admin .app-header::after{
 }
 
 .section-title{
-  font-size:1rem;
-  margin-bottom:6px;
+  font-size:1.8rem;
   text-transform:uppercase;
-  letter-spacing:0.14em;
+  letter-spacing:0.10em;
   color:gold;
   text-align: center;
 }
