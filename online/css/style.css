@@ -1173,6 +1173,11 @@ body.page-user{
   background: rgba(255,255,255,0.15);
   transform: translateY(-1px);
 }
+.side-menu-item.active{
+  background: rgba(250,204,21,0.14);
+  border: 1px solid rgba(250,204,21,0.35);
+  color: gold;
+}
 
 .side-menu-ico{
   flex:0 0 34px;
