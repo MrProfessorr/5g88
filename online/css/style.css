@@ -1167,6 +1167,7 @@ body.page-user{
   transition: background .2s, transform .12s;
   text-align:left;
   letter-spacing:.08em;
+  color:#e5e7eb;
 }
 
 .side-menu-item:hover{
@@ -1197,9 +1198,8 @@ body.page-user{
 
 .side-menu-text{
   flex:1;
-  font-weight:800;
+  font-weight:700;
   font-size:.82rem;
-  color:#e5e7eb;
   line-height:1;
   white-space:nowrap;
 }
