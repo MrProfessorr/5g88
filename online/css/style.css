@@ -80,13 +80,16 @@ body{
   align-items:center;
 }
 
-/* kalau mau logo agak ke bawah atau ke atas bisa mainkan margin:
-.brand-logo-img{
-  height:32px;
-  display:block;
-  margin-top:2px;
+.percentage-card {
+    position: relative;
+    overflow: hidden;
+    background: transparent;
+    border-radius: 12px;
+    border: 1px solid #facc15;
+    padding: 14px 14px 16px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85), inset 0 0 0 1px rgba(148, 163, 184, 0.12);
+    margin-bottom: 10px;
 }
-*/
 .btn.ghost.small{
   padding:6px 14px;
   font-size:0.8rem;
