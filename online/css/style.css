@@ -1153,21 +1153,59 @@ body.page-user{
   flex-direction: column;
   gap: 5px;
 }
+/* ===== SIDEBAR ITEM (ICON LEFT + TEXT) ===== */
+.side-menu-item{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:12px;
 
-.side-menu-item {
-  padding: 12px;
+  padding:12px 12px;
   background: rgba(255,255,255,0.05);
-  border-radius: 8px;
-  color: white;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background .2s;
-  border: none;
+  border-radius: 10px;
+
+  border:none;
+  cursor:pointer;
+  transition: background .2s, transform .12s;
+
+  text-align:left;
+  letter-spacing:.08em;
 }
 
-.side-menu-item:hover {
+.side-menu-item:hover{
   background: rgba(255,255,255,0.15);
+  transform: translateY(-1px);
 }
+
+.side-menu-ico{
+  width:34px;
+  height:34px;
+  flex:0 0 34px;
+  border-radius:10px;
+  background:rgba(15,23,42,.65);
+  border:1px solid rgba(250,204,21,.25);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+.side-menu-ico img{
+  width:22px;
+  height:22px;
+  object-fit:contain;
+  display:block;
+}
+
+.side-menu-text{
+  flex:1;
+  font-weight:800;
+  font-size:.82rem;
+  color:#e5e7eb;
+  line-height:1;
+  white-space:nowrap;
+}
+
 
 /* overlay */
 .side-overlay {
@@ -1180,4 +1218,10 @@ body.page-user{
 
 .side-overlay.show {
   display: block;
+}
+#sideMenuBtn{
+  position:absolute;
+  left:14px;
+  top:50%;
+  transform:translateY(-50%);
 }
