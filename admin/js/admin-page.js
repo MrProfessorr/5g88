@@ -70,6 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const partnerRatingInput  = document.getElementById("partnerRating");
   const partnerLogoInput    = document.getElementById("partnerLogoUrl");
   const partnerJoinInput    = document.getElementById("partnerJoinUrl");
+  const partnerChannelInput = document.getElementById("partnerChannelUrl"); // ✅ NEW
   const partnerModalSaveBtn = document.getElementById("partnerModalSaveBtn");
   let currentPartnerKey     = null;
 
@@ -818,6 +819,7 @@ document.addEventListener("DOMContentLoaded", () => {
     partnerRatingInput.value = "";
     partnerLogoInput.value   = "";
     partnerJoinInput.value   = "";
+    if (partnerChannelInput) partnerChannelInput.value = ""; // ✅ NEW
   }
 
   function openPartnerNewModal() {
@@ -837,6 +839,7 @@ document.addEventListener("DOMContentLoaded", () => {
     partnerRatingInput.value = data.rating  != null ? data.rating : "";
     partnerLogoInput.value   = data.logoUrl || "";
     partnerJoinInput.value   = data.joinUrl || "";
+    if (partnerChannelInput) partnerChannelInput.value = data.channelUrl || data.channelLink || ""; // ✅ NEW
 
     partnerModal.classList.add(MODAL_OPEN_CLASS);
   }
@@ -856,6 +859,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const ratingS = (partnerRatingInput.value || "").trim();
       const logoUrl = (partnerLogoInput.value   || "").trim();
       const joinUrl = (partnerJoinInput.value   || "").trim();
+      const channelUrl = (partnerChannelInput?.value || "").trim(); // ✅ NEW
 
       if (!logoUrl) {
         alert("Isi URL logo dulu bro.");
@@ -876,6 +880,7 @@ document.addEventListener("DOMContentLoaded", () => {
         rating,
         logoUrl,
         joinUrl,
+        channelUrl,
         updatedAt: firebase.database.ServerValue.TIMESTAMP,
       };
 
@@ -948,7 +953,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const ratingText = p.rating != null
         ? `${Number(p.rating).toFixed(1)} ★`
         : "No rating";
-      sub.textContent = `${ratingText} • ${p.joinUrl || ""}`;
+      const chText = p.channelUrl || p.channelLink || "";
+      sub.textContent = `${ratingText} • Join: ${p.joinUrl || ""}${chText ? " • Channel: " + chText : ""}`;
 
       info.appendChild(titleEl);
       info.appendChild(sub);
