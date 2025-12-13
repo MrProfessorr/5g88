@@ -13,7 +13,9 @@ document.addEventListener("DOMContentLoaded", () => {
       loaderEl.style.opacity = "1";
     }
     if (appShellEl) {
-      appShellEl.style.opacity = "0";
+      appShellEl.style.transition = "opacity .25s ease, filter .25s ease";
+      appShellEl.style.opacity = "0.25";          // ✅ jangan 0 bro
+      appShellEl.style.filter = "blur(2px)";      // ✅ efek backdrop
       appShellEl.style.pointerEvents = "none";
     }
   }
