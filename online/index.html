@@ -189,41 +189,38 @@
 
   </nav>
 
-  <!-- ✅ SHARE SHEET -->
-  <div id="shareOverlay" class="share-overlay" style="display:none;"></div>
+<!-- ✅ SHARE SHEET (ICON ONLY) -->
+<div id="shareOverlay" class="share-overlay" style="display:none;" onclick="closeShareSheet()"></div>
 
-  <div id="shareSheet" class="share-sheet" style="display:none;" aria-hidden="true">
-    <div class="share-sheet-head">
-      <div class="share-title">Share this page</div>
-      <button class="share-close" type="button" onclick="closeShareSheet()">✕</button>
-    </div>
-
-    <div class="share-grid">
-      <button class="share-item" type="button" data-share="whatsapp">
-        <span>WhatsApp</span>
-      </button>
-      <button class="share-item" type="button" data-share="facebook">
-        <span>Facebook</span>
-      </button>
-      <button class="share-item" type="button" data-share="telegram">
-        <span>Telegram</span>
-      </button>
-      <button class="share-item" type="button" data-share="tiktok">
-        <span>TikTok</span>
-      </button>
-      <button class="share-item" type="button" data-share="instagram">
-        <span>Instagram</span>
-      </button>
-      <button class="share-item" type="button" data-share="copy">
-        <span>Copy Link</span>
-      </button>
-    </div>
-
-    <div class="share-link-row">
-      <input id="shareLinkInput" type="text" readonly>
-      <button type="button" class="share-copy-btn" onclick="copyShareLink()">Copy</button>
-    </div>
+<div id="shareSheet" class="share-sheet" style="display:none;" aria-hidden="true">
+  <div class="share-sheet-head">
+    <div class="share-title">Share this page</div>
+    <button class="share-close" type="button" onclick="closeShareSheet()">✕</button>
   </div>
+
+  <div class="share-grid">
+    <button class="share-icon" type="button" data-share="whatsapp" aria-label="WhatsApp">
+      <img src="https://i.imgur.com/3Qm0UQm.png" alt="WhatsApp">
+    </button>
+
+    <button class="share-icon" type="button" data-share="facebook" aria-label="Facebook">
+      <img src="https://i.imgur.com/8vQFZQG.png" alt="Facebook">
+    </button>
+
+    <button class="share-icon" type="button" data-share="telegram" aria-label="Telegram">
+      <img src="https://i.imgur.com/1Vd5h4m.png" alt="Telegram">
+    </button>
+
+    <button class="share-icon" type="button" data-share="copy" aria-label="Copy Link">
+      <img src="https://i.imgur.com/4kq9m2W.png" alt="Copy Link">
+    </button>
+  </div>
+
+  <div class="share-link-row">
+    <input id="shareLinkInput" type="text" readonly>
+    <button type="button" class="share-copy-btn" onclick="copyShareLink()">Copy</button>
+  </div>
+</div>
 
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
