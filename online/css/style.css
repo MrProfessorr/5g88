@@ -1241,7 +1241,6 @@ body.page-user{
   margin: 0 auto;       /* ✅ center horizontal */
 }
 .loading-text{
-  margin-top: 20px;
   color: #facc15;
   font-weight: 800;
   letter-spacing: .5px;
