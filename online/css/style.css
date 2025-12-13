@@ -1287,7 +1287,7 @@ body.page-user{
   bottom: 88px; /* ✅ atas bottom nav */
   transform: translateX(-50%);
   width: min(520px, calc(100% - 24px));
-  background: rgba(10,15,26,.92);
+  background: rgba(0,0,0,0.50);
   border: 1px solid rgba(250,204,21,.25);
   border-radius: 16px;
   padding: 12px;
