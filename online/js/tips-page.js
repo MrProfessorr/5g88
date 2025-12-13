@@ -865,7 +865,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (shareSheet) {
     shareSheet.addEventListener("click", async (e) => {
-      const btn = e.target.closest(".share-item");
+      const btn = e.target.closest(".share-icon");
       if (!btn) return;
 
       const type = btn.dataset.share;
