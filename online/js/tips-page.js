@@ -1,6 +1,43 @@
 // online/js/tips-page.js
 
 document.addEventListener("DOMContentLoaded", () => {
+  // =========================
+  // ✅ LOADING SYSTEM
+  // =========================
+  const loaderEl   = document.getElementById("pageLoading");
+  const appShellEl = document.getElementById("appShell");
+
+  function showLoading() {
+    if (loaderEl) {
+      loaderEl.style.display = "flex";
+      loaderEl.style.opacity = "1";
+    }
+    if (appShellEl) {
+      appShellEl.style.opacity = "0";
+      appShellEl.style.pointerEvents = "none";
+    }
+  }
+
+  function hideLoading() {
+    if (loaderEl) {
+      loaderEl.style.transition = "opacity .35s ease";
+      loaderEl.style.opacity = "0";
+      setTimeout(() => {
+        loaderEl.style.display = "none";
+      }, 350);
+    }
+    if (appShellEl) {
+      appShellEl.style.transition = "opacity .35s ease";
+      appShellEl.style.opacity = "1";
+      appShellEl.style.pointerEvents = "auto";
+    }
+  }
+
+  showLoading();
+
+  // =========================
+  // ELEMENTS
+  // =========================
   const gridEl         = document.getElementById("tipsCardsGrid");
   const promoGridEl    = document.getElementById("promoGrid");
   const promoBigGridEl = document.getElementById("promoBigGrid");
@@ -17,7 +54,9 @@ document.addEventListener("DOMContentLoaded", () => {
   if (promoPage)   promoPage.style.display   = "none";
   if (partnerPage) partnerPage.style.display = "none";
 
-  // ===== BOTTOM NAV (ikon di bawah) =====
+  // =========================
+  // BOTTOM NAV
+  // =========================
   const bottomNavItems   = document.querySelectorAll(".bottom-nav-item");
   const bottomHomeBtn    = document.querySelector('.bottom-nav-item[data-tab="home"]');
   const bottomHotBtn     = document.querySelector('.bottom-nav-item[data-tab="hot"]');
@@ -32,153 +71,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // =========================
+  // RATE GAME TIME
+  // =========================
   const rateGameTimeEl = document.getElementById("rateGameTime");
 
-  // ====== CONTAINER FLOATING BUTTONS ======
-  const floatingLeftEl  = document.getElementById("floatingLeft");
-  const floatingRightEl = document.getElementById("floatingRight");
-
-  const FLOAT_COLLAPSE_KEY = "tipsFloatingContactsCollapsed.v1";
-  let floatingCollapsed = false;
-  try {
-    floatingCollapsed = localStorage.getItem(FLOAT_COLLAPSE_KEY) === "1";
-  } catch (e) {
-    floatingCollapsed = false;
-  }
-
-  // ====== SIDEBAR NAV ======
-  const sideMenuBtn   = document.getElementById("sideMenuBtn");
-  const sideMenu      = document.getElementById("sideMenu");
-  const sideOverlay   = document.getElementById("sideOverlay");
-  const sideMenuList  = document.getElementById("sideMenuList");
-
-  function openSidebar() {
-    if (!sideMenu || !sideOverlay) return;
-    sideMenu.classList.add("open");
-    sideOverlay.classList.add("show");
-  }
-  function closeSidebar() {
-    if (!sideMenu || !sideOverlay) return;
-    sideMenu.classList.remove("open");
-    sideOverlay.classList.remove("show");
-  }
-
-  if (sideMenuBtn)   sideMenuBtn.addEventListener("click", openSidebar);
-  if (sideOverlay)   sideOverlay.addEventListener("click", closeSidebar);
-
-  // ====== TAB HOME / HOT / PROMO / PARTNER (LOCALSTORAGE) ======
-  const TAB_KEY = "tipsPageActiveTab";
-  let currentTab = "home";
-
-  try {
-    const saved = localStorage.getItem(TAB_KEY);
-    if (["home", "hot", "promo", "partner"].includes(saved)) currentTab = saved;
-  } catch (e) {
-    console.warn("Gagal baca tab awal dari localStorage", e);
-  }
-
-  // config dari Firebase (nav_tabs)
-  let navConfig = { home: true, hot: true, promo: true, partner: true };
-
-  function getFirstEnabledTab() {
-    const order = ["home", "hot", "promo", "partner"];
-    return order.find(t => navConfig[t]) || "home";
-  }
-
-  // ✅ Active gold untuk sidebar
-  function updateSidebarActive(tab){
-    if (!sideMenuList) return;
-    sideMenuList.querySelectorAll(".side-menu-item").forEach(btn=>{
-      btn.classList.toggle("active", btn.dataset.tab === tab);
-    });
-  }
-
-  function setActiveTab(tab) {
-    // kalau tab dimatikan dari admin, pindah ke tab pertama yang aktif
-    if (!navConfig[tab]) tab = getFirstEnabledTab();
-    currentTab = tab;
-
-    // sembunyikan semua section
-    if (homePage)    homePage.style.display    = "none";
-    if (hotGamePage) hotGamePage.style.display = "none";
-    if (promoPage)   promoPage.style.display   = "none";
-    if (partnerPage) partnerPage.style.display = "none";
-
-    // tampilkan section sesuai tab
-    if (tab === "hot" && hotGamePage && navConfig.hot) {
-      hotGamePage.style.display = "block";
-    } else if (tab === "promo" && promoPage && navConfig.promo) {
-      promoPage.style.display = "block";
-    } else if (tab === "partner" && partnerPage && navConfig.partner) {
-      partnerPage.style.display = "block";
-    } else if (homePage && navConfig.home) {
-      homePage.style.display = "block";
-      currentTab = "home";
-    }
-
-    // simpan tab ke localStorage
-    try { localStorage.setItem(TAB_KEY, currentTab); } catch (e) {}
-
-    // update active bottom + sidebar
-    updateBottomNavActive(currentTab);
-    updateSidebarActive(currentTab);
-  }
-
-  // ==== fungsi global dipanggil dari HTML bottom nav ====
-  window.handleBottomNavClick = function (tab) {
-    setActiveTab(tab);
-  };
-
-  // ==== fallback lama ====
-  window.showHome        = () => setActiveTab("home");
-  window.showHotGame     = () => setActiveTab("hot");
-  window.showPromotion   = () => setActiveTab("promo");
-  window.showPartner     = () => setActiveTab("partner");
-  window.showPartnership = window.showPartner;
-
-  // ====== BUILDER SIDEBAR: ambil dari bottom-nav otomatis ======
-  function buildSidebarItems() {
-    if (!sideMenuList) return;
-    sideMenuList.innerHTML = "";
-
-    const bottomButtons = document.querySelectorAll(".bottom-nav-item");
-
-    bottomButtons.forEach((btn) => {
-      // kalau button dah di-hide (admin OFF), skip terus
-      if (btn.style.display === "none") return;
-
-      const tab = btn.dataset.tab;
-      const label = btn.querySelector(".bottom-nav-label")?.textContent?.trim() || tab.toUpperCase();
-      const iconSrc = btn.querySelector("img")?.getAttribute("src") || "";
-
-      const item = document.createElement("button");
-      item.type = "button";
-      item.className = "side-menu-item";
-      item.dataset.tab = tab; // ✅ penting untuk active state
-
-      item.innerHTML = `
-        <span class="side-menu-ico">
-          ${iconSrc ? `<img src="${iconSrc}" alt="">` : ""}
-        </span>
-        <span class="side-menu-text">${label}</span>
-      `;
-
-      item.addEventListener("click", () => {
-        window.handleBottomNavClick(tab);
-        closeSidebar(); // ✅ FIX: dulu closeSideMenu() sebab error
-      });
-
-      sideMenuList.appendChild(item);
-    });
-
-    // ✅ pastikan highlight ikut tab semasa
-    updateSidebarActive(currentTab);
-  }
-
-  // ====== set tab awal (sebelum firebase nav_tabs datang) ======
-  setActiveTab(currentTab);
-
-  // ====== RATE GAME TIME (REALTIME CLOCK) ======
   function updateRateGameTime() {
     if (!rateGameTimeEl) return;
     const now = new Date();
@@ -201,7 +98,148 @@ document.addEventListener("DOMContentLoaded", () => {
     setInterval(updateRateGameTime, 1000);
   }
 
-  // ====== AUTO SLIDER HOME IMAGE ======
+  // =========================
+  // FLOATING BUTTONS
+  // =========================
+  const floatingLeftEl  = document.getElementById("floatingLeft");
+  const floatingRightEl = document.getElementById("floatingRight");
+
+  const FLOAT_COLLAPSE_KEY = "tipsFloatingContactsCollapsed.v1";
+  let floatingCollapsed = false;
+  try {
+    floatingCollapsed = localStorage.getItem(FLOAT_COLLAPSE_KEY) === "1";
+  } catch (e) {
+    floatingCollapsed = false;
+  }
+
+  // =========================
+  // SIDEBAR NAV
+  // =========================
+  const sideMenuBtn   = document.getElementById("sideMenuBtn");
+  const sideMenu      = document.getElementById("sideMenu");
+  const sideOverlay   = document.getElementById("sideOverlay");
+  const sideMenuList  = document.getElementById("sideMenuList");
+
+  function openSidebar() {
+    if (!sideMenu || !sideOverlay) return;
+    sideMenu.classList.add("open");
+    sideOverlay.classList.add("show");
+  }
+  function closeSidebar() {
+    if (!sideMenu || !sideOverlay) return;
+    sideMenu.classList.remove("open");
+    sideOverlay.classList.remove("show");
+  }
+
+  if (sideMenuBtn) sideMenuBtn.addEventListener("click", openSidebar);
+  if (sideOverlay) sideOverlay.addEventListener("click", closeSidebar);
+
+  // =========================
+  // TAB SYSTEM (LocalStorage)
+  // =========================
+  const TAB_KEY = "tipsPageActiveTab";
+  let currentTab = "home";
+
+  try {
+    const saved = localStorage.getItem(TAB_KEY);
+    if (["home", "hot", "promo", "partner"].includes(saved)) currentTab = saved;
+  } catch (e) {}
+
+  // config dari Firebase
+  let navConfig = { home: true, hot: true, promo: true, partner: true };
+
+  function getFirstEnabledTab() {
+    const order = ["home", "hot", "promo", "partner"];
+    return order.find(t => navConfig[t]) || "home";
+  }
+
+  function updateSidebarActive(tab){
+    if (!sideMenuList) return;
+    sideMenuList.querySelectorAll(".side-menu-item").forEach(btn=>{
+      btn.classList.toggle("active", btn.dataset.tab === tab);
+    });
+  }
+
+  function setActiveTab(tab) {
+    if (!navConfig[tab]) tab = getFirstEnabledTab();
+    currentTab = tab;
+
+    if (homePage)    homePage.style.display    = "none";
+    if (hotGamePage) hotGamePage.style.display = "none";
+    if (promoPage)   promoPage.style.display   = "none";
+    if (partnerPage) partnerPage.style.display = "none";
+
+    if (tab === "hot" && hotGamePage && navConfig.hot) {
+      hotGamePage.style.display = "block";
+    } else if (tab === "promo" && promoPage && navConfig.promo) {
+      promoPage.style.display = "block";
+    } else if (tab === "partner" && partnerPage && navConfig.partner) {
+      partnerPage.style.display = "block";
+    } else if (homePage && navConfig.home) {
+      homePage.style.display = "block";
+      currentTab = "home";
+    }
+
+    try { localStorage.setItem(TAB_KEY, currentTab); } catch (e) {}
+
+    updateBottomNavActive(currentTab);
+    updateSidebarActive(currentTab);
+  }
+
+  // dipanggil dari HTML bottom nav
+  window.handleBottomNavClick = function (tab) {
+    setActiveTab(tab);
+  };
+
+  // fallback
+  window.showHome        = () => setActiveTab("home");
+  window.showHotGame     = () => setActiveTab("hot");
+  window.showPromotion   = () => setActiveTab("promo");
+  window.showPartner     = () => setActiveTab("partner");
+  window.showPartnership = window.showPartner;
+
+  function buildSidebarItems() {
+    if (!sideMenuList) return;
+    sideMenuList.innerHTML = "";
+
+    const bottomButtons = document.querySelectorAll(".bottom-nav-item");
+
+    bottomButtons.forEach((btn) => {
+      if (btn.style.display === "none") return;
+
+      const tab = btn.dataset.tab;
+      const label = btn.querySelector(".bottom-nav-label")?.textContent?.trim() || tab.toUpperCase();
+      const iconSrc = btn.querySelector("img")?.getAttribute("src") || "";
+
+      const item = document.createElement("button");
+      item.type = "button";
+      item.className = "side-menu-item";
+      item.dataset.tab = tab;
+
+      item.innerHTML = `
+        <span class="side-menu-ico">
+          ${iconSrc ? `<img src="${iconSrc}" alt="">` : ""}
+        </span>
+        <span class="side-menu-text">${label}</span>
+      `;
+
+      item.addEventListener("click", () => {
+        window.handleBottomNavClick(tab);
+        closeSidebar();
+      });
+
+      sideMenuList.appendChild(item);
+    });
+
+    updateSidebarActive(currentTab);
+  }
+
+  // set tab awal
+  setActiveTab(currentTab);
+
+  // =========================
+  // AUTO SLIDER HOME IMAGE
+  // =========================
   const track = document.getElementById("slideTrack");
   if (track) {
     const slides = track.querySelectorAll("img");
@@ -214,9 +252,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // ====== FIREBASE CHECK ======
+  // =========================
+  // FIREBASE CHECK
+  // =========================
   if (!window.firebase || !window.db) {
     console.error("Firebase belum siap. Cek script firebase di HTML.");
+    hideLoading(); // jangan lock screen
     return;
   }
 
@@ -227,34 +268,62 @@ document.addEventListener("DOMContentLoaded", () => {
   const navTabsRef   = db.ref("nav_tabs");
   const floatingRef  = db.ref("floating_buttons");
 
-  let promoSliderTimer = null;
+  // =========================
+  // ✅ LOADING WAIT FIREBASE (first data)
+  // =========================
+  const MIN_LOADING_MS = 650;
+  const startAt = Date.now();
 
-  // ====== NAV TABS CONFIG DARI FIREBASE ======
+  const firstLoad = {
+    nav: false,
+    floating: false,
+    promos: false,
+    promoBig: false,
+    partners: false,
+    cards: !gridEl // kalau tak ada tips grid, anggap siap
+  };
+
+  function markLoaded(k) {
+    firstLoad[k] = true;
+    const done = Object.values(firstLoad).every(Boolean);
+    if (!done) return;
+
+    const elapsed = Date.now() - startAt;
+    const wait = Math.max(0, MIN_LOADING_MS - elapsed);
+    setTimeout(hideLoading, wait);
+  }
+
+  // safety: kalau firebase lambat/blocked, jangan loading selamanya
+  setTimeout(() => {
+    hideLoading();
+  }, 8000);
+
+  // =========================
+  // NAV CONFIG
+  // =========================
   function applyNavConfig(cfgRaw) {
     const defaults = { home: true, hot: true, promo: true, partner: true };
     navConfig = { ...defaults, ...(cfgRaw || {}) };
 
-    // kontrol tombol bottom-nav
     if (bottomHomeBtn)    bottomHomeBtn.style.display    = navConfig.home    ? "" : "none";
     if (bottomHotBtn)     bottomHotBtn.style.display     = navConfig.hot     ? "" : "none";
     if (bottomPromoBtn)   bottomPromoBtn.style.display   = navConfig.promo   ? "" : "none";
     if (bottomPartnerBtn) bottomPartnerBtn.style.display = navConfig.partner ? "" : "none";
 
-    // pastikan tab aktif tidak OFF
     setActiveTab(currentTab);
-
-    // rebuild sidebar ikut config terbaru
     buildSidebarItems();
   }
 
   navTabsRef.on("value", (snap) => {
     applyNavConfig(snap.val());
+    markLoaded("nav");
   });
 
-  // ✅ kalau bro tak nak “flash sidebar”, comment line bawah
   buildSidebarItems();
 
-  // ================== FLOATING BUTTONS ==================
+  // =========================
+  // FLOATING BUTTONS
+  // =========================
   function renderFloatingButtons(snapshot) {
     const data = snapshot.val() || {};
     const wa   = data.whatsapp || {};
@@ -321,7 +390,6 @@ document.addEventListener("DOMContentLoaded", () => {
     function updateArrowIcon() {
       toggleBtn.innerHTML = floatingCollapsed ? svgDown : svgUp;
     }
-
     updateArrowIcon();
 
     toggleBtn.addEventListener("click", () => {
@@ -334,9 +402,16 @@ document.addEventListener("DOMContentLoaded", () => {
     floatingLeftEl.appendChild(toggleBtn);
   }
 
-  floatingRef.on("value", renderFloatingButtons);
+  floatingRef.on("value", (snap) => {
+    renderFloatingButtons(snap);
+    markLoaded("floating");
+  });
 
-  // ================== PROMO BANNER ==================
+  // =========================
+  // PROMO BANNER SMALL
+  // =========================
+  let promoSliderTimer = null;
+
   function renderPromos(snapshot) {
     if (!promoGridEl) return;
 
@@ -410,9 +485,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 3000);
   }
 
-  promosRef.on("value", renderPromos);
+  promosRef.on("value", (snap) => {
+    renderPromos(snap);
+    markLoaded("promos");
+  });
 
-  // ================== PROMOTION BIG ==================
+  // =========================
+  // PROMOTION BIG
+  // =========================
   function renderPromoBig(snapshot) {
     if (!promoBigGridEl) return;
 
@@ -475,243 +555,266 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  promoBigRef.on("value", renderPromoBig);
-
-// ================== PARTNERSHIP ==================
-function renderPartners(snapshot) {
-  if (!partnerGridEl) return;
-
-  const data = snapshot.val() || {};
-  partnerGridEl.innerHTML = "";
-
-  const entries = Object.entries(data).filter(([key, p]) => p && p.enabled !== false);
-
-  if (!entries.length) {
-    partnerGridEl.innerHTML = '<p class="text-muted small">Belum ada partnership aktif.</p>';
-    return;
-  }
-
-  entries.forEach(([key, p]) => {
-    const logoUrl    = p.logoUrl || "";
-    const joinUrl    = p.joinUrl || "#";
-    const channelUrl = (p.channelUrl || p.channelLink || "").trim(); // ✅ NEW
-    const name       = p.name || "";
-    const rating     = p.rating != null ? Number(p.rating).toFixed(1) : null;
-
-    if (!logoUrl) return;
-
-    const card = document.createElement("article");
-    card.className = "partner-card";
-
-    // rating badge
-    if (rating !== null) {
-      const badge = document.createElement("div");
-      badge.className = "partner-rating";
-      badge.textContent = rating + " ★";
-      card.appendChild(badge);
-    }
-
-    // logo
-    const logoWrap = document.createElement("div");
-    logoWrap.className = "partner-logo-wrap";
-
-    const img = document.createElement("img");
-    img.src = logoUrl;
-    img.alt = name || "Partner";
-    img.className = "partner-logo";
-    img.loading = "lazy";
-
-    logoWrap.appendChild(img);
-    card.appendChild(logoWrap);
-
-    // name
-    if (name) {
-      const nameEl = document.createElement("div");
-      nameEl.className = "partner-name";
-      nameEl.textContent = name;
-      card.appendChild(nameEl);
-    }
-
-    // ===== JOIN NOW =====
-    const joinLink = document.createElement("a");
-    joinLink.href   = joinUrl;
-    joinLink.target = "_blank";
-    joinLink.rel    = "noopener noreferrer";
-    joinLink.className = "partner-join-link";
-
-    const joinBtn = document.createElement("button");
-    joinBtn.type = "button";
-    joinBtn.className = "btn partner-join-btn";
-    joinBtn.textContent = "Join Now";
-
-    joinLink.appendChild(joinBtn);
-    card.appendChild(joinLink);
-
-    // ===== ✅ VIEW CHANNEL (NEW) =====
-    const channelLink = document.createElement("a");
-    channelLink.target = "_blank";
-    channelLink.rel    = "noopener noreferrer";
-    channelLink.className = "partner-join-link partner-channel-link";
-
-    // kalau admin tak isi channelUrl, button jadi disable
-    if (channelUrl) {
-      channelLink.href = channelUrl;
-    } else {
-      channelLink.href = "javascript:void(0)";
-      channelLink.style.pointerEvents = "none";
-      channelLink.style.opacity = "0.55";
-      channelLink.title = "Channel link belum diisi (admin).";
-    }
-
-    const channelBtn = document.createElement("button");
-    channelBtn.type = "button";
-    channelBtn.className = "btn partner-join-btn partner-channel-btn";
-    channelBtn.textContent = "View Channel";
-
-    // ✅ jarak bawah Join Now (tanpa edit CSS pun boleh)
-    channelBtn.style.marginTop = "10px";
-
-    channelLink.appendChild(channelBtn);
-    card.appendChild(channelLink);
-
-    partnerGridEl.appendChild(card);
+  promoBigRef.on("value", (snap) => {
+    renderPromoBig(snap);
+    markLoaded("promoBig");
   });
-}
 
-  partnersRef.on("value", renderPartners);
+  // =========================
+  // PARTNERSHIP (JOIN + VIEW CHANNEL)
+  // =========================
+  function normalizeTelegramLink(url) {
+    if (!url) return "";
+    let u = String(url).trim();
+    if (!u) return "";
 
-  // ====== KALAU TAK ADA GRID TIPS, STOP BAGIAN TIPS ======
-  if (!gridEl) return;
-
-  // ====== HISTORY & LOCALSTORAGE UNTUK TIPS ======
-  const STORAGE_KEY = "tipsHistory.v1";
-  let historyObj = {};
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) historyObj = JSON.parse(raw) || {};
-  } catch (e) {
-    historyObj = {};
-  }
-
-  function saveHistory() {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(historyObj)); } catch (e) {}
-  }
-
-  function getHistoryState(key) {
-    if (!historyObj[key]) historyObj[key] = { history: [], index: -1 };
-    return historyObj[key];
-  }
-
-  const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-
-  function generateTipsForCard(card) {
-    const games = (card.games || []).slice();
-    if (games.length === 0) return "Belum ada game.";
-
-    for (let i = games.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [games[i], games[j]] = [games[j], games[i]];
+    // kalau admin isi "kiwi5g88channel" sahaja
+    if (!/^https?:\/\//i.test(u) && !/^tg:\/\//i.test(u)) {
+      u = u.replace(/^@/, "");
+      u = "https://t.me/" + u;
     }
-
-    const count  = Math.min(3, games.length);
-    const chosen = games.slice(0, count);
-    const lines = [card.platformName || card.key, "==========="];
-
-    chosen.forEach((name, idx) => {
-      const percent = randInt(70, 98);
-      lines.push(`${idx + 1}. ${name} ${percent}%`);
-    });
-
-    return lines.join("\n");
+    return u;
   }
 
-  function renderCards(snapshot) {
+  function renderPartners(snapshot) {
+    if (!partnerGridEl) return;
+
     const data = snapshot.val() || {};
-    gridEl.innerHTML = "";
+    partnerGridEl.innerHTML = "";
 
-    const entries = Object.entries(data)
-      .map(([key, card]) => ({ key, ...card }))
-      .filter((c) => c.enabled !== false);
+    const entries = Object.entries(data).filter(([key, p]) => p && p.enabled !== false);
 
-    if (entries.length === 0) {
-      gridEl.innerHTML = '<p class="text-muted small">Belum ada card aktif. Buat dari halaman admin.</p>';
+    if (!entries.length) {
+      partnerGridEl.innerHTML = '<p class="text-muted small">Belum ada partnership aktif.</p>';
       return;
     }
 
-    entries.forEach((card) => {
-      const cardEl = document.createElement("article");
-      cardEl.className = "tip-card";
+    entries.forEach(([key, p]) => {
+      const logoUrl    = p.logoUrl || "";
+      const joinUrl    = p.joinUrl || "#";
+      const channelUrl = normalizeTelegramLink(p.channelUrl || p.channelLink || "");
+      const name       = p.name || "";
+      const rating     = p.rating != null ? Number(p.rating).toFixed(1) : null;
 
-      const header = document.createElement("div");
-      header.className = "tip-card-header";
+      if (!logoUrl) return;
 
-      const title = document.createElement("div");
-      title.className = "tip-card-title";
-      title.textContent = card.platformName || card.key;
+      const card = document.createElement("article");
+      card.className = "partner-card";
 
-      const pill = document.createElement("div");
-      pill.className = "tip-card-pill";
-      pill.textContent = "5G88_Site";
+      if (rating !== null) {
+        const badge = document.createElement("div");
+        badge.className = "partner-rating";
+        badge.textContent = rating + " ★";
+        card.appendChild(badge);
+      }
 
-      header.appendChild(title);
-      header.appendChild(pill);
+      const logoWrap = document.createElement("div");
+      logoWrap.className = "partner-logo-wrap";
 
-      const output = document.createElement("pre");
-      output.className = "tip-output";
-      output.textContent = "Tekan Generate untuk keluarkan tips.";
+      const img = document.createElement("img");
+      img.src = logoUrl;
+      img.alt = name || "Partner";
+      img.className = "partner-logo";
+      img.loading = "lazy";
 
-      const actions = document.createElement("div");
-      actions.className = "tip-actions";
+      logoWrap.appendChild(img);
+      card.appendChild(logoWrap);
 
-      const backBtn = document.createElement("button");
-      backBtn.className = "btn secondary";
-      backBtn.textContent = "Back";
+      if (name) {
+        const nameEl = document.createElement("div");
+        nameEl.className = "partner-name";
+        nameEl.textContent = name;
+        card.appendChild(nameEl);
+      }
 
-      const genBtn = document.createElement("button");
-      genBtn.className = "btn primary";
-      genBtn.textContent = "Generate";
+      // JOIN
+      const joinLink = document.createElement("a");
+      joinLink.href   = joinUrl;
+      joinLink.target = "_blank";
+      joinLink.rel    = "noopener noreferrer";
+      joinLink.className = "partner-join-link";
 
-      const state = getHistoryState(card.key);
+      const joinBtn = document.createElement("button");
+      joinBtn.type = "button";
+      joinBtn.className = "btn partner-join-btn";
+      joinBtn.textContent = "Join Now";
 
-      if (state.history.length > 0 && state.index >= 0) output.textContent = state.history[state.index];
+      joinLink.appendChild(joinBtn);
+      card.appendChild(joinLink);
 
-      genBtn.addEventListener("click", () => {
-        const txt = generateTipsForCard(card);
-        if (!txt) return;
+      // VIEW CHANNEL (telegram)
+      const channelLink = document.createElement("a");
+      channelLink.target = "_blank";
+      channelLink.rel    = "noopener noreferrer";
+      channelLink.className = "partner-join-link";
 
-        state.history.push(txt);
-        state.index = state.history.length - 1;
-        output.textContent = txt;
-        saveHistory();
-      });
+      if (channelUrl) {
+        channelLink.href = channelUrl; // ✅ ini yang betul (bukan GitHub path)
+      } else {
+        channelLink.href = "javascript:void(0)";
+        channelLink.style.pointerEvents = "none";
+        channelLink.style.opacity = "0.55";
+        channelLink.title = "Channel link belum diisi (admin).";
+      }
 
-      backBtn.addEventListener("click", () => {
-        if (state.index > 0) {
-          state.index -= 1;
-          output.textContent = state.history[state.index];
-        } else if (state.history.length === 0) {
-          output.textContent = "Belum ada tips sebelumnya.";
-        } else {
-          output.textContent = state.history[0];
-        }
-        saveHistory();
-      });
+      const channelBtn = document.createElement("button");
+      channelBtn.type = "button";
+      channelBtn.className = "btn partner-join-btn";
+      channelBtn.textContent = "View Channel";
+      channelBtn.style.marginTop = "10px";
 
-      actions.appendChild(backBtn);
-      actions.appendChild(genBtn);
+      channelLink.appendChild(channelBtn);
+      card.appendChild(channelLink);
 
-      cardEl.appendChild(header);
-      cardEl.appendChild(output);
-      cardEl.appendChild(actions);
-
-      gridEl.appendChild(cardEl);
+      partnerGridEl.appendChild(card);
     });
   }
 
-  cardsRef.on("value", renderCards);
+  partnersRef.on("value", (snap) => {
+    renderPartners(snap);
+    markLoaded("partners");
+  });
+
+  // =========================
+  // TIPS CARDS
+  // =========================
+  if (gridEl) {
+    const STORAGE_KEY = "tipsHistory.v1";
+    let historyObj = {};
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) historyObj = JSON.parse(raw) || {};
+    } catch (e) { historyObj = {}; }
+
+    function saveHistory() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(historyObj)); } catch (e) {}
+    }
+
+    function getHistoryState(key) {
+      if (!historyObj[key]) historyObj[key] = { history: [], index: -1 };
+      return historyObj[key];
+    }
+
+    const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+    function generateTipsForCard(card) {
+      const games = (card.games || []).slice();
+      if (games.length === 0) return "Belum ada game.";
+
+      for (let i = games.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [games[i], games[j]] = [games[j], games[i]];
+      }
+
+      const count  = Math.min(3, games.length);
+      const chosen = games.slice(0, count);
+      const lines = [card.platformName || card.key, "==========="];
+
+      chosen.forEach((name, idx) => {
+        const percent = randInt(70, 98);
+        lines.push(`${idx + 1}. ${name} ${percent}%`);
+      });
+
+      return lines.join("\n");
+    }
+
+    function renderCards(snapshot) {
+      const data = snapshot.val() || {};
+      gridEl.innerHTML = "";
+
+      const entries = Object.entries(data)
+        .map(([key, card]) => ({ key, ...card }))
+        .filter((c) => c.enabled !== false);
+
+      if (entries.length === 0) {
+        gridEl.innerHTML = '<p class="text-muted small">Belum ada card aktif. Buat dari halaman admin.</p>';
+        return;
+      }
+
+      entries.forEach((card) => {
+        const cardEl = document.createElement("article");
+        cardEl.className = "tip-card";
+
+        const header = document.createElement("div");
+        header.className = "tip-card-header";
+
+        const title = document.createElement("div");
+        title.className = "tip-card-title";
+        title.textContent = card.platformName || card.key;
+
+        const pill = document.createElement("div");
+        pill.className = "tip-card-pill";
+        pill.textContent = "5G88_Site";
+
+        header.appendChild(title);
+        header.appendChild(pill);
+
+        const output = document.createElement("pre");
+        output.className = "tip-output";
+        output.textContent = "Tekan Generate untuk keluarkan tips.";
+
+        const actions = document.createElement("div");
+        actions.className = "tip-actions";
+
+        const backBtn = document.createElement("button");
+        backBtn.className = "btn secondary";
+        backBtn.textContent = "Back";
+
+        const genBtn = document.createElement("button");
+        genBtn.className = "btn primary";
+        genBtn.textContent = "Generate";
+
+        const state = getHistoryState(card.key);
+
+        if (state.history.length > 0 && state.index >= 0) {
+          output.textContent = state.history[state.index];
+        }
+
+        genBtn.addEventListener("click", () => {
+          const txt = generateTipsForCard(card);
+          if (!txt) return;
+
+          state.history.push(txt);
+          state.index = state.history.length - 1;
+          output.textContent = txt;
+          saveHistory();
+        });
+
+        backBtn.addEventListener("click", () => {
+          if (state.index > 0) {
+            state.index -= 1;
+            output.textContent = state.history[state.index];
+          } else if (state.history.length === 0) {
+            output.textContent = "Belum ada tips sebelumnya.";
+          } else {
+            output.textContent = state.history[0];
+          }
+          saveHistory();
+        });
+
+        actions.appendChild(backBtn);
+        actions.appendChild(genBtn);
+
+        cardEl.appendChild(header);
+        cardEl.appendChild(output);
+        cardEl.appendChild(actions);
+
+        gridEl.appendChild(cardEl);
+      });
+    }
+
+    cardsRef.on("value", (snap) => {
+      renderCards(snap);
+      markLoaded("cards");
+    });
+  } else {
+    markLoaded("cards");
+  }
 });
 
-// ===== BACK TO TOP BUTTON =====
+// =========================
+// BACK TO TOP BUTTON (biar kekal global)
+// =========================
 let scrollTimer;
 const btn = document.getElementById("backToTop");
 
