@@ -1223,7 +1223,7 @@ body.page-user{
   transform:translateY(-50%);
 }
 /* ✅ Loader tembus + blur */
-.pageloading{
+.page-loading{
   position: fixed;
   inset: 0;
   display: none; 
