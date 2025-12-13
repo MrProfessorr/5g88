@@ -4,38 +4,49 @@
   <meta charset="UTF-8">
   <title>5G88 • Tips Game</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="page-user">
-  <div class="app-shell">
 
-    <!-- ================== HEADER (LOGO SAJA, CENTER) ================== -->
+<body class="page-user">
+
+  <!-- ✅ FULL PAGE LOADING (MUNCUL DULU) -->
+  <div id="pageLoading" class="page-loading" aria-label="Loading">
+    <div class="loading-box">
+      <img src="https://i.imgur.com/voSG3KC.gif" alt="5G88" class="loading-logo">
+      <div class="loading-text">Loading...</div>
+      <div class="loading-sub">Please wait</div>
+    </div>
+  </div>
+
+  <!-- ✅ LETAK ID appShell (untuk JS hide/show) -->
+  <div class="app-shell" id="appShell">
+
+    <!-- ================== HEADER ================== -->
     <header class="app-header">
-              <!-- ICON MENU KIRI (NEW) -->
-<button id="sideMenuBtn" class="side-menu-btn">
-  <svg viewBox="0 0 24 24">
-    <path fill="currentColor"
-      d="M14 19h-14v-1h14v1zm9.247-8.609l-3.247 4.049-3.263-4.062-.737.622 4 5 4-5-.753-.609zm-9.247 2.609h-14v-1h14v1zm0-6h-14v-1h14v1z"/>
-  </svg>
-</button>
+      <!-- ICON MENU KIRI -->
+      <button id="sideMenuBtn" class="side-menu-btn" aria-label="Open menu">
+        <svg viewBox="0 0 24 24">
+          <path fill="currentColor"
+            d="M14 19h-14v-1h14v1zm9.247-8.609l-3.247 4.049-3.263-4.062-.737.622 4 5 4-5-.753-.609zm-9.247 2.609h-14v-1h14v1zm0-6h-14v-1h14v1z"/>
+        </svg>
+      </button>
+
       <div class="app-header-left">
         <img src="https://i.imgur.com/voSG3KC.gif" alt="5G88" class="brand-logo-img">
       </div>
     </header>
-<!-- ==== SIDEBAR NAV (AUTO LIST) ==== -->
-<div id="sideMenu" class="side-menu">
-  <div class="side-menu-header">
-    <span>Menu</span>
-  </div>
 
-  <div id="sideMenuList" class="side-menu-list">
-    <!-- JS akan isi nav-link LIST di sini automatik -->
-  </div>
-</div>
+    <!-- ==== SIDEBAR NAV ==== -->
+    <div id="sideMenu" class="side-menu">
+      <div class="side-menu-header">
+        <span>Menu</span>
+      </div>
+      <div id="sideMenuList" class="side-menu-list">
+        <!-- JS isi automatik -->
+      </div>
+    </div>
 
-<!-- overlay gelap -->
-<div id="sideOverlay" class="side-overlay"></div>
+    <div id="sideOverlay" class="side-overlay"></div>
 
     <!-- ================== RUNNING TEXT ================== -->
     <div class="ticker-bar">
@@ -51,8 +62,6 @@
 
       <!-- ========== HOME PAGE ========== -->
       <section id="homePage" class="home-page">
-
-        <!-- SLIDER -->
         <div class="home-hero-slider">
           <div class="home-slide-track" id="slideTrack">
             <img src="https://i.imgur.com/GbxXLJP.png" class="home-hero-img" loading="lazy">
@@ -63,11 +72,8 @@
           </div>
         </div>
 
-        <!-- ARTICLE -->
         <article class="home-article">
-          <h2 class="home-title">
-            5G88 Casino Review | RM150 Slots Welcome Bonus
-          </h2>
+          <h2 class="home-title">5G88 Casino Review | RM150 Slots Welcome Bonus</h2>
           <p>
             Pasar judi online di Malaysia berkembang pesat dan 5G88 menjadi salah satu platform
             paling dipercayai. Dengan mobile interface yang laju, bonus welcome RM150 untuk slot,
@@ -103,7 +109,6 @@
 
       <!-- ========== HOT GAME PAGE ========== -->
       <section id="hotGamePage" class="hot-page" style="display:none;">
-
         <section id="promoGrid" class="promo-grid"></section>
 
         <section class="percentage-card">
@@ -150,28 +155,24 @@
   <!-- BACK TO TOP -->
   <button id="backToTop" class="back-to-top" aria-label="Back to top">↑</button>
 
-  <!-- ===== BOTTOM NAV ICON BAR ===== -->
+  <!-- ===== BOTTOM NAV ===== -->
   <nav class="bottom-nav">
-    <button class="bottom-nav-item active" data-tab="home"
-            onclick="handleBottomNavClick('home')">
+    <button class="bottom-nav-item active" data-tab="home" onclick="handleBottomNavClick('home')">
       <img src="https://i.imgur.com/nFN3jlH.png" alt="Home" class="bottom-nav-icon">
       <span class="bottom-nav-label">HOME</span>
     </button>
 
-    <button class="bottom-nav-item" data-tab="hot"
-            onclick="handleBottomNavClick('hot')">
+    <button class="bottom-nav-item" data-tab="hot" onclick="handleBottomNavClick('hot')">
       <img src="https://i.imgur.com/bHDNh3q.png" alt="Hot Game" class="bottom-nav-icon">
       <span class="bottom-nav-label">HOT GAME</span>
     </button>
 
-    <button class="bottom-nav-item" data-tab="promo"
-            onclick="handleBottomNavClick('promo')">
+    <button class="bottom-nav-item" data-tab="promo" onclick="handleBottomNavClick('promo')">
       <img src="https://i.imgur.com/6mM9WNr.png" alt="Promo" class="bottom-nav-icon">
       <span class="bottom-nav-label">PROMO</span>
     </button>
 
-    <button class="bottom-nav-item" data-tab="partner"
-            onclick="handleBottomNavClick('partner')">
+    <button class="bottom-nav-item" data-tab="partner" onclick="handleBottomNavClick('partner')">
       <img src="https://i.imgur.com/kjvnj4Z.png" alt="Partnership" class="bottom-nav-icon">
       <span class="bottom-nav-label">PARTNERSHIP</span>
     </button>
@@ -184,5 +185,5 @@
   <script src="js/firebase-config.js"></script>
   <script src="js/tips-page.js"></script>
 
-  <!-- Script kecil untuk bottom nav -->
-  <script>
+</body>
+</html>
