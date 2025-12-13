@@ -1223,9 +1223,10 @@ body.page-user{
   transform:translateY(-50%);
 }
 /* ✅ Loader tembus + blur */
-.page-loading{
+.pageloading{
   position: fixed;
   inset: 0;
+  display: none; 
   z-index: 99999;
   display: flex;
   align-items: center;
@@ -1253,10 +1254,4 @@ body.page-user{
   color: #cbd5e1;
   font-size:0.8rem;
 
-}
-
-body.is-loading #appShell{
-  opacity: .25;
-  filter: blur(2px);
-  pointer-events: none;
 }
