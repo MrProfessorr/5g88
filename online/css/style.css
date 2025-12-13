@@ -1273,3 +1273,95 @@ body.page-user{
   height: auto;
   opacity: .95;
 }
+/* ===== SHARE SHEET ===== */
+.share-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  z-index: 99990;
+}
+
+.share-sheet{
+  position: fixed;
+  left: 50%;
+  bottom: 88px; /* ✅ atas bottom nav */
+  transform: translateX(-50%);
+  width: min(520px, calc(100% - 24px));
+  background: rgba(10,15,26,.92);
+  border: 1px solid rgba(250,204,21,.25);
+  border-radius: 16px;
+  padding: 12px;
+  z-index: 99999;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.share-sheet-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding: 6px 6px 10px;
+}
+
+.share-title{
+  color:#facc15;
+  font-weight:800;
+}
+
+.share-close{
+  border: 1px solid rgba(250,204,21,.25);
+  background: rgba(255,255,255,.06);
+  color: #e5e7eb;
+  border-radius: 10px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.share-grid{
+  display:grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 10px;
+  padding: 8px 4px 10px;
+}
+
+.share-item{
+  border: 1px solid rgba(250,204,21,.18);
+  background: rgba(255,255,255,.06);
+  border-radius: 14px;
+  padding: 12px 10px;
+  color: #e5e7eb;
+  cursor: pointer;
+  text-align:center;
+  font-weight: 700;
+}
+
+.share-link-row{
+  display:flex;
+  gap: 8px;
+  padding: 6px 4px 2px;
+}
+
+.share-link-row input{
+  flex: 1;
+  padding: 10px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(250,204,21,.18);
+  background: rgba(0,0,0,.25);
+  color: #e5e7eb;
+  outline: none;
+}
+
+.share-copy-btn{
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(250,204,21,.25);
+  background: rgba(250,204,21,.12);
+  color: #facc15;
+  font-weight: 800;
+  cursor:pointer;
+}
+
+/* ✅ SHARE button nampak center & special */
+.bottom-nav-item.bottom-nav-share{
+  transform: translateY(-6px);
+}
