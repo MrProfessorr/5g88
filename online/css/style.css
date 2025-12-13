@@ -1229,7 +1229,7 @@ body.page-user{
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #000;
+  background: rgba(0,0,0,0.05);
 }
 .loading-box{
   text-align:center;
@@ -1241,7 +1241,7 @@ body.page-user{
   margin: 0 auto;       /* ✅ center horizontal */
 }
 .loading-text{
-  margin-top: 12px;
+  margin-top: 20px;
   color: #facc15;
   font-weight: 800;
   letter-spacing: .5px;
