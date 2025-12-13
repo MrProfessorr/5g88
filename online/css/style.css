@@ -1235,7 +1235,7 @@ body.page-user{
   text-align:center;
 }
 .loading-logo{
-  width: 140px;
+  width: 120px;
   height: auto;
   display:block;
   margin: 0 auto;       /* ✅ center horizontal */
