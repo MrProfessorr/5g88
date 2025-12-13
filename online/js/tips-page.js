@@ -20,20 +20,27 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function hideLoading() {
-    if (loaderEl) {
-      loaderEl.style.transition = "opacity .35s ease";
-      loaderEl.style.opacity = "0";
-      setTimeout(() => {
-        loaderEl.style.display = "none";
-      }, 350);
-    }
-    if (appShellEl) {
-      appShellEl.style.transition = "opacity .35s ease";
-      appShellEl.style.opacity = "1";
-      appShellEl.style.pointerEvents = "auto";
-    }
+function hideLoading() {
+  if (loaderEl) {
+    loaderEl.style.transition = "opacity .35s ease";
+    loaderEl.style.opacity = "0";
+
+    // ✅ penting: bila fade out, jangan lagi block / blur page
+    loaderEl.style.pointerEvents = "none";
+    loaderEl.style.backdropFilter = "none";
+    loaderEl.style.webkitBackdropFilter = "none";
+
+    setTimeout(() => {
+      loaderEl.style.display = "none";   // ✅ mesti jadi none
+    }, 350);
   }
+
+  if (appShellEl) {
+    appShellEl.style.transition = "opacity .35s ease";
+    appShellEl.style.opacity = "1";
+    appShellEl.style.pointerEvents = "auto";
+  }
+}
 
   showLoading();
 
