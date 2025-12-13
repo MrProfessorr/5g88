@@ -1222,6 +1222,7 @@ body.page-user{
   top:50%;
   transform:translateY(-50%);
 }
+/* ✅ Loader tembus + blur */
 .page-loading{
   position: fixed;
   inset: 0;
@@ -1229,18 +1230,33 @@ body.page-user{
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0,0,0,0.05);
+
+  /* ✅ TEMBUS (nampak belakang) */
+  background: rgba(0,0,0,.35);
+
+  /* ✅ blur backdrop */
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
-.loading-box{
-  text-align:center;
-}
+
+/* box tengah */
+.loading-box{ text-align:center; }
+
 .loading-logo{
-  width: 120px;
+  width: 100px;
   height: auto;
   display:block;
-  margin: 0 auto;       /* ✅ center horizontal */
+  margin: 0 auto;
 }
+
 .loading-text{
-  color: #9ca3af;
+  color: #cbd5e1;
   font-size:0.8rem;
+
+}
+
+body.is-loading #appShell{
+  opacity: .25;
+  filter: blur(2px);
+  pointer-events: none;
 }
