@@ -1242,6 +1242,5 @@ body.page-user{
 }
 .loading-text{
   color: #9ca3af;
-  font-weight: 400;
-  letter-spacing: .5px;
+  font-size:0.8rem;
 }
