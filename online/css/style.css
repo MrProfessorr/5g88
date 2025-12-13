@@ -1244,7 +1244,7 @@ body.page-user{
 .loading-box{ text-align:center; }
 
 .loading-logo{
-  width: 100px;
+  width: 120px;
   height: auto;
   display:block;
   margin: 0 auto;
@@ -1252,6 +1252,6 @@ body.page-user{
 
 .loading-text{
   color: #cbd5e1;
-  font-size:0.8rem;
+  font-size:0.5rem;
 
 }
