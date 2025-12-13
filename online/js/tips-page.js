@@ -477,73 +477,106 @@ document.addEventListener("DOMContentLoaded", () => {
 
   promoBigRef.on("value", renderPromoBig);
 
-  // ================== PARTNERSHIP ==================
-  function renderPartners(snapshot) {
-    if (!partnerGridEl) return;
+// ================== PARTNERSHIP ==================
+function renderPartners(snapshot) {
+  if (!partnerGridEl) return;
 
-    const data = snapshot.val() || {};
-    partnerGridEl.innerHTML = "";
+  const data = snapshot.val() || {};
+  partnerGridEl.innerHTML = "";
 
-    const entries = Object.entries(data).filter(([key, p]) => p && p.enabled !== false);
+  const entries = Object.entries(data).filter(([key, p]) => p && p.enabled !== false);
 
-    if (!entries.length) {
-      partnerGridEl.innerHTML = '<p class="text-muted small">Belum ada partnership aktif.</p>';
-      return;
+  if (!entries.length) {
+    partnerGridEl.innerHTML = '<p class="text-muted small">Belum ada partnership aktif.</p>';
+    return;
+  }
+
+  entries.forEach(([key, p]) => {
+    const logoUrl    = p.logoUrl || "";
+    const joinUrl    = p.joinUrl || "#";
+    const channelUrl = (p.channelUrl || p.channelLink || "").trim(); // ✅ NEW
+    const name       = p.name || "";
+    const rating     = p.rating != null ? Number(p.rating).toFixed(1) : null;
+
+    if (!logoUrl) return;
+
+    const card = document.createElement("article");
+    card.className = "partner-card";
+
+    // rating badge
+    if (rating !== null) {
+      const badge = document.createElement("div");
+      badge.className = "partner-rating";
+      badge.textContent = rating + " ★";
+      card.appendChild(badge);
     }
 
-    entries.forEach(([key, p]) => {
-      const logoUrl = p.logoUrl || "";
-      const joinUrl = p.joinUrl || "#";
-      const name    = p.name || "";
-      const rating  = p.rating != null ? Number(p.rating).toFixed(1) : null;
-      if (!logoUrl) return;
+    // logo
+    const logoWrap = document.createElement("div");
+    logoWrap.className = "partner-logo-wrap";
 
-      const card = document.createElement("article");
-      card.className = "partner-card";
+    const img = document.createElement("img");
+    img.src = logoUrl;
+    img.alt = name || "Partner";
+    img.className = "partner-logo";
+    img.loading = "lazy";
 
-      if (rating !== null) {
-        const badge = document.createElement("div");
-        badge.className = "partner-rating";
-        badge.textContent = rating + " ★";
-        card.appendChild(badge);
-      }
+    logoWrap.appendChild(img);
+    card.appendChild(logoWrap);
 
-      const logoWrap = document.createElement("div");
-      logoWrap.className = "partner-logo-wrap";
+    // name
+    if (name) {
+      const nameEl = document.createElement("div");
+      nameEl.className = "partner-name";
+      nameEl.textContent = name;
+      card.appendChild(nameEl);
+    }
 
-      const img = document.createElement("img");
-      img.src = logoUrl;
-      img.alt = name || "Partner";
-      img.className = "partner-logo";
-      img.loading = "lazy";
+    // ===== JOIN NOW =====
+    const joinLink = document.createElement("a");
+    joinLink.href   = joinUrl;
+    joinLink.target = "_blank";
+    joinLink.rel    = "noopener noreferrer";
+    joinLink.className = "partner-join-link";
 
-      logoWrap.appendChild(img);
-      card.appendChild(logoWrap);
+    const joinBtn = document.createElement("button");
+    joinBtn.type = "button";
+    joinBtn.className = "btn partner-join-btn";
+    joinBtn.textContent = "Join Now";
 
-      if (name) {
-        const nameEl = document.createElement("div");
-        nameEl.className = "partner-name";
-        nameEl.textContent = name;
-        card.appendChild(nameEl);
-      }
+    joinLink.appendChild(joinBtn);
+    card.appendChild(joinLink);
 
-      const joinLink = document.createElement("a");
-      joinLink.href   = joinUrl;
-      joinLink.target = "_blank";
-      joinLink.rel    = "noopener noreferrer";
-      joinLink.className = "partner-join-link";
+    // ===== ✅ VIEW CHANNEL (NEW) =====
+    const channelLink = document.createElement("a");
+    channelLink.target = "_blank";
+    channelLink.rel    = "noopener noreferrer";
+    channelLink.className = "partner-join-link partner-channel-link";
 
-      const joinBtn = document.createElement("button");
-      joinBtn.type = "button";
-      joinBtn.className = "btn partner-join-btn";
-      joinBtn.textContent = "Join Now";
+    // kalau admin tak isi channelUrl, button jadi disable
+    if (channelUrl) {
+      channelLink.href = channelUrl;
+    } else {
+      channelLink.href = "javascript:void(0)";
+      channelLink.style.pointerEvents = "none";
+      channelLink.style.opacity = "0.55";
+      channelLink.title = "Channel link belum diisi (admin).";
+    }
 
-      joinLink.appendChild(joinBtn);
-      card.appendChild(joinLink);
+    const channelBtn = document.createElement("button");
+    channelBtn.type = "button";
+    channelBtn.className = "btn partner-join-btn partner-channel-btn";
+    channelBtn.textContent = "View Channel";
 
-      partnerGridEl.appendChild(card);
-    });
-  }
+    // ✅ jarak bawah Join Now (tanpa edit CSS pun boleh)
+    channelBtn.style.marginTop = "10px";
+
+    channelLink.appendChild(channelBtn);
+    card.appendChild(channelLink);
+
+    partnerGridEl.appendChild(card);
+  });
+}
 
   partnersRef.on("value", renderPartners);
 
