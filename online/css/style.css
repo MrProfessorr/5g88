@@ -1365,3 +1365,31 @@ body.page-user{
 .bottom-nav-item.bottom-nav-share{
   transform: translateY(-6px);
 }
+.share-grid{
+  display:grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.share-icon{
+  height: 56px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(250, 204, 21, .25);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition: transform .12s ease, background .12s ease;
+}
+
+.share-icon:hover{ transform: translateY(-1px); }
+.share-icon:active{ transform: scale(.98); }
+
+.share-icon img{
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  display:block;
+}
