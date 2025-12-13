@@ -40,11 +40,8 @@
       <div class="side-menu-header">
         <span>Menu</span>
       </div>
-      <div id="sideMenuList" class="side-menu-list">
-        <!-- JS isi automatik -->
-      </div>
+      <div id="sideMenuList" class="side-menu-list"></div>
     </div>
-
     <div id="sideOverlay" class="side-overlay"></div>
 
     <!-- ================== RUNNING TEXT ================== -->
@@ -115,9 +112,7 @@
             <h2 class="title-card">PERCENTAGE GAME</h2>
             <span id="rateGameTime" class="rategame-meta">RATE GAME : --</span>
           </div>
-          <p class="small-card">
-            Click <b>Generate</b> untuk keluarkan Percentage hari ini.
-          </p>
+          <p class="small-card">Click <b>Generate</b> untuk keluarkan Percentage hari ini.</p>
         </section>
 
         <section id="tipsCardsGrid" class="cards-grid"></section>
@@ -143,15 +138,16 @@
         <section id="partnerGrid" class="partner-grid"></section>
       </section>
 
+      <!-- ✅ TRUST STRIP (SELALU DI BAWAH CONTENT) -->
+      <div class="trust-strip">
+        <img
+          src="https://i.imgur.com/AM4LUPK.png"
+          alt="5G88 License & Payment"
+          loading="lazy"
+        >
+      </div>
+
     </main>
-    
-    <div class="trust-strip">
-  <img
-    src="https://i.imgur.com/AM4LUPK.png"
-    alt="5G88 License & Payment"
-    loading="lazy"
-  >
-</div>
 
     <!-- FLOATING BUTTONS -->
     <div id="floatingLeft" class="floating-buttons-left"></div>
@@ -162,8 +158,9 @@
   <!-- BACK TO TOP -->
   <button id="backToTop" class="back-to-top" aria-label="Back to top">↑</button>
 
-  <!-- ===== BOTTOM NAV ===== -->
+  <!-- ===== BOTTOM NAV (5 buttons) ===== -->
   <nav class="bottom-nav">
+
     <button class="bottom-nav-item active" data-tab="home" onclick="handleBottomNavClick('home')">
       <img src="https://i.imgur.com/nFN3jlH.png" alt="Home" class="bottom-nav-icon">
       <span class="bottom-nav-label">HOME</span>
@@ -172,6 +169,12 @@
     <button class="bottom-nav-item" data-tab="hot" onclick="handleBottomNavClick('hot')">
       <img src="https://i.imgur.com/bHDNh3q.png" alt="Hot Game" class="bottom-nav-icon">
       <span class="bottom-nav-label">HOT GAME</span>
+    </button>
+
+    <!-- ✅ SHARE TENGAH -->
+    <button class="bottom-nav-item bottom-nav-share" type="button" onclick="openShareSheet()">
+      <img src="https://i.imgur.com/TtaoCtu.png" alt="Share" class="bottom-nav-icon">
+      <span class="bottom-nav-label">SHARE</span>
     </button>
 
     <button class="bottom-nav-item" data-tab="promo" onclick="handleBottomNavClick('promo')">
@@ -183,7 +186,44 @@
       <img src="https://i.imgur.com/kjvnj4Z.png" alt="Partnership" class="bottom-nav-icon">
       <span class="bottom-nav-label">PARTNERSHIP</span>
     </button>
+
   </nav>
+
+  <!-- ✅ SHARE SHEET -->
+  <div id="shareOverlay" class="share-overlay" style="display:none;"></div>
+
+  <div id="shareSheet" class="share-sheet" style="display:none;" aria-hidden="true">
+    <div class="share-sheet-head">
+      <div class="share-title">Share this page</div>
+      <button class="share-close" type="button" onclick="closeShareSheet()">✕</button>
+    </div>
+
+    <div class="share-grid">
+      <button class="share-item" type="button" data-share="whatsapp">
+        <span>WhatsApp</span>
+      </button>
+      <button class="share-item" type="button" data-share="facebook">
+        <span>Facebook</span>
+      </button>
+      <button class="share-item" type="button" data-share="telegram">
+        <span>Telegram</span>
+      </button>
+      <button class="share-item" type="button" data-share="tiktok">
+        <span>TikTok</span>
+      </button>
+      <button class="share-item" type="button" data-share="instagram">
+        <span>Instagram</span>
+      </button>
+      <button class="share-item" type="button" data-share="copy">
+        <span>Copy Link</span>
+      </button>
+    </div>
+
+    <div class="share-link-row">
+      <input id="shareLinkInput" type="text" readonly>
+      <button type="button" class="share-copy-btn" onclick="copyShareLink()">Copy</button>
+    </div>
+  </div>
 
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
