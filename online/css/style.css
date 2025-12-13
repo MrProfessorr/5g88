@@ -1255,3 +1255,10 @@ body.page-user{
   font-size:0.5rem;
 
 }
+.page-loading.is-hide{
+  display: none !important;
+  opacity: 0;
+  pointer-events: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
