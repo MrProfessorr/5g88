@@ -1,43 +1,50 @@
 // online/js/tips-page.js
 
 document.addEventListener("DOMContentLoaded", () => {
+
   // =========================
-  // ✅ LOADING SYSTEM
+  // ✅ LOADING SYSTEM (FIX BLUR)
   // =========================
   const loaderEl   = document.getElementById("pageLoading");
   const appShellEl = document.getElementById("appShell");
 
   function showLoading() {
     if (loaderEl) {
+      loaderEl.classList.remove("is-hide");
       loaderEl.style.display = "flex";
       loaderEl.style.opacity = "1";
+      loaderEl.style.pointerEvents = "auto";
     }
     if (appShellEl) {
       appShellEl.style.transition = "opacity .25s ease, filter .25s ease";
-      appShellEl.style.opacity = "0.25";          // ✅ jangan 0 bro
-      appShellEl.style.filter = "blur(2px)";      // ✅ efek backdrop
+      appShellEl.style.opacity = "0.25";
+      appShellEl.style.filter = "blur(2px)";
       appShellEl.style.pointerEvents = "none";
     }
   }
 
-function hideLoading() {
-  if (loaderEl) {
-    loaderEl.style.transition = "opacity .35s ease";
-    loaderEl.style.opacity = "0";
-    loaderEl.style.pointerEvents = "none";
+  function hideLoading() {
+    // ✅ reset appShell dulu (paling penting!)
+    if (appShellEl) {
+      appShellEl.style.transition = "opacity .35s ease, filter .35s ease";
+      appShellEl.style.opacity = "1";
+      appShellEl.style.filter = "none";
+      appShellEl.style.pointerEvents = "auto";
+    }
 
-    setTimeout(() => {
-      loaderEl.style.display = "none";   // loader betul-betul hilang
-    }, 350);
-  }
+    if (loaderEl) {
+      loaderEl.style.transition = "opacity .35s ease";
+      loaderEl.style.opacity = "0";
+      loaderEl.style.pointerEvents = "none";
 
-  if (appShellEl) {
-    appShellEl.style.transition = "opacity .35s ease, filter .35s ease";
-    appShellEl.style.opacity = "1";
-    appShellEl.style.filter = "none";    // ✅ INI YANG HILANG SEBELUM NI
-    appShellEl.style.pointerEvents = "auto";
+      // ✅ pakai class hide supaya backdrop-filter tak tinggal
+      setTimeout(() => {
+        loaderEl.classList.add("is-hide");
+        loaderEl.style.display = "none";
+        loaderEl.style.opacity = "1"; // reset utk next showLoading
+      }, 350);
+    }
   }
-}
 
   showLoading();
 
@@ -54,7 +61,7 @@ function hideLoading() {
   const promoPage   = document.getElementById("promoPage");
   const partnerPage = document.getElementById("partnerPage");
 
-  // ✅ Hindari flash: semua section disembunyikan dulu
+  // ✅ Hindari flash
   if (homePage)    homePage.style.display    = "none";
   if (hotGamePage) hotGamePage.style.display = "none";
   if (promoPage)   promoPage.style.display   = "none";
@@ -73,6 +80,8 @@ function hideLoading() {
     if (!bottomNavItems || !bottomNavItems.length) return;
     bottomNavItems.forEach(btn => {
       const t = btn.dataset.tab;
+      // ✅ SHARE button biasanya tak ada data-tab → jangan kacau active
+      if (!t) return;
       btn.classList.toggle("active", t === tab);
     });
   }
@@ -112,11 +121,7 @@ function hideLoading() {
 
   const FLOAT_COLLAPSE_KEY = "tipsFloatingContactsCollapsed.v1";
   let floatingCollapsed = false;
-  try {
-    floatingCollapsed = localStorage.getItem(FLOAT_COLLAPSE_KEY) === "1";
-  } catch (e) {
-    floatingCollapsed = false;
-  }
+  try { floatingCollapsed = localStorage.getItem(FLOAT_COLLAPSE_KEY) === "1"; } catch (e) {}
 
   // =========================
   // SIDEBAR NAV
@@ -148,14 +153,14 @@ function hideLoading() {
 
   try {
     const saved = localStorage.getItem(TAB_KEY);
-    if (["home", "hot", "promo", "partner"].includes(saved)) currentTab = saved;
+    if (["home","hot","promo","partner"].includes(saved)) currentTab = saved;
   } catch (e) {}
 
   // config dari Firebase
   let navConfig = { home: true, hot: true, promo: true, partner: true };
 
   function getFirstEnabledTab() {
-    const order = ["home", "hot", "promo", "partner"];
+    const order = ["home","hot","promo","partner"];
     return order.find(t => navConfig[t]) || "home";
   }
 
@@ -192,8 +197,7 @@ function hideLoading() {
     updateSidebarActive(currentTab);
   }
 
-  // dipanggil dari HTML bottom nav
-  window.handleBottomNavClick = function (tab) {
+  window.handleBottomNavClick = function(tab) {
     setActiveTab(tab);
   };
 
@@ -211,9 +215,12 @@ function hideLoading() {
     const bottomButtons = document.querySelectorAll(".bottom-nav-item");
 
     bottomButtons.forEach((btn) => {
+      // ✅ skip jika button bukan tab (contoh SHARE)
+      const tab = btn.dataset.tab;
+      if (!tab) return;
+
       if (btn.style.display === "none") return;
 
-      const tab = btn.dataset.tab;
       const label = btn.querySelector(".bottom-nav-label")?.textContent?.trim() || tab.toUpperCase();
       const iconSrc = btn.querySelector("img")?.getAttribute("src") || "";
 
@@ -263,7 +270,7 @@ function hideLoading() {
   // =========================
   if (!window.firebase || !window.db) {
     console.error("Firebase belum siap. Cek script firebase di HTML.");
-    hideLoading(); // jangan lock screen
+    hideLoading();
     return;
   }
 
@@ -286,7 +293,7 @@ function hideLoading() {
     promos: false,
     promoBig: false,
     partners: false,
-    cards: !gridEl // kalau tak ada tips grid, anggap siap
+    cards: !gridEl
   };
 
   function markLoaded(k) {
@@ -299,16 +306,14 @@ function hideLoading() {
     setTimeout(hideLoading, wait);
   }
 
-  // safety: kalau firebase lambat/blocked, jangan loading selamanya
-  setTimeout(() => {
-    hideLoading();
-  }, 8000);
+  // safety
+  setTimeout(() => hideLoading(), 8000);
 
   // =========================
   // NAV CONFIG
   // =========================
   function applyNavConfig(cfgRaw) {
-    const defaults = { home: true, hot: true, promo: true, partner: true };
+    const defaults = { home:true, hot:true, promo:true, partner:true };
     navConfig = { ...defaults, ...(cfgRaw || {}) };
 
     if (bottomHomeBtn)    bottomHomeBtn.style.display    = navConfig.home    ? "" : "none";
@@ -567,14 +572,12 @@ function hideLoading() {
   });
 
   // =========================
-  // PARTNERSHIP (JOIN + VIEW CHANNEL)
+  // PARTNERSHIP
   // =========================
   function normalizeTelegramLink(url) {
     if (!url) return "";
     let u = String(url).trim();
     if (!u) return "";
-
-    // kalau admin isi "kiwi5g88channel" sahaja
     if (!/^https?:\/\//i.test(u) && !/^tg:\/\//i.test(u)) {
       u = u.replace(/^@/, "");
       u = "https://t.me/" + u;
@@ -633,7 +636,6 @@ function hideLoading() {
         card.appendChild(nameEl);
       }
 
-      // JOIN
       const joinLink = document.createElement("a");
       joinLink.href   = joinUrl;
       joinLink.target = "_blank";
@@ -648,14 +650,13 @@ function hideLoading() {
       joinLink.appendChild(joinBtn);
       card.appendChild(joinLink);
 
-      // VIEW CHANNEL (telegram)
       const channelLink = document.createElement("a");
       channelLink.target = "_blank";
       channelLink.rel    = "noopener noreferrer";
       channelLink.className = "partner-join-link";
 
       if (channelUrl) {
-        channelLink.href = channelUrl; // ✅ ini yang betul (bukan GitHub path)
+        channelLink.href = channelUrl;
       } else {
         channelLink.href = "javascript:void(0)";
         channelLink.style.pointerEvents = "none";
@@ -816,10 +817,85 @@ function hideLoading() {
   } else {
     markLoaded("cards");
   }
-});
+
+  // =========================
+  // ✅ SHARE SHEET SYSTEM (GLOBAL)
+  // =========================
+  const shareOverlay = document.getElementById("shareOverlay");
+  const shareSheet   = document.getElementById("shareSheet");
+  const shareInput   = document.getElementById("shareLinkInput");
+
+  function shareUrl(){ return window.location.href; }
+  function shareText(){ return "5G88 • Tips Game"; }
+
+  window.openShareSheet = function(){
+    if (shareInput) shareInput.value = shareUrl();
+    if (shareOverlay) shareOverlay.style.display = "block";
+    if (shareSheet) {
+      shareSheet.style.display = "block";
+      shareSheet.setAttribute("aria-hidden","false");
+    }
+  };
+
+  window.closeShareSheet = function(){
+    if (shareOverlay) shareOverlay.style.display = "none";
+    if (shareSheet) {
+      shareSheet.style.display = "none";
+      shareSheet.setAttribute("aria-hidden","true");
+    }
+  };
+
+  window.copyShareLink = async function(){
+    const url = shareUrl();
+    try{
+      await navigator.clipboard.writeText(url);
+      alert("Link copied!");
+    }catch(e){
+      const ta = document.createElement("textarea");
+      ta.value = url;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+      alert("Link copied!");
+    }
+  };
+
+  if (shareOverlay) shareOverlay.addEventListener("click", window.closeShareSheet);
+
+  if (shareSheet) {
+    shareSheet.addEventListener("click", async (e) => {
+      const btn = e.target.closest(".share-item");
+      if (!btn) return;
+
+      const type = btn.dataset.share;
+      const url  = encodeURIComponent(shareUrl());
+      const text = encodeURIComponent(shareText());
+
+      if (type === "whatsapp") {
+        window.open(`https://wa.me/?text=${text}%20${url}`, "_blank");
+      } else if (type === "telegram") {
+        window.open(`https://t.me/share/url?url=${url}&text=${text}`, "_blank");
+      } else if (type === "facebook") {
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, "_blank");
+      } else if (type === "tiktok") {
+        await window.copyShareLink();
+        window.open("https://www.tiktok.com/", "_blank");
+      } else if (type === "instagram") {
+        await window.copyShareLink();
+        window.open("https://www.instagram.com/", "_blank");
+      } else if (type === "copy") {
+        await window.copyShareLink();
+      }
+
+      window.closeShareSheet();
+    });
+  }
+
+}); // DOMContentLoaded END
 
 // =========================
-// BACK TO TOP BUTTON (biar kekal global)
+// BACK TO TOP BUTTON (global)
 // =========================
 let scrollTimer;
 const btn = document.getElementById("backToTop");
