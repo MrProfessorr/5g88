@@ -1262,3 +1262,7 @@ body.page-user{
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
+/* ✅ bila hide: remove terus (supaya blur tak tinggal) */
+.page-loading.is-hide{
+  display: none !important;
+}
