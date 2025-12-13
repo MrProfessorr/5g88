@@ -1241,12 +1241,7 @@ body.page-user{
   margin: 0 auto;       /* ✅ center horizontal */
 }
 .loading-text{
-  color: #facc15;
+  color: #9ca3af;
   font-weight: 800;
   letter-spacing: .5px;
-}
-.loading-sub{
-  margin-top: 6px;
-  color: #9ca3af;
-  font-size: 12px;
 }
