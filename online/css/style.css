@@ -1287,8 +1287,8 @@ body.page-user{
   bottom: 88px; /* ✅ atas bottom nav */
   transform: translateX(-50%);
   width: min(520px, calc(100% - 24px));
-  background: rgba(0,0,0,0.50);
-  border: 1px solid rgba(250,204,21,.25);
+  background: radial-gradient(circle at top, rgba(250, 204, 21, 0.1) 0, transparent 60%), radial-gradient(circle at bottom, rgba(56, 189, 248, 0.2) 0, transparent 55%), linear-gradient(145deg, #020617 0, #020617 40%, #020617 100%);
+  border: 1px solid rgba(30, 64, 175, 0.8);
   border-radius: 16px;
   padding: 12px;
   z-index: 99999;
@@ -1312,8 +1312,7 @@ body.page-user{
   border: 1px solid rgba(250,204,21,.25);
   background: rgba(255,255,255,.06);
   color: #e5e7eb;
-  border-radius: 10px;
-  padding: 6px 10px;
+  border:none;
   cursor: pointer;
 }
 
@@ -1376,7 +1375,7 @@ body.page-user{
   height: 56px;
   border-radius: 14px;
   background: rgba(255,255,255,.04);
-  border: 1px solid rgba(250, 204, 21, .25);
+  border: 1px solid rgba(30, 64, 175, 0.8);
   display:flex;
   align-items:center;
   justify-content:center;
