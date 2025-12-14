@@ -396,7 +396,6 @@ function getMaxPlayed(g){
   return max;
 }
 
-// tick sekali: naik/turun 1..5, clamp 0..(max-1)
 function tickPlayed(entries){
   resetPlayedIfNewDay();
   const map = readPlayedMap();
@@ -404,17 +403,29 @@ function tickPlayed(entries){
   (entries || []).forEach(g=>{
     const key = g.key;
     const max = getMaxPlayed(g);
-    const upper = Math.max(0, max - 1); // ✅ tak boleh sampai max
+
+    // ✅ WARMUP target 300 (kalau max < 300, paksa 300)
+    const warmTarget = Math.min(300, Math.max(300, max)); // result: 300
+    const upper = Math.max(0, max - 1); // ikut logic kau: tak boleh sampai max
 
     let val = Number(map[key] ?? 0);
     if (!Number.isFinite(val)) val = 0;
 
-    const step = Math.floor(Math.random()*5) + 1; // 1..5
-    const dir  = Math.random() < 0.5 ? -1 : 1;
-    val = val + (step * dir);
+    // ✅ PHASE 1: naik perlahan sampai 300
+    if (val < warmTarget) {
+      const step = Math.floor(Math.random() * 6) + 2; // 2..7 (pelan2)
+      val = val + step;
+      if (val > warmTarget) val = warmTarget;
+    } 
+    // ✅ PHASE 2: lepas 300 baru up/down
+    else {
+      const step = Math.floor(Math.random() * 12) + 1; // 1..12
+      const dir  = Math.random() < 0.55 ? 1 : -1;      // bias sikit kepada naik
+      val = val + (step * dir);
 
-    if (val < 0) val = 0;
-    if (val > upper) val = upper;
+      if (val < 0) val = 0;
+      if (val > upper) val = upper;
+    }
 
     map[key] = val;
   });
