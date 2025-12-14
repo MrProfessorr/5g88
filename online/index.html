@@ -118,6 +118,16 @@
         <section id="tipsCardsGrid" class="cards-grid"></section>
       </section>
 
+      <!-- ========== GAME LIST PAGE (BARU) ========== -->
+      <section id="gameListPage" class="game-list-page" style="display:none;">
+        <section class="card">
+          <h2 class="section-title">GAME LIST</h2>
+          <p class="text-muted small">RTP auto random (update setiap 10 minit)</p>
+        </section>
+
+        <section id="gameListGrid" class="game-list-grid"></section>
+      </section>
+
       <!-- ========== PROMOTION PAGE ========== -->
       <section id="promoPage" class="promo-page" style="display:none;">
         <section class="card-promo">
@@ -158,7 +168,7 @@
   <!-- BACK TO TOP -->
   <button id="backToTop" class="back-to-top" aria-label="Back to top">↑</button>
 
-  <!-- ===== BOTTOM NAV (5 buttons) ===== -->
+  <!-- ===== BOTTOM NAV ===== -->
   <nav class="bottom-nav">
 
     <button class="bottom-nav-item active" data-tab="home" onclick="handleBottomNavClick('home')">
@@ -171,7 +181,13 @@
       <span class="bottom-nav-label">HOT GAME</span>
     </button>
 
-    <!-- ✅ SHARE TENGAH -->
+    <!-- ✅ GAME LIST (TAB BARU) -->
+    <button class="bottom-nav-item" data-tab="gamelist" onclick="handleBottomNavClick('gamelist')">
+      <img src="https://i.imgur.com/8yKxk9P.png" alt="Game List" class="bottom-nav-icon">
+      <span class="bottom-nav-label">GAME LIST</span>
+    </button>
+
+    <!-- ✅ SHARE (BUKAN TAB) -->
     <button class="bottom-nav-item" type="button" onclick="openShareSheet()">
       <img src="https://i.imgur.com/TtaoCtu.png" alt="Share" class="bottom-nav-icon">
       <span class="bottom-nav-label">SHARE</span>
@@ -189,38 +205,38 @@
 
   </nav>
 
-<!-- ✅ SHARE SHEET (ICON ONLY) -->
-<div id="shareOverlay" class="share-overlay" style="display:none;" onclick="closeShareSheet()"></div>
+  <!-- ✅ SHARE SHEET (ICON ONLY) -->
+  <div id="shareOverlay" class="share-overlay" style="display:none;" onclick="closeShareSheet()"></div>
 
-<div id="shareSheet" class="share-sheet" style="display:none;" aria-hidden="true">
-  <div class="share-sheet-head">
-    <div class="share-title">Share this page</div>
-    <button class="share-close" type="button" onclick="closeShareSheet()">✕</button>
+  <div id="shareSheet" class="share-sheet" style="display:none;" aria-hidden="true">
+    <div class="share-sheet-head">
+      <div class="share-title">Share this page</div>
+      <button class="share-close" type="button" onclick="closeShareSheet()">✕</button>
+    </div>
+
+    <div class="share-grid">
+      <button class="share-icon" type="button" data-share="whatsapp" aria-label="WhatsApp">
+        <img src="https://i.imgur.com/Zp2XgpJ.png" alt="WhatsApp">
+      </button>
+
+      <button class="share-icon" type="button" data-share="facebook" aria-label="Facebook">
+        <img src="https://i.imgur.com/yFZYYQC.png" alt="Facebook">
+      </button>
+
+      <button class="share-icon" type="button" data-share="telegram" aria-label="Telegram">
+        <img src="https://i.imgur.com/NMWvldx.png" alt="Telegram">
+      </button>
+
+      <button class="share-icon" type="button" data-share="copy" aria-label="Copy Link">
+        <img src="https://i.imgur.com/OMSECz2.png" alt="Copy Link">
+      </button>
+    </div>
+
+    <div class="share-link-row">
+      <input id="shareLinkInput" type="text" readonly>
+      <button type="button" class="share-copy-btn" onclick="copyShareLink()">Copy</button>
+    </div>
   </div>
-
-  <div class="share-grid">
-    <button class="share-icon" type="button" data-share="whatsapp" aria-label="WhatsApp">
-      <img src="https://i.imgur.com/Zp2XgpJ.png" alt="WhatsApp">
-    </button>
-
-    <button class="share-icon" type="button" data-share="facebook" aria-label="Facebook">
-      <img src="https://i.imgur.com/yFZYYQC.png" alt="Facebook">
-    </button>
-
-    <button class="share-icon" type="button" data-share="telegram" aria-label="Telegram">
-      <img src="https://i.imgur.com/NMWvldx.png" alt="Telegram">
-    </button>
-
-    <button class="share-icon" type="button" data-share="copy" aria-label="Copy Link">
-      <img src="https://i.imgur.com/OMSECz2.png" alt="Copy Link">
-    </button>
-  </div>
-
-  <div class="share-link-row">
-    <input id="shareLinkInput" type="text" readonly>
-    <button type="button" class="share-copy-btn" onclick="copyShareLink()">Copy</button>
-  </div>
-</div>
 
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
