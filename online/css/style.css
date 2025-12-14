@@ -1359,7 +1359,7 @@ body.page-user{
   border-radius: 999px;
   border: 1px solid rgba(30, 64, 175, 0.8);
   background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), #020617);
-  color: rgba(30, 64, 175, 0.8);
+  color: #fff;
   cursor:pointer;
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.9);
 }
