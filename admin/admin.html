@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body class="page-admin">
   <div class="app-shell">
     <header class="app-header">
@@ -29,6 +30,28 @@
              class="admin-card-list"
              style="margin-top:12px;">
           <!-- diisi dari JS -->
+        </div>
+      </section>
+
+      <!-- ✅ NEW: ===== GAME LIST (HOT GAME GRID) ===== -->
+      <section class="card admin-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+          <div>
+            <h2>Game List</h2>
+            <p class="text-muted small" style="margin-top:6px;">
+              Tambah game untuk paparan GRID (gambar + PlayNow). RTP tidak perlu isi di admin.
+            </p>
+          </div>
+
+          <button type="button" class="btn primary" onclick="openGameListNewModal()">
+            + Tambah Game
+          </button>
+        </div>
+
+        <div id="gameListAdminList"
+             class="admin-card-list"
+             style="margin-top:12px;">
+          <!-- list game dari JS -->
         </div>
       </section>
 
@@ -98,7 +121,8 @@
           </div>
         </div>
       </section>
-            <!-- ===== FLOATING BUTTONS (WA / TG / JOIN US) ===== -->
+
+      <!-- ===== FLOATING BUTTONS (WA / TG / JOIN US) ===== -->
       <section class="card admin-panel">
         <h2>Floating Buttons</h2>
         <p class="text-muted small">
@@ -116,13 +140,13 @@
               </div>
 
               <label class="form-label small">
-                Link WhatsApp  
+                Link WhatsApp
                 <input type="text" id="waLink"
                   placeholder="Contoh: https://wa.me/60123456789?text=Halo%205G88">
               </label>
 
               <label class="form-label small">
-                Icon PNG (opsional)  
+                Icon PNG (opsional)
                 <input type="text" id="waIcon"
                   placeholder="https://.../whatsapp-icon.png">
               </label>
@@ -142,13 +166,13 @@
               </div>
 
               <label class="form-label small">
-                Link Telegram  
+                Link Telegram
                 <input type="text" id="tgLink"
                   placeholder="Contoh: https://t.me/YourChannel">
               </label>
 
               <label class="form-label small">
-                Icon PNG (opsional)  
+                Icon PNG (opsional)
                 <input type="text" id="tgIcon"
                   placeholder="https://.../telegram-icon.png">
               </label>
@@ -168,13 +192,13 @@
               </div>
 
               <label class="form-label small">
-                Link Join Us  
+                Link Join Us
                 <input type="text" id="joinLink"
                   placeholder="Contoh: https://5g88.baby/signup">
               </label>
 
               <label class="form-label small">
-                Icon PNG (opsional)  
+                Icon PNG (opsional)
                 <input type="text" id="joinIcon"
                   placeholder="https://.../join-icon.png">
               </label>
@@ -273,7 +297,7 @@
                spellcheck="false"
                placeholder="COYOTE CASH&#10;IRISH LUCK&#10;SIX ACROBATS"></div>
           <small class="text-muted small">
-            • Enter / Ctrl+Enter untuk turun baris.  
+            • Enter / Ctrl+Enter untuk turun baris.
             • Boleh paste format array: 'GAME1','GAME2' atau "GAME1","GAME2".
           </small>
         </label>
@@ -306,6 +330,43 @@
       <div class="modal-footer">
         <button type="button" id="gamesModalEditBtn" class="btn secondary">Edit</button>
         <button type="button" id="gamesModalSaveBtn" class="btn primary" style="display:none;">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ NEW: ===== MODAL GAME LIST (GRID) ===== -->
+  <div id="gameListModal" class="modal">
+    <div class="modal-backdrop" onclick="closeGameListModal()"></div>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="gameListModalTitle">Tambah Game</h3>
+        <button type="button" class="modal-close" onclick="closeGameListModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <label class="form-label">
+          Game Name
+          <input type="text" id="gameListName" placeholder="Contoh: Zeus, Mahjong Ways, Gate of Olympus">
+        </label>
+
+        <label class="form-label">
+          Image URL (PNG/JPG)
+          <input type="text" id="gameListImageUrl" placeholder="https://i.imgur.com/xxxx.png">
+        </label>
+
+        <label class="form-label">
+          PlayNow Link (buka tab baru)
+          <input type="text" id="gameListPlayUrl" placeholder="https://5g88.baby/play?...">
+        </label>
+
+        <small class="text-muted small">
+          • Untuk icon/thumbnail elok guna PNG.  
+          • Pastikan URL bermula dengan https://
+        </small>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" id="gameListModalSaveBtn" class="btn primary">Save</button>
       </div>
     </div>
   </div>
@@ -408,11 +469,11 @@
           Link Join Now
           <input type="text" id="partnerJoinUrl" placeholder="Site link">
         </label>
-        
+
         <label class="form-label">
           Link Channel
           <input type="text" id="partnerChannelUrl" placeholder="Channel link">
-       </label>
+        </label>
       </div>
       <div class="modal-footer">
         <button type="button" id="partnerModalSaveBtn" class="btn primary">Save</button>
