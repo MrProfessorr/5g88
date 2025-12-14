@@ -1317,6 +1317,9 @@ body.page-user{
 .share-close:hover{
   font-weight:700;
 }
+.share-close:active{
+  transform:translateY(1px)scale(0.98);
+}
 .share-grid{
   display:grid;
   grid-template-columns: repeat(3, minmax(0,1fr));
