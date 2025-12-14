@@ -1535,6 +1535,19 @@ body.page-user{
   justify-content:center;
   gap:8px;
 }
+.game-played{
+  margin-top:6px;
+  display:flex;
+  justify-content:center;
+  gap:6px;
+  font-size:.78rem;
+  font-weight:800;
+  color:#cbd5e1;
+}
+.game-played .played-num{
+  color:#facc15;
+  font-weight:900;
+}
 .game-rtp{
   font-size:.80rem;
   font-weight:900;
