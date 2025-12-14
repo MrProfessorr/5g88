@@ -84,6 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const gameListNameInput    = document.getElementById("gameListName");
   const gameListImageInput   = document.getElementById("gameListImageUrl");
   const gameListPlayInput    = document.getElementById("gameListPlayUrl");
+  const gameListPlayedMaxInput= document.getElementById("gameListPlayedMax"); 
   const gameListModalSaveBtn = document.getElementById("gameListModalSaveBtn");
   let currentGameListKey     = null;
 
@@ -447,6 +448,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (gameListNameInput)  gameListNameInput.value  = "";
     if (gameListImageInput) gameListImageInput.value = "";
     if (gameListPlayInput)  gameListPlayInput.value  = "";
+    if (gameListPlayedMaxInput) gameListPlayedMaxInput.value = 398;
   }
 
   function openGameListNewModal(){
@@ -464,6 +466,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (gameListNameInput)  gameListNameInput.value  = data.gameName || data.name || "";
     if (gameListImageInput) gameListImageInput.value = data.imageUrl || data.image || "";
     if (gameListPlayInput)  gameListPlayInput.value  = data.playUrl  || data.link || "";
+    if (gameListPlayedMaxInput) {
+    const raw = Number(data.playedMax ?? 398);
+    gameListPlayedMaxInput.value = (isFinite(raw) && raw > 0) ? Math.floor(raw) : 398;
+  }
     gameListModal.classList.add(MODAL_OPEN_CLASS);
   }
 
@@ -488,11 +494,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!isValidUrl(imageUrl)) { alert("URL gambar tak valid bro. Pastikan ada https://"); return; }
       if (!isValidUrl(playUrl))  { alert("Link PlayNow tak valid bro. Pastikan ada https://"); return; }
+      const playedMaxRaw = Number(gameListPlayedMaxInput?.value || 398);
+      const playedMax = (isFinite(playedMaxRaw) && playedMaxRaw > 0) ? Math.floor(playedMaxRaw) : 398;
 
       const payload = {
         gameName,
         imageUrl,
         playUrl,
+        playedMax,
         enabled: true,
         updatedAt: firebase.database.ServerValue.TIMESTAMP,
       };
@@ -553,7 +562,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const sub = document.createElement("div");
       sub.className = "admin-card-sub";
-      sub.textContent = `PlayNow: ${playUrl || "-"}`;
+      const pm = Number(g?.playedMax ?? 398);
+      sub.textContent = `PlayNow: ${playUrl || "-"} • Max Played: ${(isFinite(pm) && pm > 0) ? Math.floor(pm) : 398}`;
 
       info.appendChild(titleEl);
       info.appendChild(sub);
