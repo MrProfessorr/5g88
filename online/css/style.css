@@ -1403,58 +1403,68 @@ body.page-user{
   display:block;
 }
 /* =========================
-   GAME LIST GRID (ONLINE)
+   GAME LIST GRID (UPGRADE)
 ========================= */
 .game-list-grid{
   display:grid;
-  grid-template-columns:repeat(5, 1fr);
+  grid-template-columns:repeat(5, minmax(0, 1fr));
   gap:14px;
   margin-top:14px;
 }
 
 /* =========================
-   GAME CARD
+   GAME CARD (UPGRADE)
 ========================= */
 .game-card{
   position:relative;
   background:linear-gradient(180deg,#0b1220,#070b16);
-  border:1px solid rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.10);
   border-radius:16px;
   overflow:hidden;
   box-shadow:0 10px 26px rgba(0,0,0,.45);
-  transition:transform .18s ease, box-shadow .18s ease;
+  transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
 }
 
 .game-card:hover{
   transform:translateY(-2px);
   box-shadow:0 14px 34px rgba(0,0,0,.55);
+  border-color: rgba(250,204,21,.25);
 }
 
 /* =========================
-   IMAGE WRAP + IMAGE
+   IMAGE WRAP + IMAGE (FIX CROPPED)
 ========================= */
 .game-img-wrap{
   width:100%;
   position:relative;
   overflow:hidden;
-  background:#050816;
+  background: radial-gradient(circle at top, rgba(250,204,21,.08), transparent 55%),
+              linear-gradient(180deg,#050816,#040611);
+  /* ✅ bagi tinggi stabil supaya semua card sekata */
+  height:170px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:10px;                 /* ✅ bagi ruang supaya logo tak rapat */
 }
 
+/* ✅ Ini kunci: contain supaya gambar tak terpotong */
 .game-img-wrap img{
   width:100%;
-  height:auto;
-  aspect-ratio: 1 / 1; /* kekal square */
-  object-fit:cover;
+  height:100%;
+  object-fit:contain;           /* ✅ gambar penuh */
+  object-position:center;
   display:block;
   transform:scale(1);
   transition:transform .25s ease;
+  filter: drop-shadow(0 12px 18px rgba(0,0,0,.35));
 }
 
 .game-card:hover .game-img-wrap img{
   transform:scale(1.03);
 }
 
-/* Optional: badge HOT kalau kau guna */
+/* Optional: badge HOT */
 .game-badge-hot{
   position:absolute;
   top:10px;
@@ -1464,23 +1474,26 @@ body.page-user{
   font-size:.72rem;
   font-weight:900;
   letter-spacing:.3px;
-  color:#fff;
-  background:linear-gradient(135deg,#ff0033,#ff9f0a);
-  box-shadow:0 8px 16px rgba(255,0,0,.35);
+  color:#111827;
+  background:linear-gradient(135deg,#facc15,#f59e0b);
+  box-shadow:0 10px 16px rgba(250,204,21,.18);
   z-index:2;
 }
 
 /* =========================
-   BODY TEXT
+   BODY TEXT (UPGRADE)
 ========================= */
 .game-meta{
   padding:10px 10px 12px;
   text-align:center;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
 }
 
 .game-title{
-  font-weight:800;
-  font-size:.9rem;
+  font-weight:900;
+  font-size:.92rem;
   color:#e5e7eb;
   white-space:nowrap;
   overflow:hidden;
@@ -1488,21 +1501,17 @@ body.page-user{
 }
 
 .game-rtp{
-  margin-top:4px;
-  font-size:.78rem;
-  font-weight:800;
-  color:#22c55e; /* hijau */
+  font-size:.80rem;
+  font-weight:900;
+  color:#22c55e;
 }
-
-/* kalau nak rtp merah/oren ikut value, boleh letak class lain nanti */
-.game-rtp.is-mid{ color:#f59e0b; }  /* oren */
-.game-rtp.is-low{ color:#fb7185; }  /* merah */
+.game-rtp.is-mid{ color:#f59e0b; }
+.game-rtp.is-low{ color:#fb7185; }
 
 /* =========================
-   PLAY BUTTON
+   PLAY BUTTON (UPGRADE)
 ========================= */
 .game-play-btn{
-  margin-top:10px;
   width:100%;
   border:0;
   border-radius:12px;
@@ -1510,30 +1519,35 @@ body.page-user{
   cursor:pointer;
   font-weight:900;
   font-size:.78rem;
-  color:#000;
+  color:#111827;
   background:linear-gradient(135deg,#facc15,#f59e0b);
   box-shadow:0 10px 16px rgba(250,204,21,.14);
   transition:filter .18s ease, transform .18s ease;
 }
 
 .game-play-btn:hover{
-  filter:brightness(1.05);
+  filter:brightness(1.06);
   transform:translateY(-1px);
 }
 
 .game-play-btn:active{
-  transform:translateY(0px);
+  transform:translateY(0);
 }
 
 /* =========================
-   RESPONSIVE
+   RESPONSIVE (UPGRADE)
 ========================= */
 @media (max-width:1100px){
-  .game-list-grid{ grid-template-columns:repeat(4,1fr); }
+  .game-list-grid{ grid-template-columns:repeat(4, minmax(0,1fr)); }
+  .game-img-wrap{ height:165px; }
 }
+
 @media (max-width:900px){
-  .game-list-grid{ grid-template-columns:repeat(3,1fr); }
+  .game-list-grid{ grid-template-columns:repeat(3, minmax(0,1fr)); }
+  .game-img-wrap{ height:160px; }
 }
+
 @media (max-width:600px){
-  .game-list-grid{ grid-template-columns:repeat(2,1fr); }
+  .game-list-grid{ grid-template-columns:repeat(2, minmax(0,1fr)); }
+  .game-img-wrap{ height:150px; padding:8px; }
 }
