@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // ===== NAV TABS TOGGLE =====
   const navHomeToggle    = document.getElementById("navHomeToggle");
   const navHotToggle     = document.getElementById("navHotToggle");
+  const navGameListToggle = document.getElementById("navGameListToggle");
   const navPromoToggle   = document.getElementById("navPromoToggle");
   const navPartnerToggle = document.getElementById("navPartnerToggle");
 
@@ -358,6 +359,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (navHomeToggle)    navHomeToggle.checked    = !!cfg.home;
     if (navHotToggle)     navHotToggle.checked     = !!cfg.hot;
+    if (navGameListToggle)  navGameListToggle.checked  = !!cfg.gamelist;
     if (navPromoToggle)   navPromoToggle.checked   = !!cfg.promo;
     if (navPartnerToggle) navPartnerToggle.checked = !!cfg.partner;
   }
@@ -371,6 +373,11 @@ document.addEventListener("DOMContentLoaded", () => {
     navHotToggle.addEventListener("change", () => {
       navTabsRef.update({ hot: navHotToggle.checked });
     });
+  }
+  if (navGameListToggle) {
+    navGameListToggle.addEventListener("change", () => {
+    navTabsRef.update({ gamelist: navGameListToggle.checked });
+   });
   }
   if (navPromoToggle) {
     navPromoToggle.addEventListener("change", () => {
