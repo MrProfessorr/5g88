@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const gamesModalBox     = document.getElementById("gamesModalBox");
   const gamesModalEditBtn = document.getElementById("gamesModalEditBtn");
   const gamesModalSaveBtn = document.getElementById("gamesModalSaveBtn");
-  let currentEditKey      = null; // card yang sedang di-edit di gamesModal
+  let currentEditKey      = null;
 
   // ===== NAV TABS TOGGLE =====
   const navHomeToggle    = document.getElementById("navHomeToggle");
@@ -70,9 +70,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const partnerRatingInput  = document.getElementById("partnerRating");
   const partnerLogoInput    = document.getElementById("partnerLogoUrl");
   const partnerJoinInput    = document.getElementById("partnerJoinUrl");
-  const partnerChannelInput = document.getElementById("partnerChannelUrl"); // ✅ NEW
+  const partnerChannelInput = document.getElementById("partnerChannelUrl");
   const partnerModalSaveBtn = document.getElementById("partnerModalSaveBtn");
   let currentPartnerKey     = null;
+
+  // ==================================================
+  // ✅ GAME LIST (ADMIN) ELEMENTS
+  // ==================================================
+  const gameListAdminListEl  = document.getElementById("gameListAdminList");
+  const gameListModal        = document.getElementById("gameListModal");
+  const gameListModalTitle   = document.getElementById("gameListModalTitle");
+  const gameListNameInput    = document.getElementById("gameListName");
+  const gameListImageInput   = document.getElementById("gameListImageUrl");
+  const gameListPlayInput    = document.getElementById("gameListPlayUrl");
+  const gameListModalSaveBtn = document.getElementById("gameListModalSaveBtn");
+  let currentGameListKey     = null;
 
   // ===== FIREBASE CHECK =====
   if (!window.firebase || !window.db) {
@@ -85,10 +97,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const promoBigRef = db.ref("promotions");
   const partnersRef = db.ref("partnerships");
   const navTabsRef  = db.ref("nav_tabs");
-  const floatingRef = db.ref("floating_buttons"); // <-- baru
+  const floatingRef = db.ref("floating_buttons");
+  const gameListRef = db.ref("game_list"); // ✅ NEW
 
   // ========= Helpers umum =========
-
   const makeKey = (name) =>
     (name || "")
       .trim()
@@ -136,10 +148,14 @@ document.addEventListener("DOMContentLoaded", () => {
     el.textContent = (games || []).join("\n");
   }
 
+  function isValidUrl(u){
+    if (!u) return false;
+    try { new URL(u); return true; } catch(e) { return false; }
+  }
+
   // ==================================================
   // ============  MODAL PLATFORM / PRODUCT  ==========
   // ==================================================
-
   function resetPlatformForm() {
     if (!platformInput || !gameListBox) return;
     platformInput.value = "";
@@ -185,9 +201,7 @@ document.addEventListener("DOMContentLoaded", () => {
         updatedAt: firebase.database.ServerValue.TIMESTAMP,
       };
 
-      cardsRef
-        .child(key)
-        .set(payload)
+      cardsRef.child(key).set(payload)
         .then(() => {
           alert("Platform berjaya disimpan. Cek di list & di halaman user.");
           resetPlatformForm();
@@ -203,7 +217,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==================================================
   // ==========  MODAL VIEW / EDIT LIST GAME  =========
   // ==================================================
-
   function openGamesModal(key, card) {
     if (!gamesModal || !gamesModalBox) return;
 
@@ -242,33 +255,29 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
       }
-      cardsRef
-        .child(currentEditKey)
-        .update({
-          games,
-          updatedAt: firebase.database.ServerValue.TIMESTAMP,
-        })
-        .then(() => {
-          alert("List game berjaya diupdate.");
-          closeGamesModalInternal();
-        })
-        .catch((err) => {
-          console.error("Gagal update list games:", err);
-          alert("Gagal update. Cek console.");
-        });
+      cardsRef.child(currentEditKey).update({
+        games,
+        updatedAt: firebase.database.ServerValue.TIMESTAMP,
+      })
+      .then(() => {
+        alert("List game berjaya diupdate.");
+        closeGamesModalInternal();
+      })
+      .catch((err) => {
+        console.error("Gagal update list games:", err);
+        alert("Gagal update. Cek console.");
+      });
     });
   }
 
   // ==================================================
   // ===========  RENDER LIST CARD PLATFORM  ==========
   // ==================================================
-
   function renderCardsList(snapshot) {
     const data = snapshot.val() || {};
     cardsListEl.innerHTML = "";
 
     const entries = Object.entries(data);
-
     if (entries.length === 0) {
       cardsListEl.innerHTML =
         '<p class="text-muted small">Belum ada platform. Tekan "Tambah Platform".</p>';
@@ -342,7 +351,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==================================================
   // ============  NAVIGATION TABS ADMIN  =============
   // ==================================================
-
   function renderNavTabs(snapshot) {
     const data = snapshot.val() || {};
     const defaults = { home: true, hot: true, promo: true, partner: true };
@@ -380,59 +388,44 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==================================================
   // ============  FLOATING BUTTONS ADMIN  ============
   // ==================================================
-
   function renderFloatingButtons(snapshot) {
     const data = snapshot.val() || {};
     const wa   = data.whatsapp || {};
     const tg   = data.telegram || {};
     const join = data.join     || {};
 
-    if (waEnabled)      waEnabled.checked   = !!wa.enabled;
-    if (waLinkInput)    waLinkInput.value   = wa.link     || "";
-    if (waIconInput)    waIconInput.value   = wa.iconUrl  || "";
+    if (waEnabled)   waEnabled.checked = !!wa.enabled;
+    if (waLinkInput) waLinkInput.value = wa.link || "";
+    if (waIconInput) waIconInput.value = wa.iconUrl || "";
 
-    if (tgEnabled)      tgEnabled.checked   = !!tg.enabled;
-    if (tgLinkInput)    tgLinkInput.value   = tg.link     || "";
-    if (tgIconInput)    tgIconInput.value   = tg.iconUrl  || "";
+    if (tgEnabled)   tgEnabled.checked = !!tg.enabled;
+    if (tgLinkInput) tgLinkInput.value = tg.link || "";
+    if (tgIconInput) tgIconInput.value = tg.iconUrl || "";
 
-    if (joinEnabled)    joinEnabled.checked = !!join.enabled;
-    if (joinLinkInput)  joinLinkInput.value = join.link   || "";
-    if (joinIconInput)  joinIconInput.value = join.iconUrl|| "";
+    if (joinEnabled)   joinEnabled.checked = !!join.enabled;
+    if (joinLinkInput) joinLinkInput.value = join.link || "";
+    if (joinIconInput) joinIconInput.value = join.iconUrl || "";
   }
 
   floatingRef.on("value", renderFloatingButtons);
 
   if (floatingSaveBtn) {
     floatingSaveBtn.addEventListener("click", () => {
-      const waLink   = (waLinkInput?.value   || "").trim();
-      const waIcon   = (waIconInput?.value   || "").trim();
-      const tgLink   = (tgLinkInput?.value   || "").trim();
-      const tgIcon   = (tgIconInput?.value   || "").trim();
+      const waLink   = (waLinkInput?.value || "").trim();
+      const waIcon   = (waIconInput?.value || "").trim();
+      const tgLink   = (tgLinkInput?.value || "").trim();
+      const tgIcon   = (tgIconInput?.value || "").trim();
       const joinLink = (joinLinkInput?.value || "").trim();
       const joinIcon = (joinIconInput?.value || "").trim();
 
       const payload = {
-        whatsapp: {
-          enabled: !!waEnabled?.checked && !!waLink,
-          link: waLink,
-          iconUrl: waIcon
-        },
-        telegram: {
-          enabled: !!tgEnabled?.checked && !!tgLink,
-          link: tgLink,
-          iconUrl: tgIcon
-        },
-        join: {
-          enabled: !!joinEnabled?.checked && !!joinLink,
-          link: joinLink,
-          iconUrl: joinIcon
-        }
+        whatsapp: { enabled: !!waEnabled?.checked && !!waLink, link: waLink, iconUrl: waIcon },
+        telegram: { enabled: !!tgEnabled?.checked && !!tgLink, link: tgLink, iconUrl: tgIcon },
+        join:     { enabled: !!joinEnabled?.checked && !!joinLink, link: joinLink, iconUrl: joinIcon }
       };
 
       floatingRef.set(payload)
-        .then(() => {
-          alert("Setting floating buttons berjaya disimpan.");
-        })
+        .then(() => alert("Setting floating buttons berjaya disimpan."))
         .catch((err) => {
           console.error("Gagal simpan floating buttons:", err);
           alert("Gagal simpan floating buttons. Cek console.");
@@ -441,9 +434,174 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ==================================================
+  // ================== GAME LIST ADMIN ===============
+  // ==================================================
+  function resetGameListForm(){
+    if (gameListNameInput)  gameListNameInput.value  = "";
+    if (gameListImageInput) gameListImageInput.value = "";
+    if (gameListPlayInput)  gameListPlayInput.value  = "";
+  }
+
+  function openGameListNewModal(){
+    if (!gameListModal) return;
+    currentGameListKey = null;
+    if (gameListModalTitle) gameListModalTitle.textContent = "Tambah Game";
+    resetGameListForm();
+    gameListModal.classList.add(MODAL_OPEN_CLASS);
+  }
+
+  function openGameListEditModal(key, data){
+    if (!gameListModal) return;
+    currentGameListKey = key;
+    if (gameListModalTitle) gameListModalTitle.textContent = "Edit Game";
+    if (gameListNameInput)  gameListNameInput.value  = data.gameName || data.name || "";
+    if (gameListImageInput) gameListImageInput.value = data.imageUrl || data.image || "";
+    if (gameListPlayInput)  gameListPlayInput.value  = data.playUrl  || data.link || "";
+    gameListModal.classList.add(MODAL_OPEN_CLASS);
+  }
+
+  function closeGameListModalInternal(){
+    if (!gameListModal) return;
+    gameListModal.classList.remove(MODAL_OPEN_CLASS);
+    currentGameListKey = null;
+  }
+
+  window.openGameListNewModal = openGameListNewModal;
+  window.closeGameListModal   = closeGameListModalInternal;
+
+  if (gameListModalSaveBtn) {
+    gameListModalSaveBtn.addEventListener("click", () => {
+      const gameName = (gameListNameInput?.value || "").trim();
+      const imageUrl = (gameListImageInput?.value || "").trim();
+      const playUrl  = (gameListPlayInput?.value || "").trim();
+
+      if (!gameName) { alert("Isi nama game dulu bro."); gameListNameInput?.focus(); return; }
+      if (!imageUrl) { alert("Isi URL gambar dulu bro."); gameListImageInput?.focus(); return; }
+      if (!playUrl)  { alert("Isi link PlayNow dulu bro."); gameListPlayInput?.focus(); return; }
+
+      if (!isValidUrl(imageUrl)) { alert("URL gambar tak valid bro. Pastikan ada https://"); return; }
+      if (!isValidUrl(playUrl))  { alert("Link PlayNow tak valid bro. Pastikan ada https://"); return; }
+
+      const payload = {
+        gameName,
+        imageUrl,
+        playUrl,
+        enabled: true,
+        updatedAt: firebase.database.ServerValue.TIMESTAMP,
+      };
+
+      const op = currentGameListKey
+        ? gameListRef.child(currentGameListKey).update(payload)
+        : gameListRef.push().set(payload);
+
+      op.then(() => {
+        alert("Game list berjaya disimpan ✅");
+        closeGameListModalInternal();
+      }).catch((err) => {
+        console.error("Gagal simpan game list:", err);
+        alert("Gagal simpan game list. Cek console.");
+      });
+    });
+  }
+
+  function renderGameListAdmin(snapshot){
+    if (!gameListAdminListEl) return;
+
+    const data = snapshot.val() || {};
+    gameListAdminListEl.innerHTML = "";
+
+    const entries = Object.entries(data);
+    if (!entries.length) {
+      gameListAdminListEl.innerHTML =
+        '<p class="text-muted small">Belum ada game list. Tekan "Tambah Game".</p>';
+      return;
+    }
+
+    entries.forEach(([key, g]) => {
+      const gameName = g?.gameName || "(No name)";
+      const imageUrl = g?.imageUrl || "";
+      const playUrl  = g?.playUrl  || "";
+
+      const item = document.createElement("div");
+      item.className = "admin-card-item";
+
+      const thumbWrap = document.createElement("div");
+      thumbWrap.style.display = "flex";
+      thumbWrap.style.alignItems = "center";
+
+      const thumb = document.createElement("img");
+      thumb.src = imageUrl || "https://i.imgur.com/AM4LUPK.png";
+      thumb.alt = gameName;
+      thumb.style.maxWidth = "140px";
+      thumb.style.borderRadius = "10px";
+      thumb.style.objectFit = "cover";
+      thumbWrap.appendChild(thumb);
+
+      const info = document.createElement("div");
+      info.className = "admin-card-info";
+
+      const titleEl = document.createElement("div");
+      titleEl.className = "admin-card-title";
+      titleEl.textContent = gameName;
+
+      const sub = document.createElement("div");
+      sub.className = "admin-card-sub";
+      sub.textContent = `PlayNow: ${playUrl || "-"}`;
+
+      info.appendChild(titleEl);
+      info.appendChild(sub);
+
+      const controls = document.createElement("div");
+      controls.className = "switch-wrap";
+
+      const activeLabel = document.createElement("span");
+      activeLabel.className = "switch-label";
+      activeLabel.textContent = "Aktif";
+
+      const toggle = document.createElement("input");
+      toggle.type = "checkbox";
+      toggle.className = "toggle";
+      toggle.checked = g?.enabled !== false;
+      toggle.addEventListener("change", () => {
+        gameListRef.child(key).update({ enabled: toggle.checked });
+      });
+
+      const editBtn = document.createElement("button");
+      editBtn.className = "btn secondary";
+      editBtn.style.fontSize = "0.7rem";
+      editBtn.textContent = "Edit";
+      editBtn.addEventListener("click", () => openGameListEditModal(key, g || {}));
+
+      const delBtn = document.createElement("button");
+      delBtn.className = "btn secondary";
+      delBtn.style.fontSize = "0.7rem";
+      delBtn.textContent = "Delete";
+      delBtn.addEventListener("click", () => {
+        if (confirm(`Hapus game "${gameName}"?`)) {
+          gameListRef.child(key).remove();
+        }
+      });
+
+      controls.appendChild(activeLabel);
+      controls.appendChild(toggle);
+      controls.appendChild(editBtn);
+      controls.appendChild(delBtn);
+
+      item.appendChild(thumbWrap);
+      item.appendChild(info);
+      item.appendChild(controls);
+
+      gameListAdminListEl.appendChild(item);
+    });
+  }
+
+  if (gameListAdminListEl) {
+    gameListRef.on("value", renderGameListAdmin);
+  }
+
+  // ==================================================
   // ============  PROMO BANNER / FREE CREDIT =========
   // ==================================================
-
   function resetPromoForm() {
     if (!promoTitleInput || !promoCaptionInput || !promoImageInput || !promoTargetInput) return;
     promoTitleInput.value   = "";
@@ -517,10 +675,7 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Gagal update promo. Cek console.");
           });
       } else {
-        promosRef.push().set({
-          ...payload,
-          enabled: true
-        })
+        promosRef.push().set({ ...payload, enabled: true })
           .then(() => {
             alert("Promo banner berjaya disimpan.");
             closePromoModalInternal();
@@ -540,7 +695,6 @@ document.addEventListener("DOMContentLoaded", () => {
     promoListEl.innerHTML = "";
 
     const entries = Object.entries(data);
-
     if (!entries.length) {
       promoListEl.innerHTML =
         '<p class="text-muted small">Belum ada banner. Tekan "Tambah Banner".</p>';
