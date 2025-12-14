@@ -842,3 +842,19 @@ input[type="checkbox"].toggle:checked::before{
   max-height: 280px;   /* kira-kira 4 item */
   overflow-y: auto;
 }
+/* ===== MODAL INPUT ENHANCE ===== */
+.modal-dialog .form-label{
+  font-size:0.82rem;
+  letter-spacing:0.06em;
+  text-transform:none;
+}
+
+.modal-dialog input[type="text"],
+.modal-dialog input[type="url"],
+.modal-dialog input[type="number"]{
+  border-color: rgba(56,189,248,.25); /* bagi vibe biru */
+}
+
+.modal-dialog input:focus{
+  border-color: var(--accent);
+}
