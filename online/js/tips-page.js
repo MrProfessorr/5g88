@@ -227,7 +227,8 @@ function updateBottomNavActive(tab) {
       const tab = btn.dataset.tab;
       if (!tab) return; // skip SHARE
 
-      if (btn.style.display === "none") return;
+      const isSidebarOnly = btn.dataset.sidebarOnly === "true";
+      if (btn.style.display === "none" && !isSidebarOnly) return;
 
       const label = btn.querySelector(".bottom-nav-label")?.textContent?.trim() || tab.toUpperCase();
       const iconSrc = btn.querySelector("img")?.getAttribute("src") || "";
