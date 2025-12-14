@@ -1312,8 +1312,11 @@ body.page-user{
   color: #e5e7eb;
   border:none;
   cursor: pointer;
+  background:transparent
 }
-
+.share-close:hover{
+  font-weight:700;
+}
 .share-grid{
   display:grid;
   grid-template-columns: repeat(3, minmax(0,1fr));
