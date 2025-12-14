@@ -1529,11 +1529,18 @@ body.page-user{
   overflow:hidden;
   text-overflow:ellipsis;
 }
-
+.game-title-row{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
 .game-rtp{
   font-size:.80rem;
   font-weight:900;
   color:#22c55e;
+  white-space:nowrap;
+
 }
 .game-rtp.is-mid{ color:#f59e0b; }
 .game-rtp.is-low{ color:#fb7185; }
