@@ -181,11 +181,13 @@
       <span class="bottom-nav-label">HOT GAME</span>
     </button>
 
-        <!-- ✅ GAME LIST (TAB BARU) -->
-    <button class="bottom-nav-item" data-tab="gamelist" onclick="handleBottomNavClick('gamelist')">
-      <img src="https://i.imgur.com/8yKxk9P.png" alt="Game List" class="bottom-nav-icon">
-      <span class="bottom-nav-label">GAME LIST</span>
-    </button>
+<button class="bottom-nav-item"
+        data-tab="gamelist"
+        data-sidebar-only="true"
+        onclick="handleBottomNavClick('gamelist')">
+  <img src="https://i.imgur.com/8yKxk9P.png" class="bottom-nav-icon">
+  <span class="bottom-nav-label">GAME LIST</span>
+</button>
     
     <!-- ✅ SHARE (BUKAN TAB) -->
     <button class="bottom-nav-item" type="button" onclick="openShareSheet()">
