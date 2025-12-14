@@ -485,7 +485,10 @@ function updateBottomNavActive(tab) {
       // meta
       const meta = document.createElement("div");
       meta.className = "game-meta";
-
+      
+      const titleRow = document.createElement("div");
+      titleRow.className = "game-title-row";
+      
       const title = document.createElement("span");
       title.className = "game-title";
       title.textContent = name;
