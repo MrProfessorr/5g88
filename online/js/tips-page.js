@@ -357,7 +357,80 @@ function updateBottomNavActive(tab) {
   const GAME_RTP_KEY = "gameListRtpMap.v1";
   const GAME_RTP_TS  = "gameListRtpTs.v1";
   const RTP_INTERVAL_MS = 10 * 60 * 1000;
+ // =========================
+// ✅ PLAYED COUNTER SYSTEM
+// =========================
+const PLAYED_KEY    = "gameListPlayedMap.v1";
+const PLAYED_DAYKEY = "gameListPlayedDay.v1";
 
+function todayKey(){
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,"0");
+  const day = String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+
+function resetPlayedIfNewDay(){
+  const t = todayKey();
+  let prev = "";
+  try { prev = localStorage.getItem(PLAYED_DAYKEY) || ""; } catch(e){}
+  if (prev !== t){
+    try { localStorage.setItem(PLAYED_DAYKEY, t); } catch(e){}
+    try { localStorage.setItem(PLAYED_KEY, JSON.stringify({})); } catch(e){}
+  }
+}
+
+function readPlayedMap(){
+  try { return JSON.parse(localStorage.getItem(PLAYED_KEY) || "{}") || {}; }
+  catch(e){ return {}; }
+}
+
+function savePlayedMap(map){
+  try { localStorage.setItem(PLAYED_KEY, JSON.stringify(map || {})); } catch(e){}
+}
+
+function getMaxPlayed(g){
+  const raw = Number(g?.playedMax ?? g?.maxPlayed ?? 398);
+  const max = (Number.isFinite(raw) && raw > 1) ? Math.floor(raw) : 398;
+  return max;
+}
+
+// tick sekali: naik/turun 1..5, clamp 0..(max-1)
+function tickPlayed(entries){
+  resetPlayedIfNewDay();
+  const map = readPlayedMap();
+
+  (entries || []).forEach(g=>{
+    const key = g.key;
+    const max = getMaxPlayed(g);
+    const upper = Math.max(0, max - 1); // ✅ tak boleh sampai max
+
+    let val = Number(map[key] ?? 0);
+    if (!Number.isFinite(val)) val = 0;
+
+    const step = Math.floor(Math.random()*5) + 1; // 1..5
+    const dir  = Math.random() < 0.5 ? -1 : 1;
+    val = val + (step * dir);
+
+    if (val < 0) val = 0;
+    if (val > upper) val = upper;
+
+    map[key] = val;
+  });
+
+  savePlayedMap(map);
+  return map;
+}
+
+// update DOM tanpa rerender semua
+function paintPlayedToDom(map){
+  document.querySelectorAll(".game-card[data-key]").forEach(card=>{
+    const k = card.getAttribute("data-key");
+    const numEl = card.querySelector(".game-played .played-num");
+    if (numEl && map && (k in map)) numEl.textContent = String(map[k]);
+  });
+}
   function randRtp() {
     const v = 89 + Math.random() * (98 - 89);
     return Math.round(v * 10) / 10;
@@ -436,6 +509,10 @@ function updateBottomNavActive(tab) {
       .map(([key, g]) => ({ key, ...(g || {}) }))
       .filter(g => g && g.enabled !== false);
 
+      resetPlayedIfNewDay();
+      window.__gameListEntries = entries;           // simpan utk ticker
+      const playedMap = readPlayedMap();  
+    
     if (!entries.length) {
       gameListGrid.innerHTML = '<p class="text-muted small">Belum ada game list. Admin boleh tambah dari panel.</p>';
       return;
@@ -457,7 +534,7 @@ function updateBottomNavActive(tab) {
 
       const card = document.createElement("article");
       card.className = "game-card"; // CSS bro buat grid 5 per row
-
+      card.setAttribute("data-key", g.key);
       // image wrap
       const imgWrap = document.createElement("div");
       imgWrap.className = "game-img-wrap";
@@ -500,7 +577,23 @@ function updateBottomNavActive(tab) {
 
       titleRow.appendChild(title);
       titleRow.appendChild(percent);
+
+      // ===== Played row (baru) =====
+      const playedRow = document.createElement("div");
+      playedRow.className = "game-played";
+
+      const playedLabel = document.createElement("span");
+      playedLabel.textContent = "Played :";
+
+      const playedNum = document.createElement("span");
+      playedNum.className = "played-num";
+      playedNum.textContent = String(Number(playedMap[g.key] ?? 0) || 0);
+
+      playedRow.appendChild(playedLabel);
+      playedRow.appendChild(playedNum);
+
       meta.appendChild(titleRow);
+      meta.appendChild(playedRow);
       meta.appendChild(btn);
 
       card.appendChild(imgWrap);
@@ -519,6 +612,14 @@ function updateBottomNavActive(tab) {
       // start ticker once
       startRtpTicker(() => renderGameList(lastGameListData));
     });
+    // ✅ Played ticker every 1 minute (only once)
+if (!window.__playedTimer) {
+  window.__playedTimer = setInterval(() => {
+    const entries = window.__gameListEntries || [];
+    const map = tickPlayed(entries);
+    paintPlayedToDom(map);
+  }, 60 * 1000);
+}
   } else {
     markLoaded("gamelist");
   }
