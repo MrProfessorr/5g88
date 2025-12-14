@@ -24,7 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function hideLoading() {
-    // ✅ reset appShell dulu (paling penting!)
     if (appShellEl) {
       appShellEl.style.transition = "opacity .35s ease, filter .35s ease";
       appShellEl.style.opacity = "1";
@@ -37,11 +36,10 @@ document.addEventListener("DOMContentLoaded", () => {
       loaderEl.style.opacity = "0";
       loaderEl.style.pointerEvents = "none";
 
-      // ✅ pakai class hide supaya backdrop-filter tak tinggal
       setTimeout(() => {
         loaderEl.classList.add("is-hide");
         loaderEl.style.display = "none";
-        loaderEl.style.opacity = "1"; // reset utk next showLoading
+        loaderEl.style.opacity = "1";
       }, 350);
     }
   }
@@ -56,31 +54,35 @@ document.addEventListener("DOMContentLoaded", () => {
   const promoBigGridEl = document.getElementById("promoBigGrid");
   const partnerGridEl  = document.getElementById("partnerGrid");
 
-  const homePage    = document.getElementById("homePage");
-  const hotGamePage = document.getElementById("hotGamePage");
-  const promoPage   = document.getElementById("promoPage");
-  const partnerPage = document.getElementById("partnerPage");
+  const homePage     = document.getElementById("homePage");
+  const hotGamePage  = document.getElementById("hotGamePage");
+  const gameListPage = document.getElementById("gameListPage");     // ✅ NEW
+  const gameListGrid = document.getElementById("gameListGrid");     // ✅ NEW
+  const promoPage    = document.getElementById("promoPage");
+  const partnerPage  = document.getElementById("partnerPage");
 
   // ✅ Hindari flash
-  if (homePage)    homePage.style.display    = "none";
-  if (hotGamePage) hotGamePage.style.display = "none";
-  if (promoPage)   promoPage.style.display   = "none";
-  if (partnerPage) partnerPage.style.display = "none";
+  if (homePage)     homePage.style.display     = "none";
+  if (hotGamePage)  hotGamePage.style.display  = "none";
+  if (gameListPage) gameListPage.style.display = "none";
+  if (promoPage)    promoPage.style.display    = "none";
+  if (partnerPage)  partnerPage.style.display  = "none";
 
   // =========================
   // BOTTOM NAV
   // =========================
-  const bottomNavItems   = document.querySelectorAll(".bottom-nav-item");
-  const bottomHomeBtn    = document.querySelector('.bottom-nav-item[data-tab="home"]');
-  const bottomHotBtn     = document.querySelector('.bottom-nav-item[data-tab="hot"]');
-  const bottomPromoBtn   = document.querySelector('.bottom-nav-item[data-tab="promo"]');
-  const bottomPartnerBtn = document.querySelector('.bottom-nav-item[data-tab="partner"]');
+  const bottomNavItems     = document.querySelectorAll(".bottom-nav-item");
+  const bottomHomeBtn      = document.querySelector('.bottom-nav-item[data-tab="home"]');
+  const bottomHotBtn       = document.querySelector('.bottom-nav-item[data-tab="hot"]');
+  const bottomGameListBtn  = document.querySelector('.bottom-nav-item[data-tab="gamelist"]'); // ✅ NEW
+  const bottomPromoBtn     = document.querySelector('.bottom-nav-item[data-tab="promo"]');
+  const bottomPartnerBtn   = document.querySelector('.bottom-nav-item[data-tab="partner"]');
 
   function updateBottomNavActive(tab) {
     if (!bottomNavItems || !bottomNavItems.length) return;
     bottomNavItems.forEach(btn => {
       const t = btn.dataset.tab;
-      // ✅ SHARE button biasanya tak ada data-tab → jangan kacau active
+      // SHARE button biasanya tak ada data-tab
       if (!t) return;
       btn.classList.toggle("active", t === tab);
     });
@@ -153,14 +155,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   try {
     const saved = localStorage.getItem(TAB_KEY);
-    if (["home","hot","promo","partner"].includes(saved)) currentTab = saved;
+    if (["home","hot","gamelist","promo","partner"].includes(saved)) currentTab = saved; // ✅ NEW
   } catch (e) {}
 
   // config dari Firebase
-  let navConfig = { home: true, hot: true, promo: true, partner: true };
+  let navConfig = { home: true, hot: true, gamelist: true, promo: true, partner: true }; // ✅ NEW
 
   function getFirstEnabledTab() {
-    const order = ["home","hot","promo","partner"];
+    const order = ["home","hot","gamelist","promo","partner"]; // ✅ NEW
     return order.find(t => navConfig[t]) || "home";
   }
 
@@ -175,13 +177,16 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!navConfig[tab]) tab = getFirstEnabledTab();
     currentTab = tab;
 
-    if (homePage)    homePage.style.display    = "none";
-    if (hotGamePage) hotGamePage.style.display = "none";
-    if (promoPage)   promoPage.style.display   = "none";
-    if (partnerPage) partnerPage.style.display = "none";
+    if (homePage)     homePage.style.display     = "none";
+    if (hotGamePage)  hotGamePage.style.display  = "none";
+    if (gameListPage) gameListPage.style.display = "none";
+    if (promoPage)    promoPage.style.display    = "none";
+    if (partnerPage)  partnerPage.style.display  = "none";
 
     if (tab === "hot" && hotGamePage && navConfig.hot) {
       hotGamePage.style.display = "block";
+    } else if (tab === "gamelist" && gameListPage && navConfig.gamelist) {
+      gameListPage.style.display = "block";
     } else if (tab === "promo" && promoPage && navConfig.promo) {
       promoPage.style.display = "block";
     } else if (tab === "partner" && partnerPage && navConfig.partner) {
@@ -204,6 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // fallback
   window.showHome        = () => setActiveTab("home");
   window.showHotGame     = () => setActiveTab("hot");
+  window.showGameList    = () => setActiveTab("gamelist"); // ✅ NEW
   window.showPromotion   = () => setActiveTab("promo");
   window.showPartner     = () => setActiveTab("partner");
   window.showPartnership = window.showPartner;
@@ -215,9 +221,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const bottomButtons = document.querySelectorAll(".bottom-nav-item");
 
     bottomButtons.forEach((btn) => {
-      // ✅ skip jika button bukan tab (contoh SHARE)
       const tab = btn.dataset.tab;
-      if (!tab) return;
+      if (!tab) return; // skip SHARE
 
       if (btn.style.display === "none") return;
 
@@ -281,6 +286,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const navTabsRef   = db.ref("nav_tabs");
   const floatingRef  = db.ref("floating_buttons");
 
+  // ✅ NEW: Game list admin path
+  const gameListRef  = db.ref("game_list");
+
   // =========================
   // ✅ LOADING WAIT FIREBASE (first data)
   // =========================
@@ -293,7 +301,8 @@ document.addEventListener("DOMContentLoaded", () => {
     promos: false,
     promoBig: false,
     partners: false,
-    cards: !gridEl
+    cards: !gridEl,
+    gamelist: !gameListGrid // ✅ NEW
   };
 
   function markLoaded(k) {
@@ -313,13 +322,14 @@ document.addEventListener("DOMContentLoaded", () => {
   // NAV CONFIG
   // =========================
   function applyNavConfig(cfgRaw) {
-    const defaults = { home:true, hot:true, promo:true, partner:true };
+    const defaults = { home:true, hot:true, gamelist:true, promo:true, partner:true }; // ✅ NEW
     navConfig = { ...defaults, ...(cfgRaw || {}) };
 
-    if (bottomHomeBtn)    bottomHomeBtn.style.display    = navConfig.home    ? "" : "none";
-    if (bottomHotBtn)     bottomHotBtn.style.display     = navConfig.hot     ? "" : "none";
-    if (bottomPromoBtn)   bottomPromoBtn.style.display   = navConfig.promo   ? "" : "none";
-    if (bottomPartnerBtn) bottomPartnerBtn.style.display = navConfig.partner ? "" : "none";
+    if (bottomHomeBtn)     bottomHomeBtn.style.display     = navConfig.home     ? "" : "none";
+    if (bottomHotBtn)      bottomHotBtn.style.display      = navConfig.hot      ? "" : "none";
+    if (bottomGameListBtn) bottomGameListBtn.style.display = navConfig.gamelist ? "" : "none"; // ✅ NEW
+    if (bottomPromoBtn)    bottomPromoBtn.style.display    = navConfig.promo    ? "" : "none";
+    if (bottomPartnerBtn)  bottomPartnerBtn.style.display  = navConfig.partner  ? "" : "none";
 
     setActiveTab(currentTab);
     buildSidebarItems();
@@ -331,6 +341,180 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   buildSidebarItems();
+
+  // =========================
+  // ✅ GAME LIST (RTP AUTO RANDOM + HOT)
+  // =========================
+  // Rules:
+  // - admin input: imageUrl, gameName, playUrl, enabled
+  // - RTP random 70.0 - 98.0
+  // - update setiap 10 menit (600000ms)
+  // - HOT jika > 95.0
+  const GAME_RTP_KEY = "gameListRtpMap.v1";
+  const GAME_RTP_TS  = "gameListRtpTs.v1";
+  const RTP_INTERVAL_MS = 10 * 60 * 1000;
+
+  function randRtp() {
+    // 70.0 - 98.0 (1 decimal)
+    const v = 70 + Math.random() * (98 - 70);
+    return Math.round(v * 10) / 10;
+  }
+
+  function safeJsonParse(s, fallback) {
+    try { return JSON.parse(s) ?? fallback; } catch(e) { return fallback; }
+  }
+
+  function getRtpMap() {
+    let map = {};
+    try { map = safeJsonParse(localStorage.getItem(GAME_RTP_KEY), {}) || {}; } catch(e) {}
+    return map;
+  }
+
+  function setRtpMap(map) {
+    try { localStorage.setItem(GAME_RTP_KEY, JSON.stringify(map || {})); } catch(e) {}
+  }
+
+  function getLastRtpTs() {
+    try { return Number(localStorage.getItem(GAME_RTP_TS) || 0) || 0; } catch(e) { return 0; }
+  }
+
+  function setLastRtpTs(ts) {
+    try { localStorage.setItem(GAME_RTP_TS, String(ts || Date.now())); } catch(e) {}
+  }
+
+  function ensureRtpFresh(gameKeys) {
+    const now = Date.now();
+    const last = getLastRtpTs();
+    let map = getRtpMap();
+
+    const needRotate = (!last) || (now - last >= RTP_INTERVAL_MS);
+
+    // remove keys yang sudah tak ada
+    const keep = new Set(gameKeys || []);
+    Object.keys(map).forEach(k => { if (!keep.has(k)) delete map[k]; });
+
+    if (needRotate) {
+      // regen semua rtp untuk semua game key yang aktif
+      (gameKeys || []).forEach(k => { map[k] = randRtp(); });
+      setLastRtpTs(now);
+      setRtpMap(map);
+    } else {
+      // pastikan setiap game ada value
+      (gameKeys || []).forEach(k => {
+        if (typeof map[k] !== "number") map[k] = randRtp();
+      });
+      setRtpMap(map);
+    }
+
+    return map;
+  }
+
+  // optional: live timer re-render setiap 10 menit tanpa reload
+  let rtpTickerTimer = null;
+  function startRtpTicker(renderFn) {
+    if (rtpTickerTimer) clearInterval(rtpTickerTimer);
+    rtpTickerTimer = setInterval(() => {
+      // trigger rotate + re-render
+      const rawKeys = (window.__gameListKeys || []);
+      ensureRtpFresh(rawKeys);
+      if (typeof renderFn === "function") renderFn();
+    }, 15 * 1000); // check tiap 15s, rotate hanya bila cukup 10 minit
+  }
+
+  let lastGameListData = null;
+
+  function renderGameList(dataObj) {
+    if (!gameListGrid) return;
+
+    const data = dataObj || {};
+    gameListGrid.innerHTML = "";
+
+    const entries = Object.entries(data)
+      .map(([key, g]) => ({ key, ...(g || {}) }))
+      .filter(g => g && g.enabled !== false);
+
+    if (!entries.length) {
+      gameListGrid.innerHTML = '<p class="text-muted small">Belum ada game list. Admin boleh tambah dari panel.</p>';
+      return;
+    }
+
+    // save keys global utk ticker
+    window.__gameListKeys = entries.map(e => e.key);
+
+    // ensure rtp map
+    const rtpMap = ensureRtpFresh(window.__gameListKeys);
+
+    entries.forEach((g) => {
+      const imgUrl  = g.imageUrl || g.imgUrl || g.image || "";
+      const name    = g.gameName || g.name || "Game";
+      const playUrl = g.playUrl  || g.joinUrl || g.link || "#";
+
+      const rtp = Number(rtpMap[g.key] ?? randRtp());
+      const isHot = rtp > 95;
+
+      const card = document.createElement("article");
+      card.className = "game-card"; // CSS bro buat grid 5 per row
+
+      // image wrap
+      const imgWrap = document.createElement("div");
+      imgWrap.className = "game-img-wrap";
+
+      if (isHot) {
+        const hot = document.createElement("div");
+        hot.className = "game-hot-badge";
+        hot.innerHTML = `<span class="hot">HOT</span><span class="rtp">RTP ${rtp.toFixed(1)}%</span>`;
+        imgWrap.appendChild(hot);
+      }
+
+      const img = document.createElement("img");
+      img.className = "game-img";
+      img.loading = "lazy";
+      img.alt = name;
+      img.src = imgUrl || "https://i.imgur.com/AM4LUPK.png";
+      imgWrap.appendChild(img);
+
+      // meta
+      const meta = document.createElement("div");
+      meta.className = "game-meta";
+
+      const title = document.createElement("div");
+      title.className = "game-title";
+      title.textContent = name;
+
+      const percent = document.createElement("div");
+      percent.className = "game-rtp";
+      percent.textContent = `${rtp.toFixed(1)}%`;
+
+      const btn = document.createElement("a");
+      btn.className = "game-play-btn";
+      btn.href = playUrl;
+      btn.target = "_blank";
+      btn.rel = "noopener noreferrer";
+      btn.textContent = "Play Now";
+
+      meta.appendChild(title);
+      meta.appendChild(percent);
+      meta.appendChild(btn);
+
+      card.appendChild(imgWrap);
+      card.appendChild(meta);
+
+      gameListGrid.appendChild(card);
+    });
+  }
+
+  if (gameListGrid) {
+    gameListRef.on("value", (snap) => {
+      lastGameListData = snap.val() || {};
+      renderGameList(lastGameListData);
+      markLoaded("gamelist");
+
+      // start ticker once
+      startRtpTicker(() => renderGameList(lastGameListData));
+    });
+  } else {
+    markLoaded("gamelist");
+  }
 
   // =========================
   // FLOATING BUTTONS
@@ -878,12 +1062,6 @@ document.addEventListener("DOMContentLoaded", () => {
         window.open(`https://t.me/share/url?url=${url}&text=${text}`, "_blank");
       } else if (type === "facebook") {
         window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, "_blank");
-      } else if (type === "tiktok") {
-        await window.copyShareLink();
-        window.open("https://www.tiktok.com/", "_blank");
-      } else if (type === "instagram") {
-        await window.copyShareLink();
-        window.open("https://www.instagram.com/", "_blank");
       } else if (type === "copy") {
         await window.copyShareLink();
       }
@@ -893,6 +1071,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 }); // DOMContentLoaded END
+
 
 // =========================
 // BACK TO TOP BUTTON (global)
