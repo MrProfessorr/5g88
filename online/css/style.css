@@ -1357,7 +1357,7 @@ body.page-user{
 .share-copy-btn{
   padding: 10px 15px;
   border-radius: 999px;
-  border: 1px solid rgba(30,
+  border: 1px solid rgba(30, 64, 175, 0.8);
   background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), #020617);
   color: rgba(30, 64, 175, 0.8);
   cursor:pointer;
