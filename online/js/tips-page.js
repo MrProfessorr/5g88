@@ -78,15 +78,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const bottomPromoBtn     = document.querySelector('.bottom-nav-item[data-tab="promo"]');
   const bottomPartnerBtn   = document.querySelector('.bottom-nav-item[data-tab="partner"]');
 
-  function updateBottomNavActive(tab) {
-    if (!bottomNavItems || !bottomNavItems.length) return;
-    bottomNavItems.forEach(btn => {
-      const t = btn.dataset.tab;
-      // SHARE button biasanya tak ada data-tab
-      if (!t) return;
-      btn.classList.toggle("active", t === tab);
-    });
-  }
+function updateBottomNavActive(tab) {
+  if (!bottomNavItems || !bottomNavItems.length) return;
+  bottomNavItems.forEach(btn => {
+    const t = btn.dataset.tab;
+
+    // ✅ SKIP sidebar-only (GAME LIST)
+    if (btn.dataset.sidebarOnly === "true") return;
+    if (!t) return;
+
+    btn.classList.toggle("active", t === tab);
+  });
+}
 
   // =========================
   // RATE GAME TIME
