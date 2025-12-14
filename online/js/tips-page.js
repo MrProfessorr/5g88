@@ -354,18 +354,12 @@ function updateBottomNavActive(tab) {
   // =========================
   // ✅ GAME LIST (RTP AUTO RANDOM + HOT)
   // =========================
-  // Rules:
-  // - admin input: imageUrl, gameName, playUrl, enabled
-  // - RTP random 70.0 - 98.0
-  // - update setiap 10 menit (600000ms)
-  // - HOT jika > 95.0
   const GAME_RTP_KEY = "gameListRtpMap.v1";
   const GAME_RTP_TS  = "gameListRtpTs.v1";
   const RTP_INTERVAL_MS = 10 * 60 * 1000;
 
   function randRtp() {
-    // 70.0 - 98.0 (1 decimal)
-    const v = 80 + Math.random() * (98 - 80);
+    const v = 89 + Math.random() * (98 - 89);
     return Math.round(v * 10) / 10;
   }
 
