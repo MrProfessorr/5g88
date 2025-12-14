@@ -491,10 +491,6 @@ function updateBottomNavActive(tab) {
       percent.className = "game-rtp";
       percent.textContent = `${rtp.toFixed(1)}%`;
 
-// warna ikut rtp (optional, tak kacau lain)
-      if (rtp < 85) percent.classList.add("is-low");
-      else if (rtp < 95) percent.classList.add("is-mid");
-
       const btn = document.createElement("a");
       btn.className = "game-play-btn";
       btn.href = playUrl;
