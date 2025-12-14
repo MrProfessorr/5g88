@@ -1473,20 +1473,15 @@ body.page-user{
 .game-hot-badge,
 .game-badge-hot{
   position:absolute;
-  top:10px;
-  left:10px;
+  top:3px;
+  left:3px;
   z-index:3;
 
   display:flex;
   align-items:center;
   gap:8px;
-
-  padding:6px 10px;
-  border-radius:999px;
-
-  background:rgba(0,0,0,.55);
-  border:1px solid rgba(255,255,255,.15);
-  backdrop-filter: blur(6px);
+  border:none;
+  background:transparent;
 }
 
 /* Bila badge hanya text "HOT" (old usage) */
