@@ -1402,53 +1402,138 @@ body.page-user{
   object-fit: contain;
   display:block;
 }
-/* ===== GAME LIST ===== */
+/* =========================
+   GAME LIST GRID (ONLINE)
+========================= */
 .game-list-grid{
   display:grid;
   grid-template-columns:repeat(5, 1fr);
   gap:14px;
-  padding:12px 0 90px;
+  margin-top:14px;
 }
-@media(max-width:1200px){ .game-list-grid{ grid-template-columns:repeat(4,1fr); } }
-@media(max-width:900px){  .game-list-grid{ grid-template-columns:repeat(3,1fr); } }
-@media(max-width:600px){  .game-list-grid{ grid-template-columns:repeat(2,1fr); } }
 
+/* =========================
+   GAME CARD
+========================= */
 .game-card{
   position:relative;
-  background:#020617;
-  border:2px solid #facc15;
-  border-radius:14px;
+  background:linear-gradient(180deg,#0b1220,#070b16);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;
   overflow:hidden;
-  box-shadow:0 0 18px rgba(250,204,21,.18);
-}
-.game-img{ width:100%; display:block; aspect-ratio:3/4; object-fit:cover; }
-
-.game-hot{
-  position:absolute; top:8px; left:8px;
-  display:flex; gap:6px; align-items:center;
-  background:#ef4444; color:#fff;
-  font-weight:900; font-size:12px;
-  padding:4px 8px; border-radius:8px;
-}
-.game-hot small{
-  background:#0ea5e9;
-  padding:2px 6px;
-  border-radius:999px;
-  font-weight:900;
+  box-shadow:0 10px 26px rgba(0,0,0,.45);
+  transition:transform .18s ease, box-shadow .18s ease;
 }
 
-.game-info{ padding:10px; text-align:center; }
-.game-name{ font-weight:900; color:#e5e7eb; }
-.game-rtp{ margin-top:4px; font-size:13px; color:#22c55e; font-weight:800; }
+.game-card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 14px 34px rgba(0,0,0,.55);
+}
 
-.game-play{
-  margin-top:8px;
+/* =========================
+   IMAGE WRAP + IMAGE
+========================= */
+.game-img-wrap{
   width:100%;
-  padding:9px;
-  border:none;
-  border-radius:10px;
-  background:#facc15;
-  font-weight:900;
-  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+  background:#050816;
 }
-.game-play:active{ transform:scale(.98); }
+
+.game-img-wrap img{
+  width:100%;
+  height:auto;
+  aspect-ratio: 1 / 1; /* kekal square */
+  object-fit:cover;
+  display:block;
+  transform:scale(1);
+  transition:transform .25s ease;
+}
+
+.game-card:hover .game-img-wrap img{
+  transform:scale(1.03);
+}
+
+/* Optional: badge HOT kalau kau guna */
+.game-badge-hot{
+  position:absolute;
+  top:10px;
+  left:10px;
+  padding:5px 10px;
+  border-radius:999px;
+  font-size:.72rem;
+  font-weight:900;
+  letter-spacing:.3px;
+  color:#fff;
+  background:linear-gradient(135deg,#ff0033,#ff9f0a);
+  box-shadow:0 8px 16px rgba(255,0,0,.35);
+  z-index:2;
+}
+
+/* =========================
+   BODY TEXT
+========================= */
+.game-meta{
+  padding:10px 10px 12px;
+  text-align:center;
+}
+
+.game-title{
+  font-weight:800;
+  font-size:.9rem;
+  color:#e5e7eb;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.game-rtp{
+  margin-top:4px;
+  font-size:.78rem;
+  font-weight:800;
+  color:#22c55e; /* hijau */
+}
+
+/* kalau nak rtp merah/oren ikut value, boleh letak class lain nanti */
+.game-rtp.is-mid{ color:#f59e0b; }  /* oren */
+.game-rtp.is-low{ color:#fb7185; }  /* merah */
+
+/* =========================
+   PLAY BUTTON
+========================= */
+.game-play-btn{
+  margin-top:10px;
+  width:100%;
+  border:0;
+  border-radius:12px;
+  padding:9px 10px;
+  cursor:pointer;
+  font-weight:900;
+  font-size:.78rem;
+  color:#000;
+  background:linear-gradient(135deg,#facc15,#f59e0b);
+  box-shadow:0 10px 16px rgba(250,204,21,.14);
+  transition:filter .18s ease, transform .18s ease;
+}
+
+.game-play-btn:hover{
+  filter:brightness(1.05);
+  transform:translateY(-1px);
+}
+
+.game-play-btn:active{
+  transform:translateY(0px);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width:1100px){
+  .game-list-grid{ grid-template-columns:repeat(4,1fr); }
+}
+@media (max-width:900px){
+  .game-list-grid{ grid-template-columns:repeat(3,1fr); }
+}
+@media (max-width:600px){
+  .game-list-grid{ grid-template-columns:repeat(2,1fr); }
+}
