@@ -365,7 +365,7 @@ function updateBottomNavActive(tab) {
 
   function randRtp() {
     // 70.0 - 98.0 (1 decimal)
-    const v = 70 + Math.random() * (98 - 70);
+    const v = 80 + Math.random() * (98 - 80);
     return Math.round(v * 10) / 10;
   }
 
