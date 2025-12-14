@@ -1403,7 +1403,7 @@ body.page-user{
   display:block;
 }
 /* =========================
-   GAME LIST GRID (UPGRADE)
+   GAME LIST GRID (ONLINE) - UPGRADE
 ========================= */
 .game-list-grid{
   display:grid;
@@ -1413,46 +1413,46 @@ body.page-user{
 }
 
 /* =========================
-   GAME CARD (UPGRADE)
+   GAME CARD - UPGRADE
 ========================= */
 .game-card{
   position:relative;
   background:linear-gradient(180deg,#0b1220,#070b16);
-  border:1px solid rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.08);
   border-radius:16px;
   overflow:hidden;
   box-shadow:0 10px 26px rgba(0,0,0,.45);
-  transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  transition:transform .18s ease, box-shadow .18s ease;
 }
 
 .game-card:hover{
   transform:translateY(-2px);
   box-shadow:0 14px 34px rgba(0,0,0,.55);
-  border-color: rgba(250,204,21,.25);
 }
 
 /* =========================
-   IMAGE WRAP + IMAGE (FIX CROPPED)
+   IMAGE WRAP + IMAGE (FIX CROPPED) - UPGRADE
 ========================= */
 .game-img-wrap{
   width:100%;
   position:relative;
   overflow:hidden;
-  background: radial-gradient(circle at top, rgba(250,204,21,.08), transparent 55%),
-              linear-gradient(180deg,#050816,#040611);
-  /* ✅ bagi tinggi stabil supaya semua card sekata */
-  height:170px;
+  background:
+    radial-gradient(circle at top, rgba(250,204,21,.08), transparent 55%),
+    linear-gradient(180deg,#050816,#040611);
+
+  height:170px;                 /* card sekata */
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:10px;                 /* ✅ bagi ruang supaya logo tak rapat */
+  padding:10px;
 }
 
-/* ✅ Ini kunci: contain supaya gambar tak terpotong */
-.game-img-wrap img{
+.game-img-wrap img,
+.game-img{                       /* ✅ support class game-img juga */
   width:100%;
   height:100%;
-  object-fit:contain;           /* ✅ gambar penuh */
+  object-fit:contain;            /* ✅ tak terpotong */
   object-position:center;
   display:block;
   transform:scale(1);
@@ -1460,24 +1460,59 @@ body.page-user{
   filter: drop-shadow(0 12px 18px rgba(0,0,0,.35));
 }
 
-.game-card:hover .game-img-wrap img{
+.game-card:hover .game-img-wrap img,
+.game-card:hover .game-img{
   transform:scale(1.03);
 }
 
-/* Optional: badge HOT */
+/* =========================
+   HOT BADGE (FIX: support 2 class name)
+   - JS: .game-hot-badge
+   - Old CSS: .game-badge-hot
+========================= */
+.game-hot-badge,
 .game-badge-hot{
   position:absolute;
   top:10px;
   left:10px;
-  padding:5px 10px;
+  z-index:3;
+
+  display:flex;
+  align-items:center;
+  gap:8px;
+
+  padding:6px 10px;
   border-radius:999px;
-  font-size:.72rem;
-  font-weight:900;
-  letter-spacing:.3px;
+
+  background:rgba(0,0,0,.55);
+  border:1px solid rgba(255,255,255,.15);
+  backdrop-filter: blur(6px);
+}
+
+/* Bila badge hanya text "HOT" (old usage) */
+.game-badge-hot{
   color:#111827;
   background:linear-gradient(135deg,#facc15,#f59e0b);
-  box-shadow:0 10px 16px rgba(250,204,21,.18);
-  z-index:2;
+  border:0;
+}
+
+/* Bila badge pakai span .hot dan .rtp (JS usage) */
+.game-hot-badge .hot{
+  font-size:.70rem;
+  font-weight:900;
+  letter-spacing:.4px;
+  color:#fff;
+  padding:4px 8px;
+  border-radius:999px;
+  background:linear-gradient(135deg,#ff0033,#ff9f0a);
+  box-shadow:0 8px 16px rgba(255,0,0,.25);
+}
+
+.game-hot-badge .rtp{
+  font-size:.72rem;
+  font-weight:900;
+  color:#facc15;
+  white-space:nowrap;
 }
 
 /* =========================
@@ -1492,7 +1527,7 @@ body.page-user{
 }
 
 .game-title{
-  font-weight:600;
+  font-weight:700;
   font-size:.92rem;
   color:#e5e7eb;
   white-space:nowrap;
@@ -1520,6 +1555,11 @@ body.page-user{
   font-weight:900;
   font-size:.78rem;
   color:#111827;
+  text-decoration:none;          /* ✅ sebab kau guna <a> */
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
   background:linear-gradient(135deg,#facc15,#f59e0b);
   box-shadow:0 10px 16px rgba(250,204,21,.14);
   transition:filter .18s ease, transform .18s ease;
@@ -1533,12 +1573,16 @@ body.page-user{
 .game-play-btn:active{
   transform:translateY(0);
 }
-/* ✅ Confirm tak bagi GAME LIST muncul walaupun 1ms */
+
+/* =========================
+   HIDE sidebar-only button in bottom nav (NO FLASH)
+========================= */
 .bottom-nav .bottom-nav-item[data-sidebar-only="true"]{
   display:none !important;
   visibility:hidden !important;
   pointer-events:none !important;
 }
+
 /* =========================
    RESPONSIVE (UPGRADE)
 ========================= */
@@ -1546,12 +1590,10 @@ body.page-user{
   .game-list-grid{ grid-template-columns:repeat(4, minmax(0,1fr)); }
   .game-img-wrap{ height:165px; }
 }
-
 @media (max-width:900px){
   .game-list-grid{ grid-template-columns:repeat(3, minmax(0,1fr)); }
   .game-img-wrap{ height:160px; }
 }
-
 @media (max-width:600px){
   .game-list-grid{ grid-template-columns:repeat(2, minmax(0,1fr)); }
   .game-img-wrap{ height:150px; padding:8px; }
