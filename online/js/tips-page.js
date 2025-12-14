@@ -486,13 +486,17 @@ function updateBottomNavActive(tab) {
       const meta = document.createElement("div");
       meta.className = "game-meta";
 
-      const title = document.createElement("div");
+      const title = document.createElement("span");
       title.className = "game-title";
       title.textContent = name;
 
-      const percent = document.createElement("div");
+      const percent = document.createElement("span");
       percent.className = "game-rtp";
       percent.textContent = `${rtp.toFixed(1)}%`;
+
+// warna ikut rtp (optional, tak kacau lain)
+      if (rtp < 85) percent.classList.add("is-low");
+      else if (rtp < 95) percent.classList.add("is-mid");
 
       const btn = document.createElement("a");
       btn.className = "game-play-btn";
@@ -501,8 +505,9 @@ function updateBottomNavActive(tab) {
       btn.rel = "noopener noreferrer";
       btn.textContent = "Play Now";
 
-      meta.appendChild(title);
-      meta.appendChild(percent);
+      titleRow.appendChild(title);
+      titleRow.appendChild(percent);
+      meta.appendChild(titleRow);
       meta.appendChild(btn);
 
       card.appendChild(imgWrap);
