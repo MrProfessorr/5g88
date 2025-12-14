@@ -330,7 +330,12 @@ function updateBottomNavActive(tab) {
 
     if (bottomHomeBtn)     bottomHomeBtn.style.display     = navConfig.home     ? "" : "none";
     if (bottomHotBtn)      bottomHotBtn.style.display      = navConfig.hot      ? "" : "none";
-    if (bottomGameListBtn) bottomGameListBtn.style.display = navConfig.gamelist ? "" : "none"; // ✅ NEW
+      // ✅ GAME LIST: kalau sidebar-only, sentiasa hide di bottom nav
+    if (bottomGameListBtn) {
+    const sidebarOnly = bottomGameListBtn.dataset.sidebarOnly === "true";
+    bottomGameListBtn.style.display = sidebarOnly ? "none" : (navConfig.gamelist ? "" : "none");
+    }
+
     if (bottomPromoBtn)    bottomPromoBtn.style.display    = navConfig.promo    ? "" : "none";
     if (bottomPartnerBtn)  bottomPartnerBtn.style.display  = navConfig.partner  ? "" : "none";
 
