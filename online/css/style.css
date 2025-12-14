@@ -1356,15 +1356,19 @@ body.page-user{
 
 .share-copy-btn{
   padding: 10px 14px;
-  border-radius: 12px;
-  border: 1px solid rgba(250,204,21,.25);
-  background: rgba(250,204,21,.12);
-  color: #1e40afe6;
-  font-weight: 800;
+  border-radius: 999px;
+  border: 1px solid rgba(56, 189, 248, 0.5);
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), #020617);
+  color: #38bdf8;
   cursor:pointer;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.9);
 }
 .share-copy-btn:active{
   transform:translateY(1px)scale(0.98);
+}
+.share-copy-btn:hover {
+    background: linear-gradient(135deg, #020617, #020b1f);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.95);
 }
 /* ✅ SHARE button nampak center & special */
 .bottom-nav-item.bottom-nav-share{
