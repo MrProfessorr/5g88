@@ -1533,7 +1533,12 @@ body.page-user{
 .game-play-btn:active{
   transform:translateY(0);
 }
-
+/* ✅ Confirm tak bagi GAME LIST muncul walaupun 1ms */
+.bottom-nav .bottom-nav-item[data-sidebar-only="true"]{
+  display:none !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+}
 /* =========================
    RESPONSIVE (UPGRADE)
 ========================= */
