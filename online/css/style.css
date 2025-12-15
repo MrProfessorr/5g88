@@ -582,7 +582,7 @@ input[type="checkbox"].toggle:checked::before{
 .slider-btn svg{
   width:22px;
   height:22px;
-  fill: #1e40afe6;
+  fill: #0ea5e9;
 }
 
 .slider-btn.prev{ left:10px; }
