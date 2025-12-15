@@ -519,7 +519,7 @@ input[type="checkbox"].toggle:checked::before{
 /* ===== HOME IMAGE SLIDER (1 / banyak gambar) ===== */
 .home-hero-slider{
   width: 600px;
-  height: 550px;
+  height: 600px;
   margin:0 auto 32px;
   overflow:hidden;
   border-radius:22px;
