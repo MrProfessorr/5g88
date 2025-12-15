@@ -1603,22 +1603,4 @@ body.page-user{
   .game-list-grid{ grid-template-columns:repeat(2, minmax(0,1fr)); }
   .game-img-wrap{ height:150px; padding:8px; }
 }
-/* =========================
-   HOT GAME: hanya 2 promo card + center
-   ========================= */
-#hotGamePage .promo-grid{
-  display:flex !important;
-  justify-content:center !important;
-  gap:16px !important;
-  flex-wrap:wrap;
-}
 
-/* sembunyikan card ke-3 dan seterusnya */
-#hotGamePage .promo-grid .promo-card:nth-child(n+3){
-  display:none !important;
-}
-
-/* optional: size biar 2 card nampak ngam */
-#hotGamePage .promo-grid .promo-card{
-  width:min(520px, 46vw);
-}
