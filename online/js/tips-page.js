@@ -262,17 +262,43 @@ function updateBottomNavActive(tab) {
   // =========================
   // AUTO SLIDER HOME IMAGE
   // =========================
-  const track = document.getElementById("slideTrack");
-  if (track) {
-    const slides = track.querySelectorAll("img");
-    if (slides.length > 1) {
-      let index = 0;
-      setInterval(() => {
-        index = (index + 1) % slides.length;
-        track.style.transform = `translateX(-${index * 100}%)`;
-      }, 3500);
+const track = document.getElementById("slideTrack");
+if (track) {
+  const slides = Array.from(track.querySelectorAll("img"));
+  if (slides.length > 1) {
+
+    // clone first slide to the end (loop trick)
+    const firstClone = slides[0].cloneNode(true);
+    firstClone.setAttribute("data-clone", "1");
+    track.appendChild(firstClone);
+
+    let index = 0;                  // 0..slides.length (last = clone)
+    const total = slides.length;    // original count
+    const intervalMs = 3500;
+    const animMs = 800;             // must match CSS transition duration
+
+    function goTo(i, animate = true) {
+      track.style.transition = animate ? `transform ${animMs}ms ease-in-out` : "none";
+      track.style.transform = `translateX(-${i * 100}%)`;
     }
+
+    // start at first slide
+    goTo(0, false);
+
+    setInterval(() => {
+      index++;
+      goTo(index, true);
+
+      // if we hit the clone, snap back to real first slide (no animation)
+      if (index === total) {
+        setTimeout(() => {
+          index = 0;
+          goTo(0, false);
+        }, animMs + 30);
+      }
+    }, intervalMs);
   }
+}
 
   // =========================
   // FIREBASE CHECK
