@@ -518,8 +518,8 @@ input[type="checkbox"].toggle:checked::before{
 
 /* ===== HOME IMAGE SLIDER (1 / banyak gambar) ===== */
 .home-hero-slider{
-  width:100%;
-  max-width:900px;
+  width: 600px;
+  height: 550px;
   margin:0 auto 32px;
   overflow:hidden;
   border-radius:22px;
@@ -535,7 +535,7 @@ input[type="checkbox"].toggle:checked::before{
 #slideTrack img,
 .home-slide-track img{
   width:100%;
-  height: clamp(220px, 40vw, 520px); /* auto cantik ikut screen */
+  height:100% ; /* auto cantik ikut screen */
   display:block;
   object-fit: cover;   /* penuh (tak nampak split) */
   object-position:center;
