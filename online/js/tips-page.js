@@ -262,43 +262,87 @@ function updateBottomNavActive(tab) {
   // =========================
   // AUTO SLIDER HOME IMAGE
   // =========================
-const track = document.getElementById("slideTrack");
-if (track) {
-  const slides = Array.from(track.querySelectorAll("img"));
-  if (slides.length > 1) {
+(function initHomeSlider(){
+  const track = document.getElementById("slideTrack");
+  if (!track) return;
 
-    // clone first slide to the end (loop trick)
-    const firstClone = slides[0].cloneNode(true);
-    firstClone.setAttribute("data-clone", "1");
-    track.appendChild(firstClone);
+  const prevBtn = document.getElementById("sliderPrev");
+  const nextBtn = document.getElementById("sliderNext");
 
-    let index = 0;                  // 0..slides.length (last = clone)
-    const total = slides.length;    // original count
-    const intervalMs = 3500;
-    const animMs = 800;             // must match CSS transition duration
+  let slides = Array.from(track.children).filter(el => el.tagName === "IMG" || el.querySelector?.("img") || el.classList?.contains("slide"));
+  // kalau track terus img, ok. Kalau wrapper, pun ok.
 
-    function goTo(i, animate = true) {
-      track.style.transition = animate ? `transform ${animMs}ms ease-in-out` : "none";
-      track.style.transform = `translateX(-${i * 100}%)`;
-    }
+  // Kalau direct img je:
+  if (!slides.length) slides = Array.from(track.querySelectorAll("img"));
 
-    // start at first slide
-    goTo(0, false);
+  const realCount = slides.length;
+  if (realCount <= 1) return;
 
-    setInterval(() => {
-      index++;
-      goTo(index, true);
+  // clone last & first
+  const firstClone = slides[0].cloneNode(true);
+  const lastClone  = slides[realCount - 1].cloneNode(true);
 
-      // if we hit the clone, snap back to real first slide (no animation)
-      if (index === total) {
-        setTimeout(() => {
-          index = 0;
-          goTo(0, false);
-        }, animMs + 30);
-      }
-    }, intervalMs);
+  track.insertBefore(lastClone, track.firstChild);
+  track.appendChild(firstClone);
+
+  let index = 1; // start on real first (sebab ada lastClone depan)
+  let isAnimating = false;
+  const DURATION = 800; // match CSS transition feel
+  const INTERVAL = 3500;
+
+  function setTransform(withAnim = true){
+    track.style.transition = withAnim ? `transform ${DURATION}ms ease-in-out` : "none";
+    track.style.transform = `translateX(-${index * 100}%)`;
   }
-}
+
+  // initial position
+  setTransform(false);
+
+  function goNext(){
+    if (isAnimating) return;
+    isAnimating = true;
+    index += 1;
+    setTransform(true);
+  }
+
+  function goPrev(){
+    if (isAnimating) return;
+    isAnimating = true;
+    index -= 1;
+    setTransform(true);
+  }
+
+  track.addEventListener("transitionend", () => {
+    // lepas sampai clone, lompat senyap (tanpa anim) ke real slide
+    if (index === 0) {               // sampai lastClone (kiri sekali)
+      index = realCount;
+      setTransform(false);
+    }
+    if (index === realCount + 1) {   // sampai firstClone (kanan sekali)
+      index = 1;
+      setTransform(false);
+    }
+    isAnimating = false;
+  });
+
+  // auto slide
+  let timer = setInterval(goNext, INTERVAL);
+
+  function resetTimer(){
+    clearInterval(timer);
+    timer = setInterval(goNext, INTERVAL);
+  }
+
+  if (nextBtn) nextBtn.addEventListener("click", () => { goNext(); resetTimer(); });
+  if (prevBtn) prevBtn.addEventListener("click", () => { goPrev(); resetTimer(); });
+
+  // optional: pause bila hover (desktop)
+  const slider = track.closest(".home-hero-slider");
+  if (slider) {
+    slider.addEventListener("mouseenter", () => clearInterval(timer));
+    slider.addEventListener("mouseleave", () => timer = setInterval(goNext, INTERVAL));
+  }
+})();
 
   // =========================
   // FIREBASE CHECK
