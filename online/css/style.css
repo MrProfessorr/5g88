@@ -556,7 +556,7 @@ input[type="checkbox"].toggle:checked::before{
   .home-slide-track img{
     width:100%;
     height:100%;
-    object-fit: contain;      /* ✅ tak crop, full gambar */
+    object-fit: cover;      /* ✅ tak crop, full gambar */
     object-position:center;
     background:#000;          /* ✅ space tepi jadi cantik */
   }
