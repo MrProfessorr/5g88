@@ -292,6 +292,7 @@ function updateBottomNavActive(tab) {
 
   // ✅ NEW: Game list admin path
   const gameListRef  = db.ref("game_list");
+  const gamePlayedRef = db.ref("game_list_played");
 
   // =========================
   // ✅ LOADING WAIT FIREBASE (first data)
@@ -357,89 +358,56 @@ function updateBottomNavActive(tab) {
   const GAME_RTP_KEY = "gameListRtpMap.v1";
   const GAME_RTP_TS  = "gameListRtpTs.v1";
   const RTP_INTERVAL_MS = 10 * 60 * 1000;
- // =========================
-// ✅ PLAYED COUNTER SYSTEM
 // =========================
-const PLAYED_KEY    = "gameListPlayedMap.v1";
-const PLAYED_DAYKEY = "gameListPlayedDay.v1";
+// ✅ PLAYED COUNTER (FIREBASE GLOBAL)
+// =========================
+let playedMapGlobal = {}; // cache local
 
-function todayKey(){
-  const d = new Date();
-  const y = d.getFullYear();
-  const m = String(d.getMonth()+1).padStart(2,"0");
-  const day = String(d.getDate()).padStart(2,"0");
-  return `${y}-${m}-${day}`;
-}
-
-function resetPlayedIfNewDay(){
-  const t = todayKey();
-  let prev = "";
-  try { prev = localStorage.getItem(PLAYED_DAYKEY) || ""; } catch(e){}
-  if (prev !== t){
-    try { localStorage.setItem(PLAYED_DAYKEY, t); } catch(e){}
-    try { localStorage.setItem(PLAYED_KEY, JSON.stringify({})); } catch(e){}
-  }
-}
-
-function readPlayedMap(){
-  try { return JSON.parse(localStorage.getItem(PLAYED_KEY) || "{}") || {}; }
-  catch(e){ return {}; }
-}
-
-function savePlayedMap(map){
-  try { localStorage.setItem(PLAYED_KEY, JSON.stringify(map || {})); } catch(e){}
+function clamp(n, min, max){
+  n = Number(n);
+  if (!isFinite(n)) n = 0;
+  return Math.max(min, Math.min(max, Math.floor(n)));
 }
 
 function getMaxPlayed(g){
-  const raw = Number(g?.playedMax ?? g?.maxPlayed ?? 398);
-  const max = (Number.isFinite(raw) && raw > 1) ? Math.floor(raw) : 398;
-  return max;
+  const raw = Number(g?.playedMax ?? 398);
+  return (isFinite(raw) && raw > 0) ? Math.floor(raw) : 398;
 }
 
-function tickPlayed(entries){
-  resetPlayedIfNewDay();
-  const map = readPlayedMap();
+// 🔴 LISTEN REALTIME DARI FIREBASE
+gamePlayedRef.on("value", snap => {
+  playedMapGlobal = snap.val() || {};
+  paintPlayedToDom(playedMapGlobal);
+});
 
-  (entries || []).forEach(g=>{
+// 🔴 UPDATE DOM SAHAJA
+function paintPlayedToDom(map){
+  document.querySelectorAll(".game-card[data-key]").forEach(card=>{
+    const key = card.dataset.key;
+    const numEl = card.querySelector(".played-num");
+    if (!numEl) return;
+
+    const val = Number(map?.[key]?.value ?? 0);
+    numEl.textContent = String(isFinite(val) ? val : 0);
+  });
+}
+
+// 🔴 TICK UPDATE KE FIREBASE (1 MINIT SEKALI)
+function tickPlayedFirebase(entries){
+  entries.forEach(g=>{
     const key = g.key;
     const max = getMaxPlayed(g);
 
-    // ✅ WARMUP target 300 (kalau max < 300, paksa 300)
-    const warmTarget = Math.min(300, Math.max(300, max)); // result: 300
-    const upper = Math.max(0, max - 1); // ikut logic kau: tak boleh sampai max
+    const prev = Number(playedMapGlobal?.[key]?.value ?? 0);
+    const step = Math.floor(Math.random()*5) + 1;
+    const dir  = Math.random() < 0.6 ? 1 : -1;
 
-    let val = Number(map[key] ?? 0);
-    if (!Number.isFinite(val)) val = 0;
+    let next = clamp(prev + step * dir, 0, max);
 
-    // ✅ PHASE 1: naik perlahan sampai 300
-    if (val < warmTarget) {
-      const step = Math.floor(Math.random() * 6) + 2; // 2..7 (pelan2)
-      val = val + step;
-      if (val > warmTarget) val = warmTarget;
-    } 
-    // ✅ PHASE 2: lepas 300 baru up/down
-    else {
-      const step = Math.floor(Math.random() * 12) + 1; // 1..12
-      const dir  = Math.random() < 0.55 ? 1 : -1;      // bias sikit kepada naik
-      val = val + (step * dir);
-
-      if (val < 0) val = 0;
-      if (val > upper) val = upper;
-    }
-
-    map[key] = val;
-  });
-
-  savePlayedMap(map);
-  return map;
-}
-
-// update DOM tanpa rerender semua
-function paintPlayedToDom(map){
-  document.querySelectorAll(".game-card[data-key]").forEach(card=>{
-    const k = card.getAttribute("data-key");
-    const numEl = card.querySelector(".game-played .played-num");
-    if (numEl && map && (k in map)) numEl.textContent = String(map[k]);
+    gamePlayedRef.child(key).set({
+      value: next,
+      updatedAt: firebase.database.ServerValue.TIMESTAMP
+    });
   });
 }
   function randRtp() {
@@ -520,9 +488,7 @@ function paintPlayedToDom(map){
       .map(([key, g]) => ({ key, ...(g || {}) }))
       .filter(g => g && g.enabled !== false);
 
-      resetPlayedIfNewDay();
       window.__gameListEntries = entries;           // simpan utk ticker
-      const playedMap = readPlayedMap();  
     
     if (!entries.length) {
       gameListGrid.innerHTML = '<p class="text-muted small">Belum ada game list. Admin boleh tambah dari panel.</p>';
@@ -596,9 +562,10 @@ function paintPlayedToDom(map){
       const playedLabel = document.createElement("span");
       playedLabel.textContent = "Played :";
 
-      const playedNum = document.createElement("span");
-      playedNum.className = "played-num";
-      playedNum.textContent = String(Number(playedMap[g.key] ?? 0) || 0);
+     const playedNum = document.createElement("span");
+     playedNum.className = "played-num";
+     const initialVal = Number(playedMapGlobal?.[g.key]?.value ?? 0);
+     playedNum.textContent = String(isFinite(initialVal) ? initialVal : 0);
 
       playedRow.appendChild(playedLabel);
       playedRow.appendChild(playedNum);
@@ -625,11 +592,10 @@ function paintPlayedToDom(map){
     });
     // ✅ Played ticker every 1 minute (only once)
 if (!window.__playedTimer) {
-  window.__playedTimer = setInterval(() => {
-    const entries = window.__gameListEntries || [];
-    const map = tickPlayed(entries);
-    paintPlayedToDom(map);
-  }, 60 * 1000);
+window.__playedTimer = setInterval(() => {
+  const entries = window.__gameListEntries || [];
+  tickPlayedFirebase(entries); // ✅ update firebase
+}, 60 * 1000);
 }
   } else {
     markLoaded("gamelist");
