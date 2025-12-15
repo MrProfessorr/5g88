@@ -540,7 +540,7 @@ input[type="checkbox"].toggle:checked::before{
   flex-shrink:0;
   display:block;
   border-radius:22px;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
 }
 
