@@ -546,6 +546,11 @@ input[type="checkbox"].toggle:checked::before{
   flex: 0 0 100%;
   width: 100%;
 }
+@media (max-width:600px){
+  .home-hero-slider{
+    height: min(72vh, 560px);
+  }
+}
 
 .home-article{
   max-width:980px;
