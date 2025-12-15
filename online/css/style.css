@@ -570,7 +570,7 @@ input[type="checkbox"].toggle:checked::before{
   height:44px;
   border-radius:999px;
   border:1px solid #fdfeff1c;
-  background:rgba(2,6,23,.55);
+  background: rgb(255 255 255 / 0%);
   backdrop-filter: blur(6px);
   display:flex;
   align-items:center;
@@ -588,7 +588,7 @@ input[type="checkbox"].toggle:checked::before{
 .slider-btn.prev{ left:10px; }
 .slider-btn.next{ right:10px; }
 
-.slider-btn:hover{ background:rgba(2,6,23,.75); }
+.slider-btn:hover{ background: rgb(255 255 255 / 15%); }
 .slider-btn:active{ transform:translateY(-50%) scale(.98); }
 
 @media (max-width:480px){
