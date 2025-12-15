@@ -549,7 +549,7 @@ input[type="checkbox"].toggle:checked::before{
 @media (max-width:600px){
   .home-hero-slider{
     width:100%;
-    height: 330px;            /* ✅ kecil & kemas di phone */
+    height: 360px;            /* ✅ kecil & kemas di phone */
   }
 
   #slideTrack img,
