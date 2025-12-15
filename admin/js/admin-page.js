@@ -100,7 +100,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const partnersRef = db.ref("partnerships");
   const navTabsRef  = db.ref("nav_tabs");
   const floatingRef = db.ref("floating_buttons");
-  const gameListRef = db.ref("game_list"); // ✅ NEW
+  const gameListRef = db.ref("game_list");
+  const gamePlayedRef = db.ref("game_list_played");
 
   // ========= Helpers umum =========
   const makeKey = (name) =>
@@ -506,10 +507,20 @@ document.addEventListener("DOMContentLoaded", () => {
         updatedAt: firebase.database.ServerValue.TIMESTAMP,
       };
 
-      const op = currentGameListKey
-        ? gameListRef.child(currentGameListKey).update(payload)
-        : gameListRef.push().set(payload);
+      let op;
 
+      if (currentGameListKey) {
+      op = gameListRef.child(currentGameListKey).update(payload);
+      } else {
+      const newRef = gameListRef.push();
+      op = newRef.set(payload).then(() => {
+    // ✅ init played global untuk game baru
+      gamePlayedRef.child(newRef.key).set({
+      value: 250,
+      updatedAt: firebase.database.ServerValue.TIMESTAMP
+    });
+  });
+}
       op.then(() => {
         alert("Game list berjaya disimpan ✅");
         closeGameListModalInternal();
@@ -596,6 +607,7 @@ document.addEventListener("DOMContentLoaded", () => {
       delBtn.addEventListener("click", () => {
         if (confirm(`Hapus game "${gameName}"?`)) {
           gameListRef.child(key).remove();
+          gamePlayedRef.child(key).remove();
         }
       });
 
