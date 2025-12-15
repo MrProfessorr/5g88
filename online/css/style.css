@@ -524,6 +524,7 @@ input[type="checkbox"].toggle:checked::before{
   overflow:hidden;
   border-radius:22px;
   box-shadow:0 20px 50px rgba(0,0,0,0.8);
+  position:relative;
 }
 
 .home-slide-track{
@@ -561,7 +562,38 @@ input[type="checkbox"].toggle:checked::before{
     background:#000;          /* ✅ space tepi jadi cantik */
   }
 }
+.slider-btn{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  width:44px;
+  height:44px;
+  border-radius:999px;
+  border:1px solid rgba(250,204,21,.55);
+  background:rgba(2,6,23,.55);
+  backdrop-filter: blur(6px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  z-index:5;
+}
 
+.slider-btn svg{
+  width:22px;
+  height:22px;
+  fill: gold;
+}
+
+.slider-btn.prev{ left:10px; }
+.slider-btn.next{ right:10px; }
+
+.slider-btn:hover{ background:rgba(2,6,23,.75); }
+.slider-btn:active{ transform:translateY(-50%) scale(.98); }
+
+@media (max-width:480px){
+  .slider-btn{ width:40px; height:40px; }
+}
 .home-article{
   max-width:980px;
   margin:0 auto 48px;
