@@ -744,9 +744,9 @@ window.__playedTimer = setInterval(() => {
       cardsDom.push(card);
     });
 
-    if (cardsDom.length <= 4) return;
+    if (cardsDom.length <= 2) return;
 
-    const pageSize   = 4;
+    const pageSize   = 2;
     const totalPages = Math.ceil(cardsDom.length / pageSize);
     let currentPage  = 0;
 
