@@ -11,4 +11,3 @@ if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 window.db = firebase.database();
-console.log("firebase-config LOADED, db =", !!db);
