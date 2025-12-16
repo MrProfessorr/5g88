@@ -5,9 +5,9 @@
   --bg-soft-2:#020817;
   --card:#020819;
   --card-soft:#0b1220;
-  --accent:#facc15;      /* gold utama */
-  --accent-soft:#fbbf24; /* gold soft */
-  --accent-2:#38bdf8;    /* neon biru */
+  --accent:#facc15; 
+  --accent-soft:#fbbf24; 
+  --accent-2:#38bdf8; 
   --accent-2-soft:#0ea5e9;
   --ink:#e5e7eb;
   --muted:#9ca3af;
@@ -16,7 +16,7 @@
   --success:#22c55e;
 }
 
-/* Reset */
+
 *{
   box-sizing:border-box;
   margin:0;
@@ -39,15 +39,14 @@ body{
   color:var(--ink);
 }
 
-/* ====== LAYOUT UMUM ====== */
-/* Shell full-width, hanya jadi wrapper besar */
+
 .app-shell{
   width:100%;
   margin:0;
   padding:0 0 28px;
 }
 
-/* ===== HEADER: cuma logo di tengah ===== */
+
 .app-header{
   position:relative;
   width:100%;
@@ -55,7 +54,7 @@ body{
   padding:12px 16px;
   display:flex;
   align-items:center;
-  justify-content:center; /* ⬅ logo di tengah */
+  justify-content:center; 
   border-bottom:1px solid rgba(248,250,252,0.06);
   background:linear-gradient(90deg,#020617 0,#050b17 60%,#111827 100%);
   box-shadow:0 8px 24px rgba(0,0,0,0.75);
@@ -95,7 +94,6 @@ body{
   font-size:0.8rem;
 }
 
-/* Konten utama: max-width 1200px di tengah */
 .app-main{
   max-width:1200px;
   margin:24px auto 0;
@@ -105,18 +103,18 @@ body{
   gap:16px;
 }
 
-/* ===== PAGE VARIANT (User vs Admin) ===== */
+
 body.page-user .app-shell{
-  /* user page: lebih gold (kalau mau tambahkan nanti) */
+
 }
 body.page-admin .app-shell{
-  /* admin page: sedikit lebih biru */
+
 }
 body.page-admin .app-header::after{
   background:linear-gradient(90deg, var(--accent-2), transparent);
 }
 
-/* ====== CARD / PANEL ====== */
+
 .card{
   position:relative;
   overflow:hidden;
@@ -129,7 +127,7 @@ body.page-admin .app-header::after{
     inset 0 0 0 1px rgba(148,163,184,0.12);
   margin-bottom:10px;
 }
-/* ====== CARD / PANEL ====== */
+
 .card-promo{
   position:relative;
   overflow:hidden;
@@ -137,7 +135,7 @@ body.page-admin .app-header::after{
   margin-bottom:20px;
 }
 
-/* highlight border subtle */
+
 .card::before{
   content:"";
   position:absolute;
@@ -153,7 +151,7 @@ body.page-admin .app-header::after{
   pointer-events:none;
 }
 
-/* inner glow */
+
 .card::after{
   content:"";
   position:absolute;
@@ -204,7 +202,7 @@ body.page-admin .app-header::after{
   text-align: center;
 }
 
-/* ====== BUTTONS ====== */
+
 .btn{
   border:none;
   cursor:pointer;
@@ -228,7 +226,7 @@ body.page-admin .app-header::after{
   overflow:hidden;
 }
 
-/* Shine effect kecil */
+
 .btn::after{
   content:"";
   position:absolute;
@@ -289,7 +287,7 @@ body.page-admin .app-header::after{
   width:100%;
 }
 
-/* ====== FORM ELEMENTS ====== */
+
 .form-label{
   display:flex;
   flex-direction:column;
@@ -321,7 +319,7 @@ textarea{
   resize:vertical;
 }
 
-/* ====== ADMIN PANEL LIST ====== */
+
 .admin-panel h2{
   margin-bottom:10px;
   text-transform:uppercase;
@@ -365,7 +363,7 @@ textarea{
   color:var(--muted);
 }
 
-/* Switch + label */
+
 .switch-wrap{
   display:flex;
   align-items:center;
@@ -376,7 +374,7 @@ textarea{
   color:var(--muted);
 }
 
-/* Custom toggle switch */
+
 input[type="checkbox"].toggle{
   appearance:none;
   width:40px;
@@ -411,21 +409,21 @@ input[type="checkbox"].toggle:checked::before{
   transform:translateX(16px);
 }
 
-/* ====== GRID CARD TIPS (User page) ====== */
+
 .cards-grid{
   display:grid;
   grid-template-columns:repeat(2, minmax(0, 1fr));
   gap:12px;
 }
 
-/* Desktop: 5 per baris */
+
 @media (min-width:1024px){
   .cards-grid{
     grid-template-columns:repeat(5, minmax(0, 1fr));
   }
 }
 
-/* ====== TIP CARD STYLE ====== */
+
 .tip-card{
   position:relative;
   background:
@@ -443,7 +441,7 @@ input[type="checkbox"].toggle:checked::before{
   gap:8px;
 }
 
-/* border glow tip card */
+
 .tip-card::before{
   content:"";
   position:absolute;
@@ -488,7 +486,7 @@ input[type="checkbox"].toggle:checked::before{
   background:rgba(15,23,42,0.85);
 }
 
-/* Isi tips */
+
 .tip-output{
   background:radial-gradient(circle at top, #020617 0, #020617 50%, #000 100%);
   border-radius:12px;
@@ -504,19 +502,18 @@ input[type="checkbox"].toggle:checked::before{
   text-transform: uppercase;
 }
 
-/* Tombol Back + Generate */
+
 .tip-actions{
   display:flex;
   justify-content:space-between;
   gap:8px;
 }
 
-/* ===== HOME PAGE LAYOUT ===== */
+
 .home-page{
-  margin-top:0; /* header sudah punya jarak, jadi boleh 0 */
+  margin-top:0; 
 }
 
-/* ===== HOME IMAGE SLIDER (1 / banyak gambar) ===== */
 .home-hero-slider{
   width: 500px;
   height: 500px;
@@ -536,9 +533,9 @@ input[type="checkbox"].toggle:checked::before{
 #slideTrack img,
 .home-slide-track img{
   width:100%;
-  height:100% ; /* auto cantik ikut screen */
+  height:100% ; 
   display:block;
-  object-fit: cover;   /* penuh (tak nampak split) */
+  object-fit: cover;   
   object-position:center;
   border-radius:22px;
 }
@@ -550,16 +547,16 @@ input[type="checkbox"].toggle:checked::before{
 @media (max-width:500px){
   .home-hero-slider{
     width:100%;
-    height: 100%;            /* ✅ kecil & kemas di phone */
+    height: 100%; 
   }
 
   #slideTrack img,
   .home-slide-track img{
     width:100%;
     height:100%;
-    object-fit: cover;      /* ✅ tak crop, full gambar */
+    object-fit: cover;     
     object-position:center;
-    background:#000;          /* ✅ space tepi jadi cantik */
+    background:#000; 
   }
 }
 .slider-btn{
@@ -622,7 +619,6 @@ input[type="checkbox"].toggle:checked::before{
 }
 
 @media (max-width:768px){
-  /* header tetap 1 baris (row) supaya icon + nav sejajar */
   .app-header{
     flex-direction:row;
     align-items:center;
@@ -630,14 +626,14 @@ input[type="checkbox"].toggle:checked::before{
     padding:12px 16px;
   }
 
-  /* logo di tengah */
+ 
   .app-header-left{
     flex:1;
     display:flex;
     justify-content:center;
   }
 
-  /* nav di tengah juga */
+ 
   .app-nav{
     flex:1;
     justify-content:center;
@@ -658,7 +654,7 @@ input[type="checkbox"].toggle:checked::before{
     padding:11px 9px 11px;
   }
 }
-/* ====== RUNNING TEXT / TICKER DI BAWAH HEADER ====== */
+
 .ticker-bar{
   width:100%;
   overflow:hidden;
@@ -677,12 +673,12 @@ input[type="checkbox"].toggle:checked::before{
 .ticker-track span{
   font-size:0.82rem;
   color:gold;
-  margin-right:64px;          /* jarak antar teks */
+  margin-right:64px; 
   letter-spacing:0.06em;
   text-transform:uppercase;
 }
 
-/* Animasi jalan dari kanan ke kiri */
+
 @keyframes ticker-move{
   0%{
     transform:translateX(100%);
@@ -692,7 +688,6 @@ input[type="checkbox"].toggle:checked::before{
   }
 }
 
-/* ================= PROMO / FREE CREDIT GRID ================= */
 
 .promo-grid{
   display:grid;
@@ -701,7 +696,7 @@ input[type="checkbox"].toggle:checked::before{
   margin-bottom:10px;
 }
 
-/* Desktop: 4 card satu baris */
+
 @media (min-width:900px){
   .promo-grid{
     grid-template-columns:repeat(2, minmax(0,1fr));
@@ -717,7 +712,7 @@ input[type="checkbox"].toggle:checked::before{
   cursor:pointer;
   box-shadow:0 12px 36px rgba(0,0,0,0.7);
   transition:transform .18s ease, box-shadow .18s ease;
-  background:transparent;      /* ✅ Tiada border */
+  background:transparent;   
   text-align: center;
   font-weight: 600;
   border-radius: 16px;
@@ -730,7 +725,7 @@ input[type="checkbox"].toggle:checked::before{
   box-shadow:0 18px 48px rgba(0,0,0,0.9);
 }
 
-/* Gambar promo */
+
 .promo-card img{
   width:100%;
   height:auto;
@@ -738,7 +733,7 @@ input[type="checkbox"].toggle:checked::before{
   object-fit:cover;
 }
 
-/* Overlay butang CLAIM */
+
 .promo-claim{
   position:absolute;
   inset:0;
@@ -788,23 +783,23 @@ input[type="checkbox"].toggle:checked::before{
   margin-left: auto;
   white-space:nowrap;
 }
-/* === Layout khusus HP (layar sempit) === */
+
 @media (max-width: 640px) {
   .rategame-header {
-    flex-direction: column;     /* judul di atas, waktu di bawah */
+    flex-direction: column; 
     align-items: flex-start;
     gap: 4px;
   }
 
   .rategame-meta {
-    align-self: flex-end;       /* nempel di kanan */
+    align-self: flex-end;    
     width: 100%;
     text-align: right;
-    white-space: normal;        /* boleh turun baris kalau perlu */
+    white-space: normal;     
     font-size: 0.75rem;
   }
 }
-/* === PROMOTION BIG GRID === */
+
 .promo-big-grid{
   display:grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -851,13 +846,13 @@ input[type="checkbox"].toggle:checked::before{
   text-align: center;
 }
 
-/* Pastikan di desktop bisa 3 kolom */
+
 @media (min-width: 992px){
   .promo-big-grid{
     grid-template-columns: repeat(3, 1fr);
   }
 }
-/* PARTNERSHIP GRID */
+
 .partner-grid{
   display:grid;
   grid-template-columns:repeat(4, minmax(0,1fr));
@@ -930,7 +925,7 @@ input[type="checkbox"].toggle:checked::before{
   width:100%;
   font-size:.8rem;
 }
-/* ===================== FLOATING BUTTONS ===================== */
+
 
 .floating-buttons-left,
 .floating-buttons-right {
@@ -942,12 +937,12 @@ input[type="checkbox"].toggle:checked::before{
   gap: 0.75rem;
 }
 
-/* kiri bawah: WA + TG */
+
 .floating-buttons-left {
   left: 1.5rem;
 }
 
-/* kanan bawah: JOIN US */
+
 .floating-buttons-right {
   right: 1.5rem;
 }
@@ -993,7 +988,7 @@ input[type="checkbox"].toggle:checked::before{
   color: #0f172a;
 }
 
-/* Responsif: kecilkan di mobile */
+
 @media (max-width: 640px) {
   .floating-btn {
     width: 52px;
@@ -1031,7 +1026,7 @@ input[type="checkbox"].toggle:checked::before{
   height: 22px;
   fill: #0f172a;
 }
-/* ===== BACK TO TOP BUTTON ===== */
+
 .back-to-top {
   position: fixed;
   bottom: 18px;
@@ -1074,10 +1069,10 @@ input[type="checkbox"].toggle:checked::before{
   }
   .card::after,
   .tip-card::before {
-    opacity: 0.5;   /* kurang inner glow */
+    opacity: 0.5;   
   }
 }
-/* ===== BOTTOM NAV ICON BAR ===== */
+
 .bottom-nav{
   position:fixed;
   left:0;
@@ -1112,7 +1107,7 @@ input[type="checkbox"].toggle:checked::before{
 }
 
 .bottom-nav-icon{
-  height:30px;         /* ✨ tinggi icon 30px */
+  height:30px; 
   width:auto;
   display:block;
 }
@@ -1132,16 +1127,15 @@ input[type="checkbox"].toggle:checked::before{
   background:rgba(255,255,255,0.15);
 }
 
-/* beri ruang supaya konten tidak ketutup bar bawah */
+
 body.page-user{
   padding-bottom:72px;
 }
 
-/* kalau back-to-top bertabrakan, naikkan sedikit */
 .back-to-top{
-  bottom:80px; /* dulu 18px, sekarang di atas bottom-nav */
+  bottom:80px; 
 }
-/* === BUTTON KIRI === */
+
 .side-menu-btn {
   background: transparent;
   border: none;
@@ -1157,7 +1151,7 @@ body.page-user{
   fill: gold;
 }
 
-/* === SIDEBAR === */
+
 .side-menu {
   position: fixed;
   top: 0;
@@ -1204,7 +1198,7 @@ body.page-user{
   flex-direction: column;
   gap: 3px;
 }
-/* ===== SIDEBAR ITEM (ICON LEFT + TEXT) ===== */
+
 .side-menu-item{
   display:flex;
   align-items:center;
@@ -1254,7 +1248,7 @@ body.page-user{
 }
 
 
-/* overlay */
+
 .side-overlay {
   position: fixed;
   inset: 0;
@@ -1272,9 +1266,7 @@ body.page-user{
   top:50%;
   transform:translateY(-50%);
 }
-/* ===============================
-   FULL PAGE LOADING (TEMBUS)
-   =============================== */
+
 .page-loading{
   position: fixed;
   inset: 0;
@@ -1286,12 +1278,12 @@ body.page-user{
 
 }
 
-/* kotak tengah */
+
 .loading-box{
   text-align: center;
 }
 
-/* logo */
+
 .loading-logo{
   width: 120px;
   height: auto;
@@ -1299,7 +1291,7 @@ body.page-user{
   margin: 0 auto;
 }
 
-/* teks */
+
 .loading-text{
   color: #cbd5e1;
   font-size: 0.75rem;
@@ -1323,7 +1315,7 @@ body.page-user{
   height: auto;
   opacity: .95;
 }
-/* ===== SHARE SHEET ===== */
+
 .share-overlay{
   position: fixed;
   inset: 0;
@@ -1334,7 +1326,7 @@ body.page-user{
 .share-sheet{
   position: fixed;
   left: 50%;
-  bottom: 88px; /* ✅ atas bottom nav */
+  bottom: 88px; 
   transform: translateX(-50%);
   width: min(520px, calc(100% - 24px));
   background: radial-gradient(circle at top, rgba(250, 204, 21, 0.1) 0, transparent 60%), radial-gradient(circle at bottom, rgba(56, 189, 248, 0.2) 0, transparent 55%), linear-gradient(145deg, #020617 0, #020617 40%, #020617 100%);
@@ -1420,7 +1412,7 @@ body.page-user{
     background: linear-gradient(135deg, #020617, #020b1f);
     box-shadow: 0 12px 30px rgba(15, 23, 42, 0.95);
 }
-/* ✅ SHARE button nampak center & special */
+
 .bottom-nav-item.bottom-nav-share{
   transform: translateY(-6px);
 }
@@ -1452,9 +1444,7 @@ body.page-user{
   object-fit: contain;
   display:block;
 }
-/* =========================
-   GAME LIST GRID (ONLINE) - UPGRADE
-========================= */
+
 .game-list-grid{
   display:grid;
   grid-template-columns:repeat(5, minmax(0, 1fr));
@@ -1462,9 +1452,7 @@ body.page-user{
   margin-top:14px;
 }
 
-/* =========================
-   GAME CARD - UPGRADE
-========================= */
+
 .game-card{
   position:relative;
   background:linear-gradient(180deg,#0b1220,#070b16);
@@ -1480,9 +1468,7 @@ body.page-user{
   box-shadow:0 14px 34px rgba(0,0,0,.55);
 }
 
-/* =========================
-   IMAGE WRAP + IMAGE (FIX CROPPED) - UPGRADE
-========================= */
+
 .game-img-wrap{
   width:100%;
   position:relative;
@@ -1491,7 +1477,7 @@ body.page-user{
     radial-gradient(circle at top, rgba(250,204,21,.08), transparent 55%),
     linear-gradient(180deg,#050816,#040611);
 
-  height:170px;                 /* card sekata */
+  height:170px; 
   display:flex;
   align-items:center;
   justify-content:center;
@@ -1499,10 +1485,10 @@ body.page-user{
 }
 
 .game-img-wrap img,
-.game-img{                       /* ✅ support class game-img juga */
+.game-img{ 
   width:100%;
   height:100%;
-  object-fit:contain;            /* ✅ tak terpotong */
+  object-fit:contain;            
   object-position:center;
   display:block;
   transform:scale(1);
@@ -1515,11 +1501,7 @@ body.page-user{
   transform:scale(1.03);
 }
 
-/* =========================
-   HOT BADGE (FIX: support 2 class name)
-   - JS: .game-hot-badge
-   - Old CSS: .game-badge-hot
-========================= */
+
 .game-hot-badge,
 .game-badge-hot{
   position:absolute;
@@ -1534,14 +1516,14 @@ body.page-user{
   background:transparent;
 }
 
-/* Bila badge hanya text "HOT" (old usage) */
+
 .game-badge-hot{
   color:#111827;
   background:linear-gradient(135deg,#facc15,#f59e0b);
   border:0;
 }
 
-/* Bila badge pakai span .hot dan .rtp (JS usage) */
+
 .game-hot-badge .hot{
   font-size:.70rem;
   font-weight:900;
@@ -1560,9 +1542,7 @@ body.page-user{
   white-space:nowrap;
 }
 
-/* =========================
-   BODY TEXT (UPGRADE)
-========================= */
+
 .game-meta{
   padding:10px 10px 12px;
   text-align:center;
@@ -1607,9 +1587,7 @@ body.page-user{
 .game-rtp.is-mid{ color:#f59e0b; }
 .game-rtp.is-low{ color:#fb7185; }
 
-/* =========================
-   PLAY BUTTON (UPGRADE)
-========================= */
+
 .game-play-btn{
   width:100%;
   border:0;
@@ -1619,7 +1597,7 @@ body.page-user{
   font-weight:900;
   font-size:.80rem;
   color:white;
-  text-decoration:none;          /* ✅ sebab kau guna <a> */
+  text-decoration:none;  
   display:inline-flex;
   align-items:center;
   justify-content:center;
@@ -1637,18 +1615,14 @@ body.page-user{
   transform:translateY(1px)scale(0.98);
 }
 
-/* =========================
-   HIDE sidebar-only button in bottom nav (NO FLASH)
-========================= */
+
 .bottom-nav .bottom-nav-item[data-sidebar-only="true"]{
   display:none !important;
   visibility:hidden !important;
   pointer-events:none !important;
 }
 
-/* =========================
-   RESPONSIVE (UPGRADE)
-========================= */
+
 @media (max-width:1100px){
   .game-list-grid{ grid-template-columns:repeat(4, minmax(0,1fr)); }
   .game-img-wrap{ height:165px; }
@@ -1662,7 +1636,7 @@ body.page-user{
   .game-img-wrap{ height:150px; padding:8px; }
 }
 
-/* ===== Article Upgrade Styles (Premium) ===== */
+
 .home-article{
   max-width: 920px;
   margin: 0 auto;
@@ -1693,7 +1667,7 @@ body.page-user{
   color: rgba(255,255,255,.88);
 }
 
-/* ===== Bullet List (better spacing + nice bullets) ===== */
+
 .home-list{
   margin: 10px 0 14px 22px;
   padding: 0;
@@ -1705,10 +1679,10 @@ body.page-user{
 }
 
 .home-list li::marker{
-  color: #facc15; /* gold marker */
+  color: #facc15; 
 }
 
-/* ===== Game Blocks as mini-cards ===== */
+
 .home-game-block{
   margin: 12px 0;
   padding: 12px 14px;
@@ -1723,7 +1697,7 @@ body.page-user{
   color: rgba(255,255,255,.86);
 }
 
-/* ===== FAQ Accordion ===== */
+
 .home-faq{
   margin-top: 18px;
 }
@@ -1753,7 +1727,7 @@ body.page-user{
   display: none;
 }
 
-/* arrow icon */
+
 .faq-item summary::after{
   content: "▾";
   font-size: 1.05rem;
@@ -1771,13 +1745,13 @@ body.page-user{
   color: rgba(255,255,255,.86);
 }
 
-/* small highlight for strong */
+
 .home-article strong{
   color: #facc15;
   font-weight: 700;
 }
 
-/* Responsive */
+
 @media (max-width: 520px){
   .home-article{
     padding: 14px 12px;
