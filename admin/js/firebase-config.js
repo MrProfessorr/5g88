@@ -2,7 +2,7 @@
 
 // ⚠️ Semua value di bawah ambil dari Firebase console (Project Settings → Config)
 const firebaseConfig = {
-  apiKey: "AIzaSyAxlfERUjAkUPcYWMkMfHaVvICWW95btSw",      // GANTI DENGAN punyamu
+  apiKey: "AIzaSyDbqBSY2v_HnTkGrB3BJ0TakdpF_FjsriE",      // GANTI DENGAN punyamu
   authDomain: "site-b902d.firebaseapp.com",
   databaseURL: "https://site-b902d-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "site-b902d",
