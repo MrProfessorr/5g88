@@ -1047,7 +1047,9 @@ input[type="checkbox"].toggle:checked::before{
   pointer-events: auto;
   transform: translateY(0);
 }
-
+.back-to-top:active{
+transform:translateY(1px) scale(0.98);
+}
 .back-to-top.hide {
   opacity: 0;
   pointer-events: none;
