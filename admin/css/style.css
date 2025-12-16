@@ -409,7 +409,6 @@ input[type="checkbox"].toggle:checked{
   background:radial-gradient(circle at 0 0, #fef3c7 0, transparent 55%),
              linear-gradient(135deg, var(--accent), var(--accent-soft));
   border-color:transparent;
-  box-shadow:0 0 12px rgba(250,204,21,0.7);
 }
 input[type="checkbox"].toggle:checked::before{
   transform:translateX(16px);
