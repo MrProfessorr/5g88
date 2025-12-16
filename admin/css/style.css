@@ -858,3 +858,33 @@ input[type="checkbox"].toggle:checked::before{
 .modal-dialog input:focus{
   border-color: var(--accent);
 }
+/* ===== SECTION HEADER (Title kiri, Add button kanan) ===== */
+.section-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:10px;
+}
+
+.section-head > div{ min-width:0; }
+
+.section-head h2{ margin:0; } /* override margin-bottom dari .admin-panel h2 */
+
+.section-head .text-muted.small{ margin:6px 0 0; }
+
+.section-head .btn{
+  white-space:nowrap;
+  flex-shrink:0;
+}
+
+/* mobile: title atas, button turun bawah kanan */
+@media (max-width:640px){
+  .section-head{
+    flex-direction:column;
+    align-items:stretch;
+  }
+  .section-head .btn{
+    align-self:flex-end;
+  }
+}
