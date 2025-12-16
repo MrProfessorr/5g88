@@ -13,9 +13,19 @@
       <h1>Admin Tips Game</h1>
       <a href="index.html" class="btn ghost">⮌ Ke Halaman User</a>
     </header>
-
-    <main class="app-main">
-<section class="card admin-panel">
+    <!-- ===== ADMIN VIEW BAR (ONLY BUTTONS) ===== -->
+<div class="admin-view-bar">
+  <button type="button" class="btn secondary" data-view="platform">👁 View Platform</button>
+  <button type="button" class="btn secondary" data-view="gamelist">👁 View Game List</button>
+  <button type="button" class="btn secondary" data-view="nav">👁 View Navigation</button>
+  <button type="button" class="btn secondary" data-view="floating">👁 View Floating</button>
+  <button type="button" class="btn secondary" data-view="promo">👁 View Banner</button>
+  <button type="button" class="btn secondary" data-view="promotion">👁 View Promotion</button>
+  <button type="button" class="btn secondary" data-view="partner">👁 View Partner</button>
+</div>
+     
+<main class="app-main">
+<section class="card admin-panel admin-section" data-section="platform">
   <div class="section-head">
     <div>
       <h2>Platform / Product</h2>
@@ -43,7 +53,7 @@
   </div>
 </section>
 
-<section class="card admin-panel">
+<section class="card admin-panel admin-section" data-section="gamelist">
   <div class="section-head">
     <div>
       <h2>Game List</h2>
@@ -70,7 +80,7 @@
     </div>
   </div>
 </section>
-<section class="card admin-panel">
+<section class="card admin-panel admin-section" data-section="nav">
   <div class="section-head">
     <div>
       <h2>Navigation Tabs</h2>
@@ -156,7 +166,7 @@
 </section>
 
 <!-- ===== FLOATING BUTTONS (WA / TG / JOIN US) ===== -->
-<section class="card admin-panel">
+<section class="card admin-panel admin-section" data-section="floating">
   <div class="section-head">
     <div>
       <h2>Floating Buttons</h2>
@@ -259,7 +269,7 @@
 </section>
 
 <!-- ===== FREE CREDIT / PROMO BANNER ADMIN ===== -->
-<section class="card admin-panel">
+<section class="card admin-panel admin-section" data-section="promo">
   <div class="section-head">
     <div>
       <h2>Free Credit / Promo Banner</h2>
@@ -293,7 +303,7 @@
   </div>
 </section>
 <!-- ===== PROMOTION BANNER BESAR ADMIN ===== -->
-<section class="card admin-panel">
+<section class="card admin-panel admin-section" data-section="promotion">
   <div class="section-head">
     <div>
       <h2>Promotion Banner (Big)</h2>
@@ -327,7 +337,7 @@
 
 
 <!-- ===== PARTNERSHIP ADMIN ===== -->
-<section class="card admin-panel">
+<section class="card admin-panel admin-section" data-section="partner">
   <div class="section-head">
     <div>
       <h2>Partnership</h2>
