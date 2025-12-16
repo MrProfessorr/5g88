@@ -448,8 +448,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function resetGameListForm(){
     if (gameListNameInput)  gameListNameInput.value  = "";
     if (gameListImageInput) gameListImageInput.value = "";
-    if (gameListPlayInput)  gameListPlayInput.value  = "";
-    if (gameListPlayedMaxInput) gameListPlayedMaxInput.value = 398;
   }
 
   function openGameListNewModal(){
@@ -636,7 +634,6 @@ document.addEventListener("DOMContentLoaded", () => {
     promoTitleInput.value   = "";
     promoCaptionInput.value = "";
     promoImageInput.value   = "";
-    promoTargetInput.value  = "";
   }
 
   function openPromoNewModal() {
@@ -816,7 +813,6 @@ document.addEventListener("DOMContentLoaded", () => {
     promoBigTitleInput.value   = "";
     promoBigCaptionInput.value = "";
     promoBigImageInput.value   = "";
-    promoBigTargetInput.value  = "";
   }
 
   function openBigPromoNewModal() {
@@ -1002,7 +998,7 @@ document.addEventListener("DOMContentLoaded", () => {
     partnerRatingInput.value = "";
     partnerLogoInput.value   = "";
     partnerJoinInput.value   = "";
-    if (partnerChannelInput) partnerChannelInput.value = ""; // ✅ NEW
+    if (partnerChannelInput) partnerChannelInput.value = "";
   }
 
   function openPartnerNewModal() {
