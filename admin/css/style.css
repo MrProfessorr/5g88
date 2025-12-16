@@ -266,7 +266,7 @@ input[type="url"],
 input[type="number"]{
   width:100%;
   background:linear-gradient(180deg,#050816,#03050d);
-  border-radius:14px;
+  border-radius:10px;
   border:1px solid rgba(250,204,21,.22);
   padding:12px 14px;
   color:var(--ink);
@@ -293,9 +293,9 @@ input[type="number"]::placeholder{
 input[type="text"]:focus,
 input[type="url"]:focus,
 input[type="number"]:focus{
-  border-color:var(--accent);
+  border-color:#38bdf8; /* biru */
   box-shadow:
-    0 0 0 3px rgba(250,204,21,.22),
+    0 0 0 3px rgba(56,189,248,.25), /* glow biru */
     0 14px 30px rgba(0,0,0,.5),
     inset 0 0 0 1px rgba(255,255,255,.06);
 }
