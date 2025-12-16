@@ -1,10 +1,6 @@
 // online/js/tips-page.js
 
 document.addEventListener("DOMContentLoaded", () => {
-
-  // =========================
-  // ✅ LOADING SYSTEM (FIX BLUR)
-  // =========================
   const loaderEl   = document.getElementById("pageLoading");
   const appShellEl = document.getElementById("appShell");
 
@@ -46,9 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   showLoading();
 
-  // =========================
-  // ELEMENTS
-  // =========================
+ 
   const gridEl         = document.getElementById("tipsCardsGrid");
   const promoGridEl    = document.getElementById("promoGrid");
   const promoBigGridEl = document.getElementById("promoBigGrid");
@@ -56,25 +50,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const homePage     = document.getElementById("homePage");
   const hotGamePage  = document.getElementById("hotGamePage");
-  const gameListPage = document.getElementById("gameListPage");     // ✅ NEW
-  const gameListGrid = document.getElementById("gameListGrid");     // ✅ NEW
+  const gameListPage = document.getElementById("gameListPage");     
+  const gameListGrid = document.getElementById("gameListGrid");     
   const promoPage    = document.getElementById("promoPage");
   const partnerPage  = document.getElementById("partnerPage");
 
-  // ✅ Hindari flash
+
   if (homePage)     homePage.style.display     = "none";
   if (hotGamePage)  hotGamePage.style.display  = "none";
   if (gameListPage) gameListPage.style.display = "none";
   if (promoPage)    promoPage.style.display    = "none";
   if (partnerPage)  partnerPage.style.display  = "none";
 
-  // =========================
-  // BOTTOM NAV
-  // =========================
+ 
   const bottomNavItems     = document.querySelectorAll(".bottom-nav-item");
   const bottomHomeBtn      = document.querySelector('.bottom-nav-item[data-tab="home"]');
   const bottomHotBtn       = document.querySelector('.bottom-nav-item[data-tab="hot"]');
-  const bottomGameListBtn  = document.querySelector('.bottom-nav-item[data-tab="gamelist"]'); // ✅ NEW
+  const bottomGameListBtn  = document.querySelector('.bottom-nav-item[data-tab="gamelist"]');
   const bottomPromoBtn     = document.querySelector('.bottom-nav-item[data-tab="promo"]');
   const bottomPartnerBtn   = document.querySelector('.bottom-nav-item[data-tab="partner"]');
 
@@ -83,7 +75,7 @@ function updateBottomNavActive(tab) {
   bottomNavItems.forEach(btn => {
     const t = btn.dataset.tab;
 
-    // ✅ SKIP sidebar-only (GAME LIST)
+   
     if (btn.dataset.sidebarOnly === "true") return;
     if (!t) return;
 
@@ -91,9 +83,7 @@ function updateBottomNavActive(tab) {
   });
 }
 
-  // =========================
-  // RATE GAME TIME
-  // =========================
+
   const rateGameTimeEl = document.getElementById("rateGameTime");
 
   function updateRateGameTime() {
@@ -118,9 +108,7 @@ function updateBottomNavActive(tab) {
     setInterval(updateRateGameTime, 1000);
   }
 
-  // =========================
-  // FLOATING BUTTONS
-  // =========================
+
   const floatingLeftEl  = document.getElementById("floatingLeft");
   const floatingRightEl = document.getElementById("floatingRight");
 
@@ -128,9 +116,7 @@ function updateBottomNavActive(tab) {
   let floatingCollapsed = false;
   try { floatingCollapsed = localStorage.getItem(FLOAT_COLLAPSE_KEY) === "1"; } catch (e) {}
 
-  // =========================
-  // SIDEBAR NAV
-  // =========================
+
   const sideMenuBtn   = document.getElementById("sideMenuBtn");
   const sideMenu      = document.getElementById("sideMenu");
   const sideOverlay   = document.getElementById("sideOverlay");
@@ -150,22 +136,20 @@ function updateBottomNavActive(tab) {
   if (sideMenuBtn) sideMenuBtn.addEventListener("click", openSidebar);
   if (sideOverlay) sideOverlay.addEventListener("click", closeSidebar);
 
-  // =========================
-  // TAB SYSTEM (LocalStorage)
-  // =========================
+
   const TAB_KEY = "tipsPageActiveTab";
   let currentTab = "home";
 
   try {
     const saved = localStorage.getItem(TAB_KEY);
-    if (["home","hot","gamelist","promo","partner"].includes(saved)) currentTab = saved; // ✅ NEW
+    if (["home","hot","gamelist","promo","partner"].includes(saved)) currentTab = saved; 
   } catch (e) {}
 
-  // config dari Firebase
-  let navConfig = { home: true, hot: true, gamelist: true, promo: true, partner: true }; // ✅ NEW
+ 
+  let navConfig = { home: true, hot: true, gamelist: true, promo: true, partner: true }; 
 
   function getFirstEnabledTab() {
-    const order = ["home","hot","gamelist","promo","partner"]; // ✅ NEW
+    const order = ["home","hot","gamelist","promo","partner"];
     return order.find(t => navConfig[t]) || "home";
   }
 
@@ -209,10 +193,9 @@ function updateBottomNavActive(tab) {
     setActiveTab(tab);
   };
 
-  // fallback
   window.showHome        = () => setActiveTab("home");
   window.showHotGame     = () => setActiveTab("hot");
-  window.showGameList    = () => setActiveTab("gamelist"); // ✅ NEW
+  window.showGameList    = () => setActiveTab("gamelist");
   window.showPromotion   = () => setActiveTab("promo");
   window.showPartner     = () => setActiveTab("partner");
   window.showPartnership = window.showPartner;
@@ -225,7 +208,7 @@ function updateBottomNavActive(tab) {
 
     bottomButtons.forEach((btn) => {
       const tab = btn.dataset.tab;
-      if (!tab) return; // skip SHARE
+      if (!tab) return; 
 
       const isSidebarOnly = btn.dataset.sidebarOnly === "true";
       if (btn.style.display === "none" && !isSidebarOnly) return;
@@ -256,12 +239,10 @@ function updateBottomNavActive(tab) {
     updateSidebarActive(currentTab);
   }
 
-  // set tab awal
+ 
   setActiveTab(currentTab);
 
-  // =========================
-  // AUTO SLIDER HOME IMAGE
-  // =========================
+
 (function initHomeSlider(){
   const track = document.getElementById("slideTrack");
   if (!track) return;
@@ -270,24 +251,24 @@ function updateBottomNavActive(tab) {
   const nextBtn = document.getElementById("sliderNext");
 
   let slides = Array.from(track.children).filter(el => el.tagName === "IMG" || el.querySelector?.("img") || el.classList?.contains("slide"));
-  // kalau track terus img, ok. Kalau wrapper, pun ok.
+  
 
-  // Kalau direct img je:
+  
   if (!slides.length) slides = Array.from(track.querySelectorAll("img"));
 
   const realCount = slides.length;
   if (realCount <= 1) return;
 
-  // clone last & first
+  
   const firstClone = slides[0].cloneNode(true);
   const lastClone  = slides[realCount - 1].cloneNode(true);
 
   track.insertBefore(lastClone, track.firstChild);
   track.appendChild(firstClone);
 
-  let index = 1; // start on real first (sebab ada lastClone depan)
+  let index = 1; 
   let isAnimating = false;
-  const DURATION = 800; // match CSS transition feel
+  const DURATION = 800; 
   const INTERVAL = 3500;
 
   function setTransform(withAnim = true){
@@ -295,7 +276,7 @@ function updateBottomNavActive(tab) {
     track.style.transform = `translateX(-${index * 100}%)`;
   }
 
-  // initial position
+  
   setTransform(false);
 
   function goNext(){
@@ -313,19 +294,19 @@ function updateBottomNavActive(tab) {
   }
 
   track.addEventListener("transitionend", () => {
-    // lepas sampai clone, lompat senyap (tanpa anim) ke real slide
-    if (index === 0) {               // sampai lastClone (kiri sekali)
+    
+    if (index === 0) {               
       index = realCount;
       setTransform(false);
     }
-    if (index === realCount + 1) {   // sampai firstClone (kanan sekali)
+    if (index === realCount + 1) {   
       index = 1;
       setTransform(false);
     }
     isAnimating = false;
   });
 
-  // auto slide
+  
   let timer = setInterval(goNext, INTERVAL);
 
   function resetTimer(){
@@ -336,7 +317,7 @@ function updateBottomNavActive(tab) {
   if (nextBtn) nextBtn.addEventListener("click", () => { goNext(); resetTimer(); });
   if (prevBtn) prevBtn.addEventListener("click", () => { goPrev(); resetTimer(); });
 
-  // optional: pause bila hover (desktop)
+  
   const slider = track.closest(".home-hero-slider");
   if (slider) {
     slider.addEventListener("mouseenter", () => clearInterval(timer));
@@ -344,9 +325,7 @@ function updateBottomNavActive(tab) {
   }
 })();
 
-  // =========================
-  // FIREBASE CHECK
-  // =========================
+ 
   if (!window.firebase || !window.db) {
     console.error("Firebase belum siap. Cek script firebase di HTML.");
     hideLoading();
@@ -360,13 +339,11 @@ function updateBottomNavActive(tab) {
   const navTabsRef   = db.ref("nav_tabs");
   const floatingRef  = db.ref("floating_buttons");
 
-  // ✅ NEW: Game list admin path
+  
   const gameListRef  = db.ref("game_list");
   const gamePlayedRef = db.ref("game_list_played");
 
-  // =========================
-  // ✅ LOADING WAIT FIREBASE (first data)
-  // =========================
+ 
   const MIN_LOADING_MS = 650;
   const startAt = Date.now();
 
@@ -377,7 +354,7 @@ function updateBottomNavActive(tab) {
     promoBig: false,
     partners: false,
     cards: !gridEl,
-    gamelist: !gameListGrid // ✅ NEW
+    gamelist: !gameListGrid 
   };
 
   function markLoaded(k) {
@@ -390,19 +367,17 @@ function updateBottomNavActive(tab) {
     setTimeout(hideLoading, wait);
   }
 
-  // safety
+  
   setTimeout(() => hideLoading(), 8000);
 
-  // =========================
-  // NAV CONFIG
-  // =========================
+ 
   function applyNavConfig(cfgRaw) {
-    const defaults = { home:true, hot:true, gamelist:true, promo:true, partner:true }; // ✅ NEW
+    const defaults = { home:true, hot:true, gamelist:true, promo:true, partner:true }; 
     navConfig = { ...defaults, ...(cfgRaw || {}) };
 
     if (bottomHomeBtn)     bottomHomeBtn.style.display     = navConfig.home     ? "" : "none";
     if (bottomHotBtn)      bottomHotBtn.style.display      = navConfig.hot      ? "" : "none";
-      // ✅ GAME LIST: kalau sidebar-only, sentiasa hide di bottom nav
+      
     if (bottomGameListBtn) {
     const sidebarOnly = bottomGameListBtn.dataset.sidebarOnly === "true";
     bottomGameListBtn.style.display = sidebarOnly ? "none" : (navConfig.gamelist ? "" : "none");
@@ -422,16 +397,13 @@ function updateBottomNavActive(tab) {
 
   buildSidebarItems();
 
-  // =========================
-  // ✅ GAME LIST (RTP AUTO RANDOM + HOT)
-  // =========================
+ 
   const GAME_RTP_KEY = "gameListRtpMap.v1";
   const GAME_RTP_TS  = "gameListRtpTs.v1";
   const RTP_INTERVAL_MS = 10 * 60 * 1000;
-// =========================
-// ✅ PLAYED COUNTER (FIREBASE GLOBAL)
-// =========================
-let playedMapGlobal = {}; // cache local
+
+
+let playedMapGlobal = {}; 
 
 function clamp(n, min, max){
   n = Number(n);
@@ -444,13 +416,13 @@ function getMaxPlayed(g){
   return (isFinite(raw) && raw > 0) ? Math.floor(raw) : 398;
 }
 
-// 🔴 LISTEN REALTIME DARI FIREBASE
+
 gamePlayedRef.on("value", snap => {
   playedMapGlobal = snap.val() || {};
   paintPlayedToDom(playedMapGlobal);
 });
 
-// 🔴 UPDATE DOM SAHAJA
+
 function paintPlayedToDom(map){
   document.querySelectorAll(".game-card[data-key]").forEach(card=>{
     const key = card.dataset.key;
@@ -462,7 +434,7 @@ function paintPlayedToDom(map){
   });
 }
 
-// 🔴 TICK UPDATE KE FIREBASE (1 MINIT SEKALI)
+
 function tickPlayedFirebase(entries){
   entries.forEach(g=>{
     const key = g.key;
@@ -514,17 +486,17 @@ function tickPlayedFirebase(entries){
 
     const needRotate = (!last) || (now - last >= RTP_INTERVAL_MS);
 
-    // remove keys yang sudah tak ada
+    
     const keep = new Set(gameKeys || []);
     Object.keys(map).forEach(k => { if (!keep.has(k)) delete map[k]; });
 
     if (needRotate) {
-      // regen semua rtp untuk semua game key yang aktif
+      
       (gameKeys || []).forEach(k => { map[k] = randRtp(); });
       setLastRtpTs(now);
       setRtpMap(map);
     } else {
-      // pastikan setiap game ada value
+      
       (gameKeys || []).forEach(k => {
         if (typeof map[k] !== "number") map[k] = randRtp();
       });
@@ -534,16 +506,16 @@ function tickPlayedFirebase(entries){
     return map;
   }
 
-  // optional: live timer re-render setiap 10 menit tanpa reload
+  
   let rtpTickerTimer = null;
   function startRtpTicker(renderFn) {
     if (rtpTickerTimer) clearInterval(rtpTickerTimer);
     rtpTickerTimer = setInterval(() => {
-      // trigger rotate + re-render
+      
       const rawKeys = (window.__gameListKeys || []);
       ensureRtpFresh(rawKeys);
       if (typeof renderFn === "function") renderFn();
-    }, 15 * 1000); // check tiap 15s, rotate hanya bila cukup 10 minit
+    }, 15 * 1000); 
   }
 
   let lastGameListData = null;
@@ -558,17 +530,17 @@ function tickPlayedFirebase(entries){
       .map(([key, g]) => ({ key, ...(g || {}) }))
       .filter(g => g && g.enabled !== false);
 
-      window.__gameListEntries = entries;           // simpan utk ticker
+      window.__gameListEntries = entries; 
     
     if (!entries.length) {
       gameListGrid.innerHTML = '<p class="text-muted small">Belum ada game list. Admin boleh tambah dari panel.</p>';
       return;
     }
 
-    // save keys global utk ticker
+    
     window.__gameListKeys = entries.map(e => e.key);
 
-    // ensure rtp map
+    
     const rtpMap = ensureRtpFresh(window.__gameListKeys);
 
     entries.forEach((g) => {
@@ -580,7 +552,7 @@ function tickPlayedFirebase(entries){
       const isHot = rtp > 95;
 
       const card = document.createElement("article");
-      card.className = "game-card"; // CSS bro buat grid 5 per row
+      card.className = "game-card"; 
       card.setAttribute("data-key", g.key);
       // image wrap
       const imgWrap = document.createElement("div");
@@ -600,7 +572,7 @@ function tickPlayedFirebase(entries){
       img.src = imgUrl || "https://i.imgur.com/AM4LUPK.png";
       imgWrap.appendChild(img);
 
-      // meta
+      
       const meta = document.createElement("div");
       meta.className = "game-meta";
       
@@ -625,7 +597,7 @@ function tickPlayedFirebase(entries){
       titleRow.appendChild(title);
       titleRow.appendChild(percent);
 
-      // ===== Played row (baru) =====
+      
       const playedRow = document.createElement("div");
       playedRow.className = "game-played";
 
@@ -657,23 +629,21 @@ function tickPlayedFirebase(entries){
       renderGameList(lastGameListData);
       markLoaded("gamelist");
 
-      // start ticker once
+    
       startRtpTicker(() => renderGameList(lastGameListData));
     });
-    // ✅ Played ticker every 1 minute (only once)
+
 if (!window.__playedTimer) {
 window.__playedTimer = setInterval(() => {
   const entries = window.__gameListEntries || [];
-  tickPlayedFirebase(entries); // ✅ update firebase
+  tickPlayedFirebase(entries); 
 }, 60 * 1000);
 }
   } else {
     markLoaded("gamelist");
   }
 
-  // =========================
-  // FLOATING BUTTONS
-  // =========================
+
   function renderFloatingButtons(snapshot) {
     const data = snapshot.val() || {};
     const wa   = data.whatsapp || {};
@@ -757,9 +727,7 @@ window.__playedTimer = setInterval(() => {
     markLoaded("floating");
   });
 
-  // =========================
-  // PROMO BANNER SMALL
-  // =========================
+
   let promoSliderTimer = null;
 
   function renderPromos(snapshot) {
@@ -840,9 +808,7 @@ window.__playedTimer = setInterval(() => {
     markLoaded("promos");
   });
 
-  // =========================
-  // PROMOTION BIG
-  // =========================
+
   function renderPromoBig(snapshot) {
     if (!promoBigGridEl) return;
 
@@ -910,9 +876,7 @@ window.__playedTimer = setInterval(() => {
     markLoaded("promoBig");
   });
 
-  // =========================
-  // PARTNERSHIP
-  // =========================
+
   function normalizeTelegramLink(url) {
     if (!url) return "";
     let u = String(url).trim();
@@ -1021,9 +985,7 @@ window.__playedTimer = setInterval(() => {
     markLoaded("partners");
   });
 
-  // =========================
-  // TIPS CARDS
-  // =========================
+
   if (gridEl) {
     const STORAGE_KEY = "tipsHistory.v1";
     let historyObj = {};
@@ -1073,7 +1035,7 @@ window.__playedTimer = setInterval(() => {
         .filter((c) => c.enabled !== false);
 
       if (entries.length === 0) {
-        gridEl.innerHTML = '<p class="text-muted small">Belum ada card aktif. Buat dari halaman admin.</p>';
+        gridEl.innerHTML = '<p class="text-muted small">Not allowed this time.</p>';
         return;
       }
 
@@ -1157,9 +1119,7 @@ window.__playedTimer = setInterval(() => {
     markLoaded("cards");
   }
 
-  // =========================
-  // ✅ SHARE SHEET SYSTEM (GLOBAL)
-  // =========================
+ 
   const shareOverlay = document.getElementById("shareOverlay");
   const shareSheet   = document.getElementById("shareSheet");
   const shareInput   = document.getElementById("shareLinkInput");
@@ -1225,12 +1185,8 @@ window.__playedTimer = setInterval(() => {
     });
   }
 
-}); // DOMContentLoaded END
+}); // D* E*
 
-
-// =========================
-// BACK TO TOP BUTTON (global)
-// =========================
 let scrollTimer;
 const btn = document.getElementById("backToTop");
 
