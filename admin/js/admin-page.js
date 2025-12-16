@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function openPlatformNewModal() {
     if (!platformModal) return;
-    platformModalTitle.textContent = "Tambah Platform";
+    platformModalTitle.textContent = "Add Platform";
     resetPlatformForm();
     platformModal.classList.add(MODAL_OPEN_CLASS);
   }
