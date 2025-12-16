@@ -321,37 +321,218 @@
   </div>
 </section>
     </main>
-    <!-- ===== PLATFORM MODAL ===== -->
-<div id="platformModal" class="modal">
-  <div class="modal-backdrop" onclick="closePlatformModal()"></div>
-
-  <div class="modal-dialog">
-    <div class="modal-header">
-      <h3 id="platformModalTitle">Tambah Platform</h3>
-      <button class="modal-close" type="button" onclick="closePlatformModal()">✕</button>
     </div>
+  <!-- ===== MODAL TAMBAH PLATFORM / PRODUCT ===== -->
+  <div id="platformModal" class="modal">
+    <div class="modal-backdrop" onclick="closePlatformModal()"></div>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="platformModalTitle">Tambah Platform</h3>
+        <button type="button" class="modal-close" onclick="closePlatformModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">
+          Nama Platform / Product
+          <input type="text" id="platformName"
+                 placeholder="Contoh: MEGA888, 918KISS, PUSSY888, PLAYTECH">
+        </label>
 
-    <div class="modal-body">
-      <label class="form-label">
-        Nama Platform
-        <input type="text" id="platformName" placeholder="Contoh: MEGA888">
-      </label>
-
-      <label class="form-label">
-        List Game (1 baris = 1 game)
-        <div id="gameListBox" class="multi-input" contenteditable="true"
-             placeholder="Game A&#10;Game B&#10;Game C"></div>
-      </label>
-    </div>
-
-    <div class="modal-footer">
-      <button type="button" class="btn ghost" onclick="closePlatformModal()">Cancel</button>
-      <button type="button" class="btn primary" id="platformModalSaveBtn">Save</button>
+        <label class="form-label">
+          List Nama Game (satu per baris)
+          <div id="gameListBox"
+               class="multi-input"
+               contenteditable="true"
+               spellcheck="false"
+               placeholder="COYOTE CASH&#10;IRISH LUCK&#10;SIX ACROBATS"></div>
+          <small class="text-muted small">
+            • Enter / Ctrl+Enter untuk turun baris.
+            • Boleh paste format array: 'GAME1','GAME2' atau "GAME1","GAME2".
+          </small>
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="platformModalSaveBtn" class="btn primary">
+          Save
+        </button>
+      </div>
     </div>
   </div>
-</div>
+
+  <!-- ===== MODAL LIST GAME PER CARD (VIEW / EDIT) ===== -->
+  <div id="gamesModal" class="modal">
+    <div class="modal-backdrop" onclick="closeGamesModal()"></div>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="gamesModalTitle">Daftar Game</h3>
+        <button type="button" class="modal-close" onclick="closeGamesModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">
+          List Nama Game (satu per baris)
+          <div id="gamesModalBox"
+               class="multi-input"
+               contenteditable="false"
+               spellcheck="false"></div>
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="gamesModalEditBtn" class="btn secondary">Edit</button>
+        <button type="button" id="gamesModalSaveBtn" class="btn primary" style="display:none;">Save</button>
+      </div>
+    </div>
   </div>
 
+  <!-- ✅ NEW: ===== MODAL GAME LIST (GRID) ===== -->
+  <div id="gameListModal" class="modal">
+    <div class="modal-backdrop" onclick="closeGameListModal()"></div>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="gameListModalTitle">Tambah Game</h3>
+        <button type="button" class="modal-close" onclick="closeGameListModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <label class="form-label">
+          Game Name
+          <input type="text" id="gameListName" placeholder="Contoh: Zeus, Mahjong Ways, Gate of Olympus">
+        </label>
+
+        <label class="form-label">
+          Image URL (PNG/JPG)
+          <input type="text" id="gameListImageUrl" placeholder="https://i.imgur.com/xxxx.png">
+        </label>
+
+        <label class="form-label">
+          PlayNow Link (buka tab baru)
+          <input type="text" id="gameListPlayUrl" placeholder="https://5g88.baby/play?...">
+        </label>
+        
+        <label class="form-label">
+          Max Played (contoh 500)
+          <input type="number" id="gameListPlayedMax" min="1" step="1" placeholder="500" value="398">
+        </label>
+        
+        <small class="text-muted small">
+          • Untuk icon/thumbnail elok guna PNG.  
+          • Pastikan URL bermula dengan https://
+        </small>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" id="gameListModalSaveBtn" class="btn primary">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL PROMO BANNER KECIL (FREE CREDIT) ===== -->
+  <div id="promoModal" class="modal">
+    <div class="modal-backdrop" onclick="closePromoModal()"></div>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="promoModalTitle">Promo Banner</h3>
+        <button type="button" class="modal-close" onclick="closePromoModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">
+          Judul (opsional)
+          <input type="text" id="promoTitle" placeholder="Contoh: FREE RM5">
+        </label>
+
+        <label class="form-label">
+          Caption Promo (tampil di bawah gambar)
+          <input type="text" id="promoCaption" placeholder="Contoh: NEW MEMBER FREE CREDIT RM5">
+        </label>
+
+        <label class="form-label">
+          URL Gambar (PNG/JPG)
+          <input type="text" id="promoImageUrl" placeholder="https://i.imgur.com/xxxx.png">
+        </label>
+
+        <label class="form-label">
+          Link Claim (akan dibuka tab baru)
+          <input type="text" id="promoTargetUrl" placeholder="https://5g88.baby/signup?...">
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="promoModalSaveBtn" class="btn primary">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL PROMOTION BANNER BESAR ===== -->
+  <div id="promoBigModal" class="modal">
+    <div class="modal-backdrop" onclick="closeBigPromoModal()"></div>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="promoBigModalTitle">Promotion Banner</h3>
+        <button type="button" class="modal-close" onclick="closeBigPromoModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">
+          Judul (opsional)
+          <input type="text" id="promoBigTitle" placeholder="Contoh: WELCOME BONUS 200%">
+        </label>
+
+        <label class="form-label">
+          Caption (tampil di bawah gambar)
+          <input type="text" id="promoBigCaption" placeholder="Contoh: BONUS HINGGA RM388 UNTUK MEMBER BARU">
+        </label>
+
+        <label class="form-label">
+          URL Gambar (PNG/JPG)
+          <input type="text" id="promoBigImageUrl" placeholder="https://i.imgur.com/xxxx.png">
+        </label>
+
+        <label class="form-label">
+          Link Tab Baru (target url)
+          <input type="text" id="promoBigTargetUrl" placeholder="https://5g88.baby/signup">
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="promoBigModalSaveBtn" class="btn primary">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL PARTNERSHIP ===== -->
+  <div id="partnerModal" class="modal">
+    <div class="modal-backdrop" onclick="closePartnerModal()"></div>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="partnerModalTitle">Partnership</h3>
+        <button type="button" class="modal-close" onclick="closePartnerModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">
+          Nama Partner (opsional)
+          <input type="text" id="partnerName" placeholder="Caption">
+        </label>
+
+        <label class="form-label">
+          Rating (0.0 – 5.0)
+          <input type="number" id="partnerRating" step="0.1" min="0" max="5" placeholder="3.8">
+        </label>
+
+        <label class="form-label">
+          URL Logo (PNG/JPG)
+          <input type="text" id="partnerLogoUrl" placeholder="Image.PNG">
+        </label>
+
+        <label class="form-label">
+          Link Join Now
+          <input type="text" id="partnerJoinUrl" placeholder="Site link">
+        </label>
+
+        <label class="form-label">
+          Link Channel
+          <input type="text" id="partnerChannelUrl" placeholder="Channel link">
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="partnerModalSaveBtn" class="btn primary">Save</button>
+      </div>
+    </div>
+  </div>
   <!-- MODALS + SCRIPTS (kekal sama macam kau punya) -->
   <!-- Firebase + Script -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
