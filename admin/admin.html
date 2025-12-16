@@ -321,6 +321,35 @@
   </div>
 </section>
     </main>
+    <!-- ===== PLATFORM MODAL ===== -->
+<div id="platformModal" class="modal">
+  <div class="modal-backdrop" onclick="closePlatformModal()"></div>
+
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3 id="platformModalTitle">Tambah Platform</h3>
+      <button class="modal-close" type="button" onclick="closePlatformModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <label class="form-label">
+        Nama Platform
+        <input type="text" id="platformName" placeholder="Contoh: MEGA888">
+      </label>
+
+      <label class="form-label">
+        List Game (1 baris = 1 game)
+        <div id="gameListBox" class="multi-input" contenteditable="true"
+             placeholder="Game A&#10;Game B&#10;Game C"></div>
+      </label>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn ghost" onclick="closePlatformModal()">Cancel</button>
+      <button type="button" class="btn primary" id="platformModalSaveBtn">Save</button>
+    </div>
+  </div>
+</div>
   </div>
 
   <!-- MODALS + SCRIPTS (kekal sama macam kau punya) -->
