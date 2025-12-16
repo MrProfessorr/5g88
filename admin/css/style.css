@@ -823,12 +823,11 @@ input[type="checkbox"].toggle:checked::before{
   justify-content:flex-end;
   align-items:center;
 }
-
-/* ===== COLLAPSE BOX (View / Hide) ===== */
-.collapse-box{
+.admin-section{
   display:none;
   margin-top:12px;
 }
-.collapse-box.show{
+.admin-section.show{
   display:block;
 }
+
