@@ -205,7 +205,7 @@ body.page-admin .app-header::after{
 .btn.primary{
   background:radial-gradient(circle at 0 0, #fef9c3 0, transparent 45%),
              linear-gradient(135deg, var(--accent), var(--accent-soft));
-  color:#111827;
+  color:#000;
   border:1px solid rgba(234,179,8,0.8);
 }
 .btn.primary:hover{
