@@ -1187,29 +1187,27 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   partnersRef.on("value", renderPartnerList);
-  document.querySelectorAll("[data-toggle-target]").forEach(btn => {
-  const target = document.querySelector(btn.dataset.toggleTarget);
-  if (!target) return;
+const viewButtons = document.querySelectorAll("[data-view]");
+const sections = document.querySelectorAll(".admin-section");
 
-  const showText = btn.dataset.showText || "👁 View";
-  const hideText = btn.dataset.hideText || "✕ Hide";
+function hideAllSections(){
+  sections.forEach(sec => sec.classList.remove("show"));
+}
 
-  const storageKey = "collapse:" + btn.dataset.toggleTarget;
-
-  // ===== restore last state =====
-  const saved = localStorage.getItem(storageKey) === "open";
-  if (saved) {
-    target.classList.add("show");
-    btn.textContent = hideText;
-  } else {
-    btn.textContent = showText;
-  }
-
-  // ===== toggle on click =====
+viewButtons.forEach(btn => {
   btn.addEventListener("click", () => {
-    const isOpen = target.classList.toggle("show");
-    btn.textContent = isOpen ? hideText : showText;
-    localStorage.setItem(storageKey, isOpen ? "open" : "close");
+    const targetKey = btn.dataset.view;
+
+    // kalau tekan button sama lagi → close (balik kosong)
+    const targetSection = document.querySelector(`.admin-section[data-section="${targetKey}"]`);
+    const isAlreadyOpen = targetSection && targetSection.classList.contains("show");
+
+    hideAllSections();
+
+    if (targetSection && !isAlreadyOpen) {
+      targetSection.classList.add("show");
+      targetSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   });
 });
 });
