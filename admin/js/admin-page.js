@@ -1187,4 +1187,29 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   partnersRef.on("value", renderPartnerList);
+  document.querySelectorAll("[data-toggle-target]").forEach(btn => {
+  const target = document.querySelector(btn.dataset.toggleTarget);
+  if (!target) return;
+
+  const showText = btn.dataset.showText || "👁 View";
+  const hideText = btn.dataset.hideText || "✕ Hide";
+
+  const storageKey = "collapse:" + btn.dataset.toggleTarget;
+
+  // ===== restore last state =====
+  const saved = localStorage.getItem(storageKey) === "open";
+  if (saved) {
+    target.classList.add("show");
+    btn.textContent = hideText;
+  } else {
+    btn.textContent = showText;
+  }
+
+  // ===== toggle on click =====
+  btn.addEventListener("click", () => {
+    const isOpen = target.classList.toggle("show");
+    btn.textContent = isOpen ? hideText : showText;
+    localStorage.setItem(storageKey, isOpen ? "open" : "close");
+  });
+});
 });
