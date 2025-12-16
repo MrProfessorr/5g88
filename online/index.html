@@ -8,6 +8,8 @@
 </head>
 
 <body class="page-user">
+
+  <!-- ✅ FULL PAGE LOADING (MUNCUL DULU) -->
   <div id="pageLoading" class="page-loading" aria-label="Loading">
     <div class="loading-box">
       <img src="https://api.5g88.homes/media/p1_5G_logo_gif.gif" alt="5G88" class="loading-logo">
@@ -15,11 +17,12 @@
     </div>
   </div>
 
+  <!-- ✅ LETAK ID appShell (untuk JS hide/show) -->
   <div class="app-shell" id="appShell">
 
-  
+    <!-- ================== HEADER ================== -->
     <header class="app-header">
-     
+      <!-- ICON MENU KIRI -->
       <button id="sideMenuBtn" class="side-menu-btn" aria-label="Open menu">
         <svg viewBox="0 0 24 24">
           <path fill="currentColor"
@@ -32,16 +35,16 @@
       </div>
     </header>
 
-   
+    <!-- ==== SIDEBAR NAV ==== -->
     <div id="sideMenu" class="side-menu">
       <div class="side-menu-header">
-        <span>Menu list</span>
+        <span>Menu</span>
       </div>
       <div id="sideMenuList" class="side-menu-list"></div>
     </div>
     <div id="sideOverlay" class="side-overlay"></div>
 
-   
+    <!-- ================== RUNNING TEXT ================== -->
     <div class="ticker-bar">
       <div class="ticker-track">
         <span>🎰 Welcome to Company 5G88 — Malaysia’s Trusted & Best Online Casino Platform.</span>
@@ -50,9 +53,10 @@
       </div>
     </div>
 
-   
+    <!-- ================== MAIN CONTENT ================== -->
     <main class="app-main">
 
+      <!-- ========== HOME PAGE ========== -->
       <section id="homePage" class="home-page">
         <div class="home-hero-slider">
           <div class="home-slide-track" id="slideTrack">
@@ -243,6 +247,7 @@
 </article>
       </section>
 
+      <!-- ========== HOT GAME PAGE ========== -->
       <section id="hotGamePage" class="hot-page" style="display:none;">
         <section id="promoGrid" class="promo-grid"></section>
 
@@ -257,7 +262,7 @@
         <section id="tipsCardsGrid" class="cards-grid"></section>
       </section>
 
- 
+      <!-- ========== GAME LIST PAGE (BARU) ========== -->
       <section id="gameListPage" class="game-list-page" style="display:none;">
         <section class="card">
           <h2 class="section-title">PROVIDE GAME</h2>
@@ -267,7 +272,7 @@
         <section id="gameListGrid" class="game-list-grid"></section>
       </section>
 
-   
+      <!-- ========== PROMOTION PAGE ========== -->
       <section id="promoPage" class="promo-page" style="display:none;">
         <section class="card-promo">
           <h2 class="title-promo">DAILY PROMOTION</h2>
@@ -277,7 +282,7 @@
         <section id="promoBigGrid" class="promo-big-grid"></section>
       </section>
 
-  
+      <!-- ========== PARTNERSHIP PAGE ========== -->
       <section id="partnerPage" class="partner-page" style="display:none;">
         <section class="card">
           <h2 class="section-title">PARTNERSHIP</h2>
@@ -287,7 +292,7 @@
         <section id="partnerGrid" class="partner-grid"></section>
       </section>
 
-  
+      <!-- ✅ TRUST STRIP (SELALU DI BAWAH CONTENT) -->
       <div class="trust-strip">
         <img
           src="https://i.imgur.com/AM4LUPK.png"
@@ -302,10 +307,10 @@
 
   </div>
 
-
+  <!-- BACK TO TOP -->
   <button id="backToTop" class="back-to-top" aria-label="Back to top">↑</button>
 
- 
+  <!-- ===== BOTTOM NAV ===== -->
   <nav class="bottom-nav">
 
     <button class="bottom-nav-item active" data-tab="home" onclick="handleBottomNavClick('home')">
@@ -326,7 +331,7 @@
   <span class="bottom-nav-label">GAME LIST</span>
 </button>
     
-  
+    <!-- ✅ SHARE (BUKAN TAB) -->
     <button class="bottom-nav-item" type="button" onclick="openShareSheet()">
       <img src="https://i.imgur.com/TtaoCtu.png" alt="Share" class="bottom-nav-icon">
       <span class="bottom-nav-label">SHARE</span>
@@ -344,7 +349,7 @@
 
   </nav>
 
-
+  <!-- ✅ SHARE SHEET (ICON ONLY) -->
   <div id="shareOverlay" class="share-overlay" style="display:none;" onclick="closeShareSheet()"></div>
 
   <div id="shareSheet" class="share-sheet" style="display:none;" aria-hidden="true">
