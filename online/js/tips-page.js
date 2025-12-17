@@ -1059,7 +1059,7 @@ window.__playedTimer = setInterval(() => {
 
         const output = document.createElement("pre");
         output.className = "tip-output";
-        output.textContent = "Tekan Generate untuk keluarkan tips.";
+        output.textContent = "Click generate.";
 
         const actions = document.createElement("div");
         actions.className = "tip-actions";
