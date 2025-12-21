@@ -1,4 +1,4 @@
-// online/js/tips-page.js
+
 
 document.addEventListener("DOMContentLoaded", () => {
   const loaderEl   = document.getElementById("pageLoading");
@@ -405,13 +405,11 @@ function updateBottomNavActive(tab) {
 
 let playedMapGlobal = {}; 
 
-// =========================
-// ✅ DAILY RESET PLAYED @ 12AM (GMT+8 Malaysia)
-// =========================
+
 const PLAYED_RESET_META = gamePlayedRef.child("__meta");
 
 function todayStrMY(){
-  // Malaysia timezone +08:00 (tanpa library)
+  
   const now = new Date();
   const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
   const my  = new Date(utc + (8 * 60 * 60000));
@@ -431,11 +429,11 @@ async function checkDailyPlayedReset(entries){
     const snap = await PLAYED_RESET_META.child("lastResetDate").once("value");
     const last = snap.val();
 
-    if (last === today) return; // ✅ sudah reset hari ini
+    if (last === today) return;
 
     console.log("🔁 DAILY RESET PLAYED COUNTER:", today);
 
-    // ✅ batch update sekali (lagi laju)
+  
     const updates = {};
     entries.forEach(g => {
       updates[`${g.key}/value`] = 0;
