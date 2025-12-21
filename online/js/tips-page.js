@@ -575,7 +575,8 @@ function tickPlayedFirebase(entries){
       .map(([key, g]) => ({ key, ...(g || {}) }))
       .filter(g => g && g.enabled !== false);
 
-      window.__gameListEntries = entries; 
+      window.__gameListEntries = entries;
+      checkDailyPlayedReset(entries);
     
     if (!entries.length) {
       gameListGrid.innerHTML = '<p class="text-muted small">Belum ada game list. Admin boleh tambah dari panel.</p>';
