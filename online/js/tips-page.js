@@ -405,6 +405,51 @@ function updateBottomNavActive(tab) {
 
 let playedMapGlobal = {}; 
 
+// =========================
+// ✅ DAILY RESET PLAYED @ 12AM (GMT+8 Malaysia)
+// =========================
+const PLAYED_RESET_META = gamePlayedRef.child("__meta");
+
+function todayStrMY(){
+  // Malaysia timezone +08:00 (tanpa library)
+  const now = new Date();
+  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+  const my  = new Date(utc + (8 * 60 * 60000));
+
+  const y = my.getFullYear();
+  const m = String(my.getMonth() + 1).padStart(2, "0");
+  const d = String(my.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+async function checkDailyPlayedReset(entries){
+  if (!entries || !entries.length) return;
+
+  const today = todayStrMY();
+
+  try{
+    const snap = await PLAYED_RESET_META.child("lastResetDate").once("value");
+    const last = snap.val();
+
+    if (last === today) return; // ✅ sudah reset hari ini
+
+    console.log("🔁 DAILY RESET PLAYED COUNTER:", today);
+
+    // ✅ batch update sekali (lagi laju)
+    const updates = {};
+    entries.forEach(g => {
+      updates[`${g.key}/value`] = 0;
+      updates[`${g.key}/updatedAt`] = firebase.database.ServerValue.TIMESTAMP;
+    });
+
+    updates["__meta/lastResetDate"] = today;
+
+    await gamePlayedRef.update(updates);
+  } catch(err){
+    console.warn("Daily reset failed:", err);
+  }
+}
+
 function clamp(n, min, max){
   n = Number(n);
   if (!isFinite(n)) n = 0;
@@ -634,10 +679,13 @@ function tickPlayedFirebase(entries){
     });
 
 if (!window.__playedTimer) {
-window.__playedTimer = setInterval(() => {
-  const entries = window.__gameListEntries || [];
-  tickPlayedFirebase(entries); 
-}, 60 * 1000);
+  window.__playedTimer = setInterval(async () => {
+    const entries = window.__gameListEntries || [];
+    if (!entries.length) return;
+
+    await checkDailyPlayedReset(entries); // ✅ reset kalau hari baru
+    tickPlayedFirebase(entries);          // ✅ lepas tu baru random tick
+  }, 60 * 1000);
 }
   } else {
     markLoaded("gamelist");
