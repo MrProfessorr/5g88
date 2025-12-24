@@ -325,7 +325,7 @@ input[type="number"]::-webkit-inner-spin-button{
   gap:8px;
 
   /* ✅ LIMIT TINGGI + SCROLL */
-  max-height: 420px;     /* kira-kira tinggi 6 row */
+  max-height: 720px;     /* kira-kira tinggi 6 row */
   overflow-y: auto;
   padding-right: 6px;   /* bagi ruang untuk scrollbar */
 }
