@@ -257,42 +257,45 @@ const toastWarn    = (m, o) => toast(m, "warn", o);
   window.openPlatformNewModal = openPlatformNewModal;
   window.closePlatformModal   = closePlatformModalInternal;
 
-  if (platformSaveBtn) {
-    platformSaveBtn.addEventListener("click", () => {
-      const platformName = (platformInput.value || "").trim();
-      const games        = getGamesFromBox(gameListBox);
+if (platformSaveBtn) {
+  platformSaveBtn.addEventListener("click", () => {
+    const platformName = (platformInput.value || "").trim();
+    const games        = getGamesFromBox(gameListBox);
 
-      if (!platformName) {
-        alert("Isi nama platform dulu bro.");
-        platformInput.focus();
-        return;
-      }
-      if (games.length === 0) {
-        alert("Isi list nama game (min 1).");
-        gameListBox.focus();
-        return;
-      }
+    // ✅ VALIDATION GUNA TOAST
+    if (!platformName) {
+      toastWarn("Isi nama platform dulu bro.");
+      platformInput.focus();
+      return;
+    }
 
-      const key = makeKey(platformName);
-      const payload = {
-        platformName,
-        games,
-        enabled: true,
-        updatedAt: firebase.database.ServerValue.TIMESTAMP,
-      };
+    if (games.length === 0) {
+      toastWarn("Isi list nama game (min 1).");
+      gameListBox.focus();
+      return;
+    }
 
-      cardsRef.child(key).set(payload)
-        .then(() => {
-          toastSuccess("Platform berjaya disimpan. Cek di list & di halaman user.");
-          resetPlatformForm();
-          closePlatformModalInternal();
-        })
-.catch((err) => {
-  console.error(err);
-  toastError("Gagal simpan ke Firebase. Cek console.", { duration: 4500 });
-});
-    });
-  }
+    // 🔽 BARU SAMBUNG PROSES FIREBASE
+    const key = makeKey(platformName);
+    const payload = {
+      platformName,
+      games,
+      enabled: true,
+      updatedAt: firebase.database.ServerValue.TIMESTAMP,
+    };
+
+    cardsRef.child(key).set(payload)
+      .then(() => {
+        toastSuccess("Platform berjaya disimpan ✅");
+        resetPlatformForm();
+        closePlatformModalInternal();
+      })
+      .catch((err) => {
+        console.error("Gagal simpan platform:", err);
+        toastError("Gagal simpan ke Firebase. Cek console.", { duration: 4500 });
+      });
+  });
+}
 
   // ==================================================
   // ==========  MODAL VIEW / EDIT LIST GAME  =========
