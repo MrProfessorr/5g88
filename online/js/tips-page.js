@@ -342,6 +342,7 @@ function updateBottomNavActive(tab) {
   
   const gameListRef  = db.ref("game_list");
   const gamePlayedRef = db.ref("game_list_played");
+  const gameRtpRef = db.ref("game_list_rtp");
 
  
   const MIN_LOADING_MS = 650;
@@ -401,6 +402,67 @@ function updateBottomNavActive(tab) {
   const GAME_RTP_KEY = "gameListRtpMap.v1";
   const GAME_RTP_TS  = "gameListRtpTs.v1";
   const RTP_INTERVAL_MS = 10 * 60 * 1000;
+
+  const RTP_META_KEY = "__meta";
+
+async function ensureRtpFreshFirebase(gameKeys){
+  if (!gameKeys || !gameKeys.length) return {};
+
+  const now = Date.now();
+
+  // baca meta ts
+  const tsSnap = await gameRtpRef.child(RTP_META_KEY).child("ts").once("value");
+  const lastTs = Number(tsSnap.val() || 0);
+
+  const needRotate = (!lastTs) || (now - lastTs >= RTP_INTERVAL_MS);
+
+  // baca semua rtp map
+  const snap = await gameRtpRef.once("value");
+  let map = snap.val() || {};
+  delete map[RTP_META_KEY];
+
+  if (needRotate) {
+    const updates = {};
+    gameKeys.forEach(k => { updates[k] = randRtp(); });
+    updates[`${RTP_META_KEY}/ts`] = now;
+    await gameRtpRef.update(updates);
+
+    // return new map only for keys
+    const out = {};
+    gameKeys.forEach(k => out[k] = updates[k]);
+    return out;
+  }
+
+  // kalau tak rotate, pastikan semua key ada value
+  const missing = {};
+  gameKeys.forEach(k => {
+    if (typeof map[k] !== "number") missing[k] = randRtp();
+  });
+
+  if (Object.keys(missing).length) {
+    await gameRtpRef.update(missing);
+    Object.assign(map, missing);
+  }
+
+  // buang key yang dah tak wujud (optional)
+  // (tak wajib, boleh skip kalau takut delete)
+  return map;
+}
+
+let rtpTickerTimer = null;
+function startRtpTickerFirebase(renderFn){
+  if (rtpTickerTimer) clearInterval(rtpTickerTimer);
+
+  rtpTickerTimer = setInterval(async () => {
+    try{
+      const rawKeys = window.__gameListKeys || [];
+      await ensureRtpFreshFirebase(rawKeys);
+      if (typeof renderFn === "function") await renderFn();
+    }catch(e){
+      console.warn("RTP ticker failed:", e);
+    }
+  }, 15 * 1000);
+}
 
 
 let playedMapGlobal = {}; 
@@ -579,7 +641,7 @@ function tickPlayedFirebase(entries){
 
   let lastGameListData = null;
 
-  function renderGameList(dataObj) {
+  async function renderGameList(dataObj) {
     if (!gameListGrid) return;
 
     const data = dataObj || {};
@@ -601,7 +663,7 @@ function tickPlayedFirebase(entries){
     window.__gameListKeys = entries.map(e => e.key);
 
     
-    const rtpMap = ensureRtpFresh(window.__gameListKeys);
+    const rtpMap = await ensureRtpFreshFirebase(window.__gameListKeys);
 
     entries.forEach((g) => {
       const imgUrl  = g.imageUrl || g.imgUrl || g.image || "";
@@ -686,11 +748,11 @@ function tickPlayedFirebase(entries){
   if (gameListGrid) {
     gameListRef.on("value", (snap) => {
       lastGameListData = snap.val() || {};
-      renderGameList(lastGameListData);
+      await renderGameList(lastGameListData);
       markLoaded("gamelist");
 
     
-      startRtpTicker(() => renderGameList(lastGameListData));
+     startRtpTickerFirebase(() => renderGameList(lastGameListData));
     });
 
 if (!window.__playedTimer) {
