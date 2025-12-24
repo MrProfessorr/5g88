@@ -469,6 +469,8 @@ gamePlayedRef.on("value", snap => {
 function paintPlayedToDom(map){
   document.querySelectorAll(".game-card[data-key]").forEach(card=>{
     const key = card.dataset.key;
+    if (key === "__meta") return;
+
     const numEl = card.querySelector(".played-num");
     if (!numEl) return;
 
@@ -479,19 +481,30 @@ function paintPlayedToDom(map){
 
 
 function tickPlayedFirebase(entries){
-  entries.forEach(g=>{
+  entries.forEach(g => {
     const key = g.key;
     const max = getMaxPlayed(g);
 
-    const prev = Number(playedMapGlobal?.[key]?.value ?? 0);
-    const step = Math.floor(Math.random()*5) + 1;
-    const dir  = Math.random() < 0.6 ? 1 : -1;
+    gamePlayedRef.child(key).transaction((curr) => {
+      const prev = Number(curr?.value ?? 0);
 
-    let next = clamp(prev + step * dir, 0, max);
+      // ✅ 70% naik, 30% turun
+      const goingUp = Math.random() < 0.7;
 
-    gamePlayedRef.child(key).set({
-      value: next,
-      updatedAt: firebase.database.ServerValue.TIMESTAMP
+      // ✅ naik cepat, turun slow
+      const step = goingUp
+        ? (Math.floor(Math.random() * 25) + 10)  // 10..34
+        : (Math.floor(Math.random() * 4) + 1);   // 1..4
+
+      let next = prev + (goingUp ? step : -step);
+
+      // ✅ max ikut admin, min 0
+      next = clamp(next, 0, max);
+
+      return {
+        value: next,
+        updatedAt: firebase.database.ServerValue.TIMESTAMP
+      };
     });
   });
 }
