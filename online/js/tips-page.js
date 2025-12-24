@@ -674,7 +674,7 @@ document.addEventListener("DOMContentLoaded", () => {
       markLoaded("gamelist");
 
       // start ticker safely
-      startRtpTickerFirebase(() => renderGameList(lastGameListData));
+      startRtpTickerFirebase(updateRtpOnly);
     });
 
     // ✅ ONE played timer only
@@ -690,7 +690,51 @@ document.addEventListener("DOMContentLoaded", () => {
   } else {
     markLoaded("gamelist");
   }
+async function updateRtpOnly(){
+  try{
+    const keys = window.__gameListKeys || [];
+    if (!keys.length) return;
 
+    // ensure rtp latest (rotate/missing fill)
+    const rtpMap = await ensureRtpFreshFirebase(keys);
+
+    // update DOM sahaja (tak buang card)
+    document.querySelectorAll(".game-card[data-key]").forEach(card=>{
+      const key = card.dataset.key;
+      const rtpEl = card.querySelector(".game-rtp");
+      const badgeRtpEl = card.querySelector(".game-hot-badge .rtp");
+
+      if (!rtpEl) return;
+
+      const rtp = Number(rtpMap[key] ?? randRtp());
+      rtpEl.textContent = `${rtp.toFixed(1)}%`;
+
+      // HOT badge update
+      const isHot = rtp > 95;
+
+      if (isHot) {
+        if (badgeRtpEl) {
+          badgeRtpEl.textContent = `RTP ${rtp.toFixed(1)}%`;
+        } else {
+          // kalau badge belum ada, buat sekali sahaja
+          const imgWrap = card.querySelector(".game-img-wrap");
+          if (imgWrap && !imgWrap.querySelector(".game-hot-badge")) {
+            const hot = document.createElement("div");
+            hot.className = "game-hot-badge";
+            hot.innerHTML = `<span class="hot">HOT</span><span class="rtp">RTP ${rtp.toFixed(1)}%</span>`;
+            imgWrap.prepend(hot);
+          }
+        }
+      } else {
+        // kalau tak hot, buang badge kalau ada
+        const badge = card.querySelector(".game-hot-badge");
+        if (badge) badge.remove();
+      }
+    });
+  }catch(e){
+    console.warn("updateRtpOnly failed:", e);
+  }
+}
   // =========================
   // ✅ FLOATING BUTTONS RENDER
   // =========================
