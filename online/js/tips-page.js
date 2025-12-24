@@ -1,8 +1,11 @@
-
-
 document.addEventListener("DOMContentLoaded", () => {
+  // =========================
+  // ✅ LOADING OVERLAY
+  // =========================
   const loaderEl   = document.getElementById("pageLoading");
   const appShellEl = document.getElementById("appShell");
+
+  let loadingHiddenOnce = false;
 
   function showLoading() {
     if (loaderEl) {
@@ -20,6 +23,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function hideLoading() {
+    if (loadingHiddenOnce) return;
+    loadingHiddenOnce = true;
+
     if (appShellEl) {
       appShellEl.style.transition = "opacity .35s ease, filter .35s ease";
       appShellEl.style.opacity = "1";
@@ -42,7 +48,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   showLoading();
 
- 
+  // =========================
+  // ✅ ELEMENTS
+  // =========================
   const gridEl         = document.getElementById("tipsCardsGrid");
   const promoGridEl    = document.getElementById("promoGrid");
   const promoBigGridEl = document.getElementById("promoBigGrid");
@@ -50,11 +58,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const homePage     = document.getElementById("homePage");
   const hotGamePage  = document.getElementById("hotGamePage");
-  const gameListPage = document.getElementById("gameListPage");     
-  const gameListGrid = document.getElementById("gameListGrid");     
+  const gameListPage = document.getElementById("gameListPage");
+  const gameListGrid = document.getElementById("gameListGrid");
   const promoPage    = document.getElementById("promoPage");
   const partnerPage  = document.getElementById("partnerPage");
-
 
   if (homePage)     homePage.style.display     = "none";
   if (hotGamePage)  hotGamePage.style.display  = "none";
@@ -62,30 +69,30 @@ document.addEventListener("DOMContentLoaded", () => {
   if (promoPage)    promoPage.style.display    = "none";
   if (partnerPage)  partnerPage.style.display  = "none";
 
- 
-  const bottomNavItems     = document.querySelectorAll(".bottom-nav-item");
-  const bottomHomeBtn      = document.querySelector('.bottom-nav-item[data-tab="home"]');
-  const bottomHotBtn       = document.querySelector('.bottom-nav-item[data-tab="hot"]');
-  const bottomGameListBtn  = document.querySelector('.bottom-nav-item[data-tab="gamelist"]');
-  const bottomPromoBtn     = document.querySelector('.bottom-nav-item[data-tab="promo"]');
-  const bottomPartnerBtn   = document.querySelector('.bottom-nav-item[data-tab="partner"]');
+  // =========================
+  // ✅ BOTTOM NAV
+  // =========================
+  const bottomNavItems    = document.querySelectorAll(".bottom-nav-item");
+  const bottomHomeBtn     = document.querySelector('.bottom-nav-item[data-tab="home"]');
+  const bottomHotBtn      = document.querySelector('.bottom-nav-item[data-tab="hot"]');
+  const bottomGameListBtn = document.querySelector('.bottom-nav-item[data-tab="gamelist"]');
+  const bottomPromoBtn    = document.querySelector('.bottom-nav-item[data-tab="promo"]');
+  const bottomPartnerBtn  = document.querySelector('.bottom-nav-item[data-tab="partner"]');
 
-function updateBottomNavActive(tab) {
-  if (!bottomNavItems || !bottomNavItems.length) return;
-  bottomNavItems.forEach(btn => {
-    const t = btn.dataset.tab;
+  function updateBottomNavActive(tab) {
+    if (!bottomNavItems || !bottomNavItems.length) return;
+    bottomNavItems.forEach(btn => {
+      const t = btn.dataset.tab;
+      if (btn.dataset.sidebarOnly === "true") return;
+      if (!t) return;
+      btn.classList.toggle("active", t === tab);
+    });
+  }
 
-   
-    if (btn.dataset.sidebarOnly === "true") return;
-    if (!t) return;
-
-    btn.classList.toggle("active", t === tab);
-  });
-}
-
-
+  // =========================
+  // ✅ RATE GAME TIME
+  // =========================
   const rateGameTimeEl = document.getElementById("rateGameTime");
-
   function updateRateGameTime() {
     if (!rateGameTimeEl) return;
     const now = new Date();
@@ -102,13 +109,14 @@ function updateBottomNavActive(tab) {
 
     rateGameTimeEl.textContent = `RATE GAME : ${hours}:${mins}:${secs} ${day} ${month} ${year}`;
   }
-
   if (rateGameTimeEl) {
     updateRateGameTime();
     setInterval(updateRateGameTime, 1000);
   }
 
-
+  // =========================
+  // ✅ FLOATING CONTACTS
+  // =========================
   const floatingLeftEl  = document.getElementById("floatingLeft");
   const floatingRightEl = document.getElementById("floatingRight");
 
@@ -116,11 +124,13 @@ function updateBottomNavActive(tab) {
   let floatingCollapsed = false;
   try { floatingCollapsed = localStorage.getItem(FLOAT_COLLAPSE_KEY) === "1"; } catch (e) {}
 
-
-  const sideMenuBtn   = document.getElementById("sideMenuBtn");
-  const sideMenu      = document.getElementById("sideMenu");
-  const sideOverlay   = document.getElementById("sideOverlay");
-  const sideMenuList  = document.getElementById("sideMenuList");
+  // =========================
+  // ✅ SIDEBAR MENU
+  // =========================
+  const sideMenuBtn  = document.getElementById("sideMenuBtn");
+  const sideMenu     = document.getElementById("sideMenu");
+  const sideOverlay  = document.getElementById("sideOverlay");
+  const sideMenuList = document.getElementById("sideMenuList");
 
   function openSidebar() {
     if (!sideMenu || !sideOverlay) return;
@@ -132,21 +142,21 @@ function updateBottomNavActive(tab) {
     sideMenu.classList.remove("open");
     sideOverlay.classList.remove("show");
   }
-
   if (sideMenuBtn) sideMenuBtn.addEventListener("click", openSidebar);
   if (sideOverlay) sideOverlay.addEventListener("click", closeSidebar);
 
-
+  // =========================
+  // ✅ TAB SYSTEM
+  // =========================
   const TAB_KEY = "tipsPageActiveTab";
   let currentTab = "home";
 
   try {
     const saved = localStorage.getItem(TAB_KEY);
-    if (["home","hot","gamelist","promo","partner"].includes(saved)) currentTab = saved; 
+    if (["home","hot","gamelist","promo","partner"].includes(saved)) currentTab = saved;
   } catch (e) {}
 
- 
-  let navConfig = { home: true, hot: true, gamelist: true, promo: true, partner: true }; 
+  let navConfig = { home: true, hot: true, gamelist: true, promo: true, partner: true };
 
   function getFirstEnabledTab() {
     const order = ["home","hot","gamelist","promo","partner"];
@@ -184,20 +194,16 @@ function updateBottomNavActive(tab) {
     }
 
     try { localStorage.setItem(TAB_KEY, currentTab); } catch (e) {}
-
     updateBottomNavActive(currentTab);
     updateSidebarActive(currentTab);
   }
 
-  window.handleBottomNavClick = function(tab) {
-    setActiveTab(tab);
-  };
-
-  window.showHome        = () => setActiveTab("home");
-  window.showHotGame     = () => setActiveTab("hot");
-  window.showGameList    = () => setActiveTab("gamelist");
-  window.showPromotion   = () => setActiveTab("promo");
-  window.showPartner     = () => setActiveTab("partner");
+  window.handleBottomNavClick = function(tab) { setActiveTab(tab); };
+  window.showHome      = () => setActiveTab("home");
+  window.showHotGame   = () => setActiveTab("hot");
+  window.showGameList  = () => setActiveTab("gamelist");
+  window.showPromotion = () => setActiveTab("promo");
+  window.showPartner   = () => setActiveTab("partner");
   window.showPartnership = window.showPartner;
 
   function buildSidebarItems() {
@@ -205,10 +211,9 @@ function updateBottomNavActive(tab) {
     sideMenuList.innerHTML = "";
 
     const bottomButtons = document.querySelectorAll(".bottom-nav-item");
-
     bottomButtons.forEach((btn) => {
       const tab = btn.dataset.tab;
-      if (!tab) return; 
+      if (!tab) return;
 
       const isSidebarOnly = btn.dataset.sidebarOnly === "true";
       if (btn.style.display === "none" && !isSidebarOnly) return;
@@ -222,9 +227,7 @@ function updateBottomNavActive(tab) {
       item.dataset.tab = tab;
 
       item.innerHTML = `
-        <span class="side-menu-ico">
-          ${iconSrc ? `<img src="${iconSrc}" alt="">` : ""}
-        </span>
+        <span class="side-menu-ico">${iconSrc ? `<img src="${iconSrc}" alt="">` : ""}</span>
         <span class="side-menu-text">${label}</span>
       `;
 
@@ -239,99 +242,97 @@ function updateBottomNavActive(tab) {
     updateSidebarActive(currentTab);
   }
 
- 
   setActiveTab(currentTab);
 
+  // =========================
+  // ✅ HOME SLIDER
+  // =========================
+  (function initHomeSlider(){
+    const track = document.getElementById("slideTrack");
+    if (!track) return;
 
-(function initHomeSlider(){
-  const track = document.getElementById("slideTrack");
-  if (!track) return;
+    const prevBtn = document.getElementById("sliderPrev");
+    const nextBtn = document.getElementById("sliderNext");
 
-  const prevBtn = document.getElementById("sliderPrev");
-  const nextBtn = document.getElementById("sliderNext");
+    let slides = Array.from(track.children).filter(el => el.tagName === "IMG" || el.querySelector?.("img") || el.classList?.contains("slide"));
+    if (!slides.length) slides = Array.from(track.querySelectorAll("img"));
 
-  let slides = Array.from(track.children).filter(el => el.tagName === "IMG" || el.querySelector?.("img") || el.classList?.contains("slide"));
-  
+    const realCount = slides.length;
+    if (realCount <= 1) return;
 
-  
-  if (!slides.length) slides = Array.from(track.querySelectorAll("img"));
+    const firstClone = slides[0].cloneNode(true);
+    const lastClone  = slides[realCount - 1].cloneNode(true);
 
-  const realCount = slides.length;
-  if (realCount <= 1) return;
+    track.insertBefore(lastClone, track.firstChild);
+    track.appendChild(firstClone);
 
-  
-  const firstClone = slides[0].cloneNode(true);
-  const lastClone  = slides[realCount - 1].cloneNode(true);
+    let index = 1;
+    let isAnimating = false;
+    const DURATION = 800;
+    const INTERVAL = 3500;
 
-  track.insertBefore(lastClone, track.firstChild);
-  track.appendChild(firstClone);
-
-  let index = 1; 
-  let isAnimating = false;
-  const DURATION = 800; 
-  const INTERVAL = 3500;
-
-  function setTransform(withAnim = true){
-    track.style.transition = withAnim ? `transform ${DURATION}ms ease-in-out` : "none";
-    track.style.transform = `translateX(-${index * 100}%)`;
-  }
-
-  
-  setTransform(false);
-
-  function goNext(){
-    if (isAnimating) return;
-    isAnimating = true;
-    index += 1;
-    setTransform(true);
-  }
-
-  function goPrev(){
-    if (isAnimating) return;
-    isAnimating = true;
-    index -= 1;
-    setTransform(true);
-  }
-
-  track.addEventListener("transitionend", () => {
-    
-    if (index === 0) {               
-      index = realCount;
-      setTransform(false);
+    function setTransform(withAnim = true){
+      track.style.transition = withAnim ? `transform ${DURATION}ms ease-in-out` : "none";
+      track.style.transform = `translateX(-${index * 100}%)`;
     }
-    if (index === realCount + 1) {   
-      index = 1;
-      setTransform(false);
+
+    setTransform(false);
+
+    function goNext(){
+      if (isAnimating) return;
+      isAnimating = true;
+      index += 1;
+      setTransform(true);
     }
-    isAnimating = false;
-  });
 
-  
-  let timer = setInterval(goNext, INTERVAL);
+    function goPrev(){
+      if (isAnimating) return;
+      isAnimating = true;
+      index -= 1;
+      setTransform(true);
+    }
 
-  function resetTimer(){
-    clearInterval(timer);
-    timer = setInterval(goNext, INTERVAL);
-  }
+    track.addEventListener("transitionend", () => {
+      if (index === 0) {
+        index = realCount;
+        setTransform(false);
+      }
+      if (index === realCount + 1) {
+        index = 1;
+        setTransform(false);
+      }
+      isAnimating = false;
+    });
 
-  if (nextBtn) nextBtn.addEventListener("click", () => { goNext(); resetTimer(); });
-  if (prevBtn) prevBtn.addEventListener("click", () => { goPrev(); resetTimer(); });
+    let timer = setInterval(goNext, INTERVAL);
 
-  
-  const slider = track.closest(".home-hero-slider");
-  if (slider) {
-    slider.addEventListener("mouseenter", () => clearInterval(timer));
-    slider.addEventListener("mouseleave", () => timer = setInterval(goNext, INTERVAL));
-  }
-})();
+    function resetTimer(){
+      clearInterval(timer);
+      timer = setInterval(goNext, INTERVAL);
+    }
 
- 
+    if (nextBtn) nextBtn.addEventListener("click", () => { goNext(); resetTimer(); });
+    if (prevBtn) prevBtn.addEventListener("click", () => { goPrev(); resetTimer(); });
+
+    const slider = track.closest(".home-hero-slider");
+    if (slider) {
+      slider.addEventListener("mouseenter", () => clearInterval(timer));
+      slider.addEventListener("mouseleave", () => timer = setInterval(goNext, INTERVAL));
+    }
+  })();
+
+  // =========================
+  // ✅ FIREBASE READY CHECK
+  // =========================
   if (!window.firebase || !window.db) {
     console.error("Firebase belum siap. Cek script firebase di HTML.");
     hideLoading();
     return;
   }
 
+  // =========================
+  // ✅ FIREBASE REFS
+  // =========================
   const cardsRef     = db.ref("tips_cards");
   const promosRef    = db.ref("promo_banners");
   const promoBigRef  = db.ref("promotions");
@@ -339,12 +340,14 @@ function updateBottomNavActive(tab) {
   const navTabsRef   = db.ref("nav_tabs");
   const floatingRef  = db.ref("floating_buttons");
 
-  
-  const gameListRef  = db.ref("game_list");
+  const gameListRef   = db.ref("game_list");
   const gamePlayedRef = db.ref("game_list_played");
-  const gameRtpRef = db.ref("game_list_rtp");
+  const gameRtpRef    = db.ref("game_list_rtp");
+  const playedMetaRef = db.ref("game_list_played_meta");
 
- 
+  // =========================
+  // ✅ LOADING GATE
+  // =========================
   const MIN_LOADING_MS = 650;
   const startAt = Date.now();
 
@@ -355,7 +358,7 @@ function updateBottomNavActive(tab) {
     promoBig: false,
     partners: false,
     cards: !gridEl,
-    gamelist: !gameListGrid 
+    gamelist: !gameListGrid
   };
 
   function markLoaded(k) {
@@ -368,24 +371,26 @@ function updateBottomNavActive(tab) {
     setTimeout(hideLoading, wait);
   }
 
-  
+  // fallback max 8s
   setTimeout(() => hideLoading(), 8000);
 
- 
+  // =========================
+  // ✅ APPLY NAV CONFIG
+  // =========================
   function applyNavConfig(cfgRaw) {
-    const defaults = { home:true, hot:true, gamelist:true, promo:true, partner:true }; 
+    const defaults = { home:true, hot:true, gamelist:true, promo:true, partner:true };
     navConfig = { ...defaults, ...(cfgRaw || {}) };
 
-    if (bottomHomeBtn)     bottomHomeBtn.style.display     = navConfig.home     ? "" : "none";
-    if (bottomHotBtn)      bottomHotBtn.style.display      = navConfig.hot      ? "" : "none";
-      
+    if (bottomHomeBtn) bottomHomeBtn.style.display = navConfig.home ? "" : "none";
+    if (bottomHotBtn)  bottomHotBtn.style.display  = navConfig.hot  ? "" : "none";
+
     if (bottomGameListBtn) {
-    const sidebarOnly = bottomGameListBtn.dataset.sidebarOnly === "true";
-    bottomGameListBtn.style.display = sidebarOnly ? "none" : (navConfig.gamelist ? "" : "none");
+      const sidebarOnly = bottomGameListBtn.dataset.sidebarOnly === "true";
+      bottomGameListBtn.style.display = sidebarOnly ? "none" : (navConfig.gamelist ? "" : "none");
     }
 
-    if (bottomPromoBtn)    bottomPromoBtn.style.display    = navConfig.promo    ? "" : "none";
-    if (bottomPartnerBtn)  bottomPartnerBtn.style.display  = navConfig.partner  ? "" : "none";
+    if (bottomPromoBtn)   bottomPromoBtn.style.display   = navConfig.promo   ? "" : "none";
+    if (bottomPartnerBtn) bottomPartnerBtn.style.display = navConfig.partner ? "" : "none";
 
     setActiveTab(currentTab);
     buildSidebarItems();
@@ -398,247 +403,167 @@ function updateBottomNavActive(tab) {
 
   buildSidebarItems();
 
- 
-  const GAME_RTP_KEY = "gameListRtpMap.v1";
-  const GAME_RTP_TS  = "gameListRtpTs.v1";
-  const RTP_INTERVAL_MS = 10 * 60 * 1000;
-
+  // =========================
+  // ✅ RTP + PLAYED (FIREBASE ONLY)
+  // =========================
+  const RTP_INTERVAL_MS = 10 * 60 * 1000; // 10 min rotate
   const RTP_META_KEY = "__meta";
 
-async function ensureRtpFreshFirebase(gameKeys){
-  if (!gameKeys || !gameKeys.length) return {};
-
-  const now = Date.now();
-
-  // baca meta ts
-  const tsSnap = await gameRtpRef.child(RTP_META_KEY).child("ts").once("value");
-  const lastTs = Number(tsSnap.val() || 0);
-
-  const needRotate = (!lastTs) || (now - lastTs >= RTP_INTERVAL_MS);
-
-  // baca semua rtp map
-  const snap = await gameRtpRef.once("value");
-  let map = snap.val() || {};
-  delete map[RTP_META_KEY];
-
-  if (needRotate) {
-    const updates = {};
-    gameKeys.forEach(k => { updates[k] = randRtp(); });
-    updates[`${RTP_META_KEY}/ts`] = now;
-    await gameRtpRef.update(updates);
-
-    // return new map only for keys
-    const out = {};
-    gameKeys.forEach(k => out[k] = updates[k]);
-    return out;
-  }
-
-  // kalau tak rotate, pastikan semua key ada value
-  const missing = {};
-  gameKeys.forEach(k => {
-    if (typeof map[k] !== "number") missing[k] = randRtp();
-  });
-
-  if (Object.keys(missing).length) {
-    await gameRtpRef.update(missing);
-    Object.assign(map, missing);
-  }
-
-  // buang key yang dah tak wujud (optional)
-  // (tak wajib, boleh skip kalau takut delete)
-  return map;
-}
-
-let rtpTickerTimer = null;
-function startRtpTickerFirebase(renderFn){
-  if (rtpTickerTimer) clearInterval(rtpTickerTimer);
-
-  rtpTickerTimer = setInterval(async () => {
-    try{
-      const rawKeys = window.__gameListKeys || [];
-      await ensureRtpFreshFirebase(rawKeys);
-      if (typeof renderFn === "function") await renderFn();
-    }catch(e){
-      console.warn("RTP ticker failed:", e);
-    }
-  }, 15 * 1000);
-}
-
-
-let playedMapGlobal = {}; 
-
-
-const playedMetaRef = db.ref("game_list_played_meta");
-
-function todayStrMY(){
-  
-  const now = new Date();
-  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-  const my  = new Date(utc + (8 * 60 * 60000));
-
-  const y = my.getFullYear();
-  const m = String(my.getMonth() + 1).padStart(2, "0");
-  const d = String(my.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
-}
-
-async function checkDailyPlayedReset(entries){
-  if (!entries || !entries.length) return;
-
-  const today = todayStrMY();
-
-  try{
-    const snap = await playedMetaRef.child("lastResetDate").once("value");
-    const last = snap.val();
-    if (last === today) return;
-
-    console.log("🔁 DAILY RESET PLAYED COUNTER:", today);
-
-    // ✅ reset satu-satu ikut child ($key)
-    const jobs = entries.map(g => {
-      if (!g?.key) return Promise.resolve();
-      return gamePlayedRef.child(g.key).update({
-        value: 0,
-        updatedAt: firebase.database.ServerValue.TIMESTAMP
-      });
-    });
-
-    // ✅ meta disimpan asing (ok)
-    jobs.push(playedMetaRef.child("lastResetDate").set(today));
-
-    await Promise.all(jobs);
-
-  } catch(err){
-    console.warn("Daily reset failed:", err);
-  }
-}
-
-function clamp(n, min, max){
-  n = Number(n);
-  if (!isFinite(n)) n = 0;
-  return Math.max(min, Math.min(max, Math.floor(n)));
-}
-
-function getMaxPlayed(g){
-  const raw = Number(g?.playedMax ?? 398);
-  return (isFinite(raw) && raw > 0) ? Math.floor(raw) : 398;
-}
-
-
-gamePlayedRef.on("value", snap => {
-  playedMapGlobal = snap.val() || {};
-  paintPlayedToDom(playedMapGlobal);
-});
-
-
-function paintPlayedToDom(map){
-  document.querySelectorAll(".game-card[data-key]").forEach(card=>{
-    const key = card.dataset.key;
-    if (key === "__meta") return;
-
-    const numEl = card.querySelector(".played-num");
-    if (!numEl) return;
-
-    const val = Number(map?.[key]?.value ?? 0);
-    numEl.textContent = String(isFinite(val) ? val : 0);
-  });
-}
-
-
-function tickPlayedFirebase(entries){
-  entries.forEach(g => {
-    const key = g.key;
-    const max = getMaxPlayed(g);
-
-    gamePlayedRef.child(key).transaction((curr) => {
-      const prev = Number(curr?.value ?? 0);
-
-      // ✅ 70% naik, 30% turun
-      const goingUp = Math.random() < 0.7;
-
-      // ✅ naik cepat, turun slow
-      const step = goingUp
-        ? (Math.floor(Math.random() * 25) + 10)  // 10..34
-        : (Math.floor(Math.random() * 4) + 1);   // 1..4
-
-      let next = prev + (goingUp ? step : -step);
-
-      // ✅ max ikut admin, min 0
-      next = clamp(next, 0, max);
-
-      return {
-        value: next,
-        updatedAt: firebase.database.ServerValue.TIMESTAMP
-      };
-    });
-  });
-}
   function randRtp() {
     const v = 89 + Math.random() * (98 - 89);
     return Math.round(v * 10) / 10;
   }
 
-  function safeJsonParse(s, fallback) {
-    try { return JSON.parse(s) ?? fallback; } catch(e) { return fallback; }
-  }
+  async function ensureRtpFreshFirebase(gameKeys) {
+    if (!gameKeys || !gameKeys.length) return {};
 
-  function getRtpMap() {
-    let map = {};
-    try { map = safeJsonParse(localStorage.getItem(GAME_RTP_KEY), {}) || {}; } catch(e) {}
-    return map;
-  }
-
-  function setRtpMap(map) {
-    try { localStorage.setItem(GAME_RTP_KEY, JSON.stringify(map || {})); } catch(e) {}
-  }
-
-  function getLastRtpTs() {
-    try { return Number(localStorage.getItem(GAME_RTP_TS) || 0) || 0; } catch(e) { return 0; }
-  }
-
-  function setLastRtpTs(ts) {
-    try { localStorage.setItem(GAME_RTP_TS, String(ts || Date.now())); } catch(e) {}
-  }
-
-  function ensureRtpFresh(gameKeys) {
     const now = Date.now();
-    const last = getLastRtpTs();
-    let map = getRtpMap();
+    const tsSnap = await gameRtpRef.child(RTP_META_KEY).child("ts").once("value");
+    const lastTs = Number(tsSnap.val() || 0);
 
-    const needRotate = (!last) || (now - last >= RTP_INTERVAL_MS);
+    const needRotate = (!lastTs) || (now - lastTs >= RTP_INTERVAL_MS);
 
-    
-    const keep = new Set(gameKeys || []);
-    Object.keys(map).forEach(k => { if (!keep.has(k)) delete map[k]; });
+    const snap = await gameRtpRef.once("value");
+    let map = snap.val() || {};
+    delete map[RTP_META_KEY];
 
     if (needRotate) {
-      
-      (gameKeys || []).forEach(k => { map[k] = randRtp(); });
-      setLastRtpTs(now);
-      setRtpMap(map);
-    } else {
-      
-      (gameKeys || []).forEach(k => {
-        if (typeof map[k] !== "number") map[k] = randRtp();
-      });
-      setRtpMap(map);
+      const updates = {};
+      gameKeys.forEach(k => { updates[k] = randRtp(); });
+      updates[`${RTP_META_KEY}/ts`] = now;
+      await gameRtpRef.update(updates);
+
+      const out = {};
+      gameKeys.forEach(k => out[k] = updates[k]);
+      return out;
+    }
+
+    const missing = {};
+    gameKeys.forEach(k => {
+      if (typeof map[k] !== "number") missing[k] = randRtp();
+    });
+
+    if (Object.keys(missing).length) {
+      await gameRtpRef.update(missing);
+      Object.assign(map, missing);
     }
 
     return map;
   }
 
-  
   let rtpTickerTimer = null;
-  function startRtpTicker(renderFn) {
+  function startRtpTickerFirebase(renderFn) {
     if (rtpTickerTimer) clearInterval(rtpTickerTimer);
-    rtpTickerTimer = setInterval(() => {
-      
-      const rawKeys = (window.__gameListKeys || []);
-      ensureRtpFresh(rawKeys);
-      if (typeof renderFn === "function") renderFn();
-    }, 15 * 1000); 
+
+    rtpTickerTimer = setInterval(async () => {
+      try {
+        const rawKeys = window.__gameListKeys || [];
+        if (!rawKeys.length) return;
+
+        await ensureRtpFreshFirebase(rawKeys);
+        if (typeof renderFn === "function") await renderFn();
+      } catch (e) {
+        console.warn("RTP ticker failed:", e);
+      }
+    }, 15 * 1000);
   }
 
+  let playedMapGlobal = {};
+
+  function todayStrMY(){
+    const now = new Date();
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    const my  = new Date(utc + (8 * 60 * 60000));
+
+    const y = my.getFullYear();
+    const m = String(my.getMonth() + 1).padStart(2, "0");
+    const d = String(my.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }
+
+  async function checkDailyPlayedReset(entries){
+    if (!entries || !entries.length) return;
+
+    const today = todayStrMY();
+    try{
+      const snap = await playedMetaRef.child("lastResetDate").once("value");
+      const last = snap.val();
+      if (last === today) return;
+
+      console.log("🔁 DAILY RESET PLAYED COUNTER:", today);
+
+      const jobs = entries.map(g => {
+        if (!g?.key) return Promise.resolve();
+        return gamePlayedRef.child(g.key).update({
+          value: 0,
+          updatedAt: firebase.database.ServerValue.TIMESTAMP
+        });
+      });
+
+      jobs.push(playedMetaRef.child("lastResetDate").set(today));
+      await Promise.all(jobs);
+
+    } catch(err){
+      console.warn("Daily reset failed:", err);
+    }
+  }
+
+  function clamp(n, min, max){
+    n = Number(n);
+    if (!isFinite(n)) n = 0;
+    return Math.max(min, Math.min(max, Math.floor(n)));
+  }
+
+  function getMaxPlayed(g){
+    const raw = Number(g?.playedMax ?? 398);
+    return (isFinite(raw) && raw > 0) ? Math.floor(raw) : 398;
+  }
+
+  function paintPlayedToDom(map){
+    document.querySelectorAll(".game-card[data-key]").forEach(card=>{
+      const key = card.dataset.key;
+      if (key === "__meta") return;
+
+      const numEl = card.querySelector(".played-num");
+      if (!numEl) return;
+
+      const val = Number(map?.[key]?.value ?? 0);
+      numEl.textContent = String(isFinite(val) ? val : 0);
+    });
+  }
+
+  gamePlayedRef.on("value", snap => {
+    playedMapGlobal = snap.val() || {};
+    paintPlayedToDom(playedMapGlobal);
+  });
+
+  function tickPlayedFirebase(entries){
+    entries.forEach(g => {
+      const key = g.key;
+      const max = getMaxPlayed(g);
+
+      gamePlayedRef.child(key).transaction((curr) => {
+        const prev = Number(curr?.value ?? 0);
+
+        const goingUp = Math.random() < 0.7;
+        const step = goingUp
+          ? (Math.floor(Math.random() * 25) + 10)  // 10..34
+          : (Math.floor(Math.random() * 4) + 1);   // 1..4
+
+        let next = prev + (goingUp ? step : -step);
+        next = clamp(next, 0, max);
+
+        return {
+          value: next,
+          updatedAt: firebase.database.ServerValue.TIMESTAMP
+        };
+      });
+    });
+  }
+
+  // =========================
+  // ✅ GAMELIST RENDER
+  // =========================
   let lastGameListData = null;
 
   async function renderGameList(dataObj) {
@@ -651,18 +576,16 @@ function tickPlayedFirebase(entries){
       .map(([key, g]) => ({ key, ...(g || {}) }))
       .filter(g => g && g.enabled !== false);
 
-      window.__gameListEntries = entries;
-      checkDailyPlayedReset(entries);
-    
+    window.__gameListEntries = entries;
+
     if (!entries.length) {
       gameListGrid.innerHTML = '<p class="text-muted small">Belum ada game list. Admin boleh tambah dari panel.</p>';
       return;
     }
 
-    
     window.__gameListKeys = entries.map(e => e.key);
 
-    
+    await checkDailyPlayedReset(entries);
     const rtpMap = await ensureRtpFreshFirebase(window.__gameListKeys);
 
     entries.forEach((g) => {
@@ -674,9 +597,9 @@ function tickPlayedFirebase(entries){
       const isHot = rtp > 95;
 
       const card = document.createElement("article");
-      card.className = "game-card"; 
+      card.className = "game-card";
       card.setAttribute("data-key", g.key);
-      // image wrap
+
       const imgWrap = document.createElement("div");
       imgWrap.className = "game-img-wrap";
 
@@ -694,13 +617,12 @@ function tickPlayedFirebase(entries){
       img.src = imgUrl || "https://i.imgur.com/AM4LUPK.png";
       imgWrap.appendChild(img);
 
-      
       const meta = document.createElement("div");
       meta.className = "game-meta";
-      
+
       const titleRow = document.createElement("div");
       titleRow.className = "game-title-row";
-      
+
       const title = document.createElement("span");
       title.className = "game-title";
       title.textContent = name;
@@ -709,30 +631,29 @@ function tickPlayedFirebase(entries){
       percent.className = "game-rtp";
       percent.textContent = `${rtp.toFixed(1)}%`;
 
-      const btn = document.createElement("a");
-      btn.className = "game-play-btn";
-      btn.href = playUrl;
-      btn.target = "_blank";
-      btn.rel = "noopener noreferrer";
-      btn.textContent = "Play Now";
-
       titleRow.appendChild(title);
       titleRow.appendChild(percent);
 
-      
       const playedRow = document.createElement("div");
       playedRow.className = "game-played";
 
       const playedLabel = document.createElement("span");
       playedLabel.textContent = "Played :";
 
-     const playedNum = document.createElement("span");
-     playedNum.className = "played-num";
-     const initialVal = Number(playedMapGlobal?.[g.key]?.value ?? 0);
-     playedNum.textContent = String(isFinite(initialVal) ? initialVal : 0);
+      const playedNum = document.createElement("span");
+      playedNum.className = "played-num";
+      const initialVal = Number(playedMapGlobal?.[g.key]?.value ?? 0);
+      playedNum.textContent = String(isFinite(initialVal) ? initialVal : 0);
 
       playedRow.appendChild(playedLabel);
       playedRow.appendChild(playedNum);
+
+      const btn = document.createElement("a");
+      btn.className = "game-play-btn";
+      btn.href = playUrl;
+      btn.target = "_blank";
+      btn.rel = "noopener noreferrer";
+      btn.textContent = "Play Now";
 
       meta.appendChild(titleRow);
       meta.appendChild(playedRow);
@@ -746,29 +667,33 @@ function tickPlayedFirebase(entries){
   }
 
   if (gameListGrid) {
-    gameListRef.on("value", (snap) => {
+    // ✅ FIX: callback must be async to use await
+    gameListRef.on("value", async (snap) => {
       lastGameListData = snap.val() || {};
       await renderGameList(lastGameListData);
       markLoaded("gamelist");
 
-    
-     startRtpTickerFirebase(() => renderGameList(lastGameListData));
+      // start ticker safely
+      startRtpTickerFirebase(() => renderGameList(lastGameListData));
     });
 
-if (!window.__playedTimer) {
-  window.__playedTimer = setInterval(async () => {
-    const entries = window.__gameListEntries || [];
-    if (!entries.length) return;
+    // ✅ ONE played timer only
+    if (!window.__playedTimer) {
+      window.__playedTimer = setInterval(async () => {
+        const entries = window.__gameListEntries || [];
+        if (!entries.length) return;
 
-    await checkDailyPlayedReset(entries); // ✅ reset kalau hari baru
-    tickPlayedFirebase(entries);          // ✅ lepas tu baru random tick
-  }, 60 * 1000);
-}
+        await checkDailyPlayedReset(entries);
+        tickPlayedFirebase(entries);
+      }, 60 * 1000);
+    }
   } else {
     markLoaded("gamelist");
   }
 
-
+  // =========================
+  // ✅ FLOATING BUTTONS RENDER
+  // =========================
   function renderFloatingButtons(snapshot) {
     const data = snapshot.val() || {};
     const wa   = data.whatsapp || {};
@@ -779,9 +704,7 @@ if (!window.__playedTimer) {
       floatingLeftEl.innerHTML = "";
       floatingLeftEl.classList.toggle("collapsed", floatingCollapsed);
     }
-    if (floatingRightEl) {
-      floatingRightEl.innerHTML = "";
-    }
+    if (floatingRightEl) floatingRightEl.innerHTML = "";
 
     function createFloatingBtn(cfg, extraClass, labelText) {
       if (!cfg || !cfg.enabled || !cfg.link) return null;
@@ -818,8 +741,8 @@ if (!window.__playedTimer) {
     const tgBtn   = createFloatingBtn(tg,   "floating-tg",   "TG");
     const joinBtn = createFloatingBtn(join, "floating-join", "JOIN");
 
-    if (waBtn)   stack.appendChild(waBtn);
-    if (tgBtn)   stack.appendChild(tgBtn);
+    if (waBtn) stack.appendChild(waBtn);
+    if (tgBtn) stack.appendChild(tgBtn);
     if (joinBtn) stack.appendChild(joinBtn);
 
     floatingLeftEl.appendChild(stack);
@@ -852,7 +775,9 @@ if (!window.__playedTimer) {
     markLoaded("floating");
   });
 
-
+  // =========================
+  // ✅ PROMO SLIDER (SMALL)
+  // =========================
   let promoSliderTimer = null;
 
   function renderPromos(snapshot) {
@@ -933,7 +858,9 @@ if (!window.__playedTimer) {
     markLoaded("promos");
   });
 
-
+  // =========================
+  // ✅ PROMO BIG
+  // =========================
   function renderPromoBig(snapshot) {
     if (!promoBigGridEl) return;
 
@@ -941,7 +868,6 @@ if (!window.__playedTimer) {
     promoBigGridEl.innerHTML = "";
 
     const entries = Object.entries(data).filter(([key, promo]) => promo && promo.enabled !== false);
-
     if (!entries.length) {
       promoBigGridEl.innerHTML = '<p class="text-muted small">Belum ada promotion aktif.</p>';
       return;
@@ -1001,7 +927,9 @@ if (!window.__playedTimer) {
     markLoaded("promoBig");
   });
 
-
+  // =========================
+  // ✅ PARTNERS
+  // =========================
   function normalizeTelegramLink(url) {
     if (!url) return "";
     let u = String(url).trim();
@@ -1110,7 +1038,9 @@ if (!window.__playedTimer) {
     markLoaded("partners");
   });
 
-
+  // =========================
+  // ✅ TIPS CARDS (HISTORY)
+  // =========================
   if (gridEl) {
     const STORAGE_KEY = "tipsHistory.v1";
     let historyObj = {};
@@ -1198,7 +1128,6 @@ if (!window.__playedTimer) {
         genBtn.textContent = "Generate";
 
         const state = getHistoryState(card.key);
-
         if (state.history.length > 0 && state.index >= 0) {
           output.textContent = state.history[state.index];
         }
@@ -1244,7 +1173,9 @@ if (!window.__playedTimer) {
     markLoaded("cards");
   }
 
- 
+  // =========================
+  // ✅ SHARE SHEET
+  // =========================
   const shareOverlay = document.getElementById("shareOverlay");
   const shareSheet   = document.getElementById("shareSheet");
   const shareInput   = document.getElementById("shareLinkInput");
@@ -1309,9 +1240,11 @@ if (!window.__playedTimer) {
       window.closeShareSheet();
     });
   }
+}); // ✅ DOMContentLoaded end
 
-}); // D* E*
-
+// =========================
+// ✅ BACK TO TOP (OUTSIDE)
+// =========================
 let scrollTimer;
 const btn = document.getElementById("backToTop");
 
@@ -1338,4 +1271,4 @@ if (btn) {
   btn.addEventListener("click", () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
-    }
+}
