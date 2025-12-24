@@ -342,14 +342,14 @@ if (platformSaveBtn) {
         games,
         updatedAt: firebase.database.ServerValue.TIMESTAMP,
       })
-      .then(() => {
-        alert("List game berjaya diupdate.");
-        closeGamesModalInternal();
-      })
-      .catch((err) => {
-        console.error("Gagal update list games:", err);
-        alert("Gagal update. Cek console.");
-      });
+.then(() => {
+  toastSuccess("List game berjaya diupdate ✅");
+  closeGamesModalInternal();
+})
+.catch((err) => {
+  console.error("Gagal update list games:", err);
+  toastError("Gagal update. Cek console.", { duration: 4500 });
+});
     });
   }
 
@@ -513,12 +513,12 @@ if (platformSaveBtn) {
         join:     { enabled: !!joinEnabled?.checked && !!joinLink, link: joinLink, iconUrl: joinIcon }
       };
 
-      floatingRef.set(payload)
-        .then(() => alert("Setting floating buttons berjaya disimpan."))
-        .catch((err) => {
-          console.error("Gagal simpan floating buttons:", err);
-          alert("Gagal simpan floating buttons. Cek console.");
-        });
+floatingRef.set(payload)
+  .then(() => toastSuccess("Setting floating buttons berjaya disimpan ✅"))
+  .catch((err) => {
+    console.error("Gagal simpan floating buttons:", err);
+    toastError("Gagal simpan floating buttons. Cek console.", { duration: 4500 });
+  });
     });
   }
 
@@ -567,12 +567,12 @@ if (platformSaveBtn) {
       const imageUrl = (gameListImageInput?.value || "").trim();
       const playUrl  = (gameListPlayInput?.value || "").trim();
 
-      if (!gameName) { alert("Isi nama game dulu bro."); gameListNameInput?.focus(); return; }
-      if (!imageUrl) { alert("Isi URL gambar dulu bro."); gameListImageInput?.focus(); return; }
-      if (!playUrl)  { alert("Isi link PlayNow dulu bro."); gameListPlayInput?.focus(); return; }
+if (!gameName) { toastWarn("Please fill Platform name."); gameListNameInput?.focus(); return; }
+if (!imageUrl) { toastWarn("Please fill URL image."); gameListImageInput?.focus(); return; }
+if (!playUrl)  { toastWarn("Please fill link Playnow"); gameListPlayInput?.focus(); return; }
 
-      if (!isValidUrl(imageUrl)) { alert("URL gambar tak valid bro. Pastikan ada https://"); return; }
-      if (!isValidUrl(playUrl))  { alert("Link PlayNow tak valid bro. Pastikan ada https://"); return; }
+if (!isValidUrl(imageUrl)) { toastWarn("URL image not valid. Example : https://"); return; }
+if (!isValidUrl(playUrl))  { toastWarn("Link PlayNow not valid. Example : https://"); return; }
       const playedMaxRaw = Number(gameListPlayedMaxInput?.value || 398);
       const playedMax = (isFinite(playedMaxRaw) && playedMaxRaw > 0) ? Math.floor(playedMaxRaw) : 398;
 
@@ -599,13 +599,13 @@ if (platformSaveBtn) {
     });
   });
 }
-      op.then(() => {
-        alert("Game list berjaya disimpan ✅");
-        closeGameListModalInternal();
-      }).catch((err) => {
-        console.error("Gagal simpan game list:", err);
-        alert("Gagal simpan game list. Cek console.");
-      });
+op.then(() => {
+  toastSuccess("Game list berjaya disimpan ✅");
+  closeGameListModalInternal();
+}).catch((err) => {
+  console.error("Gagal simpan game list:", err);
+  toastError("Gagal simpan game list. Cek console.", { duration: 4500 });
+});
     });
   }
 
@@ -752,12 +752,12 @@ if (platformSaveBtn) {
       const targetUrl = (promoTargetInput.value  || "").trim();
 
       if (!imageUrl) {
-        alert("Isi URL gambar dulu bro.");
+        toastWarn("Please fill URL image first.");
         promoImageInput.focus();
         return;
       }
       if (!targetUrl) {
-        alert("Isi Link Claim dulu bro.");
+        toastWarn("Please fill Link Claimed.");
         promoTargetInput.focus();
         return;
       }
@@ -773,12 +773,12 @@ if (platformSaveBtn) {
       if (currentPromoKey) {
         promosRef.child(currentPromoKey).update(payload)
           .then(() => {
-            alert("Promo banner berjaya diupdate.");
+            toastSuccess("Promo banner berjaya diupdate ✅");
             closePromoModalInternal();
           })
           .catch((err) => {
             console.error("Gagal update promo banner:", err);
-            alert("Gagal update promo. Cek console.");
+            toastSuccess("Gagal update promo. Cek console.");
           });
       } else {
         promosRef.push().set({ ...payload, enabled: true })
@@ -788,7 +788,7 @@ if (platformSaveBtn) {
           })
           .catch((err) => {
             console.error("Gagal simpan promo banner:", err);
-            alert("Gagal simpan promo. Cek console.");
+            toastError("Gagal simpan promo. Cek console.", { duration: 4500 });
           });
       }
     });
