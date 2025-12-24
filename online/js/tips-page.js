@@ -406,7 +406,7 @@ function updateBottomNavActive(tab) {
 let playedMapGlobal = {}; 
 
 
-const PLAYED_RESET_META = gamePlayedRef.child("__meta");
+const playedMetaRef = db.ref("game_list_played_meta");
 
 function todayStrMY(){
   
@@ -426,7 +426,7 @@ async function checkDailyPlayedReset(entries){
   const today = todayStrMY();
 
   try{
-    const snap = await PLAYED_RESET_META.child("lastResetDate").once("value");
+    const snap = await playedMetaRef.child("lastResetDate").once("value");
     const last = snap.val();
     if (last === today) return;
 
@@ -442,7 +442,7 @@ async function checkDailyPlayedReset(entries){
     });
 
     // ✅ meta disimpan asing (ok)
-    jobs.push(PLAYED_RESET_META.child("lastResetDate").set(today));
+    jobs.push(playedMetaRef.child("lastResetDate").set(today));
 
     await Promise.all(jobs);
 
