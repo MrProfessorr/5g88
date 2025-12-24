@@ -428,21 +428,24 @@ async function checkDailyPlayedReset(entries){
   try{
     const snap = await PLAYED_RESET_META.child("lastResetDate").once("value");
     const last = snap.val();
-
     if (last === today) return;
 
     console.log("🔁 DAILY RESET PLAYED COUNTER:", today);
 
-  
-    const updates = {};
-    entries.forEach(g => {
-      updates[`${g.key}/value`] = 0;
-      updates[`${g.key}/updatedAt`] = firebase.database.ServerValue.TIMESTAMP;
+    // ✅ reset satu-satu ikut child ($key)
+    const jobs = entries.map(g => {
+      if (!g?.key) return Promise.resolve();
+      return gamePlayedRef.child(g.key).update({
+        value: 0,
+        updatedAt: firebase.database.ServerValue.TIMESTAMP
+      });
     });
 
-    updates["__meta/lastResetDate"] = today;
+    // ✅ meta disimpan asing (ok)
+    jobs.push(PLAYED_RESET_META.child("lastResetDate").set(today));
 
-    await gamePlayedRef.update(updates);
+    await Promise.all(jobs);
+
   } catch(err){
     console.warn("Daily reset failed:", err);
   }
