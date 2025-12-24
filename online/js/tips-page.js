@@ -712,30 +712,51 @@ async function updateRtpOnly(){
   }
 }
   
-  if (gameListGrid) {
-    // ✅ FIX: callback must be async to use await
-    gameListRef.on("value", async (snap) => {
+if (gameListGrid) {
+  // ✅ cache JSON supaya tak rebuild kalau data sama (anti flicker)
+  let lastGameListJson = "";
+
+  gameListRef.on("value", async (snap) => {
+    try {
       lastGameListData = snap.val() || {};
-      await renderGameList(lastGameListData);
+
+      // ✅ kalau data sama, jangan re-render (elak grid kosong/berkelip)
+      const nextJson = JSON.stringify(lastGameListData);
+      if (nextJson !== lastGameListJson) {
+        lastGameListJson = nextJson;
+        await renderGameList(lastGameListData);
+      }
+
       markLoaded("gamelist");
 
-      // start ticker safely
-      startRtpTickerFirebase(updateRtpOnly);
-    });
+      // ✅ start RTP ticker sekali sahaja (tak restart setiap update)
+      if (!window.__rtpTickerStarted) {
+        window.__rtpTickerStarted = true;
+        startRtpTickerFirebase(updateRtpOnly);
+      }
+    } catch (e) {
+      console.warn("gameListRef.on value failed:", e);
+      markLoaded("gamelist");
+    }
+  });
 
-    // ✅ ONE played timer only
-    if (!window.__playedTimer) {
-      window.__playedTimer = setInterval(async () => {
+  // ✅ ONE played timer only
+  if (!window.__playedTimer) {
+    window.__playedTimer = setInterval(async () => {
+      try {
         const entries = window.__gameListEntries || [];
         if (!entries.length) return;
 
         await checkDailyPlayedReset(entries);
         tickPlayedFirebase(entries);
-      }, 60 * 1000);
-    }
-  } else {
-    markLoaded("gamelist");
+      } catch (e) {
+        console.warn("__playedTimer failed:", e);
+      }
+    }, 60 * 1000);
   }
+} else {
+  markLoaded("gamelist");
+}
 
   // =========================
   // ✅ FLOATING BUTTONS RENDER
