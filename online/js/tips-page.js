@@ -666,30 +666,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  if (gameListGrid) {
-    // ✅ FIX: callback must be async to use await
-    gameListRef.on("value", async (snap) => {
-      lastGameListData = snap.val() || {};
-      await renderGameList(lastGameListData);
-      markLoaded("gamelist");
-
-      // start ticker safely
-      startRtpTickerFirebase(updateRtpOnly);
-    });
-
-    // ✅ ONE played timer only
-    if (!window.__playedTimer) {
-      window.__playedTimer = setInterval(async () => {
-        const entries = window.__gameListEntries || [];
-        if (!entries.length) return;
-
-        await checkDailyPlayedReset(entries);
-        tickPlayedFirebase(entries);
-      }, 60 * 1000);
-    }
-  } else {
-    markLoaded("gamelist");
-  }
 async function updateRtpOnly(){
   try{
     const keys = window.__gameListKeys || [];
@@ -735,6 +711,32 @@ async function updateRtpOnly(){
     console.warn("updateRtpOnly failed:", e);
   }
 }
+  
+  if (gameListGrid) {
+    // ✅ FIX: callback must be async to use await
+    gameListRef.on("value", async (snap) => {
+      lastGameListData = snap.val() || {};
+      await renderGameList(lastGameListData);
+      markLoaded("gamelist");
+
+      // start ticker safely
+      startRtpTickerFirebase(updateRtpOnly);
+    });
+
+    // ✅ ONE played timer only
+    if (!window.__playedTimer) {
+      window.__playedTimer = setInterval(async () => {
+        const entries = window.__gameListEntries || [];
+        if (!entries.length) return;
+
+        await checkDailyPlayedReset(entries);
+        tickPlayedFirebase(entries);
+      }, 60 * 1000);
+    }
+  } else {
+    markLoaded("gamelist");
+  }
+
   // =========================
   // ✅ FLOATING BUTTONS RENDER
   // =========================
