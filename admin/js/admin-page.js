@@ -88,6 +88,83 @@ document.addEventListener("DOMContentLoaded", () => {
   const gameListModalSaveBtn = document.getElementById("gameListModalSaveBtn");
   let currentGameListKey     = null;
 
+
+// =========================
+// ✅ TOAST SYSTEM
+// =========================
+const toastHost = document.getElementById("toastHost");
+
+function toast(message, type = "info", opts = {}) {
+  if (!toastHost) {
+    // fallback kalau container tak wujud
+    alert(message);
+    return;
+  }
+
+  const duration = Number(opts.duration ?? 3200);
+  const t = document.createElement("div");
+  t.className = "toast";
+  t.dataset.type = type;
+
+  const icons = {
+    success: `
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>`,
+    error: `
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>`,
+    info: `
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <path d="M12 8h.01M11 12h1v6h1" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10Z" stroke="currentColor" stroke-width="1.6"/>
+      </svg>`,
+    warn: `
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <path d="M12 9v4m0 4h.01" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M10.3 3.6 1.9 18a2 2 0 0 0 1.7 3h16.8a2 2 0 0 0 1.7-3L13.7 3.6a2 2 0 0 0-3.4 0Z" stroke="currentColor" stroke-width="1.6"/>
+      </svg>`
+  };
+
+  t.innerHTML = `
+    <div class="t-ico">${icons[type] || icons.info}</div>
+    <div class="t-text"></div>
+    <button class="t-close" type="button" aria-label="Close">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  `;
+
+  t.querySelector(".t-text").textContent = String(message || "");
+
+  let timer = null;
+
+  function removeToast() {
+    clearTimeout(timer);
+    t.classList.remove("show");
+    setTimeout(() => t.remove(), 200);
+  }
+
+  t.querySelector(".t-close").addEventListener("click", removeToast);
+
+  // auto close
+  if (duration > 0) timer = setTimeout(removeToast, duration);
+
+  toastHost.appendChild(t);
+
+  // trigger animation
+  requestAnimationFrame(() => t.classList.add("show"));
+
+  return { close: removeToast, el: t };
+}
+
+// Optional: shortcut functions
+const toastSuccess = (m, o) => toast(m, "success", o);
+const toastError   = (m, o) => toast(m, "error", o);
+const toastInfo    = (m, o) => toast(m, "info", o);
+const toastWarn    = (m, o) => toast(m, "warn", o);
   // ===== FIREBASE CHECK =====
   if (!window.firebase || !window.db) {
     console.error("Firebase belum siap. Cek script firebase di HTML.");
@@ -206,14 +283,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       cardsRef.child(key).set(payload)
         .then(() => {
-          alert("Platform berjaya disimpan. Cek di list & di halaman user.");
+          toastSuccess("Platform berjaya disimpan. Cek di list & di halaman user.");
           resetPlatformForm();
           closePlatformModalInternal();
         })
-        .catch((err) => {
-          console.error("Gagal simpan platform:", err);
-          alert("Gagal simpan ke Firebase. Cek console.");
-        });
+.catch((err) => {
+  console.error(err);
+  toastError("Gagal simpan ke Firebase. Cek console.", { duration: 4500 });
+});
     });
   }
 
