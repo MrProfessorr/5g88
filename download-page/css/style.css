@@ -155,9 +155,9 @@ body{
 .btn-tele{ background: var(--tele); color:#fff; text-decoration:none; display:grid; place-items:center; }
 .btn-wa{ background: var(--wa); color:#111; text-decoration:none; display:grid; place-items:center; }
 
-/* footer */
+
 .footer{
-  padding: 6px 20px 10px;    /* rapatkan atas & bawah */
+  padding: 6px 0 10px; 
   text-align: center;
 }
 
@@ -165,7 +165,7 @@ body{
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:4px;               /* jarak logo ↔ teks */
+  gap:4px;              
   color: rgba(255,255,255,.85);
   font-size:12px;
   text-shadow:0 8px 16px rgba(0,0,0,.35);
@@ -175,7 +175,7 @@ body{
   width:180px;
   height:auto;
   object-fit:contain;
-  margin:0;              /* buang margin default image */
+  margin:0;           
 }
 @media (max-width:520px){
   .hero-text{ font-size:44px; }
