@@ -181,8 +181,8 @@ body{
 }
 
 .hero-logo{
-  width: min(560px, 92vw);   /* ✅ ikut skrin, tapi ada limit */
-  height: auto;              /* ✅ maintain ratio */
+  width: min(560px, 92vw); 
+  height: auto;            
   display:block;
   user-select:none;
   filter: drop-shadow(0 10px 20px rgba(0,0,0,.35));
@@ -192,7 +192,26 @@ body{
   .twoBtns{ grid-template-columns:1fr; }
 
   .hero-logo{
-    width: 88vw;       /* ✅ kecil sikit */
-    max-width: 420px;  /* ✅ jangan besar sangat */
+    width: 88vw;      
+    max-width: 420px; 
+  }
+}
+.android-guide{
+  display:block;
+  margin-top:8px;
+  text-align:center;
+  font-size:13px;
+  color:#2aabee;
+  text-decoration:none;
+  font-weight:600;
+}
+
+.android-guide:hover{
+  text-decoration:underline;
+}
+
+@media (max-width:520px){
+  .android-guide{
+    font-size:12px; 
   }
 }
