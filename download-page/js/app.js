@@ -3,7 +3,7 @@ const CONFIG = {
   telegramUrl: "https://t.me/Kiwi5G88?text=Hi",whatsappUrl: "https://wa.me/601137099600?text=Hi",
 
   android: {
-    label: "Android - 2026.01.04",url: "https://appsetup.yidaiyiluclub.com/apk/Mega888_V1.2.apk"
+    label: "Android - 2026.01.04",url: "https://appsetup.yidaiyiluclub.com/apk/Mega888_V1.2.apk",guide: "https://www.youtube.com/watch?v=iTUhOqPbZaI"
   },
   ios: {
     label: "iOS 64Bit - 2026.01.04",url: "https://appsetup.yidaiyiluclub.com/apk/Mega888_V1.2.apk"
@@ -19,6 +19,11 @@ document.getElementById("btnTelegram").href = CONFIG.telegramUrl;
 document.getElementById("btnWhatsapp").href = CONFIG.whatsappUrl;
 
 document.getElementById("androidSub").textContent = CONFIG.android.label;
+if(CONFIG.android.guide){
+  guideEl.href = CONFIG.android.guide;
+}else{
+  guideEl.style.display = "none";
+}
 document.getElementById("iosSub").textContent = CONFIG.ios.label;
 document.getElementById("winSub").textContent = CONFIG.windows.label;
 
