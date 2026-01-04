@@ -42,8 +42,6 @@ body{
   padding:32px 14px 60px;
 }
 
-
-.hero{ margin-top:8px; margin-bottom:18px; }
 .hero-text{
   font-weight:1000;
   letter-spacing:1px;
@@ -183,8 +181,6 @@ body{
 }
 
 .hero{
-  margin-top:8px;
-  margin-bottom:18px;
   display:flex;
   justify-content:center;
   align-items:center;
