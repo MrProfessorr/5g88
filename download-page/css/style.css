@@ -100,8 +100,8 @@ body{
   border-bottom:1px solid var(--cardBorder);
 }
 .rowIcon{
-  width:32px;
-  height:32px;
+  width:36px;
+  height:36px;
   display:flex;
   align-items:center;
   justify-content:center;
