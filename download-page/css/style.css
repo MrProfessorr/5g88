@@ -157,27 +157,27 @@ body{
 
 /* footer */
 .footer{
-  text-align:center;
-  padding:8px 6px;
+  margin-top: 6px;        /* kecilkan jarak dari card atas */
+  padding: 6px 0 10px;    /* rapatkan atas & bawah */
+  text-align: center;
 }
+
 .footerText{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;               /* jarak logo ↔ teks */
   color: rgba(255,255,255,.85);
   font-size:12px;
   text-shadow:0 8px 16px rgba(0,0,0,.35);
 }
-.footer-col{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:6px;
-}
 
 #footerLogo{
-  width:26px; 
-  height:26px;
+  width:26px;
+  height:auto;
   object-fit:contain;
+  margin:0;              /* buang margin default image */
 }
-
 @media (max-width:520px){
   .hero-text{ font-size:44px; }
   .twoBtns{ grid-template-columns:1fr; }
