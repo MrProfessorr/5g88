@@ -19,6 +19,7 @@ document.getElementById("btnTelegram").href = CONFIG.telegramUrl;
 document.getElementById("btnWhatsapp").href = CONFIG.whatsappUrl;
 
 document.getElementById("androidSub").textContent = CONFIG.android.label;
+const guideEl = document.getElementById("androidGuideLink");
 if(CONFIG.android.guide){
   guideEl.href = CONFIG.android.guide;
 }else{
