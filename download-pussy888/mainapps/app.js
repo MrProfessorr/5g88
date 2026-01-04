@@ -3,10 +3,10 @@ const CONFIG = {
   telegramUrl: "https://t.me/Kiwi5G88?text=Hi Kiwi 5G88?",whatsappUrl: "https://wa.me/601137099600?text=Hi Kiwi 5G88?",
 
   android: {
-    label: "Android - 2026.01.04",url: "https://bdfkha.j9hdbjg.com/apk/918Kiss_TH.apk",guide: "https://www.youtube.com/watch?v=iTUhOqPbZaI"
+    label: "Android - 2026.01.04",url: "https://patch.p8oabda.com/pussy888/appsetup/apk/pussy888.apk",guide: "https://www.youtube.com/watch?v=iTUhOqPbZaI"
   },
   ios: {
-    label: "iOS 64Bit - 2026.01.04",url: "https://bdfkha.j9hdbjg.com/apk/918Kiss_TH.apk"
+    label: "iOS 64Bit - 2026.01.04",url: "https://patch.p8oabda.com/pussy888/appsetup/apk/pussy888.apk"
   },
   windows: {
     label: "Windows PC - 2026.01.04",url: "PASTE_"
