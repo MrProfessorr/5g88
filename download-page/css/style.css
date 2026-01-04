@@ -171,3 +171,28 @@ body{
   .hero-text{ font-size:44px; }
   .twoBtns{ grid-template-columns:1fr; }
 }
+/* logo image (untuk <img class="hero-logo">) */
+.hero{
+  margin-top:8px;
+  margin-bottom:18px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.hero-logo{
+  width: min(560px, 92vw);   /* ✅ ikut skrin, tapi ada limit */
+  height: auto;              /* ✅ maintain ratio */
+  display:block;
+  user-select:none;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,.35));
+}
+@media (max-width:520px){
+  .hero-text{ font-size:44px; }
+  .twoBtns{ grid-template-columns:1fr; }
+
+  .hero-logo{
+    width: 88vw;       /* ✅ kecil sikit */
+    max-width: 420px;  /* ✅ jangan besar sangat */
+  }
+}
