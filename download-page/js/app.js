@@ -1,6 +1,6 @@
 // ====== CONFIG (Kau cuma tukar bahagian ini) ======
 const CONFIG = {
-  telegramUrl: "https://t.me/Kiwi5G88",whatsappUrl: "https://wa.me/601137099600?text=Hi",
+  telegramUrl: "https://t.me/Kiwi5G88?text=Hi",whatsappUrl: "https://wa.me/601137099600?text=Hi",
 
   android: {
     label: "Android - 2026.01.04",url: "https://appsetup.yidaiyiluclub.com/apk/Mega888_V1.2.apk"
