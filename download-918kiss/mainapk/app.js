@@ -9,7 +9,7 @@ const CONFIG = {
     label: "iOS 64Bit - 2026.01.04",url: "https://bdfkha.j9hdbjg.com/apk/918Kiss_TH.apk"
   },
   windows: {
-    label: "Windows PC - 2026.01.04",url: "https://001.n918k.com/h5"
+    label: "Windows PC - 2026.01.04",url: "NO_PROVIDER"
   }
 };
 
