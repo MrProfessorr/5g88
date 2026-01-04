@@ -3,13 +3,13 @@ const CONFIG = {
   telegramUrl: "https://t.me/Kiwi5G88?text=Hi",whatsappUrl: "https://wa.me/601137099600?text=Hi",
 
   android: {
-    label: "Android - 2026.01.04",url: "https://appsetup.yidaiyiluclub.com/apk/Mega888_V1.2.apk",guide: "https://www.youtube.com/watch?v=iTUhOqPbZaI"
+    label: "Android - 2026.01.04",url: "https://bdfkha.j9hdbjg.com/apk/918Kiss_TH.apk",guide: "https://www.youtube.com/watch?v=iTUhOqPbZaI"
   },
   ios: {
-    label: "iOS 64Bit - 2026.01.04",url: "https://appsetup.yidaiyiluclub.com/apk/Mega888_V1.2.apk"
+    label: "iOS 64Bit - 2026.01.04",url: "https://bdfkha.j9hdbjg.com/apk/918Kiss_TH.ap"
   },
   windows: {
-    label: "Windows PC - 2026.01.04",url: "https://appsetup.yidaiyiluclub.com/pc/Mega888.zip"
+    label: "Windows PC - 2026.01.04",url: "https://001.n918k.com/h5"
   }
 };
 
