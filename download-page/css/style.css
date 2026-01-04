@@ -157,8 +157,7 @@ body{
 
 /* footer */
 .footer{
-  margin-top: 6px;        /* kecilkan jarak dari card atas */
-  padding: 6px 0 10px;    /* rapatkan atas & bawah */
+  padding: 6px 20px 10px;    /* rapatkan atas & bawah */
   text-align: center;
 }
 
@@ -173,7 +172,7 @@ body{
 }
 
 #footerLogo{
-  width:26px;
+  width:180px;
   height:auto;
   object-fit:contain;
   margin:0;              /* buang margin default image */
