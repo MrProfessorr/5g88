@@ -100,11 +100,21 @@ body{
   border-bottom:1px solid var(--cardBorder);
 }
 .rowIcon{
-  width:32px;height:32px;
-  display:grid;place-items:center;
+  width:32px;
+  height:32px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   border-radius:10px;
   background:#f4f4ff;
-  font-size:16px;
+  overflow:hidden;
+}
+
+.rowIcon img{
+  width:18px;
+  height:18px;
+  object-fit:contain;
+  display:block;
 }
 .rowTitleMain{font-weight:800}
 .rowTitleSub{font-size:12px;color:var(--muted);margin-top:2px}
