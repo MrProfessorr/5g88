@@ -1,19 +1,15 @@
 // ====== CONFIG (Kau cuma tukar bahagian ini) ======
 const CONFIG = {
-  telegramUrl: "https://t.me/USERNAME_KAU",            // ✅ tukar
-  whatsappUrl: "https://wa.me/60123456789?text=Hi",    // ✅ tukar
+  telegramUrl: "https://t.me/Kiwi5G88",whatsappUrl: "https://wa.me/601137099600?text=Hi",
 
   android: {
-    label: "Android - 2024.04.02",
-    url: "PASTE_ANDROID_APK_LINK_DI_SINI"
+    label: "Android - 2026.01.04",url: "https://appsetup.yidaiyiluclub.com/apk/Mega888_V1.2.apk"
   },
   ios: {
-    label: "iOS 64Bit - 2024.04.09",
-    url: "PASTE_IOS_LINK_DI_SINI" // boleh kosong kalau tak ada
+    label: "iOS 64Bit - 2026.01.04",url: "https://appsetup.yidaiyiluclub.com/apk/Mega888_V1.2.apk"
   },
   windows: {
-    label: "Windows PC - 2022.02.13",
-    url: "PASTE_WINDOWS_EXE_LINK_DI_SINI"
+    label: "Windows PC - 2026.01.04",url: "https://appsetup.yidaiyiluclub.com/pc/Mega888.zip"
   }
 };
 
