@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Download Center</title>
+
+  <!-- ✅ Panggil CSS -->
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Optional: warna bar telefon -->
+  <meta name="theme-color" content="#3b2db6" />
+</head>
+
+<body>
+  <div class="bg"></div>
+
+  <main class="wrap">
+    <!-- ===== LOGO ATAS ===== -->
+    <header class="hero">
+      <!-- Tukar logo gambar sendiri: letak file logo.png dalam repo, lalu guna <img> -->
+      <!-- <img class="hero-logo" src="logo.png" alt="Logo" /> -->
+
+      <!-- Kalau tak ada image, guna text logo dulu -->
+      <div class="hero-text">
+        <span class="logoWord">MEGA</span><span class="logoNum">888</span>
+        <span class="tm">TM</span>
+      </div>
+    </header>
+
+    <!-- ===== CARD LIST (TENGAH) ===== -->
+    <section class="panel" aria-label="download panel">
+
+      <!-- ROW 1: CONTACT + 2 BUTTON -->
+      <div class="rowCard">
+        <div class="rowHead">
+          <div class="rowIcon">💬</div>
+          <div class="rowTitle">
+            <div class="rowTitleMain">Contact Support</div>
+            <div class="rowTitleSub">Telegram / WhatsApp</div>
+          </div>
+        </div>
+
+        <div class="rowBody twoBtns">
+          <a class="btn btn-tele" id="btnTelegram" href="#" target="_blank" rel="noopener">
+            Telegram
+          </a>
+          <a class="btn btn-wa" id="btnWhatsapp" href="#" target="_blank" rel="noopener">
+            WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <!-- ROW 2: ANDROID -->
+      <div class="rowCard">
+        <div class="rowHead">
+          <div class="rowIcon">🤖</div>
+          <div class="rowTitle">
+            <div class="rowTitleMain">APP for Android</div>
+            <div class="rowTitleSub" id="androidSub">Android - Latest</div>
+          </div>
+        </div>
+
+        <div class="rowBody">
+          <button class="btn btn-green" id="btnAndroid">
+            Android - Download
+          </button>
+          <div class="rowHint" id="androidHint"></div>
+        </div>
+      </div>
+
+      <!-- ROW 3: IOS -->
+      <div class="rowCard">
+        <div class="rowHead">
+          <div class="rowIcon">🍎</div>
+          <div class="rowTitle">
+            <div class="rowTitleMain">APP for iOS</div>
+            <div class="rowTitleSub" id="iosSub">iOS 64Bit - Latest</div>
+          </div>
+        </div>
+
+        <div class="rowBody">
+          <button class="btn btn-red" id="btnIOS">
+            iOS 64Bit - Download
+          </button>
+          <div class="rowHint" id="iosHint"></div>
+        </div>
+      </div>
+
+      <!-- ROW 4: WINDOWS -->
+      <div class="rowCard">
+        <div class="rowHead">
+          <div class="rowIcon">🪟</div>
+          <div class="rowTitle">
+            <div class="rowTitleMain">Windows PC</div>
+            <div class="rowTitleSub" id="winSub">Windows - Latest</div>
+          </div>
+        </div>
+
+        <div class="rowBody">
+          <button class="btn btn-orange" id="btnWindows">
+            Windows PC - Download
+          </button>
+          <div class="rowHint" id="winHint"></div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div class="footerText">© <span id="year"></span> Download Center</div>
+      </footer>
+
+    </section>
+  </main>
+
+  <!-- ✅ Panggil JS -->
+  <script src="js/app.js"></script>
+</body>
+</html>
