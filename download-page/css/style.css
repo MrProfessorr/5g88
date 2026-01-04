@@ -24,7 +24,7 @@ body{
   overflow-x:hidden;
 }
 
-/* background gradient like screenshot */
+
 .bg{
   position:fixed;
   inset:0;
@@ -32,7 +32,7 @@ body{
   z-index:-2;
 }
 
-/* center container */
+
 .wrap{
   min-height:100vh;
   display:flex;
@@ -42,7 +42,7 @@ body{
   padding:32px 14px 60px;
 }
 
-/* logo */
+
 .hero{ margin-top:8px; margin-bottom:18px; }
 .hero-text{
   font-weight:1000;
@@ -73,7 +73,7 @@ body{
   margin-left:6px;
 }
 
-/* panel */
+
 .panel{
   width:min(640px, 100%);
   display:flex;
@@ -165,13 +165,24 @@ body{
   font-size:12px;
   text-shadow:0 8px 16px rgba(0,0,0,.35);
 }
+.footer-col{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+}
 
-/* responsive logo */
+#footerLogo{
+  width:26px; 
+  height:26px;
+  object-fit:contain;
+}
+
 @media (max-width:520px){
   .hero-text{ font-size:44px; }
   .twoBtns{ grid-template-columns:1fr; }
 }
-/* logo image (untuk <img class="hero-logo">) */
+
 .hero{
   margin-top:8px;
   margin-bottom:18px;
