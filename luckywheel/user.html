@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Lucky Draw</title>
+<style>
+  :root{
+    --bg1:#120a2a; --bg2:#1a2c6b;
+    --card:rgba(255,255,255,.08);
+    --stroke:rgba(255,255,255,.12);
+    --gold1:#ffcc55; --gold2:#ff8a00;
+    --txt:#e9ecff; --muted:rgba(233,236,255,.7);
+    --pink:#ff4fd8;
+    --ok:#27d17f; --bad:#ff4d4d;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    color:var(--txt);
+    background: radial-gradient(1200px 700px at 20% 20%, #6b2cff 0%, transparent 45%),
+                radial-gradient(900px 600px at 80% 30%, #2b6cff 0%, transparent 55%),
+                linear-gradient(135deg, var(--bg1), var(--bg2));
+    min-height:100vh;
+  }
+  header{
+    height:64px; display:flex; align-items:center; justify-content:space-between;
+    padding:0 18px;
+    background:linear-gradient(90deg, rgba(0,0,0,.45), rgba(0,0,0,.15));
+    border-bottom:1px solid var(--stroke);
+    backdrop-filter: blur(10px);
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.5px}
+  .dot{width:12px; height:12px; border-radius:999px; background:linear-gradient(90deg,var(--gold1),var(--gold2)); box-shadow:0 0 18px rgba(255,170,0,.55)}
+  nav a{color:var(--muted); text-decoration:none; margin-left:14px; font-weight:600}
+  nav a:hover{color:var(--txt)}
+  .wrap{max-width:980px; margin:22px auto; padding:0 16px}
+  .center{display:grid; place-items:center; margin-top:18px}
+  .card{
+    width:min(440px, 100%);
+    background:var(--card); border:1px solid var(--stroke); border-radius:18px;
+    box-shadow: 0 18px 50px rgba(0,0,0,.35);
+    backdrop-filter: blur(12px);
+    overflow:hidden;
+  }
+  .card .top{
+    padding:18px 16px; border-bottom:1px solid var(--stroke);
+    display:flex; align-items:center; justify-content:center; gap:10px;
+  }
+  .iconBubble{
+    width:54px; height:54px; border-radius:999px;
+    background:radial-gradient(circle at 30% 30%, var(--pink), #6a40ff);
+    display:grid; place-items:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
+    font-size:22px;
+  }
+  .card .body{padding:16px}
+  h2{margin:8px 0 2px; text-align:center}
+  p{margin:0 0 14px; text-align:center; color:var(--muted); font-size:13px; line-height:1.4}
+  label{display:block; font-size:12px; color:var(--muted); margin:10px 0 6px}
+  input{
+    width:100%; padding:12px 12px; border-radius:12px;
+    border:1px solid rgba(255,255,255,.16);
+    background:rgba(0,0,0,.22);
+    color:var(--txt); outline:none;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    font-weight:900;
+  }
+  input:focus{border-color:rgba(255,200,85,.6); box-shadow:0 0 0 3px rgba(255,180,0,.15)}
+  .btn{
+    width:100%; margin-top:12px;
+    padding:12px 14px; border-radius:12px; border:none;
+    font-weight:900; cursor:pointer; color:#081022;
+    background:linear-gradient(90deg, #ff4fd8, #6a40ff);
+    box-shadow:0 10px 24px rgba(0,0,0,.25);
+    display:flex; align-items:center; justify-content:center; gap:10px;
+  }
+  .btn:active{transform:translateY(1px)}
+  .hidden{display:none !important}
+
+  /* Wheel page */
+  .wheelCard{
+    width:min(520px, 100%);
+    background:var(--card); border:1px solid var(--stroke); border-radius:18px;
+    box-shadow: 0 18px 50px rgba(0,0,0,.35);
+    backdrop-filter: blur(12px);
+    overflow:hidden;
+    padding:18px 16px;
+  }
+  .wheelTitle{display:flex; align-items:center; justify-content:center; gap:10px}
+  .wheelTitle h2{margin:0}
+  .codeLine{margin-top:6px; text-align:center; color:var(--muted); font-size:12px}
+  .wheelWrap{display:grid; place-items:center; margin:14px 0 10px; position:relative}
+  .pointer{
+    position:absolute; top:-6px;
+    width:0; height:0;
+    border-left:14px solid transparent;
+    border-right:14px solid transparent;
+    border-bottom:22px solid var(--gold1);
+    filter: drop-shadow(0 8px 10px rgba(0,0,0,.4));
+  }
+  .wheel{
+    width:320px; height:320px; border-radius:999px;
+    border:10px solid rgba(255,255,255,.15);
+    box-shadow: inset 0 0 0 6px rgba(0,0,0,.18), 0 18px 45px rgba(0,0,0,.35);
+    background:
+      conic-gradient(
+        #ff72e1 0deg 60deg,
+        #ff6b6b 60deg 120deg,
+        #3fd1c9 120deg 180deg,
+        #2fb3ff 180deg 240deg,
+        #6ee7a2 240deg 300deg,
+        #ffd166 300deg 360deg
+      );
+    position:relative;
+    transform:rotate(0deg);
+    transition: transform 4.2s cubic-bezier(.12,.85,.12,1);
+  }
+  .wheelCenter{
+    position:absolute; inset:0;
+    display:grid; place-items:center;
+  }
+  .hub{
+    width:64px; height:64px; border-radius:999px;
+    background: radial-gradient(circle at 30% 30%, #fff, rgba(255,255,255,.25));
+    border:10px solid rgba(0,0,0,.15);
+    box-shadow:0 10px 20px rgba(0,0,0,.25);
+  }
+  .sliceText{
+    position:absolute; inset:0;
+    display:grid; place-items:center;
+    font-weight:1000;
+    color:rgba(0,0,0,.7);
+    text-shadow:0 1px 0 rgba(255,255,255,.35);
+    pointer-events:none;
+  }
+  .sliceText span{
+    position:absolute; left:50%; top:50%;
+    transform-origin:0 0;
+    font-size:14px;
+  }
+  .spinBtn{
+    width:100%;
+    padding:12px 14px; border-radius:12px; border:none;
+    font-weight:1000; cursor:pointer; color:#081022;
+    background:linear-gradient(90deg, #ff4fd8, #6a40ff);
+    box-shadow:0 10px 24px rgba(0,0,0,.25);
+    display:flex; align-items:center; justify-content:center; gap:10px;
+  }
+  .spinBtn[disabled]{opacity:.6; cursor:not-allowed}
+  .history{
+    margin-top:12px; padding:12px;
+    border-radius:14px; border:1px solid rgba(255,255,255,.12);
+    background:rgba(0,0,0,.18);
+  }
+  .history h4{margin:0 0 8px; color:var(--muted)}
+  .histItem{
+    padding:10px 10px; border-radius:12px;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.08);
+    display:flex; justify-content:space-between; gap:10px;
+    margin-bottom:8px;
+    font-size:13px;
+  }
+  .histItem:last-child{margin-bottom:0}
+  .badge{
+    font-weight:1000;
+    background:rgba(255,200,85,.18);
+    border:1px solid rgba(255,200,85,.25);
+    padding:3px 10px; border-radius:999px;
+  }
+
+  /* Popup result */
+  .overlay{
+    position:fixed; inset:0;
+    background:rgba(0,0,0,.55);
+    display:none; place-items:center;
+    z-index:999;
+    padding:14px;
+  }
+  .modal{
+    width:min(520px, 100%);
+    border-radius:18px;
+    background:rgba(20, 35, 90, .92);
+    border:1px solid rgba(255,255,255,.18);
+    box-shadow:0 22px 60px rgba(0,0,0,.45);
+    padding:16px;
+    position:relative;
+    backdrop-filter: blur(12px);
+  }
+  .x{
+    position:absolute; right:12px; top:10px;
+    width:36px; height:36px; border-radius:12px;
+    border:1px solid rgba(255,255,255,.16);
+    background:rgba(0,0,0,.22);
+    color:var(--txt); cursor:pointer;
+  }
+  .modal h3{margin:4px 0 6px; text-align:center}
+  .win{
+    text-align:center;
+    font-size:44px; font-weight:1100;
+    color:var(--gold1);
+    text-shadow:0 10px 30px rgba(255,180,0,.22);
+    margin:8px 0 10px;
+  }
+  .promoBox{
+    margin:10px auto 8px;
+    width:min(420px, 100%);
+    border-radius:14px;
+    background:rgba(0,0,0,.25);
+    border:1px solid rgba(255,200,85,.25);
+    padding:12px;
+    text-align:center;
+  }
+  .promoBox .code{
+    font-weight:1100; font-size:28px; letter-spacing:2px; color:var(--gold1);
+    margin-top:6px;
+  }
+  .small{text-align:center; color:rgba(233,236,255,.8); font-size:13px}
+  .okBtn{
+    margin-top:14px;
+    width:100%;
+    padding:12px 14px; border-radius:12px; border:none;
+    font-weight:1000; cursor:pointer; color:#081022;
+    background:linear-gradient(90deg, var(--gold1), var(--gold2));
+    box-shadow:0 10px 24px rgba(0,0,0,.25);
+  }
+  .noteTop{
+    position:fixed; right:12px; top:76px;
+    background:rgba(0,0,0,.30);
+    border:1px solid rgba(255,255,255,.14);
+    padding:8px 10px;
+    border-radius:12px;
+    color:#ff6a6a;
+    font-weight:900;
+    display:none;
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><span class="dot"></span> LUCKY DRAW</div>
+  <nav>
+    <a href="user.html">Home</a>
+    <a href="#" id="navSpin">Spin</a>
+    <a href="admin.html">Notice</a>
+  </nav>
+</header>
+
+<div class="noteTop" id="blockedInfo"></div>
+
+<div class="wrap">
+  <!-- Page 1: Enter code -->
+  <div class="center" id="pageEnter">
+    <div class="card">
+      <div class="top">
+        <div class="iconBubble">🎟️</div>
+      </div>
+      <div class="body">
+        <h2>Enter Promo Code</h2>
+        <p>Enter your unique promotional code to start the wheel spin</p>
+
+        <label>Promo Code</label>
+        <input id="promoInput" placeholder="ENTER PROMO CODE" maxlength="12"/>
+
+        <button class="btn" id="btnStart">🎯 Start Lucky Draw →</button>
+        <p id="enterMsg" class="small" style="margin-top:10px;"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page 2: Wheel -->
+  <div class="center hidden" id="pageWheel">
+    <div class="wheelCard">
+      <div class="wheelTitle">
+        <h2>🎡 Lucky Wheel</h2>
+      </div>
+      <div class="codeLine">Code: <b id="codeLabel">—</b></div>
+
+      <div class="wheelWrap">
+        <div class="pointer"></div>
+        <div class="wheel" id="wheel">
+          <div class="sliceText" id="sliceText"></div>
+          <div class="wheelCenter"><div class="hub"></div></div>
+        </div>
+      </div>
+
+      <button class="spinBtn" id="btnSpin">▶ Start Spinning!</button>
+
+      <div class="history">
+        <h4>Drawing History</h4>
+        <div id="histList" style="color:rgba(233,236,255,.75);font-size:13px">No history yet.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Result modal -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <button class="x" id="btnClose">✕</button>
+    <h3>🎉 Congratulations!</h3>
+    <div class="win" id="winText">FREE 0</div>
+
+    <div class="promoBox">
+      <div class="small">Promo Code Used:</div>
+      <div class="code" id="winCode">—</div>
+      <div class="small" style="margin-top:6px">✨ Screenshot this for verification ✨</div>
+    </div>
+
+    <div class="small">Congratulations on your win! Please contact customer service to claim your prize!</div>
+    <div class="small" id="redirectText" style="margin-top:6px;opacity:.75">Auto-redirect in 25 seconds</div>
+
+    <button class="okBtn" id="btnOk">🎉 Awesome!</button>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+  import {
+    getDatabase, ref, get, set, push, child, runTransaction
+  } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+  // ✅ 1) PASTE firebaseConfig anda di sini
+  const firebaseConfig = FIREBASE_CONFIG_HERE;
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  const $ = (id)=>document.getElementById(id);
+
+  // device userId (tak hilang kalau clear cache? — kalau clear cache memang ID berubah, tapi history tetap ada di Firebase global)
+  // untuk user personal history, kita simpan userId di localStorage (kalau clear cache, history personal reset, tapi admin history tetap ada)
+  const LS_UID = "lucky.userId.v1";
+  function uid(){
+    let id = localStorage.getItem(LS_UID);
+    if(!id){
+      id = "U" + Math.random().toString(16).slice(2) + Date.now().toString(16);
+      localStorage.setItem(LS_UID, id);
+    }
+    return id;
+  }
+  const userId = uid();
+
+  // wheel segments (label & degree)
+  const segments = [
+    { label:"FREE 58", points:58 },
+    { label:"FREE 3", points:3 },
+    { label:"FREE 6", points:6 },
+    { label:"FREE 9", points:9 },
+    { label:"FREE 12", points:12 },
+    { label:"FREE 18", points:18 }
+  ];
+  const segCount = segments.length;
+  const segAngle = 360/segCount;
+
+  // render slice texts
+  const st = $("sliceText");
+  st.innerHTML = segments.map((s,i)=>{
+    const ang = (i*segAngle) + segAngle/2;
+    // place text around circle
+    return `<span style="transform: translate(-50%,-50%) rotate(${ang}deg) translate(0,-125px) rotate(90deg);">
+      ${s.label}
+    </span>`;
+  }).join("");
+
+  let currentCode = "";
+  let currentPrize = null;
+  let spinning = false;
+  let wheelRot = 0;
+
+  function showEnter(msg="", isBad=false){
+    $("enterMsg").textContent = msg;
+    $("enterMsg").style.color = isBad ? "rgba(255,180,180,.95)" : "rgba(233,236,255,.85)";
+  }
+
+  function gotoWheel(code){
+    $("pageEnter").classList.add("hidden");
+    $("pageWheel").classList.remove("hidden");
+    $("codeLabel").textContent = code;
+  }
+
+  function gotoEnter(){
+    $("pageWheel").classList.add("hidden");
+    $("pageEnter").classList.remove("hidden");
+    $("promoInput").value = "";
+    showEnter("");
+  }
+
+  $("navSpin").onclick = (e)=>{ e.preventDefault(); gotoEnter(); };
+
+  function fmtTime(ts){
+    const d=new Date(ts);
+    return d.toLocaleString();
+  }
+
+  async function loadMyHistory(){
+    const snap = await get(ref(db, `userHistory/${userId}`));
+    const v = snap.val() || {};
+    const arr = Object.keys(v).map(k=>v[k]).sort((a,b)=> (b.redeemedAt||0)-(a.redeemedAt||0)).slice(0,6);
+    if(!arr.length){
+      $("histList").textContent = "No history yet.";
+      return;
+    }
+    $("histList").innerHTML = arr.map(x=>`
+      <div class="histItem">
+        <div><b>${x.code}</b><div style="opacity:.75;font-size:12px">${fmtTime(x.redeemedAt)}</div></div>
+        <div class="badge">FREE ${x.points}</div>
+      </div>
+    `).join("");
+  }
+
+  async function validateCode(code){
+    const snap = await get(ref(db, `promo_codes/${code}`));
+    if(!snap.exists()) return { ok:false, msg:"Code not found." };
+    const data = snap.val();
+    const now = Date.now();
+
+    if(now >= data.expiresAt) return { ok:false, msg:"Code expired." };
+    if((data.usedCount||0) >= (data.usageLimit||1)) return { ok:false, msg:"Code already reached usage limit." };
+
+    return { ok:true, data };
+  }
+
+  $("btnStart").onclick = async ()=>{
+    const code = ($("promoInput").value || "").trim().toUpperCase();
+    if(!code) return showEnter("Please enter promo code.", true);
+
+    showEnter("Checking code...", false);
+
+    const res = await validateCode(code);
+    if(!res.ok) return showEnter(res.msg, true);
+
+    currentCode = code;
+    currentPrize = res.data; // contains points, etc
+    gotoWheel(code);
+    await loadMyHistory();
+  };
+
+  // Spin to FIXED segment (ikut points dari admin)
+  function segmentIndexByPoints(points){
+    const idx = segments.findIndex(s=>s.points===points);
+    return idx >= 0 ? idx : 0;
+  }
+
+  function calcStopRotationForIndex(idx){
+    // pointer at top (0deg). We want chosen segment center align to pointer.
+    // segment 0 starts at 0deg in conic; our pointer at 0.
+    // We rotate wheel so that chosen idx center ends at 0deg.
+    const targetCenter = idx*segAngle + segAngle/2;
+    // Need wheel rotation so that targetCenter moves to 0 => -targetCenter
+    return 360 - targetCenter;
+  }
+
+  async function redeemAndSave(code, points){
+    // 1) increment usedCount using transaction (atomic)
+    const usedRef = ref(db, `promo_codes/${code}/usedCount`);
+    const result = await runTransaction(usedRef, (cur)=>{
+      if(cur === null) return 1;
+      return cur + 1;
+    }, { applyLocally:false });
+
+    if(!result.committed){
+      throw new Error("Failed to redeem. Please try again.");
+    }
+
+    // 2) write redemption record under redemptionsByCode/code
+    const ridRef = push(ref(db, `redemptionsByCode/${code}`));
+    const ridKey = ridRef.key;
+
+    const payload = {
+      code,
+      points,
+      userId,
+      redeemedAt: Date.now()
+    };
+
+    await set(ridRef, payload);
+    await set(ref(db, `userHistory/${userId}/${ridKey}`), {
+      code, points, redeemedAt: payload.redeemedAt
+    });
+
+    return payload;
+  }
+
+  function openModal(winPoints, code){
+    $("winText").textContent = `FREE ${winPoints}`;
+    $("winCode").textContent = code;
+    $("overlay").style.display = "grid";
+
+    let sec = 25;
+    $("redirectText").textContent = `Auto-redirect in ${sec} seconds`;
+    clearInterval(window.__iv);
+    window.__iv = setInterval(()=>{
+      sec--;
+      $("redirectText").textContent = `Auto-redirect in ${sec} seconds`;
+      if(sec<=0){
+        clearInterval(window.__iv);
+        $("overlay").style.display="none";
+        gotoEnter();
+      }
+    },1000);
+  }
+
+  $("btnClose").onclick = ()=>{
+    $("overlay").style.display="none";
+    gotoEnter();
+  };
+  $("btnOk").onclick = ()=>{
+    $("overlay").style.display="none";
+    gotoEnter();
+  };
+
+  $("btnSpin").onclick = async ()=>{
+    if(spinning) return;
+    if(!currentPrize || !currentCode) return;
+
+    spinning = true;
+    $("btnSpin").disabled = true;
+
+    // re-check before spin (avoid expired/full)
+    const res = await validateCode(currentCode);
+    if(!res.ok){
+      alert(res.msg);
+      spinning = false;
+      $("btnSpin").disabled = false;
+      gotoEnter();
+      return;
+    }
+
+    const winPoints = Number(res.data.points||0);
+    const idx = segmentIndexByPoints(winPoints);
+
+    // 4-6 full rotations + stop at target
+    const base = 360 * (4 + Math.floor(Math.random()*3));
+    const stop = calcStopRotationForIndex(idx);
+
+    wheelRot = wheelRot + base + stop;
+    $("wheel").style.transform = `rotate(${wheelRot}deg)`;
+
+    // after animation ends, commit redemption
+    setTimeout(async ()=>{
+      try{
+        await redeemAndSave(currentCode, winPoints);
+        await loadMyHistory();
+        openModal(winPoints, currentCode);
+      }catch(e){
+        alert(e.message || "Redeem failed.");
+      }finally{
+        spinning = false;
+        $("btnSpin").disabled = false;
+      }
+    }, 4300);
+  };
+</script>
+</body>
+</html>
