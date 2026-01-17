@@ -518,19 +518,7 @@ function applyWheelTheme(){
     return d.toLocaleString();
   }
 
-async function loadMyHistory(){
-  if(!currentCode){
-    $("histList").textContent = "No history yet.";
-    return;
-  }
-
-  const snap = await get(ref(db, `redemptionsByCode/${currentCode}`));
-  const v = snap.val() || {};
-
-  const arr = Object.keys(v).map(k=>v[k])
-    .sort((a,b)=> (b.redeemedAt||0)-(a.redeemedAt||0))
-    .slice(0, 20); // ambil 20 latest
-
+function renderHistory(arr){
   if(!arr.length){
     $("histList").textContent = "No history yet.";
     return;
@@ -539,13 +527,27 @@ async function loadMyHistory(){
   $("histList").innerHTML = arr.map(x=>`
     <div class="histItem">
       <div>
-        <b>${x.code}</b>
+        <b>${String(x.code||"").toUpperCase()}</b>
         <div style="opacity:.75;font-size:12px">${fmtTime(x.redeemedAt)}</div>
       </div>
-      <div class="badge">FREE ${x.points}</div>
+      <div class="badge">FREE ${Number(x.points||0)}</div>
     </div>
   `).join("");
 }
+
+// ✅ realtime global history: semua user, semua code
+function watchGlobalHistory(){
+  onValue(ref(db, "redemptionsAll"), (snap)=>{
+    const v = snap.val() || {};
+    const arr = Object.keys(v).map(k => v[k])
+      .filter(x => x && x.code && x.redeemedAt)
+      .sort((a,b)=> (b.redeemedAt||0) - (a.redeemedAt||0))
+      .slice(0, 30); // last 30
+
+    renderHistory(arr);
+  });
+}
+watchGlobalHistory();
 
   async function validateCode(code){
     const snap = await get(ref(db, `promo_codes/${code}`));
@@ -582,7 +584,6 @@ const mergedClean = merged
 buildSegmentsFromList(mergedClean);
 
 gotoWheel(code);
-await loadMyHistory();
   };
 
 function segmentIndexByPoints(points){
@@ -598,6 +599,7 @@ function norm360(deg){
   return ((deg % 360) + 360) % 360;
 }
   async function redeemAndSave(code, points){
+    
     // 1) increment usedCount using transaction (atomic)
     const usedRef = ref(db, `promo_codes/${code}/usedCount`);
     const result = await runTransaction(usedRef, (cur)=>{
@@ -624,7 +626,13 @@ function norm360(deg){
     await set(ref(db, `userHistory/${userId}/${ridKey}`), {
       code, points, redeemedAt: payload.redeemedAt
     });
-
+// ✅ GLOBAL DRAWING HISTORY (tak hilang walau tukar device / clear cache)
+const allRef = push(ref(db, "redemptionsAll"));
+await set(allRef, {
+  code,
+  points,
+  redeemedAt: payload.redeemedAt
+});
     return payload;
   }
 
@@ -704,7 +712,6 @@ $("wheel").style.transform = `rotate(${wheelRot}deg)`;
     setTimeout(async ()=>{
       try{
         await redeemAndSave(currentCode, winPoints);
-        await loadMyHistory();
         openModal(winPoints, currentCode);
       }catch(e){
         alert(e.message || "Redeem failed.");
