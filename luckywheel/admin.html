@@ -413,22 +413,37 @@ const firebaseConfig = {
     window.__t = setTimeout(()=> $("toast").style.display="none", 2200);
   };
 
-
+function cleanPrizeList(arr){
+  return (arr || [])
+    .map(v => Number(v))
+    .filter(v => Number.isFinite(v) && v > 0)
+    .filter((v,i,a) => a.indexOf(v) === i)
+    .sort((a,b)=>a-b);
+}
 // ===== Prize settings in Firebase =====
 const PRIZES_REF = ref(db, "settings/prizes");
 
 // default kalau Firebase kosong
 let prizeConfig = {
   NORMAL: [3, 6, 9, 12, 15, 18],
-  SUPER:  [20, 25, , 30, 35, 40, 88]
+  SUPER:  [20, 25, 30, 35, 40, 88]
 };
 
 async function loadPrizeConfig(){
   const snap = await get(PRIZES_REF);
+
   if(snap.exists()){
-    const v = snap.val();
-    if(v && v.NORMAL && v.SUPER) prizeConfig = v;
+    const v = snap.val() || {};
+    prizeConfig = {
+      NORMAL: cleanPrizeList(v.NORMAL ?? prizeConfig.NORMAL),
+      SUPER:  cleanPrizeList(v.SUPER  ?? prizeConfig.SUPER)
+    };
   }else{
+    // pastikan default pun bersih sebelum simpan
+    prizeConfig = {
+      NORMAL: cleanPrizeList(prizeConfig.NORMAL),
+      SUPER:  cleanPrizeList(prizeConfig.SUPER)
+    };
     await set(PRIZES_REF, prizeConfig);
   }
 }
@@ -716,13 +731,14 @@ $("prizeAdd").onclick = ()=>{
 };
 
 $("prizeSave").onclick = async ()=>{
-  // unique + sort
-  prizeConfig.NORMAL = Array.from(new Set(prizeConfig.NORMAL||[])).sort((a,b)=>a-b);
-  prizeConfig.SUPER  = Array.from(new Set(prizeConfig.SUPER||[])).sort((a,b)=>a-b);
+  prizeConfig = {
+    NORMAL: cleanPrizeList(prizeConfig.NORMAL),
+    SUPER:  cleanPrizeList(prizeConfig.SUPER)
+  };
 
   await set(PRIZES_REF, prizeConfig);
 
-  // update dropdown current prizeType
+  // refresh dropdown ikut tab yang dipilih
   renderPointsOptions(prizeType);
 
   closePrizeModal();
