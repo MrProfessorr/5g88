@@ -116,6 +116,7 @@
     position:relative;
     transform:rotate(0deg);
     transition: transform 4.2s cubic-bezier(.12,.85,.12,1);
+    will-change: transform;
   }
   .wheelCenter{
     position:absolute; inset:0;
@@ -236,6 +237,15 @@
     font-weight:900;
     display:none;
   }
+  #sliceText span{
+  position:absolute;
+  left:50%; top:50%;
+  font-weight:700;
+  font-size:14px;
+  letter-spacing:.3px;
+  user-select:none;
+  pointer-events:none;
+}
 </style>
 </head>
 <body>
@@ -317,6 +327,7 @@
 </div>
 
 <script type="module">
+  let currentRotationDeg = 0;
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
   import {
     getDatabase, ref, get, set, push, child, runTransaction
@@ -367,9 +378,13 @@ const firebaseConfig = {
   st.innerHTML = segments.map((s,i)=>{
     const ang = (i*segAngle) + segAngle/2;
     // place text around circle
-    return `<span style="transform: translate(-50%,-50%) rotate(${ang}deg) translate(0,-125px) rotate(90deg);">
-      ${s.label}
-    </span>`;
+return `<span style="
+  transform: translate(-50%,-50%) rotate(${ang}deg) translate(0,-125px) rotate(${-ang}deg);
+  width: 90px;
+  text-align: center;
+">
+  ${s.label}
+</span>`;
   }).join("");
 
   let currentCode = "";
@@ -396,26 +411,6 @@ const firebaseConfig = {
   }
 
   $("navSpin").onclick = (e)=>{ e.preventDefault(); gotoEnter(); };
-  function spinToValue(targetValue){
-  const idx = wheelValues.indexOf(Number(targetValue));
-  if(idx < 0){
-    // kalau target tak wujud dalam wheel, fallback random
-    return spinRandom();
-  }
-
-  const n = wheelValues.length;
-  const slice = 360 / n;
-
-  // pointer berada di atas (12 o'clock). Kita nak slice idx berada tepat di pointer.
-  // Kita pilih angle tengah slice idx
-  const targetCenter = (idx * slice) + slice/2;
-
-  // Banyak pusingan (supaya nampak real)
-  const spins = 6; // 6 pusingan penuh
-  const finalDeg = (spins * 360) + (360 - targetCenter);
-
-  animateWheelTo(finalDeg); // function animation rotate
-}
   function fmtTime(ts){
     const d=new Date(ts);
     return d.toLocaleString();
@@ -470,15 +465,14 @@ const firebaseConfig = {
     return idx >= 0 ? idx : 0;
   }
 
-  function calcStopRotationForIndex(idx){
-    // pointer at top (0deg). We want chosen segment center align to pointer.
-    // segment 0 starts at 0deg in conic; our pointer at 0.
-    // We rotate wheel so that chosen idx center ends at 0deg.
-    const targetCenter = idx*segAngle + segAngle/2;
-    // Need wheel rotation so that targetCenter moves to 0 => -targetCenter
-    return 360 - targetCenter;
-  }
-
+function calcStopRotationForIndex(idx){
+  const targetCenter = idx*segAngle + segAngle/2;
+  const POINTER_OFFSET = 0; 
+  return 360 - targetCenter + POINTER_OFFSET;
+}
+function norm360(deg){
+  return ((deg % 360) + 360) % 360;
+}
   async function redeemAndSave(code, points){
     // 1) increment usedCount using transaction (atomic)
     const usedRef = ref(db, `promo_codes/${code}/usedCount`);
@@ -559,11 +553,23 @@ const firebaseConfig = {
     const idx = segmentIndexByPoints(winPoints);
 
     // 4-6 full rotations + stop at target
-    const base = 360 * (4 + Math.floor(Math.random()*3));
-    const stop = calcStopRotationForIndex(idx);
+const spins = 4 + Math.floor(Math.random()*3); // 4-6 pusingan
+const base  = 360 * spins;
 
-    wheelRot = wheelRot + base + stop;
-    $("wheel").style.transform = `rotate(${wheelRot}deg)`;
+// stopAngle = angle akhir (0..359) yang kita nak capai
+const stopAngle = norm360(calcStopRotationForIndex(idx));
+
+// currentAngle = wheel sekarang berada di angle mana
+const currentAngle = norm360(wheelRot);
+
+// delta = beza dari currentAngle ke stopAngle (arah depan sahaja)
+let delta = stopAngle - currentAngle;
+if(delta < 0) delta += 360;
+
+// final rotation = rotation sekarang + base + delta
+wheelRot = wheelRot + base + delta;
+
+$("wheel").style.transform = `rotate(${wheelRot}deg)`;
 
     // after animation ends, commit redemption
     setTimeout(async ()=>{
