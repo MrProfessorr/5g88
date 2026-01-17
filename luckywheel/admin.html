@@ -110,17 +110,168 @@
     padding:10px 12px; border-radius:12px; color:var(--txt);
     display:none; max-width:360px;
   }
+  .headLeft{display:flex;align-items:center;gap:12px}
+.menuBtn{
+  width:44px;height:44px;border-radius:14px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.18);
+  color:#fff;font-size:20px;cursor:pointer;
+}
+.menuBtn:hover{filter:brightness(1.1)}
+
+.sideOverlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.45);
+  display:none;z-index:80;
+}
+.sidebar{
+  position:fixed;top:0;left:0;height:100vh;width:320px;
+  transform:translateX(-110%);
+  transition:transform .25s ease;
+  background:rgba(12,16,40,.92);
+  border-right:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(14px);
+  z-index:90;
+  padding:14px;
+}
+.sidebar.show{transform:translateX(0)}
+.sideHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sideTitle{font-size:16px;font-weight:900}
+.sideClose{
+  width:38px;height:38px;border-radius:12px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.06);color:#fff;cursor:pointer
+}
+.sideItem{
+  width:100%;padding:12px 12px;border-radius:14px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.06);
+  color:#fff;font-weight:800;cursor:pointer;
+  text-align:left;margin-top:10px;
+}
+
+/* Prize Modal */
+.modalOverlay{
+  position:fixed;inset:0;display:none;place-items:center;
+  background:rgba(0,0,0,.55);z-index:100;
+}
+.modalCard{
+  width:min(520px,92vw);
+  background:rgba(18,22,56,.92);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:18px;
+  box-shadow:0 20px 60px rgba(0,0,0,.45);
+  backdrop-filter:blur(14px);
+  overflow:hidden;
+}
+.modalHead{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.10);
+}
+.modalTitle{font-weight:900}
+.modalX{
+  width:36px;height:36px;border-radius:12px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.06);
+  color:#fff;cursor:pointer;
+}
+.modalBody{padding:14px 16px}
+.modalFoot{
+  padding:12px 16px;display:flex;justify-content:flex-end;gap:10px;
+  border-top:1px solid rgba(255,255,255,.10);
+}
+.tabsRow{display:flex;gap:10px;margin-bottom:10px}
+.tabBtn{
+  flex:1;padding:10px;border-radius:14px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);
+  color:#fff;font-weight:900;cursor:pointer;
+}
+.tabBtn.active{
+  background:linear-gradient(90deg, rgba(255,210,102,.35), rgba(255,120,72,.25));
+  border-color:rgba(255,210,102,.35);
+}
+.pillRow{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+.pillTag{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 12px;border-radius:999px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.10);
+  font-weight:900;color:#fff;
+}
+.pillTag button{
+  width:26px;height:26px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.20);
+  color:#fff;cursor:pointer;font-weight:900;
+}
+.addRow{display:flex;gap:10px;margin-top:10px}
+.addRow input{
+  flex:1;padding:12px;border-radius:14px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(0,0,0,.18);color:#fff;
+  outline:none;
+}
 </style>
 </head>
 <body>
 <header>
-  <div class="brand"><span class="dot"></span> LUCKY DRAW <span style="opacity:.6;font-weight:700">ADMIN</span></div>
+  <div class="headLeft">
+    <button id="btnMenu" class="menuBtn">☰</button>
+    <div class="brand"><span class="dot"></span> LUCKY DRAW <span style="opacity:.6;font-weight:700">ADMIN</span></div>
+  </div>
+
   <nav>
     <a href="user.html">Home</a>
     <a href="#codes">Codes</a>
     <a href="#history">History</a>
   </nav>
 </header>
+
+<!-- Sidebar overlay -->
+<div id="sideOverlay" class="sideOverlay"></div>
+
+<!-- Sidebar -->
+<aside id="sidebar" class="sidebar">
+  <div class="sideHead">
+    <div class="sideTitle">Menu</div>
+    <button id="btnSideClose" class="sideClose">✕</button>
+  </div>
+
+  <button class="sideItem" id="sidePrize">🏆 Prize Settings</button>
+</aside>
+
+<!-- Prize Modal -->
+<div id="prizeOverlay" class="modalOverlay">
+  <div class="modalCard">
+    <div class="modalHead">
+      <div class="modalTitle">Prize Settings</div>
+      <button id="prizeX" class="modalX">✕</button>
+    </div>
+
+    <div class="modalBody">
+      <div class="tabsRow">
+        <button id="tabNormal" class="tabBtn active">NORMAL</button>
+        <button id="tabSuper" class="tabBtn">SUPER</button>
+      </div>
+
+      <div class="pillRow" id="prizePills"></div>
+
+      <div class="addRow">
+        <input id="prizeInput" type="number" placeholder="Add prize (e.g. 100)" />
+        <button id="prizeAdd" class="btn2">+ Add</button>
+      </div>
+
+      <small style="opacity:.75;display:block;margin-top:10px;">
+        Tambah/remove prize di sini. Tekan Save untuk simpan ke Firebase.
+      </small>
+    </div>
+
+    <div class="modalFoot">
+      <button id="prizeCancel" class="btn2">Cancel</button>
+      <button id="prizeSave" class="btn">Save</button>
+    </div>
+  </div>
+</div>
 
 <div class="wrap">
   <div class="grid">
@@ -262,22 +413,38 @@ const firebaseConfig = {
     window.__t = setTimeout(()=> $("toast").style.display="none", 2200);
   };
 
- // ===== Prize points config (bro boleh ubah ikut suka) =====
-const PRIZE_POINTS = {
-  NORMAL: [3, 6, 8, 12],
-  SUPER:  [15, 20, 30, 40]
+
+// ===== Prize settings in Firebase =====
+const PRIZES_REF = ref(db, "settings/prizes");
+
+// default kalau Firebase kosong
+let prizeConfig = {
+  NORMAL: [3, 6, 9, 12, 15, 18],
+  SUPER:  [20, 25, , 30, 35, 40, 88]
 };
 
+async function loadPrizeConfig(){
+  const snap = await get(PRIZES_REF);
+  if(snap.exists()){
+    const v = snap.val();
+    if(v && v.NORMAL && v.SUPER) prizeConfig = v;
+  }else{
+    await set(PRIZES_REF, prizeConfig);
+  }
+}
+
+// Render dropdown points ikut prizeConfig
 function renderPointsOptions(type){
-  const list = PRIZE_POINTS[type] || [];
+  const list = (prizeConfig[type] || []).slice().sort((a,b)=>a-b);
   const sel = $("points");
   sel.innerHTML = list.map(p => `<option value="${p}">FREE ${p}</option>`).join("");
-  // default select first
   if(list.length) sel.value = String(list[0]);
 }
 
 // Prize type toggle
 let prizeType = "NORMAL";
+
+await loadPrizeConfig();
 renderPointsOptions(prizeType);
 
 $("typeNormal").onclick = ()=>{
@@ -292,7 +459,7 @@ $("typeSuper").onclick = ()=>{
   $("typeSuper").classList.add("active");
   $("typeNormal").classList.remove("active");
   renderPointsOptions(prizeType);
-};;
+};
 
   // Random code generator
   function genCode(len=6){
@@ -467,6 +634,100 @@ $("typeSuper").onclick = ()=>{
     $("searchHist").value="";
     renderHist(allHist);
   };
+  // ===== Sidebar UI =====
+function openSidebar(){
+  $("sideOverlay").style.display = "block";
+  $("sidebar").classList.add("show");
+}
+function closeSidebar(){
+  $("sideOverlay").style.display = "none";
+  $("sidebar").classList.remove("show");
+}
+$("btnMenu").onclick = openSidebar;
+$("btnSideClose").onclick = closeSidebar;
+$("sideOverlay").onclick = closeSidebar;
+
+// ===== Prize Modal UI =====
+let editingType = "NORMAL";
+
+function renderPrizePills(){
+  const arr = (prizeConfig[editingType] || []).slice().sort((a,b)=>a-b);
+  $("prizePills").innerHTML = arr.map(v=>`
+    <div class="pillTag">
+      FREE ${v}
+      <button data-del="${v}" title="Remove">✕</button>
+    </div>
+  `).join("");
+
+  $("prizePills").querySelectorAll("[data-del]").forEach(btn=>{
+    btn.onclick = ()=>{
+      const val = parseInt(btn.getAttribute("data-del"),10);
+      prizeConfig[editingType] = (prizeConfig[editingType]||[]).filter(x=>x!==val);
+      renderPrizePills();
+    };
+  });
+}
+
+function openPrizeModal(){
+  $("prizeOverlay").style.display = "grid";
+  editingType = "NORMAL";
+  $("tabNormal").classList.add("active");
+  $("tabSuper").classList.remove("active");
+  renderPrizePills();
+}
+function closePrizeModal(){
+  $("prizeOverlay").style.display = "none";
+}
+
+$("sidePrize").onclick = async ()=>{
+  closeSidebar();
+  await loadPrizeConfig();
+  openPrizeModal();
+};
+
+$("tabNormal").onclick = ()=>{
+  editingType = "NORMAL";
+  $("tabNormal").classList.add("active");
+  $("tabSuper").classList.remove("active");
+  renderPrizePills();
+};
+$("tabSuper").onclick = ()=>{
+  editingType = "SUPER";
+  $("tabSuper").classList.add("active");
+  $("tabNormal").classList.remove("active");
+  renderPrizePills();
+};
+
+$("prizeX").onclick = closePrizeModal;
+$("prizeCancel").onclick = closePrizeModal;
+$("prizeOverlay").addEventListener("click",(e)=>{
+  if(e.target === $("prizeOverlay")) closePrizeModal();
+});
+
+$("prizeAdd").onclick = ()=>{
+  const val = parseInt(($("prizeInput").value||"").trim(),10);
+  if(!Number.isFinite(val) || val<=0) return toast("Enter valid number (e.g. 100)");
+  const arr = prizeConfig[editingType] || [];
+  if(arr.includes(val)) return toast("Prize already exists");
+  arr.push(val);
+  prizeConfig[editingType] = arr.sort((a,b)=>a-b);
+  $("prizeInput").value = "";
+  renderPrizePills();
+};
+
+$("prizeSave").onclick = async ()=>{
+  // unique + sort
+  prizeConfig.NORMAL = Array.from(new Set(prizeConfig.NORMAL||[])).sort((a,b)=>a-b);
+  prizeConfig.SUPER  = Array.from(new Set(prizeConfig.SUPER||[])).sort((a,b)=>a-b);
+
+  await set(PRIZES_REF, prizeConfig);
+
+  // update dropdown current prizeType
+  renderPointsOptions(prizeType);
+
+  closePrizeModal();
+  toast("Prize settings saved!");
+};
 </script>
 </body>
 </html>
