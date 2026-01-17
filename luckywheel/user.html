@@ -139,12 +139,13 @@
   position:absolute;
   left:50%;
   top:50%;
-  width:140px;
+
+  width: 110px;              /* kecik sikit */
   text-align:center;
 
   font-weight:1000;
-  font-size:14px;
-  letter-spacing:.5px;
+  font-size:13px;
+  letter-spacing:.3px;
 
   color: rgba(0,0,0,.78);
   text-shadow: 0 1px 0 rgba(255,255,255,.35);
@@ -155,17 +156,18 @@
     translate(0, calc(-1 * var(--rad)))
     rotate(-90deg);
 
-  white-space:nowrap;
+  transform-origin:center;
+  white-space: normal;        /* ✅ boleh turun line */
+  line-height: 1.05;
+  word-break: break-word;     /* ✅ pecahkan nombor panjang */
 }
 
-/* auto flip kalau label dekat bawah supaya tak terbalik */
 .sliceText .sliceLabel[data-flip="1"]{
   transform:
     translate(-50%,-50%)
     rotate(var(--ang))
     translate(0, calc(-1 * var(--rad)))
     rotate(90deg);
-}hite-space:nowrap;
 }
   .spinBtn{
     width:100%;
@@ -273,6 +275,11 @@
 #histList::-webkit-scrollbar-thumb{
   background: rgba(255,255,255,.18);
   border-radius: 999px;
+}
+  #pageWheel .spinBtn{
+  margin-top: 12px;
+  position: relative;
+  z-index: 5;
 }
   
 </style>
@@ -386,21 +393,20 @@ function watchPrizeConfig(){
     if(!snap.exists()) return;
     const v = snap.val() || {};
     const clean = (arr)=> (arr||[])
-      .map(x=>Number(x))
-      .filter(x=>Number.isFinite(x) && x>0)
-      .filter((x,i,a)=>a.indexOf(x)===i)
-      .sort((a,b)=>a-b);
-
-    prizeCfgCache = {
-      NORMAL: clean(v.NORMAL ?? prizeCfgCache.NORMAL),
-      SUPER:  clean(v.SUPER  ?? prizeCfgCache.SUPER)
-    };
+const clean = (arr)=>{
+  const raw = Array.isArray(arr) ? arr : Object.values(arr || {});
+  return raw
+    .map(x=>Number(x))
+    .filter(x=>Number.isFinite(x) && x>0)
+    .filter((x,i,a)=>a.indexOf(x)===i)
+    .sort((a,b)=>a-b);
+};
 
     // kalau sedang di wheel page, refresh live
-    if(currentPrize && currentCode){
-      const t = String(currentPrize.prizeType||"NORMAL").toUpperCase();
-      buildSegmentsFromList(prizeCfgCache[t] || prizeCfgCache.NORMAL);
-    }
+if(currentPrize && currentCode){
+  const merged = [...(prizeCfgCache.NORMAL||[]), ...(prizeCfgCache.SUPER||[])];
+  buildSegmentsFromList(merged);
+}
   });
 }
 watchPrizeConfig();
@@ -440,7 +446,7 @@ function buildSegmentsFromList(list){
   segCount = segments.length || 1;
   segAngle = 360 / segCount;
   applyWheelTheme();
-const radius = 125; // jarak text dari center (kau boleh adjust)
+const radius = 110; // jarak text dari center (kau boleh adjust)
 
 const st = $("sliceText");
 st.innerHTML = segments.map((s,i)=>{
@@ -557,9 +563,15 @@ async function loadMyHistory(){
 currentCode = code;
 currentPrize = res.data;
 
-// build wheel ikut prizeType (NORMAL/SUPER) dari code admin
 const merged = [...(prizeCfgCache.NORMAL||[]), ...(prizeCfgCache.SUPER||[])];
-buildSegmentsFromList(merged);
+
+const mergedClean = merged
+  .map(Number)
+  .filter(v => Number.isFinite(v) && v > 0)
+  .filter((v,i,a)=>a.indexOf(v)===i)
+  .sort((a,b)=>a-b);
+
+buildSegmentsFromList(mergedClean);
 
 gotoWheel(code);
 await loadMyHistory();
