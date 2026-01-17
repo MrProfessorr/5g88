@@ -127,7 +127,7 @@
     text-shadow:0 1px 0 rgba(255,255,255,.35);
     pointer-events:none;
   }
-/* ==== WHEEL LABEL (miring ikut slice) ==== */
+/* ==== WHEEL LABEL (miring ke dalam) ==== */
 .sliceText{
   position:absolute;
   inset:0;
@@ -146,19 +146,26 @@
   font-size:14px;
   letter-spacing:.5px;
 
-  /* warna text */
-  color: rgba(0,0,0,.75);
+  color: rgba(0,0,0,.78);
   text-shadow: 0 1px 0 rgba(255,255,255,.35);
 
-  /* transform ikut angle + radius */
   transform:
     translate(-50%,-50%)
     rotate(var(--ang))
     translate(0, calc(-1 * var(--rad)))
-    rotate(calc(-1 * var(--ang) + 25deg));  /* <-- ini buat text miring */
+    rotate(-90deg);
 
-  transform-origin:center;
   white-space:nowrap;
+}
+
+/* auto flip kalau label dekat bawah supaya tak terbalik */
+.sliceText .sliceLabel[data-flip="1"]{
+  transform:
+    translate(-50%,-50%)
+    rotate(var(--ang))
+    translate(0, calc(-1 * var(--rad)))
+    rotate(90deg);
+}hite-space:nowrap;
 }
   .spinBtn{
     width:100%;
@@ -256,15 +263,7 @@
     font-weight:900;
     display:none;
   }
-  #sliceText span{
-  position:absolute;
-  left:50%; top:50%;
-  font-weight:700;
-  font-size:14px;
-  letter-spacing:.3px;
-  user-select:none;
-  pointer-events:none;
-}
+
 #histList{
   max-height: 220px;      /* bila lebih dari 5 row, jadi scroll */
   overflow-y: auto;
@@ -450,6 +449,12 @@ st.innerHTML = segments.map((s,i)=>{
     ${s.label}
   </span>`;
 }).join("");
+  // auto flip label bahagian bawah (supaya tak terbalik)
+st.querySelectorAll(".sliceLabel").forEach(el=>{
+  const ang = parseFloat(el.style.getPropertyValue("--ang")) || 0;
+  const norm = ((ang % 360) + 360) % 360;
+  el.dataset.flip = (norm > 90 && norm < 270) ? "1" : "0";
+});
 }
 function applyWheelTheme(){
   const wheel = $("wheel");
