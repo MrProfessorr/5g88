@@ -396,7 +396,26 @@ const firebaseConfig = {
   }
 
   $("navSpin").onclick = (e)=>{ e.preventDefault(); gotoEnter(); };
+  function spinToValue(targetValue){
+  const idx = wheelValues.indexOf(Number(targetValue));
+  if(idx < 0){
+    // kalau target tak wujud dalam wheel, fallback random
+    return spinRandom();
+  }
 
+  const n = wheelValues.length;
+  const slice = 360 / n;
+
+  // pointer berada di atas (12 o'clock). Kita nak slice idx berada tepat di pointer.
+  // Kita pilih angle tengah slice idx
+  const targetCenter = (idx * slice) + slice/2;
+
+  // Banyak pusingan (supaya nampak real)
+  const spins = 6; // 6 pusingan penuh
+  const finalDeg = (spins * 360) + (360 - targetCenter);
+
+  animateWheelTo(finalDeg); // function animation rotate
+}
   function fmtTime(ts){
     const d=new Date(ts);
     return d.toLocaleString();
