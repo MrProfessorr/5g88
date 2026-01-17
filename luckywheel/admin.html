@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Lucky Draw Admin</title>
+<style>
+  :root{
+    --bg1:#120a2a; --bg2:#1a2c6b;
+    --card:rgba(255,255,255,.08);
+    --stroke:rgba(255,255,255,.12);
+    --gold1:#ffcc55; --gold2:#ff8a00;
+    --txt:#e9ecff; --muted:rgba(233,236,255,.7);
+    --ok:#27d17f; --bad:#ff4d4d;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    color:var(--txt);
+    background: radial-gradient(1200px 700px at 20% 20%, #6b2cff 0%, transparent 45%),
+                radial-gradient(900px 600px at 80% 30%, #2b6cff 0%, transparent 55%),
+                linear-gradient(135deg, var(--bg1), var(--bg2));
+    min-height:100vh;
+  }
+  header{
+    height:64px; display:flex; align-items:center; justify-content:space-between;
+    padding:0 18px;
+    background:linear-gradient(90deg, rgba(0,0,0,.45), rgba(0,0,0,.15));
+    border-bottom:1px solid var(--stroke);
+    backdrop-filter: blur(10px);
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.5px}
+  .dot{width:12px; height:12px; border-radius:999px; background:linear-gradient(90deg,var(--gold1),var(--gold2)); box-shadow:0 0 18px rgba(255,170,0,.55)}
+  nav a{color:var(--muted); text-decoration:none; margin-left:14px; font-weight:600}
+  nav a:hover{color:var(--txt)}
+  .wrap{max-width:1150px; margin:22px auto; padding:0 16px}
+  .grid{display:grid; grid-template-columns: 1.1fr .9fr; gap:16px}
+  .card{
+    background:var(--card); border:1px solid var(--stroke); border-radius:16px;
+    box-shadow: 0 18px 50px rgba(0,0,0,.35);
+    backdrop-filter: blur(12px);
+    overflow:hidden;
+  }
+  .card h3{margin:0; padding:14px 16px; border-bottom:1px solid var(--stroke); display:flex; align-items:center; gap:10px}
+  .card .body{padding:16px}
+  label{display:block; font-size:12px; color:var(--muted); margin:10px 0 6px}
+  input, select{
+    width:100%; padding:12px 12px; border-radius:12px;
+    border:1px solid rgba(255,255,255,.16);
+    background:rgba(0,0,0,.22);
+    color:var(--txt); outline:none;
+  }
+  input:focus, select:focus{border-color:rgba(255,200,85,.6); box-shadow:0 0 0 3px rgba(255,180,0,.15)}
+  .row{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
+  .toggle{
+    display:flex; gap:10px; margin-top:10px;
+  }
+  .pill{
+    flex:1; padding:11px 12px; border-radius:12px;
+    border:1px solid rgba(255,255,255,.16);
+    background:rgba(0,0,0,.18);
+    color:var(--muted); font-weight:800; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .pill.active{
+    background:rgba(40,110,255,.22);
+    border-color:rgba(40,110,255,.55);
+    color:var(--txt);
+  }
+  .btn{
+    width:100%; margin-top:14px;
+    padding:12px 14px; border-radius:12px; border:none;
+    font-weight:900; cursor:pointer; color:#081022;
+    background:linear-gradient(90deg,var(--ok),#18b86e);
+    box-shadow:0 10px 24px rgba(0,0,0,.25);
+  }
+  .btn:active{transform:translateY(1px)}
+  .codeBox{
+    border-radius:14px; padding:14px; border:1px solid var(--stroke);
+    background:rgba(0,0,0,.18);
+  }
+  .bigCode{font-size:28px; font-weight:1000; letter-spacing:2px; margin:4px 0 2px}
+  .sub{color:var(--muted); font-size:12px}
+  .btn2{
+    margin-top:10px; width:100%;
+    padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.16);
+    background:rgba(0,0,0,.18); color:var(--txt); font-weight:800; cursor:pointer;
+  }
+  .btn2:hover{border-color:rgba(255,200,85,.5)}
+  .tableWrap{overflow:auto}
+  table{width:100%; border-collapse:collapse; font-size:13px}
+  th,td{padding:10px 10px; border-bottom:1px solid rgba(255,255,255,.10); text-align:left; white-space:nowrap}
+  th{color:var(--muted); font-weight:800}
+  .tag{
+    display:inline-flex; align-items:center; gap:6px;
+    padding:4px 10px; border-radius:999px; font-size:12px; font-weight:900;
+    border:1px solid rgba(255,255,255,.14); background:rgba(0,0,0,.2)
+  }
+  .tag.ok{border-color:rgba(39,209,127,.35); color:#bff7dc}
+  .tag.bad{border-color:rgba(255,77,77,.35); color:#ffd0d0}
+  .tag.warn{border-color:rgba(255,200,85,.35); color:#ffe7b5}
+  .mini{
+    display:flex; gap:10px; align-items:center; justify-content:space-between;
+    margin-top:10px;
+  }
+  .toast{
+    position:fixed; right:16px; bottom:16px;
+    background:rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.14);
+    backdrop-filter:blur(10px);
+    padding:10px 12px; border-radius:12px; color:var(--txt);
+    display:none; max-width:360px;
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><span class="dot"></span> LUCKY DRAW <span style="opacity:.6;font-weight:700">ADMIN</span></div>
+  <nav>
+    <a href="user.html">Home</a>
+    <a href="#codes">Codes</a>
+    <a href="#history">History</a>
+  </nav>
+</header>
+
+<div class="wrap">
+  <div class="grid">
+    <div class="card">
+      <h3>🎟️ Generate Promo Code</h3>
+      <div class="body">
+        <label>Customer Name/ID (optional)</label>
+        <input id="customer" placeholder="Example: SK0015 B20"/>
+
+        <div class="toggle">
+          <button class="pill active" id="typeNormal">🎯 NORMAL PRIZE</button>
+          <button class="pill" id="typeSuper">⭐ SUPER PRIZE</button>
+        </div>
+
+        <label>Select Prize (Points)</label>
+        <select id="points">
+          <option value="3">FREE 3</option>
+          <option value="6">FREE 6</option>
+          <option value="9">FREE 9</option>
+          <option value="12">FREE 12</option>
+          <option value="18">FREE 18</option>
+          <option value="58">FREE 58</option>
+        </select>
+
+        <div class="row">
+          <div>
+            <label>Expiration Time (hours)</label>
+            <input id="expHours" type="number" min="1" value="24"/>
+          </div>
+          <div>
+            <label>Usage Limit</label>
+            <input id="usageLimit" type="number" min="1" value="1"/>
+          </div>
+        </div>
+
+        <button class="btn" id="btnGenerate">＋ Generate Promo Code</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>✅ Generated Code</h3>
+      <div class="body">
+        <div class="codeBox">
+          <div class="sub">Your code</div>
+          <div class="bigCode" id="genCode">— — — — — —</div>
+          <div class="sub" id="genMeta">Generate a code to see details.</div>
+          <button class="btn2" id="btnCopy" disabled>📋 Copy Code</button>
+        </div>
+
+        <div class="mini">
+          <div class="sub">Tip: share user page link + code</div>
+          <button class="btn2" id="btnOpenUser">Open User Page ↗</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="height:16px"></div>
+
+  <div class="card" id="codes">
+    <h3>🧾 Active Promo Codes</h3>
+    <div class="body">
+      <div class="row">
+        <input id="searchCode" placeholder="Search by code / customer..."/>
+        <button class="btn2" id="btnRefresh">↻ Refresh</button>
+      </div>
+      <div class="tableWrap" style="margin-top:10px">
+        <table>
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Customer</th>
+              <th>Prize</th>
+              <th>Type</th>
+              <th>Used</th>
+              <th>Limit</th>
+              <th>Expires</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="codesTbody">
+            <tr><td colspan="8" style="color:rgba(233,236,255,.65)">No data yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div style="height:16px"></div>
+
+  <div class="card" id="history">
+    <h3>📜 Redemption History</h3>
+    <div class="body">
+      <div class="row">
+        <input id="searchHist" placeholder="Search by code / userId..."/>
+        <button class="btn2" id="btnClearView">Clear Filter</button>
+      </div>
+      <div class="tableWrap" style="margin-top:10px">
+        <table>
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Points</th>
+              <th>User</th>
+              <th>Redeemed At</th>
+            </tr>
+          </thead>
+          <tbody id="histTbody">
+            <tr><td colspan="4" style="color:rgba(233,236,255,.65)">No history yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase v9 (modular) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+  import {
+    getDatabase, ref, set, get, child, onValue, query, limitToLast
+  } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+  // ✅ 1) PASTE firebaseConfig anda di sini
+  const firebaseConfig = FIREBASE_CONFIG_HERE;
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // ===== UI helpers =====
+  const $ = (id)=>document.getElementById(id);
+  const toast = (msg)=>{
+    $("toast").textContent = msg;
+    $("toast").style.display="block";
+    clearTimeout(window.__t);
+    window.__t = setTimeout(()=> $("toast").style.display="none", 2200);
+  };
+
+  // Prize type toggle
+  let prizeType = "NORMAL";
+  $("typeNormal").onclick = ()=>{
+    prizeType="NORMAL";
+    $("typeNormal").classList.add("active");
+    $("typeSuper").classList.remove("active");
+  };
+  $("typeSuper").onclick = ()=>{
+    prizeType="SUPER";
+    $("typeSuper").classList.add("active");
+    $("typeNormal").classList.remove("active");
+  };
+
+  // Random code generator
+  function genCode(len=6){
+    const chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    let out="";
+    for(let i=0;i<len;i++) out += chars[Math.floor(Math.random()*chars.length)];
+    return out;
+  }
+  async function generateUniqueCode(){
+    for(let i=0;i<20;i++){
+      const c = genCode(6);
+      const snap = await get(ref(db, `promo_codes/${c}`));
+      if(!snap.exists()) return c;
+    }
+    // fallback
+    return genCode(8);
+  }
+
+  // Generate button
+  $("btnGenerate").onclick = async ()=>{
+    const customer = $("customer").value.trim();
+    const points = Number($("points").value);
+    const expHours = Math.max(1, Number($("expHours").value || 24));
+    const usageLimit = Math.max(1, Number($("usageLimit").value || 1));
+
+    const code = await generateUniqueCode();
+    const now = Date.now();
+    const expiresAt = now + expHours*3600*1000;
+
+    const payload = {
+      code,
+      customer: customer || "",
+      points,
+      prizeType,
+      usageLimit,
+      usedCount: 0,
+      createdAt: now,
+      expiresAt,
+      status: "ACTIVE"
+    };
+
+    await set(ref(db, `promo_codes/${code}`), payload);
+
+    $("genCode").textContent = code;
+    $("genMeta").textContent = `${prizeType} • FREE ${points} • limit ${usageLimit} • expires in ${expHours}h`;
+    $("btnCopy").disabled = false;
+    $("btnCopy").dataset.code = code;
+    toast("Code generated!");
+  };
+
+  $("btnCopy").onclick = async ()=>{
+    const code = $("btnCopy").dataset.code;
+    if(!code) return;
+    await navigator.clipboard.writeText(code);
+    toast("Copied!");
+  };
+
+  $("btnOpenUser").onclick = ()=>{
+    // open user page same folder
+    window.open("user.html","_blank");
+  };
+
+  // ===== Load Active Codes =====
+  let allCodes = [];
+  function statusTag(obj){
+    const now = Date.now();
+    const expired = now >= obj.expiresAt;
+    const full = obj.usedCount >= obj.usageLimit;
+    if(expired) return `<span class="tag bad">EXPIRED</span>`;
+    if(full) return `<span class="tag warn">FULL</span>`;
+    return `<span class="tag ok">ACTIVE</span>`;
+  }
+
+  function fmtTime(ts){
+    const d = new Date(ts);
+    return d.toLocaleString();
+  }
+
+  function renderCodes(list){
+    const q = $("searchCode").value.trim().toUpperCase();
+    const filtered = !q ? list : list.filter(x=>{
+      return (x.code||"").includes(q) || (x.customer||"").toUpperCase().includes(q);
+    });
+
+    const tb = $("codesTbody");
+    if(!filtered.length){
+      tb.innerHTML = `<tr><td colspan="8" style="color:rgba(233,236,255,.65)">No promo codes found.</td></tr>`;
+      return;
+    }
+
+    tb.innerHTML = filtered
+      .sort((a,b)=> (b.createdAt||0)-(a.createdAt||0))
+      .slice(0,200)
+      .map(x=>`
+        <tr>
+          <td style="font-weight:900;letter-spacing:1px">${x.code}</td>
+          <td>${x.customer||"-"}</td>
+          <td>FREE ${x.points}</td>
+          <td>${x.prizeType||"-"}</td>
+          <td>${x.usedCount||0}</td>
+          <td>${x.usageLimit||1}</td>
+          <td>${fmtTime(x.expiresAt)}</td>
+          <td>${statusTag(x)}</td>
+        </tr>
+      `).join("");
+  }
+
+  function loadCodesLive(){
+    onValue(ref(db, "promo_codes"), (snap)=>{
+      const v = snap.val() || {};
+      allCodes = Object.keys(v).map(k=>v[k]);
+      renderCodes(allCodes);
+    });
+  }
+  loadCodesLive();
+
+  $("searchCode").addEventListener("input", ()=>renderCodes(allCodes));
+  $("btnRefresh").onclick = async ()=>{
+    const snap = await get(ref(db, "promo_codes"));
+    const v = snap.val() || {};
+    allCodes = Object.keys(v).map(k=>v[k]);
+    renderCodes(allCodes);
+    toast("Refreshed!");
+  };
+
+  // ===== Load History (latest) =====
+  let allHist = [];
+  function renderHist(list){
+    const q = $("searchHist").value.trim().toUpperCase();
+    const filtered = !q ? list : list.filter(x=>{
+      return (x.code||"").includes(q) || (x.userId||"").toUpperCase().includes(q);
+    });
+
+    const tb = $("histTbody");
+    if(!filtered.length){
+      tb.innerHTML = `<tr><td colspan="4" style="color:rgba(233,236,255,.65)">No history found.</td></tr>`;
+      return;
+    }
+    tb.innerHTML = filtered
+      .sort((a,b)=> (b.redeemedAt||0)-(a.redeemedAt||0))
+      .slice(0,250)
+      .map(x=>`
+        <tr>
+          <td style="font-weight:900;letter-spacing:1px">${x.code}</td>
+          <td>FREE ${x.points}</td>
+          <td>${x.userId}</td>
+          <td>${fmtTime(x.redeemedAt)}</td>
+        </tr>
+      `).join("");
+  }
+
+  // Read all code histories (limit 500 total)
+  function loadHistoryLive(){
+    // simple approach: listen each code? heavy.
+    // better: keep a global mirror? for beginner, we do lightweight: read redemptionsByCode once on refresh filter.
+    onValue(ref(db, "redemptionsByCode"), (snap)=>{
+      const v = snap.val() || {};
+      const arr = [];
+      for(const code of Object.keys(v)){
+        const group = v[code] || {};
+        for(const rid of Object.keys(group)){
+          arr.push(group[rid]);
+        }
+      }
+      allHist = arr;
+      renderHist(allHist);
+    });
+  }
+  loadHistoryLive();
+  $("searchHist").addEventListener("input", ()=>renderHist(allHist));
+  $("btnClearView").onclick = ()=>{
+    $("searchHist").value="";
+    renderHist(allHist);
+  };
+</script>
+</body>
+</html>
