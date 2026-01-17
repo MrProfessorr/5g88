@@ -211,6 +211,47 @@
   background:rgba(0,0,0,.18);color:#fff;
   outline:none;
 }
+/* ===== HISTORY: max 15 rows, scroll ===== */
+#history .tableWrap{
+  max-height: calc(15 * 46px); /* 15 row, adjust kalau row tinggi */
+  overflow: auto;
+  border-radius: 14px;
+}
+
+/* sticky header bila scroll */
+#history .tableWrap thead th{
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: linear-gradient(90deg, rgba(30,40,110,.95), rgba(25,35,95,.95));
+  backdrop-filter: blur(10px);
+}
+
+/* cantikkan scrollbar */
+#history .tableWrap::-webkit-scrollbar{ width: 10px; height:10px; }
+#history .tableWrap::-webkit-scrollbar-track{
+  background: rgba(255,255,255,.06);
+  border-radius: 999px;
+}
+#history .tableWrap::-webkit-scrollbar-thumb{
+  background: linear-gradient(180deg, rgba(255,77,216,.75), rgba(106,64,255,.75));
+  border-radius: 999px;
+  border: 2px solid rgba(0,0,0,.25);
+}
+#history .tableWrap{ scrollbar-width: thin; scrollbar-color: rgba(255,77,216,.75) rgba(255,255,255,.06); }
+
+/* delete button */
+.btnDel{
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,80,80,.12);
+  color: rgba(255,210,210,.95);
+  font-weight: 900;
+  cursor: pointer;
+}
+.btnDel:hover{ background: rgba(255,80,80,.20); }
+.btnDel:active{ transform: translateY(1px); }
 </style>
 </head>
 <body>
@@ -364,17 +405,18 @@
       </div>
       <div class="tableWrap" style="margin-top:10px">
         <table>
-          <thead>
-            <tr>
-              <th>Code</th>
-              <th>Points</th>
-              <th>User</th>
-              <th>Redeemed At</th>
-            </tr>
-          </thead>
-          <tbody id="histTbody">
-            <tr><td colspan="4" style="color:rgba(233,236,255,.65)">No history yet.</td></tr>
-          </tbody>
+<thead>
+  <tr>
+    <th>Code</th>
+    <th>Points</th>
+    <th>User</th>
+    <th>Redeemed At</th>
+    <th style="width:110px;text-align:right;">Actions</th>
+  </tr>
+</thead>
+<tbody id="histTbody">
+  <tr><td colspan="5" style="color:rgba(233,236,255,.65)">No history yet.</td></tr>
+</tbody>
         </table>
       </div>
     </div>
@@ -388,7 +430,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
   import {
-    getDatabase, ref, set, get, child, onValue, query, limitToLast
+    getDatabase, ref, set, get, child, onValue, query, limitToLast,remove
   } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
 const firebaseConfig = {
@@ -602,47 +644,80 @@ $("typeSuper").onclick = ()=>{
 
   // ===== Load History (latest) =====
   let allHist = [];
-  function renderHist(list){
-    const q = $("searchHist").value.trim().toUpperCase();
-    const filtered = !q ? list : list.filter(x=>{
-      return (x.code||"").includes(q) || (x.userId||"").toUpperCase().includes(q);
-    });
+async function deleteHistRow(x){
+  const ok = confirm(`Delete history for code ${x.code || x._code}?`);
+  if(!ok) return;
 
-    const tb = $("histTbody");
-    if(!filtered.length){
-      tb.innerHTML = `<tr><td colspan="4" style="color:rgba(233,236,255,.65)">No history found.</td></tr>`;
-      return;
-    }
-    tb.innerHTML = filtered
-      .sort((a,b)=> (b.redeemedAt||0)-(a.redeemedAt||0))
-      .slice(0,250)
-      .map(x=>`
-        <tr>
-          <td style="font-weight:900;letter-spacing:1px">${x.code}</td>
-          <td>FREE ${x.points}</td>
-          <td>${x.userId}</td>
-          <td>${fmtTime(x.redeemedAt)}</td>
-        </tr>
-      `).join("");
+  try{
+    // delete only the history row
+    await remove(ref(db, `redemptionsByCode/${x._code}/${x._rid}`));
+    toast("Deleted!");
+  }catch(e){
+    alert("Delete failed: " + (e.message || e));
+  }
+}
+
+function renderHist(list){
+  const q = $("searchHist").value.trim().toUpperCase();
+  const filtered = !q ? list : list.filter(x=>{
+    return (String(x.code||"").toUpperCase().includes(q)) ||
+           (String(x.userId||"").toUpperCase().includes(q));
+  });
+
+  const tb = $("histTbody");
+  if(!filtered.length){
+    tb.innerHTML = `<tr><td colspan="5" style="color:rgba(233,236,255,.65)">No history found.</td></tr>`;
+    return;
   }
 
-  // Read all code histories (limit 500 total)
-  function loadHistoryLive(){
-    // simple approach: listen each code? heavy.
-    // better: keep a global mirror? for beginner, we do lightweight: read redemptionsByCode once on refresh filter.
-    onValue(ref(db, "redemptionsByCode"), (snap)=>{
-      const v = snap.val() || {};
-      const arr = [];
-      for(const code of Object.keys(v)){
-        const group = v[code] || {};
-        for(const rid of Object.keys(group)){
-          arr.push(group[rid]);
-        }
+  const rows = filtered
+    .sort((a,b)=> (b.redeemedAt||0)-(a.redeemedAt||0))
+    .slice(0, 500);
+
+  tb.innerHTML = rows.map(x=>`
+    <tr>
+      <td style="font-weight:900;letter-spacing:1px">${x.code || x._code}</td>
+      <td>FREE ${x.points}</td>
+      <td>${x.userId || "-"}</td>
+      <td>${fmtTime(x.redeemedAt)}</td>
+      <td style="text-align:right;">
+        <button class="btnDel" data-del="${x._code}__${x._rid}">Delete</button>
+      </td>
+    </tr>
+  `).join("");
+
+  // attach delete events
+  tb.querySelectorAll("[data-del]").forEach(btn=>{
+    btn.onclick = ()=>{
+      const key = btn.getAttribute("data-del");
+      const [c, r] = key.split("__");
+      const found = rows.find(x => x._code === c && x._rid === r);
+      if(found) deleteHistRow(found);
+    };
+  });
+}
+
+function loadHistoryLive(){
+  onValue(ref(db, "redemptionsByCode"), (snap)=>{
+    const v = snap.val() || {};
+    const arr = [];
+
+    for(const code of Object.keys(v)){
+      const group = v[code] || {};
+      for(const rid of Object.keys(group)){
+        const item = group[rid] || {};
+        arr.push({
+          ...item,
+          _code: code,   // untuk delete path
+          _rid: rid      // untuk delete path
+        });
       }
-      allHist = arr;
-      renderHist(allHist);
-    });
-  }
+    }
+
+    allHist = arr;
+    renderHist(allHist);
+  });
+}
   loadHistoryLive();
   $("searchHist").addEventListener("input", ()=>renderHist(allHist));
   $("btnClearView").onclick = ()=>{
