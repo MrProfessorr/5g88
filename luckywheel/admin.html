@@ -624,13 +624,23 @@ $("typeSuper").onclick = ()=>{
       `).join("");
   }
 
-  function loadCodesLive(){
-    onValue(ref(db, "promo_codes"), (snap)=>{
-      const v = snap.val() || {};
-      allCodes = Object.keys(v).map(k=>v[k]);
-      renderCodes(allCodes);
-    });
-  }
+function loadCodesLive(){
+  onValue(ref(db, "promo_codes"), (snap)=>{
+    const v = snap.val() || {};
+    allCodes = Object.keys(v).map(k=>v[k]);
+
+    // ✅ build map: CODE -> customer
+    codeCustomerMap = {};
+    for(const c of allCodes){
+      if(c?.code) codeCustomerMap[String(c.code).toUpperCase()] = (c.customer || "");
+    }
+
+    renderCodes(allCodes);
+
+    // ✅ refresh history view (supaya nama terus muncul bila promo_codes loaded)
+    if (allHist?.length) renderHist(allHist);
+  });
+}
   loadCodesLive();
 
   $("searchCode").addEventListener("input", ()=>renderCodes(allCodes));
@@ -644,6 +654,7 @@ $("typeSuper").onclick = ()=>{
 
   // ===== Load History (latest) =====
   let allHist = [];
+  let codeCustomerMap = {};
 async function deleteHistRow(x){
   const ok = confirm(`Delete history for code ${x.code || x._code}?`);
   if(!ok) return;
@@ -678,7 +689,7 @@ function renderHist(list){
     <tr>
       <td style="font-weight:900;letter-spacing:1px">${x.code || x._code}</td>
       <td>FREE ${x.points}</td>
-      <td>${x.userId || "-"}</td>
+      <td>${(codeCustomerMap[String(x.code || x._code || "").toUpperCase()] || x.customer || x.userId || "-")}</td>
       <td>${fmtTime(x.redeemedAt)}</td>
       <td style="text-align:right;">
         <button class="btnDel" data-del="${x._code}__${x._rid}">Delete</button>
