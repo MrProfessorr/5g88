@@ -391,21 +391,30 @@ let prizeCfgCache = { NORMAL:[3,6,8,12], SUPER:[15,20,30,40] };
 function watchPrizeConfig(){
   onValue(ref(db,"settings/prizes"), (snap)=>{
     if(!snap.exists()) return;
-    const v = snap.val() || {};
-const clean = (arr)=>{
-  const raw = Array.isArray(arr) ? arr : Object.values(arr || {});
-  return raw
-    .map(x=>Number(x))
-    .filter(x=>Number.isFinite(x) && x>0)
-    .filter((x,i,a)=>a.indexOf(x)===i)
-    .sort((a,b)=>a-b);
-};
 
-    // kalau sedang di wheel page, refresh live
-if(currentPrize && currentCode){
-  const merged = [...(prizeCfgCache.NORMAL||[]), ...(prizeCfgCache.SUPER||[])];
-  buildSegmentsFromList(merged);
-}
+    const v = snap.val() || {};
+    const clean = (arr)=>{
+      const raw = Array.isArray(arr) ? arr : Object.values(arr || {});
+      return raw
+        .map(x=>Number(x))
+        .filter(x=>Number.isFinite(x) && x>0)
+        .filter((x,i,a)=>a.indexOf(x)===i)
+        .sort((a,b)=>a-b);
+    };
+
+    // ✅ INI YANG KAU TAK ADA: update cache ikut data admin
+    prizeCfgCache = {
+      NORMAL: clean(v.NORMAL ?? prizeCfgCache.NORMAL),
+      SUPER:  clean(v.SUPER  ?? prizeCfgCache.SUPER)
+    };
+
+    // ✅ kau nak campur NORMAL + SUPER dalam wheel
+    const merged = [...prizeCfgCache.NORMAL, ...prizeCfgCache.SUPER];
+
+    // kalau user tengah di page wheel, auto refresh terus
+    if(currentCode){
+      buildSegmentsFromList(merged);
+    }
   });
 }
 watchPrizeConfig();
