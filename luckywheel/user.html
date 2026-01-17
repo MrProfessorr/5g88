@@ -127,11 +127,39 @@
     text-shadow:0 1px 0 rgba(255,255,255,.35);
     pointer-events:none;
   }
-  .sliceText span{
-    position:absolute; left:50%; top:50%;
-    transform-origin:0 0;
-    font-size:14px;
-  }
+/* ==== WHEEL LABEL (miring ikut slice) ==== */
+.sliceText{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  user-select:none;
+}
+
+.sliceText .sliceLabel{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:140px;
+  text-align:center;
+
+  font-weight:1000;
+  font-size:14px;
+  letter-spacing:.5px;
+
+  /* warna text */
+  color: rgba(0,0,0,.75);
+  text-shadow: 0 1px 0 rgba(255,255,255,.35);
+
+  /* transform ikut angle + radius */
+  transform:
+    translate(-50%,-50%)
+    rotate(var(--ang))
+    translate(0, calc(-1 * var(--rad)))
+    rotate(calc(-1 * var(--ang) + 25deg));  /* <-- ini buat text miring */
+
+  transform-origin:center;
+  white-space:nowrap;
+}
   .spinBtn{
     width:100%;
     padding:12px 14px; border-radius:12px; border:none;
@@ -410,21 +438,15 @@ function buildSegmentsFromList(list){
   segCount = segments.length || 1;
   segAngle = 360 / segCount;
   applyWheelTheme();
-  const st = $("sliceText");
-  st.innerHTML = segments.map((s,i)=>{
-    const ang = (i*segAngle) + segAngle/2;
-    return `<span style="
-      position:absolute;
-      left:50%; top:50%;
-      transform: translate(-50%,-50%) rotate(${ang}deg) translate(0,-125px) rotate(${-ang}deg);
-      width: 110px;
-      text-align:center;
-      font-weight: 900;
-      letter-spacing: .5px;
-      pointer-events:none;
-      user-select:none;
-    ">${s.label}</span>`;
-  }).join("");
+const radius = 125; // jarak text dari center (kau boleh adjust)
+
+const st = $("sliceText");
+st.innerHTML = segments.map((s,i)=>{
+  const ang = (i*segAngle) + segAngle/2;
+  return `<span class="sliceLabel" style="--ang:${ang}deg;--rad:${radius}px">
+    ${s.label}
+  </span>`;
+}).join("");
 }
 function applyWheelTheme(){
   const wheel = $("wheel");
