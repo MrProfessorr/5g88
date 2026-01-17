@@ -104,15 +104,6 @@
     width:320px; height:320px; border-radius:999px;
     border:10px solid rgba(255,255,255,.15);
     box-shadow: inset 0 0 0 6px rgba(0,0,0,.18), 0 18px 45px rgba(0,0,0,.35);
-    background:
-      conic-gradient(
-        #ff72e1 0deg 60deg,
-        #ff6b6b 60deg 120deg,
-        #3fd1c9 120deg 180deg,
-        #2fb3ff 180deg 240deg,
-        #6ee7a2 240deg 300deg,
-        #ffd166 300deg 360deg
-      );
     position:relative;
     transform:rotate(0deg);
     transition: transform 4.2s cubic-bezier(.12,.85,.12,1);
@@ -340,9 +331,9 @@
 <script type="module">
   let currentRotationDeg = 0;
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-  import {
-    getDatabase, ref, get, set, push, child, runTransaction
-  } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+import {
+  getDatabase, ref, get, set, push, child, runTransaction, onValue
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDSqpbnkb3GLNFlHLYSz5XyRYPvKLAOCOA",
@@ -356,13 +347,38 @@ const firebaseConfig = {
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
+let prizeCfgCache = { NORMAL:[3,6,8,12], SUPER:[15,20,30,40] };
 
+function watchPrizeConfig(){
+  onValue(ref(db,"settings/prizes"), (snap)=>{
+    if(!snap.exists()) return;
+    const v = snap.val() || {};
+    const clean = (arr)=> (arr||[])
+      .map(x=>Number(x))
+      .filter(x=>Number.isFinite(x) && x>0)
+      .filter((x,i,a)=>a.indexOf(x)===i)
+      .sort((a,b)=>a-b);
+
+    prizeCfgCache = {
+      NORMAL: clean(v.NORMAL ?? prizeCfgCache.NORMAL),
+      SUPER:  clean(v.SUPER  ?? prizeCfgCache.SUPER)
+    };
+
+    // kalau sedang di wheel page, refresh live
+    if(currentPrize && currentCode){
+      const t = String(currentPrize.prizeType||"NORMAL").toUpperCase();
+      buildSegmentsFromList(prizeCfgCache[t] || prizeCfgCache.NORMAL);
+    }
+  });
+}
+watchPrizeConfig();
+  
   const $ = (id)=>document.getElementById(id);
   
   async function loadPrizeConfig(){
   const snap = await get(ref(db, "settings/prizes"));
   if(snap.exists()) return snap.val();
-  return { NORMAL:[3,6,8,12], SUPER:[15,20,30,40] }; // fallback
+  return { NORMAL:[0,0,0,0], SUPER:[0,0,0,0] }; // fallback
 }
 
   // device userId (tak hilang kalau clear cache? — kalau clear cache memang ID berubah, tapi history tetap ada di Firebase global)
@@ -393,7 +409,7 @@ function buildSegmentsFromList(list){
   segments = arr.map(v => ({ label:`FREE ${v}`, points:v }));
   segCount = segments.length || 1;
   segAngle = 360 / segCount;
-
+  applyWheelTheme();
   const st = $("sliceText");
   st.innerHTML = segments.map((s,i)=>{
     const ang = (i*segAngle) + segAngle/2;
@@ -409,6 +425,28 @@ function buildSegmentsFromList(list){
       user-select:none;
     ">${s.label}</span>`;
   }).join("");
+}
+function applyWheelTheme(){
+  const wheel = $("wheel");
+  if(!wheel) return;
+
+  // warna auto ulang
+  const colors = [
+    "#ff77e1","#ff6b6b","#4dd4c6","#3aa9ff",
+    "#6ee7a6","#ffd166","#7c5cff","#50fa7b",
+    "#ff9f1c","#00d2ff"
+  ];
+
+  const n = segments.length || 1;
+  const step = 100 / n;
+  const stops = [];
+
+  for(let i=0;i<n;i++){
+    stops.push(`${colors[i % colors.length]} ${(i*step)}% ${((i+1)*step)}%`);
+  }
+
+  // from -90deg supaya pointer atas ngam
+  wheel.style.background = `conic-gradient(from -90deg, ${stops.join(",")})`;
 }
 
   let currentCode = "";
@@ -494,9 +532,8 @@ currentCode = code;
 currentPrize = res.data;
 
 // build wheel ikut prizeType (NORMAL/SUPER) dari code admin
-const cfg = await loadPrizeConfig();
 const type = String(res.data.prizeType || "NORMAL").toUpperCase();
-buildSegmentsFromList(cfg[type] || cfg.NORMAL);
+buildSegmentsFromList(prizeCfgCache[type] || prizeCfgCache.NORMAL);
 
 gotoWheel(code);
 await loadMyHistory();
