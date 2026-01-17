@@ -347,6 +347,12 @@ const firebaseConfig = {
   const db = getDatabase(app);
 
   const $ = (id)=>document.getElementById(id);
+  
+  async function loadPrizeConfig(){
+  const snap = await get(ref(db, "settings/prizes"));
+  if(snap.exists()) return snap.val();
+  return { NORMAL:[3,6,8,12], SUPER:[15,20,30,40] }; // fallback
+}
 
   // device userId (tak hilang kalau clear cache? — kalau clear cache memang ID berubah, tapi history tetap ada di Firebase global)
   // untuk user personal history, kita simpan userId di localStorage (kalau clear cache, history personal reset, tapi admin history tetap ada)
@@ -361,17 +367,31 @@ const firebaseConfig = {
   }
   const userId = uid();
 
-  // wheel segments (label & degree)
-  const segments = [
-    { label:"FREE 58", points:58 },
-    { label:"FREE 3", points:3 },
-    { label:"FREE 6", points:6 },
-    { label:"FREE 9", points:9 },
-    { label:"FREE 12", points:12 },
-    { label:"FREE 18", points:18 }
-  ];
-  const segCount = segments.length;
-  const segAngle = 360/segCount;
+// ===== dynamic wheel segments (from Firebase settings) =====
+let segments = [];
+let segCount = 0;
+let segAngle = 0;
+
+function buildSegmentsFromList(list){
+  const arr = (list || []).slice().sort((a,b)=>a-b);
+  segments = arr.map(v => ({ label:`FREE ${v}`, points:Number(v) }));
+
+  segCount = segments.length || 1;
+  segAngle = 360 / segCount;
+
+  // render slice texts (kemas + center)
+  const st = $("sliceText");
+  st.innerHTML = segments.map((s,i)=>{
+    const ang = (i*segAngle) + segAngle/2;
+    return `<span style="
+      transform: translate(-50%,-50%) rotate(${ang}deg) translate(0,-125px) rotate(${-ang}deg);
+      width: 90px;
+      text-align: center;
+      font-weight: 900;
+      letter-spacing: .5px;
+    ">${s.label}</span>`;
+  }).join("");
+}
 
   // render slice texts
   const st = $("sliceText");
@@ -453,17 +473,23 @@ return `<span style="
     const res = await validateCode(code);
     if(!res.ok) return showEnter(res.msg, true);
 
-    currentCode = code;
-    currentPrize = res.data; // contains points, etc
-    gotoWheel(code);
-    await loadMyHistory();
+currentCode = code;
+currentPrize = res.data;
+
+// build wheel ikut prizeType (NORMAL/SUPER) dari code admin
+const cfg = await loadPrizeConfig();
+const type = String(res.data.prizeType || "NORMAL").toUpperCase();
+buildSegmentsFromList(cfg[type] || cfg.NORMAL);
+
+gotoWheel(code);
+await loadMyHistory();
   };
 
   // Spin to FIXED segment (ikut points dari admin)
-  function segmentIndexByPoints(points){
-    const idx = segments.findIndex(s=>s.points===points);
-    return idx >= 0 ? idx : 0;
-  }
+function segmentIndexByPoints(points){
+  const idx = segments.findIndex(s=>s.points === Number(points));
+  return idx;
+}
 
 function calcStopRotationForIndex(idx){
   const targetCenter = idx*segAngle + segAngle/2;
@@ -551,7 +577,12 @@ function norm360(deg){
 
     const winPoints = Number(res.data.points||0);
     const idx = segmentIndexByPoints(winPoints);
-
+if(idx < 0){
+  alert(`Prize FREE ${winPoints} not found in wheel list. Please update Prize Settings in admin.`);
+  spinning = false;
+  $("btnSpin").disabled = false;
+  return;
+}
     // 4-6 full rotations + stop at target
 const spins = 4 + Math.floor(Math.random()*3); // 4-6 pusingan
 const base  = 360 * spins;
