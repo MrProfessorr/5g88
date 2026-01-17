@@ -384,39 +384,32 @@ let segCount = 0;
 let segAngle = 0;
 
 function buildSegmentsFromList(list){
-  const arr = (list || []).slice().sort((a,b)=>a-b);
-  segments = arr.map(v => ({ label:`FREE ${v}`, points:Number(v) }));
+  const arr = (list || [])
+    .map(v => Number(v))
+    .filter(v => Number.isFinite(v) && v > 0)
+    .filter((v,i,a)=> a.indexOf(v) === i)
+    .sort((a,b)=>a-b);
 
+  segments = arr.map(v => ({ label:`FREE ${v}`, points:v }));
   segCount = segments.length || 1;
   segAngle = 360 / segCount;
 
-  // render slice texts (kemas + center)
   const st = $("sliceText");
   st.innerHTML = segments.map((s,i)=>{
     const ang = (i*segAngle) + segAngle/2;
     return `<span style="
+      position:absolute;
+      left:50%; top:50%;
       transform: translate(-50%,-50%) rotate(${ang}deg) translate(0,-125px) rotate(${-ang}deg);
-      width: 90px;
-      text-align: center;
+      width: 110px;
+      text-align:center;
       font-weight: 900;
       letter-spacing: .5px;
+      pointer-events:none;
+      user-select:none;
     ">${s.label}</span>`;
   }).join("");
 }
-
-  // render slice texts
-  const st = $("sliceText");
-  st.innerHTML = segments.map((s,i)=>{
-    const ang = (i*segAngle) + segAngle/2;
-    // place text around circle
-return `<span style="
-  transform: translate(-50%,-50%) rotate(${ang}deg) translate(0,-125px) rotate(${-ang}deg);
-  width: 90px;
-  text-align: center;
-">
-  ${s.label}
-</span>`;
-  }).join("");
 
   let currentCode = "";
   let currentPrize = null;
@@ -509,10 +502,9 @@ gotoWheel(code);
 await loadMyHistory();
   };
 
-  // Spin to FIXED segment (ikut points dari admin)
 function segmentIndexByPoints(points){
-  const idx = segments.findIndex(s=>s.points === Number(points));
-  return idx;
+  const idx = segments.findIndex(s => s.points === Number(points));
+  return idx >= 0 ? idx : 0;
 }
 
 function calcStopRotationForIndex(idx){
