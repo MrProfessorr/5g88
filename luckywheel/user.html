@@ -246,6 +246,17 @@
   user-select:none;
   pointer-events:none;
 }
+#histList{
+  max-height: 220px;      /* bila lebih dari 5 row, jadi scroll */
+  overflow-y: auto;
+  padding-right: 6px;
+}
+#histList::-webkit-scrollbar{ width: 8px; }
+#histList::-webkit-scrollbar-thumb{
+  background: rgba(255,255,255,.18);
+  border-radius: 999px;
+}
+  
 </style>
 </head>
 <body>
@@ -436,21 +447,34 @@ return `<span style="
     return d.toLocaleString();
   }
 
-  async function loadMyHistory(){
-    const snap = await get(ref(db, `userHistory/${userId}`));
-    const v = snap.val() || {};
-    const arr = Object.keys(v).map(k=>v[k]).sort((a,b)=> (b.redeemedAt||0)-(a.redeemedAt||0)).slice(0,6);
-    if(!arr.length){
-      $("histList").textContent = "No history yet.";
-      return;
-    }
-    $("histList").innerHTML = arr.map(x=>`
-      <div class="histItem">
-        <div><b>${x.code}</b><div style="opacity:.75;font-size:12px">${fmtTime(x.redeemedAt)}</div></div>
-        <div class="badge">FREE ${x.points}</div>
-      </div>
-    `).join("");
+async function loadMyHistory(){
+  if(!currentCode){
+    $("histList").textContent = "No history yet.";
+    return;
   }
+
+  const snap = await get(ref(db, `redemptionsByCode/${currentCode}`));
+  const v = snap.val() || {};
+
+  const arr = Object.keys(v).map(k=>v[k])
+    .sort((a,b)=> (b.redeemedAt||0)-(a.redeemedAt||0))
+    .slice(0, 20); // ambil 20 latest
+
+  if(!arr.length){
+    $("histList").textContent = "No history yet.";
+    return;
+  }
+
+  $("histList").innerHTML = arr.map(x=>`
+    <div class="histItem">
+      <div>
+        <b>${x.code}</b>
+        <div style="opacity:.75;font-size:12px">${fmtTime(x.redeemedAt)}</div>
+      </div>
+      <div class="badge">FREE ${x.points}</div>
+    </div>
+  `).join("");
+}
 
   async function validateCode(code){
     const snap = await get(ref(db, `promo_codes/${code}`));
