@@ -136,14 +136,7 @@
         </div>
 
         <label>Select Prize (Points)</label>
-        <select id="points">
-          <option value="3">FREE 3</option>
-          <option value="6">FREE 6</option>
-          <option value="9">FREE 9</option>
-          <option value="12">FREE 12</option>
-          <option value="18">FREE 18</option>
-          <option value="58">FREE 58</option>
-        </select>
+        <select id="points"></select>
 
         <div class="row">
           <div>
@@ -269,18 +262,37 @@ const firebaseConfig = {
     window.__t = setTimeout(()=> $("toast").style.display="none", 2200);
   };
 
-  // Prize type toggle
-  let prizeType = "NORMAL";
-  $("typeNormal").onclick = ()=>{
-    prizeType="NORMAL";
-    $("typeNormal").classList.add("active");
-    $("typeSuper").classList.remove("active");
-  };
-  $("typeSuper").onclick = ()=>{
-    prizeType="SUPER";
-    $("typeSuper").classList.add("active");
-    $("typeNormal").classList.remove("active");
-  };
+ // ===== Prize points config (bro boleh ubah ikut suka) =====
+const PRIZE_POINTS = {
+  NORMAL: [3, 6, 8, 12],
+  SUPER:  [15, 20, 30, 40]
+};
+
+function renderPointsOptions(type){
+  const list = PRIZE_POINTS[type] || [];
+  const sel = $("points");
+  sel.innerHTML = list.map(p => `<option value="${p}">FREE ${p}</option>`).join("");
+  // default select first
+  if(list.length) sel.value = String(list[0]);
+}
+
+// Prize type toggle
+let prizeType = "NORMAL";
+renderPointsOptions(prizeType);
+
+$("typeNormal").onclick = ()=>{
+  prizeType="NORMAL";
+  $("typeNormal").classList.add("active");
+  $("typeSuper").classList.remove("active");
+  renderPointsOptions(prizeType);
+};
+
+$("typeSuper").onclick = ()=>{
+  prizeType="SUPER";
+  $("typeSuper").classList.add("active");
+  $("typeNormal").classList.remove("active");
+  renderPointsOptions(prizeType);
+};;
 
   // Random code generator
   function genCode(len=6){
