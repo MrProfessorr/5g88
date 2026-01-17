@@ -670,9 +670,11 @@ async function deleteHistRow(x){
 
 function renderHist(list){
   const q = $("searchHist").value.trim().toUpperCase();
-  const filtered = !q ? list : list.filter(x=>{
-    return (String(x.code||"").toUpperCase().includes(q)) ||
-           (String(x.userId||"").toUpperCase().includes(q));
+ const filtered = !q ? list : list.filter(x=>{
+    const code = String(x.code || x._code || "").toUpperCase();
+    const user = String(x.userId || "").toUpperCase();
+    const cust = String(codeCustomerMap[code] || x.customer || "").toUpperCase();
+    return code.includes(q) || user.includes(q) || cust.includes(q);
   });
 
   const tb = $("histTbody");
