@@ -392,7 +392,6 @@ function watchPrizeConfig(){
   onValue(ref(db,"settings/prizes"), (snap)=>{
     if(!snap.exists()) return;
     const v = snap.val() || {};
-    const clean = (arr)=> (arr||[])
 const clean = (arr)=>{
   const raw = Array.isArray(arr) ? arr : Object.values(arr || {});
   return raw
