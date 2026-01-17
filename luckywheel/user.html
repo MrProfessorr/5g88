@@ -375,6 +375,11 @@ const firebaseConfig = {
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
+  const $ = (id)=>document.getElementById(id);
+  let currentCode = "";
+  let currentPrize = null;
+  let spinning = false;
+  let wheelRot = 0;
 let prizeCfgCache = { NORMAL:[3,6,8,12], SUPER:[15,20,30,40] };
 
 function watchPrizeConfig(){
@@ -400,8 +405,6 @@ function watchPrizeConfig(){
   });
 }
 watchPrizeConfig();
-  
-  const $ = (id)=>document.getElementById(id);
   
   async function loadPrizeConfig(){
   const snap = await get(ref(db, "settings/prizes"));
@@ -471,10 +474,6 @@ function applyWheelTheme(){
   wheel.style.background = `conic-gradient(from -90deg, ${stops.join(",")})`;
 }
 
-  let currentCode = "";
-  let currentPrize = null;
-  let spinning = false;
-  let wheelRot = 0;
 
   function showEnter(msg="", isBad=false){
     $("enterMsg").textContent = msg;
@@ -554,16 +553,15 @@ currentCode = code;
 currentPrize = res.data;
 
 // build wheel ikut prizeType (NORMAL/SUPER) dari code admin
-const type = String(res.data.prizeType || "NORMAL").toUpperCase();
-buildSegmentsFromList(prizeCfgCache[type] || prizeCfgCache.NORMAL);
+const merged = [...(prizeCfgCache.NORMAL||[]), ...(prizeCfgCache.SUPER||[])];
+buildSegmentsFromList(merged);
 
 gotoWheel(code);
 await loadMyHistory();
   };
 
 function segmentIndexByPoints(points){
-  const idx = segments.findIndex(s => s.points === Number(points));
-  return idx >= 0 ? idx : 0;
+  return segments.findIndex(s => s.points === Number(points));
 }
 
 function calcStopRotationForIndex(idx){
