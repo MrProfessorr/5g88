@@ -538,6 +538,11 @@ $("typeSuper").onclick = ()=>{
   // Generate button
   $("btnGenerate").onclick = async ()=>{
     const customer = $("customer").value.trim();
+    if(!customer){
+    toast("Please enter Customer Name/ID first!");
+    $("customer").focus();
+    return;
+  }
     const points = Number($("points").value);
     const expHours = Math.max(1, Number($("expHours").value || 24));
     const usageLimit = Math.max(1, Number($("usageLimit").value || 1));
@@ -581,6 +586,7 @@ $("typeSuper").onclick = ()=>{
 
   // ===== Load Active Codes =====
   let allCodes = [];
+  let codeCustomerMap = {};
   function statusTag(obj){
     const now = Date.now();
     const expired = now >= obj.expiresAt;
@@ -654,7 +660,6 @@ function loadCodesLive(){
 
   // ===== Load History (latest) =====
   let allHist = [];
-  let codeCustomerMap = {};
 async function deleteHistRow(x){
   const ok = confirm(`Delete history for code ${x.code || x._code}?`);
   if(!ok) return;
