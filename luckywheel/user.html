@@ -372,9 +372,9 @@
 <script type="module">
   let currentRotationDeg = 0;
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import {
-  getDatabase, ref, get, set, push, child, runTransaction, onValue
-} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+  import {
+  getDatabase, ref, get, set, push, child, runTransaction, onValue, update
+ } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDSqpbnkb3GLNFlHLYSz5XyRYPvKLAOCOA",
@@ -609,8 +609,6 @@ function norm360(deg){
   return ((deg % 360) + 360) % 360;
 }
   async function redeemAndSave(code, points){
-    
-    // 1) increment usedCount using transaction (atomic)
     const usedRef = ref(db, `promo_codes/${code}/usedCount`);
     const result = await runTransaction(usedRef, (cur)=>{
       if(cur === null) return 1;
@@ -620,8 +618,6 @@ function norm360(deg){
     if(!result.committed){
       throw new Error("Failed to redeem. Please try again.");
     }
-
-    // 2) write redemption record under redemptionsByCode/code
     const ridRef = push(ref(db, `redemptionsByCode/${code}`));
     const ridKey = ridRef.key;
 
@@ -637,13 +633,21 @@ const payload = {
     await set(ref(db, `userHistory/${userId}/${ridKey}`), {
       code, points, redeemedAt: payload.redeemedAt
     });
-// ✅ GLOBAL DRAWING HISTORY (tak hilang walau tukar device / clear cache)
+
 const allRef = push(ref(db, "redemptionsAll"));
 await set(allRef, {
   code,
   points,
   customer: payload.customer || "",
   redeemedAt: payload.redeemedAt
+});
+
+await update(ref(db, `promo_codes/${code}`), {
+  claimedAt: payload.redeemedAt,
+  claimStatus: "PENDING",
+  status: "CLAIMED",
+  claimedByUserId: userId,
+  claimedCustomer: payload.customer || ""
 });
     return payload;
   }
