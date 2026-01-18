@@ -307,8 +307,11 @@
         <h2>Enter Promo Code</h2>
         <p>Enter your unique promotional code to start the wheel spin</p>
 
-        <label>Promo Code</label>
-        <input id="promoInput" placeholder="ENTER PROMO CODE" maxlength="12"/>
+<label>Customer Name/ID</label>
+<input id="customerInput" placeholder="Enter Customer Name/ID (e.g. huhu2)" maxlength="30"/>
+
+<label>Promo Code</label>
+<input id="promoInput" placeholder="ENTER PROMO CODE" maxlength="12"/>
 
         <button class="btn" id="btnStart">🎯 Start Lucky Draw →</button>
         <p id="enterMsg" class="small" style="margin-top:10px;"></p>
@@ -384,6 +387,7 @@ const firebaseConfig = {
   const $ = (id)=>document.getElementById(id);
   let currentCode = "";
   let currentPrize = null;
+  let currentCustomer = "";
   let spinning = false;
   let wheelRot = 0;
 let prizeCfgCache = { NORMAL:[3,6,8,12], SUPER:[15,20,30,40] };
@@ -561,30 +565,42 @@ watchGlobalHistory();
     return { ok:true, data };
   }
 
-  $("btnStart").onclick = async ()=>{
-    const code = ($("promoInput").value || "").trim().toUpperCase();
-    if(!code) return showEnter("Please enter promo code.", true);
+$("btnStart").onclick = async ()=>{
+  const cust = ($("customerInput").value || "").trim();
+  const code = ($("promoInput").value || "").trim().toUpperCase();
 
-    showEnter("Checking code...", false);
+  if(!cust) return showEnter("Please enter Customer Name/ID.", true);
+  if(!code) return showEnter("Please enter promo code.", true);
 
-    const res = await validateCode(code);
-    if(!res.ok) return showEnter(res.msg, true);
+  showEnter("Checking code...", false);
 
-currentCode = code;
-currentPrize = res.data;
+  const res = await validateCode(code);
+  if(!res.ok) return showEnter(res.msg, true);
 
-const merged = [...(prizeCfgCache.NORMAL||[]), ...(prizeCfgCache.SUPER||[])];
+  const promoCustomer = String(res.data.customer || "").trim();
+  if(!promoCustomer){
+    return showEnter("This code has no customer assigned. Please contact admin.", true);
+  }
 
-const mergedClean = merged
-  .map(Number)
-  .filter(v => Number.isFinite(v) && v > 0)
-  .filter((v,i,a)=>a.indexOf(v)===i)
-  .sort((a,b)=>a-b);
+  // ✅ LOCK: customer mesti sama (case-insensitive)
+  if(cust.toUpperCase() !== promoCustomer.toUpperCase()){
+    return showEnter(`This code is only for customer: ${promoCustomer}`, true);
+  }
 
-buildSegmentsFromList(mergedClean);
+  currentCustomer = promoCustomer; // simpan nama customer yang betul
+  currentCode = code;
+  currentPrize = res.data;
 
-gotoWheel(code);
-  };
+  const merged = [...(prizeCfgCache.NORMAL||[]), ...(prizeCfgCache.SUPER||[])];
+  const mergedClean = merged
+    .map(Number)
+    .filter(v => Number.isFinite(v) && v > 0)
+    .filter((v,i,a)=>a.indexOf(v)===i)
+    .sort((a,b)=>a-b);
+
+  buildSegmentsFromList(mergedClean);
+  gotoWheel(code);
+};
 
 function segmentIndexByPoints(points){
   return segments.findIndex(s => s.points === Number(points));
@@ -615,12 +631,13 @@ function norm360(deg){
     const ridRef = push(ref(db, `redemptionsByCode/${code}`));
     const ridKey = ridRef.key;
 
-    const payload = {
-      code,
-      points,
-      userId,
-      redeemedAt: Date.now()
-    };
+const payload = {
+  code,
+  points,
+  customer: currentCustomer || (currentPrize?.customer || ""),
+  userId,
+  redeemedAt: Date.now()
+};
 
     await set(ridRef, payload);
     await set(ref(db, `userHistory/${userId}/${ridKey}`), {
@@ -631,6 +648,7 @@ const allRef = push(ref(db, "redemptionsAll"));
 await set(allRef, {
   code,
   points,
+  customer: payload.customer || "",
   redeemedAt: payload.redeemedAt
 });
     return payload;
