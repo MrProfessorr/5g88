@@ -237,12 +237,27 @@
   background:rgba(0,0,0,.20);
   color:#fff;cursor:pointer;font-weight:900;
 }
-.addRow{display:flex;gap:10px;margin-top:10px}
+.addRow{
+  display:grid;
+  grid-template-columns: 1fr auto;  /* input = full, button ikut size */
+  gap:10px;
+  margin-top:10px;
+  width:100%;
+}
+
 .addRow input{
-  flex:1;padding:12px;border-radius:14px;
+  width:100%;           /* pastikan penuh */
+  padding:12px;
+  border-radius:14px;
   border:1px solid rgba(255,255,255,.12);
-  background:rgba(0,0,0,.18);color:#fff;
+  background:rgba(0,0,0,.18);
+  color:#fff;
   outline:none;
+}
+
+#prizeAdd{               /* buat button kemas */
+  min-width: 90px;
+  white-space:nowrap;
 }
 /* ===== HISTORY: max 15 rows, scroll ===== */
 #history .tableWrap{
