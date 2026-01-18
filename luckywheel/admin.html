@@ -571,6 +571,25 @@
   background: linear-gradient(180deg, #ffcc55, #ff8a00);
   border-radius:999px;
 }
+/* FIX: selectWrap jangan shrink */
+.selectWrap{
+  width:100% !important;
+  display:flex !important;        /* dari inline-flex → flex */
+  align-items:center;
+}
+
+/* custom mount full width dalam selectWrap */
+.selectWrap > #prizeFilterCS{
+  flex:1 1 auto !important;
+  width:100% !important;
+  min-width:0 !important;
+}
+
+/* pastikan cs full */
+#prizeFilterCS .cs,
+#prizeFilterCS .csBtn{
+  width:100% !important;
+}
 </style>
 </head>
 <body>
