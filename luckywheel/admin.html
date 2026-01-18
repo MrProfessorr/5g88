@@ -305,6 +305,68 @@
   background: linear-gradient(90deg, rgba(30,40,110,.95), rgba(25,35,95,.95));
   backdrop-filter: blur(10px);
 }
+/* ===== NICE SELECT + INPUT (NO BROWSER LOOK) ===== */
+.selectWrap{position:relative;display:inline-flex;align-items:center;width:100%}
+.selectIcon{
+  position:absolute;left:12px;top:50%;transform:translateY(-50%);
+  pointer-events:none;opacity:.8;font-weight:900
+}
+.niceSelect{
+  appearance:none;-webkit-appearance:none;-moz-appearance:none;
+  width:100%;
+  padding:12px 38px 12px 34px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(0,0,0,.18);
+  color:var(--txt);
+  font-weight:800;
+  outline:none;
+  cursor:pointer;
+}
+.niceSelect:hover{border-color:rgba(255,200,85,.45)}
+.niceSelect:focus{
+  border-color:rgba(255,200,85,.7);
+  box-shadow:0 0 0 3px rgba(255,180,0,.15);
+}
+
+.niceInput{
+  width:100%;
+  padding:12px 12px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(0,0,0,.18);
+  color:var(--txt);
+  font-weight:800;
+  outline:none;
+}
+.niceInput:hover{border-color:rgba(255,200,85,.45)}
+.niceInput:focus{
+  border-color:rgba(255,200,85,.7);
+  box-shadow:0 0 0 3px rgba(255,180,0,.15);
+}
+.niceInput::-webkit-calendar-picker-indicator{
+  filter: invert(1) opacity(.75);
+  cursor:pointer;
+}
+
+/* ===== SUMMARY CARDS ===== */
+.summaryRow{
+  margin-top:10px;
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap:10px;
+}
+.sumCard{
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);
+  padding:10px 12px;
+}
+.sumLabel{font-size:12px;color:var(--muted);font-weight:800}
+.sumValue{font-size:20px;font-weight:1000;letter-spacing:.5px;margin-top:2px}
+@media (max-width:720px){
+  .summaryRow{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -408,6 +470,36 @@
           <button class="btn2" id="btnCopy" disabled>📋 Copy Code</button>
         </div>
       </div>
+      <!-- ===== FILTER + SUMMARY (UNDER CODEBOX) ===== -->
+<div class="codeTools" style="margin-top:12px">
+  <div class="selectWrap">
+    <span class="selectIcon">▾</span>
+    <select id="prizeFilter" class="niceSelect">
+      <option value="ALL">All Prize</option>
+      <option value="NORMAL">Normal Prize</option>
+      <option value="SUPER">Super Prize</option>
+    </select>
+  </div>
+
+  <div class="summaryRow">
+    <div class="sumCard">
+      <div class="sumLabel">Total Customer</div>
+      <div class="sumValue" id="sumCustomers">0</div>
+    </div>
+    <div class="sumCard">
+      <div class="sumLabel">Total Prize</div>
+      <div class="sumValue" id="sumPrize">0</div>
+    </div>
+    <div class="sumCard">
+      <div class="sumLabel">Total Code</div>
+      <div class="sumValue" id="sumCodes">0</div>
+    </div>
+  </div>
+
+  <div class="sub" id="sumHint" style="margin-top:8px;opacity:.75">
+    Summary based on Active Promo Codes.
+  </div>
+</div>
     </div>
   </div>
 
@@ -445,7 +537,53 @@
 </div>
     </div>
   </div>
+<div class="card" id="totalsHistoryCard">
+  <h3>📊 Totals History</h3>
+  <div class="body">
+    <div class="mini" style="gap:12px;flex-wrap:wrap">
+      <div class="selectWrap" style="flex:1;min-width:220px">
+        <span class="selectIcon">▾</span>
+        <select id="rangeSelect" class="niceSelect">
+          <option value="today">Today</option>
+          <option value="yesterday">Yesterday</option>
+          <option value="thisweek">This Week</option>
+          <option value="lastweek">Last Week</option>
+          <option value="thismonth">This Month</option>
+          <option value="lastmonth">Last Month</option>
+          <option value="custom">Custom Range</option>
+        </select>
+      </div>
 
+      <div id="customRangeBox" style="display:none;gap:10px;flex:2;min-width:320px">
+        <input id="rangeFrom" class="niceInput" type="date">
+        <input id="rangeTo" class="niceInput" type="date">
+        <button id="rangeApply" class="btn2" style="width:auto;padding:10px 14px">Apply</button>
+      </div>
+
+      <button id="btnSnapshotNow" class="btn2" style="width:auto;padding:10px 14px">
+        Save Today Snapshot
+      </button>
+    </div>
+
+    <div class="tableWrap" style="margin-top:12px">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Total Customer</th>
+            <th>Total Prize</th>
+            <th>Total Code</th>
+            <th>Normal Codes</th>
+            <th>Super Codes</th>
+          </tr>
+        </thead>
+        <tbody id="statsTbody">
+          <tr><td colspan="6" style="opacity:.7">No stats yet.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
   <div style="height:16px"></div>
 
   <div class="card" id="history">
@@ -955,6 +1093,230 @@ $("prizeSave").onclick = async ()=>{
   closePrizeModal();
   toast("Prize settings saved!");
 };
+const STATS_REF = ref(db, "stats/daily");
+
+function pad2(n){ return String(n).padStart(2,"0"); }
+function toDateKey(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
+function startOfDay(d){ const x=new Date(d); x.setHours(0,0,0,0); return x; }
+function endOfDay(d){ const x=new Date(d); x.setHours(23,59,59,999); return x; }
+function addDays(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; }
+
+function filterCodesByType(list, type){
+  if(type === "ALL") return list || [];
+  return (list || []).filter(x => String(x.prizeType||"").toUpperCase() === type);
+}
+
+function calcTotalsFromCodes(list){
+  const customers = new Set();
+  let totalPrize = 0;
+  for(const x of (list||[])){
+    const c = String(x.customer||"").trim();
+    if(c) customers.add(c.toUpperCase());
+    totalPrize += Number(x.points||0);
+  }
+  return {
+    totalCustomers: customers.size,
+    totalPrize,
+    totalCodes: (list||[]).length
+  };
+}
+
+function updateSummaryUI(){
+  const sel = $("prizeFilter");
+  if(!sel) return;
+
+  const type = sel.value || "ALL";
+  const filtered = filterCodesByType(allCodes, type);
+  const totals = calcTotalsFromCodes(filtered);
+
+  $("sumCustomers").textContent = totals.totalCustomers;
+  $("sumPrize").textContent = totals.totalPrize;
+  $("sumCodes").textContent = totals.totalCodes;
+
+  $("sumHint").textContent = `Summary based on Active Promo Codes (${type}).`;
+}
+
+$("prizeFilter")?.addEventListener("change", updateSummaryUI);
+
+// ✅ panggil summary setiap kali renderCodes dipanggil
+const _renderCodes = renderCodes;
+renderCodes = function(list){
+  _renderCodes(list);
+  updateSummaryUI();
+};
+
+// ------------------------------
+// SAVE SNAPSHOT (BY CREATED TODAY)
+// ------------------------------
+function buildSnapshotForDate(dateObj){
+  const s = startOfDay(dateObj).getTime();
+  const e = endOfDay(dateObj).getTime();
+
+  const codes = (allCodes||[]).filter(x=>{
+    const t = Number(x.createdAt||0);
+    return t >= s && t <= e;
+  });
+
+  const normalCodes = codes.filter(x => String(x.prizeType||"").toUpperCase()==="NORMAL").length;
+  const superCodes  = codes.filter(x => String(x.prizeType||"").toUpperCase()==="SUPER").length;
+  const totals = calcTotalsFromCodes(codes);
+
+  return {
+    dateKey: toDateKey(dateObj),
+    createdAt: Date.now(),
+    totalCustomers: totals.totalCustomers,
+    totalPrize: totals.totalPrize,
+    totalCodes: totals.totalCodes,
+    normalCodes,
+    superCodes
+  };
+}
+
+async function saveSnapshotForDate(dateObj){
+  const payload = buildSnapshotForDate(dateObj);
+  await set(ref(db, `stats/daily/${payload.dateKey}`), payload);
+}
+
+async function saveTodaySnapshot(){
+  await saveSnapshotForDate(new Date());
+  toast("Saved today snapshot!");
+}
+
+async function saveYesterdaySnapshot(){
+  const y = addDays(new Date(), -1);
+  await saveSnapshotForDate(y);
+  toast("Auto-saved yesterday snapshot!");
+}
+
+$("btnSnapshotNow")?.addEventListener("click", saveTodaySnapshot);
+
+// auto schedule at midnight
+function scheduleMidnightJob(){
+  const now = new Date();
+  const next = new Date(now);
+  next.setHours(24,0,0,0);
+  const ms = next.getTime() - now.getTime();
+
+  setTimeout(async ()=>{
+    try{
+      await saveYesterdaySnapshot();
+    }catch(e){
+      console.error(e);
+    }finally{
+      scheduleMidnightJob();
+    }
+  }, ms + 800);
+}
+scheduleMidnightJob();
+
+// ------------------------------
+// TOTALS HISTORY TABLE
+// ------------------------------
+let statsDailyArr = [];
+
+function renderStatsRows(rows){
+  const tb = $("statsTbody");
+  if(!tb) return;
+
+  if(!rows.length){
+    tb.innerHTML = `<tr><td colspan="6" style="opacity:.7">No stats yet.</td></tr>`;
+    return;
+  }
+
+  const sorted = rows.slice().sort((a,b)=> String(b.dateKey).localeCompare(String(a.dateKey)));
+
+  tb.innerHTML = sorted.map(r=>`
+    <tr>
+      <td style="font-weight:900">${r.dateKey || "-"}</td>
+      <td>${Number(r.totalCustomers||0)}</td>
+      <td>${Number(r.totalPrize||0)}</td>
+      <td>${Number(r.totalCodes||0)}</td>
+      <td>${Number(r.normalCodes||0)}</td>
+      <td>${Number(r.superCodes||0)}</td>
+    </tr>
+  `).join("");
+}
+
+function getRangeByPreset(preset){
+  const now = new Date();
+  const todayS = startOfDay(now);
+  const todayE = endOfDay(now);
+
+  if(preset==="today") return [todayS, todayE];
+  if(preset==="yesterday"){
+    const y = addDays(now,-1);
+    return [startOfDay(y), endOfDay(y)];
+  }
+
+  if(preset==="thismonth"){
+    const s = new Date(now.getFullYear(), now.getMonth(), 1);
+    return [startOfDay(s), todayE];
+  }
+  if(preset==="lastmonth"){
+    const s = new Date(now.getFullYear(), now.getMonth()-1, 1);
+    const e = new Date(now.getFullYear(), now.getMonth(), 0);
+    return [startOfDay(s), endOfDay(e)];
+  }
+
+  // Mon-Sun week
+  const day = (now.getDay()+6)%7;
+  const mon = addDays(todayS, -day);
+  const sun = addDays(mon, 6);
+
+  if(preset==="thisweek") return [startOfDay(mon), endOfDay(sun)];
+  if(preset==="lastweek"){
+    const lastMon = addDays(mon, -7);
+    const lastSun = addDays(lastMon, 6);
+    return [startOfDay(lastMon), endOfDay(lastSun)];
+  }
+
+  return [todayS, todayE];
+}
+
+function applyStatsFilter(){
+  const sel = $("rangeSelect");
+  if(!sel) return;
+
+  const preset = sel.value;
+
+  if(preset === "custom"){
+    const fromV = $("rangeFrom").value;
+    const toV = $("rangeTo").value;
+    if(!fromV || !toV){
+      toast("Select From & To date.");
+      return;
+    }
+    const s = startOfDay(new Date(fromV));
+    const e = endOfDay(new Date(toV));
+
+    const rows = statsDailyArr.filter(r=>{
+      const d = new Date(String(r.dateKey||"") + "T00:00:00");
+      return d >= s && d <= e;
+    });
+    renderStatsRows(rows);
+    return;
+  }
+
+  const [s,e] = getRangeByPreset(preset);
+  const rows = statsDailyArr.filter(r=>{
+    const d = new Date(String(r.dateKey||"") + "T00:00:00");
+    return d >= s && d <= e;
+  });
+  renderStatsRows(rows);
+}
+
+$("rangeSelect")?.addEventListener("change", ()=>{
+  const isCustom = $("rangeSelect").value === "custom";
+  $("customRangeBox").style.display = isCustom ? "flex" : "none";
+  if(!isCustom) applyStatsFilter();
+});
+$("rangeApply")?.addEventListener("click", applyStatsFilter);
+
+onValue(STATS_REF, (snap)=>{
+  const v = snap.val() || {};
+  statsDailyArr = Object.keys(v).map(k => v[k]).filter(Boolean);
+  applyStatsFilter();
+});
 </script>
 </body>
 </html>
