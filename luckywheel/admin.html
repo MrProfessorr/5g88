@@ -1348,14 +1348,7 @@ function applyStatsFilter(){
 
   renderStatsRows(rows);
 }
-// ===== FORCE REFRESH TOTALS HISTORY LIVE =====
-function refreshTotalsHistoryLive(){
-  try{
-    applyStatsFilter();
-  }catch(e){
-    console.warn("refreshTotalsHistoryLive:", e);
-  }
-}
+
 function refreshTotalsHistoryLive(){
   applyStatsFilter();
 }
