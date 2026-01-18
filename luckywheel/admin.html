@@ -367,6 +367,26 @@
 @media (max-width:720px){
   .summaryRow{grid-template-columns:1fr}
 }
+.chipBtn{
+  appearance:none;
+  border:1px solid rgba(255,255,255,.16);
+  background: rgba(20,24,55,.55);
+  color: rgba(233,236,255,.9);
+  padding:8px 12px;
+  border-radius:999px;
+  font-weight:700;
+  cursor:pointer;
+  transition:.15s ease;
+}
+.chipBtn:hover{
+  background: rgba(255,255,255,.08);
+  border-color: rgba(255,255,255,.25);
+}
+.chipBtn.active{
+  background: linear-gradient(135deg, rgba(255,204,85,.25), rgba(255,138,0,.18));
+  border-color: rgba(255,204,85,.55);
+  box-shadow: 0 0 0 2px rgba(255,204,85,.10) inset;
+}
 </style>
 </head>
 <body>
@@ -541,26 +561,25 @@
 <div class="card" id="totalsHistoryCard">
   <h3>📊 Totals History</h3>
   <div class="body">
-    <div class="mini" style="gap:12px;flex-wrap:wrap">
-      <div class="selectWrap" style="flex:1;min-width:220px">
-        <span class="selectIcon">▾</span>
-        <select id="rangeSelect" class="niceSelect">
-          <option value="today">Today</option>
-          <option value="yesterday">Yesterday</option>
-          <option value="thisweek">This Week</option>
-          <option value="lastweek">Last Week</option>
-          <option value="thismonth">This Month</option>
-          <option value="lastmonth">Last Month</option>
-          <option value="custom">Custom Range</option>
-        </select>
-      </div>
+<div class="mini" style="gap:12px;flex-wrap:wrap;align-items:center">
 
-      <div id="customRangeBox" style="display:none;gap:10px;flex:2;min-width:320px">
-        <input id="rangeFrom" class="niceInput" type="date">
-        <input id="rangeTo" class="niceInput" type="date">
-        <button id="rangeApply" class="btn2" style="width:auto;padding:10px 14px">Apply</button>
-      </div>
-    </div>
+  <!-- kiri: date range -->
+  <div class="dateRangeRow" style="display:flex;gap:10px;flex:1;min-width:320px">
+    <input id="rangeFrom" class="niceInput" type="date">
+    <input id="rangeTo" class="niceInput" type="date">
+  </div>
+
+  <!-- kanan: preset chips -->
+  <div class="presetRow" id="presetRow" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+    <button class="chipBtn active" data-preset="today">Today</button>
+    <button class="chipBtn" data-preset="yesterday">Yesterday</button>
+    <button class="chipBtn" data-preset="thisweek">This Week</button>
+    <button class="chipBtn" data-preset="lastweek">Last Week</button>
+    <button class="chipBtn" data-preset="thismonth">This Month</button>
+    <button class="chipBtn" data-preset="lastmonth">Last Month</button>
+  </div>
+
+</div>
 
     <div class="tableWrap" style="margin-top:12px">
       <table>
@@ -1273,47 +1292,79 @@ function getLiveTodayRow(){
     dateKey: toDateKey(today) + " (Today)"
   };
 }
+let activePreset = "today";
+
+function setActiveChip(preset){
+  activePreset = preset;
+
+  document.querySelectorAll("#presetRow .chipBtn").forEach(b=>{
+    b.classList.toggle("active", b.dataset.preset === preset);
+  });
+
+  const [s,e] = getRangeByPreset(preset);
+  $("rangeFrom").value = toDateKey(s);
+  $("rangeTo").value   = toDateKey(e);
+
+  applyStatsFilter();
+}
+
+function getRangeFromInputs(){
+  const fromV = $("rangeFrom").value;
+  const toV   = $("rangeTo").value;
+  if(!fromV || !toV) return null;
+
+  const s = startOfDay(new Date(fromV));
+  const e = endOfDay(new Date(toV));
+  if(s > e) return null;
+
+  return [s,e];
+}
+
 function applyStatsFilter(){
-  const sel = $("rangeSelect");
-  if(!sel) return;
-
-  const preset = sel.value;
-
-  if(preset === "custom"){
-    const fromV = $("rangeFrom").value;
-    const toV = $("rangeTo").value;
-    if(!fromV || !toV){
-      toast("Select From & To date.");
-      return;
-    }
-    const s = startOfDay(new Date(fromV));
-    const e = endOfDay(new Date(toV));
-
-    const rows = statsDailyArr.filter(r=>{
-      const d = new Date(String(r.dateKey||"") + "T00:00:00");
-      return d >= s && d <= e;
-    });
-    renderStatsRows(rows);
+  const range = getRangeFromInputs();
+  if(!range){
+    renderStatsRows([]);
     return;
   }
 
-const [s,e] = getRangeByPreset(preset);
-let rows = statsDailyArr.filter(r=>{
-  const d = new Date(String(r.dateKey||"") + "T00:00:00");
-  return d >= s && d <= e;
-});
-if(preset === "today"){
-  rows = [getLiveTodayRow(), ...rows.filter(x => String(x.dateKey||"").slice(0,10) !== toDateKey(new Date()))];
- }
-renderStatsRows(rows);
+  const [s,e] = range;
+
+  let rows = statsDailyArr.filter(r=>{
+    const d = new Date(String(r.dateKey||"") + "T00:00:00");
+    return d >= s && d <= e;
+  });
+
+  // ✅ show TODAY live jika range cover hari ini
+  const todayS = startOfDay(new Date());
+  const todayE = endOfDay(new Date());
+  const coverToday = (s <= todayS && e >= todayE);
+  if(coverToday){
+    const todayKey = toDateKey(new Date());
+    rows = [getLiveTodayRow(), ...rows.filter(x => String(x.dateKey||"").slice(0,10) !== todayKey)];
+  }
+
+  renderStatsRows(rows);
 }
 
-$("rangeSelect")?.addEventListener("change", ()=>{
-  const isCustom = $("rangeSelect").value === "custom";
-  $("customRangeBox").style.display = isCustom ? "flex" : "none";
-  if(!isCustom) applyStatsFilter();
+// click preset chips
+document.querySelectorAll("#presetRow .chipBtn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    setActiveChip(btn.dataset.preset);
+  });
 });
-$("rangeApply")?.addEventListener("click", applyStatsFilter);
+
+// bila user ubah date manual → auto filter (tanpa apply)
+$("rangeFrom").addEventListener("change", ()=>{
+  document.querySelectorAll("#presetRow .chipBtn").forEach(b=>b.classList.remove("active"));
+  applyStatsFilter();
+});
+$("rangeTo").addEventListener("change", ()=>{
+  document.querySelectorAll("#presetRow .chipBtn").forEach(b=>b.classList.remove("active"));
+  applyStatsFilter();
+});
+
+// init default Today
+setActiveChip("today");
 
 onValue(STATS_REF, (snap)=>{
   const v = snap.val() || {};
