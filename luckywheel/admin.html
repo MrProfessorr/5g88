@@ -47,8 +47,9 @@
     border:1px solid rgba(255,255,255,.16);
     background:rgba(0,0,0,.22);
     color:var(--txt); outline:none;
+    transition: all 0.2s
   }
-  input:focus, select:focus{border-color:#1668dc; box-shadow:0 0 0 1px #286eff8c;}
+  input:focus, select:focus{border-color:#1668dc;}
   .row{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
   .toggle{
     display:flex; gap:10px; margin-top:10px;
@@ -70,6 +71,7 @@
     padding:12px 14px; border-radius:12px; border:none;cursor:pointer; color:#fff;
     background:#1668dc;
     box-shadow:0 10px 24px rgba(0,0,0,.25);
+    transition: all 0.2s
   }
   .btn:active{transform:translateY(1px)}
   .codeBox{
@@ -82,6 +84,7 @@
     margin-top:10px; width:100%;
     padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.16);
     background:rgba(0,0,0,.18); color:var(--txt); font-weight:800; cursor:pointer;
+    transition: all 0.2s
   }
   .btn2:hover{border-color:rgba(255,200,85,.5)}
   .tableWrap{
@@ -142,6 +145,7 @@
     backdrop-filter:blur(10px);
     padding:10px 12px; border-radius:12px; color:var(--txt);
     display:none; max-width:360px;
+    transition: all 0.2s
   }
   .headLeft{display:flex;align-items:center;gap:12px}
 .menuBtn{
@@ -149,6 +153,7 @@
   border:1px solid rgba(255,255,255,.14);
   background:rgba(0,0,0,.18);
   color:#fff;font-size:20px;cursor:pointer;
+  transition: all 0.2s
 }
 .menuBtn:hover{filter:brightness(1.1)}
 
@@ -165,6 +170,7 @@
   backdrop-filter:blur(14px);
   z-index:90;
   padding:14px;
+  transition: all 0.2s
 }
 .sidebar.show{transform:translateX(0)}
 .sideHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
@@ -195,6 +201,7 @@
   box-shadow:0 20px 60px rgba(0,0,0,.45);
   backdrop-filter:blur(14px);
   overflow:hidden;
+  transition: all 0.2s
 }
 .modalHead{
   display:flex;align-items:center;justify-content:space-between;
@@ -206,6 +213,7 @@
   border:1px solid rgba(255,255,255,.14);
   background:rgba(255,255,255,.06);
   color:#fff;cursor:pointer;
+  transition: all 0.2s
 }
 .modalBody{padding:14px 16px}
 .modalFoot{
@@ -243,6 +251,7 @@
   gap:10px;
   margin-top:10px;
   width:100%;
+  transition: all 0.2s
 }
 
 .addRow input{
@@ -253,6 +262,7 @@
   background:rgba(0,0,0,.18);
   color:#fff;
   outline:none;
+  transition: all 0.2s
 }
 
 #prizeAdd{               /* buat button kemas */
@@ -297,6 +307,7 @@
   color: rgba(255,210,210,.95);
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s
 }
 .btnDel:hover{ background: rgba(255,80,80,.20); }
 .btnDel:active{ transform: translateY(1px); }
@@ -327,6 +338,7 @@
   color:var(--txt);
   font-weight:800;
   outline:none;
+  transition: all 0.2s
 }
 .niceInput:hover{border-color:rgba(255,200,85,.45)}
 .niceInput:focus{
@@ -367,6 +379,7 @@
   font-weight:700;
   cursor:pointer;
   transition:.15s ease;
+  transition: all 0.2s
 }
 .chipBtn:hover{
   background: rgba(255,255,255,.08);
@@ -429,6 +442,7 @@
   display:block;
   text-align:left;
   position:relative;
+  transition: all 0.2s
 }
 
 .csBtn:hover{ border-color:#3c89e8; }
@@ -474,7 +488,7 @@
 
   max-height: 180px;           /* ✅ kecil */
   overflow:auto;
-
+  transition: all 0.2s
   display:none;
 }
 .cs.open .csMenu{ display:block; }
@@ -487,6 +501,7 @@
   cursor:pointer;
   border-bottom:1px solid rgba(255,255,255,.08);
   background:transparent;
+  transition: all 0.2s
 }
 .csItem:last-child{ border-bottom:none; }
 
