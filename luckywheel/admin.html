@@ -566,6 +566,17 @@ input:-webkit-autofill:active {
   -webkit-text-fill-color: var(--txt) !important;
   transition: background-color 5000s ease-in-out 0s;
 }
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"]{
+  -moz-appearance: textfield !important;
+  appearance: textfield !important;
+}
 </style>
 </head>
 <body>
