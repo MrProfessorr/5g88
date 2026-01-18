@@ -879,8 +879,11 @@ function loadCodesLive(){
         if(c?.code) codeCustomerMap[String(c.code).toUpperCase()] = (c.customer || "");
       }
 
-      renderCodes(allCodes);
-      if (allHist?.length) renderHist(allHist);
+renderCodes(allCodes);
+updateSummaryUI();
+refreshTotalsHistoryLive();
+
+if (allHist?.length) renderHist(allHist);;
     },
     (err)=>{
       console.error("promo_codes onValue ERROR:", err);
@@ -1345,7 +1348,17 @@ function applyStatsFilter(){
 
   renderStatsRows(rows);
 }
-
+// ===== FORCE REFRESH TOTALS HISTORY LIVE =====
+function refreshTotalsHistoryLive(){
+  try{
+    applyStatsFilter();
+  }catch(e){
+    console.warn("refreshTotalsHistoryLive:", e);
+  }
+}
+function refreshTotalsHistoryLive(){
+  applyStatsFilter();
+}
 // click preset chips
 document.querySelectorAll("#presetRow .chipBtn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
@@ -1362,14 +1375,23 @@ $("rangeTo").addEventListener("change", ()=>{
   document.querySelectorAll("#presetRow .chipBtn").forEach(b=>b.classList.remove("active"));
   applyStatsFilter();
 });
+function initTotalsHistory(){
+  // tunggu element wujud dulu
+  if(!$("rangeFrom") || !$("rangeTo") || !document.querySelector("#presetRow .chipBtn")){
+    setTimeout(initTotalsHistory, 80);
+    return;
+  }
+  setActiveChip(activePreset || "today");
+}
 
-// init default Today
-setActiveChip("today");
+// bila page siap (refresh terus auto render)
+window.addEventListener("DOMContentLoaded", initTotalsHistory);
+setTimeout(initTotalsHistory, 200); // fallback kalau browser lambat
 
 onValue(STATS_REF, (snap)=>{
   const v = snap.val() || {};
   statsDailyArr = Object.keys(v).map(k => v[k]).filter(Boolean);
-  applyStatsFilter();
+  setActiveChip(activePreset || "today");
 });
 </script>
 </body>
