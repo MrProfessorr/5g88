@@ -306,22 +306,6 @@
   background: rgba(20, 24, 55, .95);
   backdrop-filter: blur(8px);
 }
-
-/* make tbody scroll vertical (15 rows) */
-.codesTable thead,
-.codesTable tbody tr{
-  display: table;
-  width: 100%;
-  table-layout: fixed;
-}
-
-.codesTable tbody{
-  display: block;
-  max-height: calc(15 * 48px);
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
 /* Actions column width */
 .colActions{ width: 120px; text-align: right; }
 .codesTable tbody tr{ height: 48px; }
@@ -363,7 +347,50 @@
   font-weight: 800;
   cursor: pointer;
 }
+/* ===== Active Promo Codes scroll (15 rows) ===== */
+.codesScroll{
+  max-height: calc(15 * 48px + 48px); /* 15 row + header */
+  overflow: auto;                     /* scroll Y + X */
+  border-radius: 14px;
+}
+
+/* codes table */
+.codesTable{
+  width: 100%;
+  min-width: 1150px; /* supaya boleh scroll kanan */
+  border-collapse: collapse;
+}
+
+/* sticky header (codes sahaja) */
+.codesTable thead th{
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: rgba(20, 24, 55, .95);
+  backdrop-filter: blur(8px);
+}
+
+/* Actions column */
+.codesTable .colActions{ width:120px; text-align:right; }
+
+/* scrollbar cantik untuk codes */
+.codesScroll::-webkit-scrollbar{ width: 8px; height: 8px; }
+.codesScroll::-webkit-scrollbar-track{
+  background: rgba(255,255,255,0.06);
+  border-radius: 10px;
+}
+.codesScroll::-webkit-scrollbar-thumb{
+  background: linear-gradient(180deg, #ffd166, #ffb703);
+  border-radius: 10px;
+}
+.codesScroll::-webkit-scrollbar-thumb:hover{
+  background: linear-gradient(180deg, #ffe28a, #ffd166);
+}
+.codesScroll{ scrollbar-width: thin; scrollbar-color:#ffb703 rgba(255,255,255,0.06); }
 .btnDelCode:hover{ background: rgba(255,80,80,.2); }
+/* ===== Redemption History jangan kacau layout ===== */
+#history table{ width:100%; border-collapse:collapse; }
+#history thead th{ position: sticky; top:0; z-index:2; } /* optional kalau nak sticky */
 </style>
 </head>
 <body>
@@ -485,7 +512,7 @@
         <button class="btn2" id="btnRefresh">↻ Refresh</button>
       </div>
 <div class="tableWrap" style="margin-top:10px">
-  <div class="table-scroll-x">
+  <div class="codesScroll">
     <table class="codesTable">
       <thead>
         <tr>
