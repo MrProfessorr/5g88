@@ -385,12 +385,11 @@
     <th>Expires</th>
     <th>Created At</th>
     <th>Claimed At</th>
-    <th>Claim</th>
     <th>Status</th>
   </tr>
 </thead>
           <tbody id="codesTbody">
-            <tr><td colspan="11" style="color:rgba(233,236,255,.65)">No data yet.</td></tr>
+            <tr><td colspan="10" style="color:rgba(233,236,255,.65)">No data yet.</td></tr>
           </tbody>
         </table>
       </div>
@@ -615,7 +614,7 @@ function renderCodes(list){
 
   const tb = $("codesTbody");
   if(!filtered.length){
-    tb.innerHTML = `<tr><td colspan="11" style="color:rgba(233,236,255,.65)">No promo codes found.</td></tr>`;
+    tb.innerHTML = `<tr><td colspan="10" style="color:rgba(233,236,255,.65)">No promo codes found.</td></tr>`;
     return;
   }
 
@@ -623,29 +622,27 @@ function renderCodes(list){
     .sort((a,b)=> (b.createdAt||0)-(a.createdAt||0))
     .slice(0,200);
 
-  tb.innerHTML = rows.map(x=>{
-    const claim = String(x.claimStatus || "PENDING").toUpperCase();
-    const claimTag =
-      claim === "APPROVED" ? `<span class="tag ok">APPROVED</span>` :
-      claim === "PENDING"  ? `<span class="tag warn">PENDING</span>` :
-                             `<span class="tag warn">${claim}</span>`;
+  // ✅ status hanya 2: PENDING / APPROVED
+  const statusBadge = (x)=>{
+    const s = String(x.claimStatus || "PENDING").toUpperCase();
+    if(s === "APPROVED") return `<span class="tag ok">APPROVED</span>`;
+    return `<span class="tag warn">PENDING</span>`;
+  };
 
-    return `
-      <tr>
-        <td style="font-weight:900;letter-spacing:1px">${x.code}</td>
-        <td>${x.customer||"-"}</td>
-        <td>FREE ${x.points}</td>
-        <td>${x.prizeType||"-"}</td>
-        <td>${x.usedCount||0}</td>
-        <td>${x.usageLimit||1}</td>
-        <td>${fmtTime(x.expiresAt)}</td>
-        <td>${x.createdAt ? fmtTime(x.createdAt) : "-"}</td>
-        <td>${x.claimedAt ? fmtTime(x.claimedAt) : "-"}</td>
-        <td>${claimTag}</td>
-        <td>${statusTag(x)}</td>
-      </tr>
-    `;
-  }).join("");
+  tb.innerHTML = rows.map(x=>`
+    <tr>
+      <td style="font-weight:900;letter-spacing:1px">${x.code}</td>
+      <td>${x.customer||"-"}</td>
+      <td>FREE ${x.points}</td>
+      <td>${x.prizeType||"-"}</td>
+      <td>${x.usedCount||0}</td>
+      <td>${x.usageLimit||1}</td>
+      <td>${fmtTime(x.expiresAt)}</td>
+      <td>${x.createdAt ? fmtTime(x.createdAt) : "-"}</td>
+      <td>${x.claimedAt ? fmtTime(x.claimedAt) : "-"}</td>
+      <td>${statusBadge(x)}</td>
+    </tr>
+  `).join("");
 }
 function loadCodesLive(){
   onValue(
