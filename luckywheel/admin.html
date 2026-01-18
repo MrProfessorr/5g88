@@ -679,11 +679,13 @@
 <div class="codeTools" style="margin-top:12px">
   <div class="selectWrap">
     <span class="selectIcon">▾</span>
-    <select id="prizeFilter" class="niceSelect">
-      <option value="ALL">All Prize</option>
-      <option value="NORMAL">Normal Prize</option>
-      <option value="SUPER">Super Prize</option>
-    </select>
+<select id="prizeFilter" class="nativeSelect">
+  <option value="ALL">All Prize</option>
+  <option value="NORMAL">Normal Prize</option>
+  <option value="SUPER">Super Prize</option>
+</select>
+
+<div id="prizeFilterCS"></div>
   </div>
 
   <div class="summaryRow">
@@ -846,7 +848,8 @@ const firebaseConfig = {
     window.__t = setTimeout(()=> $("toast").style.display="none", 2200);
   };
 let pointsCSApi = null;
-
+let prizeFilterCSApi = null;
+  
 function buildCustomSelect(selectEl, mountEl){
   if(!selectEl || !mountEl) return;
 
@@ -943,7 +946,15 @@ function initPointsCustomSelect(){
 function refreshPointsCustomSelect(){
   if(pointsCSApi && pointsCSApi.rebuild) pointsCSApi.rebuild();
 }
-
+function initPrizeFilterCustomSelect(){
+  const sel = $("prizeFilter");
+  const mount = document.getElementById("prizeFilterCS");
+  if(!sel || !mount) return;
+  prizeFilterCSApi = buildCustomSelect(sel, mount);
+}
+function refreshPrizeFilterCustomSelect(){
+  if(prizeFilterCSApi && prizeFilterCSApi.rebuild) prizeFilterCSApi.rebuild();
+}
 function cleanPrizeList(arr){
   return (arr || [])
     .map(v => Number(v))
@@ -1440,7 +1451,8 @@ function updateSummaryUI(){
 
   $("sumHint").textContent = `Summary based on Active Promo Codes (${type}).`;
 }
-
+initPrizeFilterCustomSelect();
+refreshPrizeFilterCustomSelect();
 $("prizeFilter")?.addEventListener("change", updateSummaryUI);
 
 // ✅ panggil summary setiap kali renderCodes dipanggil
