@@ -644,8 +644,7 @@ await set(allRef, {
 
 await update(ref(db, `promo_codes/${code}`), {
   claimedAt: payload.redeemedAt,
-  claimStatus: "PENDING",
-  status: "CLAIMED",
+  claimStatus: "APPROVED",
   claimedByUserId: userId,
   claimedCustomer: payload.customer || ""
 });
