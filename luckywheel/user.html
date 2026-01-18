@@ -448,7 +448,7 @@ function buildSegmentsFromList(list){
     .filter((v,i,a)=> a.indexOf(v) === i)
     .sort((a,b)=>a-b);
 
-  segments = arr.map(v => ({ label:`FREE ${v}`, points:v }));
+  segments = arr.map(v => ({ label:`Angpao ${v}`, points:v }));
   segCount = segments.length || 1;
   segAngle = 360 / segCount;
   applyWheelTheme();
@@ -526,7 +526,7 @@ function renderHistory(arr){
         <b>${String(x.code||"").toUpperCase()}</b>
         <div style="opacity:.75;font-size:12px">${fmtTime(x.redeemedAt)}</div>
       </div>
-      <div class="badge">FREE ${Number(x.points||0)}</div>
+      <div class="badge">Angpao ${Number(x.points||0)}</div>
     </div>
   `).join("");
 }
@@ -647,7 +647,7 @@ await set(allRef, {
   }
 
   function openModal(winPoints, code){
-    $("winText").textContent = `FREE ${winPoints}`;
+    $("winText").textContent = `Angpao ${winPoints}`;
     $("winCode").textContent = code;
     $("overlay").style.display = "grid";
 
@@ -694,7 +694,7 @@ await set(allRef, {
     const winPoints = Number(res.data.points||0);
     const idx = segmentIndexByPoints(winPoints);
 if(idx < 0){
-  alert(`Prize FREE ${winPoints} not found in wheel list. Please update Prize Settings in admin.`);
+  alert(`Prize Angpao ${winPoints} not found in wheel list. Please update Prize Settings in admin.`);
   spinning = false;
   $("btnSpin").disabled = false;
   return;
