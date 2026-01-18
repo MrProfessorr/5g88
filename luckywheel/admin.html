@@ -482,6 +482,111 @@
   border-radius: 999px;
 }
 .csMenu{ scrollbar-width: thin; scrollbar-color:#ffb703 rgba(255,255,255,.06); }
+/* ===== COMPACT CUSTOM SELECT (MATCH NATIVE SIZE) ===== */
+.cs{ position:relative; width:100%; }
+
+.csBtn{
+  width:100%;
+  height:44px;                 /* ✅ sama macam input/select biasa */
+  padding:0 42px 0 12px;        /* ✅ compact */
+  border-radius:12px;           /* ikut style kau */
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(0,0,0,.22);
+  color:var(--txt);
+  font-weight:800;
+  font-size:14px;
+  line-height:44px;
+  cursor:pointer;
+  user-select:none;
+  display:block;
+  text-align:left;
+  position:relative;
+}
+
+.csBtn:hover{ border-color: rgba(255,200,85,.45); }
+.csBtn:focus{
+  outline:none;
+  border-color: rgba(255,200,85,.7);
+  box-shadow: 0 0 0 3px rgba(255,180,0,.12);
+}
+
+/* Arrow button kecil di kanan */
+.csArrow{
+  position:absolute;
+  right:10px;
+  top:50%;
+  transform:translateY(-50%);
+  width:28px;
+  height:28px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.06);
+  display:grid;
+  place-items:center;
+  font-size:12px;
+  opacity:.9;
+}
+.cs.open .csArrow{ transform:translateY(-50%) rotate(180deg); }
+
+/* label jangan besar */
+.csLabel{
+  display:block;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* dropdown list compact */
+.csMenu{
+  position:absolute;
+  left:0; right:0;
+  top: calc(100% + 6px);
+  z-index:9999;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(10,12,28,.92);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 14px 40px rgba(0,0,0,.45);
+  overflow:hidden;
+
+  max-height: 180px;           /* ✅ kecil */
+  overflow:auto;
+
+  display:none;
+}
+.cs.open .csMenu{ display:block; }
+
+.csItem{
+  padding:10px 12px;           /* ✅ kecil */
+  font-size:13px;
+  font-weight:800;
+  color: rgba(233,236,255,.92);
+  cursor:pointer;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  background:transparent;
+}
+.csItem:last-child{ border-bottom:none; }
+
+.csItem:hover{
+  background: rgba(40,110,255,.18);   /* hover macam native */
+}
+
+.csItem.selected{
+  background: rgba(255,204,85,.14);   /* selected */
+}
+
+.csItem.active{
+  background: rgba(40,110,255,.28);   /* active highlight */
+  outline: 1px solid rgba(40,110,255,.35);
+}
+
+/* scrollbar kecil */
+.csMenu::-webkit-scrollbar{ width:8px; }
+.csMenu::-webkit-scrollbar-track{ background: rgba(255,255,255,.06); }
+.csMenu::-webkit-scrollbar-thumb{
+  background: linear-gradient(180deg, #ffcc55, #ff8a00);
+  border-radius:999px;
+}
 </style>
 </head>
 <body>
