@@ -763,13 +763,36 @@ async function deleteHistRow(x){
 
   try{
     const updates = {};
+
+    // 1) delete group utama
     updates[`redemptionsByCode/${x._code}/${x._rid}`] = null;
 
-
+    // 2) cuba delete redemptionsAll by same key (untuk data baru)
     updates[`redemptionsAll/${x._rid}`] = null;
 
+    // 3) optional userHistory
     if(x.userId){
       updates[`userHistory/${x.userId}/${x._rid}`] = null;
+    }
+
+    // ====== fallback untuk DATA LAMA (redemptionsAll key random) ======
+    const allSnap = await get(ref(db, "redemptionsAll"));
+    if(allSnap.exists()){
+      const all = allSnap.val() || {};
+      const targetCode = String(x._code || x.code || "").toUpperCase();
+      const targetAt   = Number(x.redeemedAt || 0);
+
+      for(const k of Object.keys(all)){
+        const it = all[k] || {};
+        const itCode = String(it.code || "").toUpperCase();
+        const itAt   = Number(it.redeemedAt || 0);
+
+        // match paling selamat: code + redeemedAt
+        if(itCode === targetCode && itAt === targetAt){
+          updates[`redemptionsAll/${k}`] = null;
+          break;
+        }
+      }
     }
 
     await update(ref(db), updates);
@@ -778,7 +801,6 @@ async function deleteHistRow(x){
     alert("Delete failed: " + (e.message || e));
   }
 }
-
 function renderHist(list){
   const q = $("searchHist").value.trim().toUpperCase();
  const filtered = !q ? list : list.filter(x=>{
