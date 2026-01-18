@@ -286,6 +286,84 @@
 #codesTbody tr {
   height: 48px;
 }
+.table-scroll-x{
+  overflow-x: auto;
+  border-radius: 14px;
+}
+
+/* table sizing */
+.codesTable{
+  width: 100%;
+  min-width: 1150px;   /* bagi boleh scroll kanan */
+  border-collapse: collapse;
+}
+
+/* sticky header */
+.codesTable thead th{
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: rgba(20, 24, 55, .95);
+  backdrop-filter: blur(8px);
+}
+
+/* make tbody scroll vertical (15 rows) */
+.codesTable thead,
+.codesTable tbody tr{
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.codesTable tbody{
+  display: block;
+  max-height: calc(15 * 48px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Actions column width */
+.colActions{ width: 120px; text-align: right; }
+.codesTable tbody tr{ height: 48px; }
+
+/* beautiful scrollbar */
+.table-scroll-x::-webkit-scrollbar,
+.codesTable tbody::-webkit-scrollbar{ height: 6px; width: 6px; }
+
+.table-scroll-x::-webkit-scrollbar-track,
+.codesTable tbody::-webkit-scrollbar-track{
+  background: rgba(255,255,255,0.06);
+  border-radius: 10px;
+}
+
+.table-scroll-x::-webkit-scrollbar-thumb,
+.codesTable tbody::-webkit-scrollbar-thumb{
+  background: linear-gradient(180deg, #ffd166, #ffb703);
+  border-radius: 10px;
+}
+
+.table-scroll-x::-webkit-scrollbar-thumb:hover,
+.codesTable tbody::-webkit-scrollbar-thumb:hover{
+  background: linear-gradient(180deg, #ffe28a, #ffd166);
+}
+
+/* make status text not all caps */
+.small-status{
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font-size: 12px;
+  padding: 5px 10px;
+}
+.btnDelCode{
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,120,120,.35);
+  background: rgba(255,80,80,.12);
+  color: rgba(255,220,220,.95);
+  font-weight: 800;
+  cursor: pointer;
+}
+.btnDelCode:hover{ background: rgba(255,80,80,.2); }
 </style>
 </head>
 <body>
@@ -406,34 +484,28 @@
         <input id="searchCode" placeholder="Search by code / customer..."/>
         <button class="btn2" id="btnRefresh">↻ Refresh</button>
       </div>
-      <div class="tableWrap" style="margin-top:10px">
-        <table>
-<thead>
-  <tr>
-    <th>Code</th>
-    <th>Customer</th>
-    <th>Prize</th>
-    <th>Type</th>
-    <th>Used</th>
-    <th>Limit</th>
-    <th>Expires</th>
-    <th>Created At</th>
-    <th>Claimed At</th>
-    <th>Status</th>
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td colspan="10" style="padding:0;border:none;">
-      <div class="table-scroll">
-        <table style="width:100%;">
-          <tbody id="codesTbody"></tbody>
-        </table>
-      </div>
-    </td>
-  </tr>
-</tbody>
-        </table>
+<div class="tableWrap" style="margin-top:10px">
+  <div class="table-scroll-x">
+    <table class="codesTable">
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Customer</th>
+          <th>Prize</th>
+          <th>Type</th>
+          <th>Used</th>
+          <th>Limit</th>
+          <th>Expires</th>
+          <th>Created At</th>
+          <th>Claimed At</th>
+          <th>Status</th>
+          <th class="colActions">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="codesTbody"></tbody>
+    </table>
+  </div>
+</div>
       </div>
     </div>
   </div>
@@ -646,7 +718,17 @@ const payload = {
     const d = new Date(ts);
     return d.toLocaleString();
   }
+async function deletePromoCode(code){
+  const ok = confirm(`Delete promo code: ${code}?`);
+  if(!ok) return;
 
+  try{
+    await remove(ref(db, `promo_codes/${code}`));
+    toast("Deleted!");
+  }catch(e){
+    alert("Delete failed: " + (e.message || e));
+  }
+}
 function renderCodes(list){
   const q = $("searchCode").value.trim().toUpperCase();
   const filtered = !q ? list : list.filter(x=>{
@@ -672,20 +754,28 @@ const statusBadge = (x)=>{
   return `<span class="tag warn small-status">Pending</span>`;
 };
 
-  tb.innerHTML = rows.map(x=>`
-    <tr>
-      <td style="font-weight:900;letter-spacing:1px">${x.code}</td>
-      <td>${x.customer||"-"}</td>
-      <td>FREE ${x.points}</td>
-      <td>${x.prizeType||"-"}</td>
-      <td>${x.usedCount||0}</td>
-      <td>${x.usageLimit||1}</td>
-      <td>${fmtTime(x.expiresAt)}</td>
-      <td>${x.createdAt ? fmtTime(x.createdAt) : "-"}</td>
-      <td>${x.claimedAt ? fmtTime(x.claimedAt) : "-"}</td>
-      <td>${statusBadge(x)}</td>
-    </tr>
-  `).join("");
+tb.innerHTML = rows.map(x=>`
+  <tr>
+    <td style="font-weight:900;letter-spacing:1px">${x.code}</td>
+    <td>${x.customer||"-"}</td>
+    <td>FREE ${x.points}</td>
+    <td>${x.prizeType||"-"}</td>
+    <td>${x.usedCount||0}</td>
+    <td>${x.usageLimit||1}</td>
+    <td>${fmtTime(x.expiresAt)}</td>
+    <td>${x.createdAt ? fmtTime(x.createdAt) : "-"}</td>
+    <td>${x.claimedAt ? fmtTime(x.claimedAt) : "-"}</td>
+    <td>${statusBadge(x)}</td>
+
+    <td class="colActions" style="text-align:right;">
+      <button class="btnDelCode" data-code="${x.code}">Delete</button>
+    </td>
+  </tr>
+`).join("");
+
+tb.querySelectorAll(".btnDelCode").forEach(btn=>{
+  btn.onclick = ()=> deletePromoCode(btn.dataset.code);
+});
 }
 function loadCodesLive(){
   onValue(
