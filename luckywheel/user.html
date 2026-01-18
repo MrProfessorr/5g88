@@ -634,11 +634,12 @@ const payload = {
       code, points, redeemedAt: payload.redeemedAt
     });
 
-const allRef = push(ref(db, "redemptionsAll"));
-await set(allRef, {
+await set(ref(db, `redemptionsAll/${ridKey}`), {
+  ridKey,
   code,
   points,
   customer: payload.customer || "",
+  userId,
   redeemedAt: payload.redeemedAt
 });
 
