@@ -374,20 +374,23 @@
       </div>
       <div class="tableWrap" style="margin-top:10px">
         <table>
-          <thead>
-            <tr>
-              <th>Code</th>
-              <th>Customer</th>
-              <th>Prize</th>
-              <th>Type</th>
-              <th>Used</th>
-              <th>Limit</th>
-              <th>Expires</th>
-              <th>Status</th>
-            </tr>
-          </thead>
+<thead>
+  <tr>
+    <th>Code</th>
+    <th>Customer</th>
+    <th>Prize</th>
+    <th>Type</th>
+    <th>Used</th>
+    <th>Limit</th>
+    <th>Expires</th>
+    <th>Created At</th>
+    <th>Claimed At</th>
+    <th>Claim</th>
+    <th>Status</th>
+  </tr>
+</thead>
           <tbody id="codesTbody">
-            <tr><td colspan="8" style="color:rgba(233,236,255,.65)">No data yet.</td></tr>
+            <tr><td colspan="11" style="color:rgba(233,236,255,.65)">No data yet.</td></tr>
           </tbody>
         </table>
       </div>
@@ -551,17 +554,19 @@ $("typeSuper").onclick = ()=>{
     const now = Date.now();
     const expiresAt = now + expHours*3600*1000;
 
-    const payload = {
-      code,
-      customer: customer || "",
-      points,
-      prizeType,
-      usageLimit,
-      usedCount: 0,
-      createdAt: now,
-      expiresAt,
-      status: "ACTIVE"
-    };
+const payload = {
+  code,
+  customer: customer || "",
+  points,
+  prizeType,
+  usageLimit,
+  usedCount: 0,
+  createdAt: now,
+  expiresAt,
+  claimedAt: null,        
+  claimStatus: "Pending",
+  status: "ACTIVE"
+};
 
     await set(ref(db, `promo_codes/${code}`), payload);
 
@@ -601,35 +606,47 @@ $("typeSuper").onclick = ()=>{
     return d.toLocaleString();
   }
 
-  function renderCodes(list){
-    const q = $("searchCode").value.trim().toUpperCase();
-    const filtered = !q ? list : list.filter(x=>{
-      return (x.code||"").includes(q) || (x.customer||"").toUpperCase().includes(q);
-    });
+function renderCodes(list){
+  const q = $("searchCode").value.trim().toUpperCase();
+  const filtered = !q ? list : list.filter(x=>{
+    return String(x.code||"").toUpperCase().includes(q) ||
+           String(x.customer||"").toUpperCase().includes(q);
+  });
 
-    const tb = $("codesTbody");
-    if(!filtered.length){
-      tb.innerHTML = `<tr><td colspan="8" style="color:rgba(233,236,255,.65)">No promo codes found.</td></tr>`;
-      return;
-    }
-
-    tb.innerHTML = filtered
-      .sort((a,b)=> (b.createdAt||0)-(a.createdAt||0))
-      .slice(0,200)
-      .map(x=>`
-        <tr>
-          <td style="font-weight:900;letter-spacing:1px">${x.code}</td>
-          <td>${x.customer||"-"}</td>
-          <td>FREE ${x.points}</td>
-          <td>${x.prizeType||"-"}</td>
-          <td>${x.usedCount||0}</td>
-          <td>${x.usageLimit||1}</td>
-          <td>${fmtTime(x.expiresAt)}</td>
-          <td>${statusTag(x)}</td>
-        </tr>
-      `).join("");
+  const tb = $("codesTbody");
+  if(!filtered.length){
+    tb.innerHTML = `<tr><td colspan="11" style="color:rgba(233,236,255,.65)">No promo codes found.</td></tr>`;
+    return;
   }
 
+  const rows = filtered
+    .sort((a,b)=> (b.createdAt||0)-(a.createdAt||0))
+    .slice(0,200);
+
+  tb.innerHTML = rows.map(x=>{
+    const claim = String(x.claimStatus || "PENDING").toUpperCase();
+    const claimTag =
+      claim === "APPROVED" ? `<span class="tag ok">APPROVED</span>` :
+      claim === "PENDING"  ? `<span class="tag warn">PENDING</span>` :
+                             `<span class="tag warn">${claim}</span>`;
+
+    return `
+      <tr>
+        <td style="font-weight:900;letter-spacing:1px">${x.code}</td>
+        <td>${x.customer||"-"}</td>
+        <td>FREE ${x.points}</td>
+        <td>${x.prizeType||"-"}</td>
+        <td>${x.usedCount||0}</td>
+        <td>${x.usageLimit||1}</td>
+        <td>${fmtTime(x.expiresAt)}</td>
+        <td>${x.createdAt ? fmtTime(x.createdAt) : "-"}</td>
+        <td>${x.claimedAt ? fmtTime(x.claimedAt) : "-"}</td>
+        <td>${claimTag}</td>
+        <td>${statusTag(x)}</td>
+      </tr>
+    `;
+  }).join("");
+}
 function loadCodesLive(){
   onValue(ref(db, "promo_codes"), (snap)=>{
     const v = snap.val() || {};
