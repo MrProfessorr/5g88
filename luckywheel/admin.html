@@ -380,12 +380,9 @@
   cursor:pointer;
   transition: all 0.2s;
 }
-.chipBtn:hover{
- color:#3c89e8;
-}
-.chipBtn.active{
-  color:#1668dc;
-}
+.chipBtn:hover{color:#3c89e8;}
+.chipBtn.active{color:#1668dc;}
+
 /* hide native select */
 .nativeSelect{
   position:absolute !important;
@@ -573,6 +570,17 @@ input::-webkit-outer-spin-button {
 input[type="number"]{
   -moz-appearance: textfield !important;
   appearance: textfield !important;
+}
+  /* ===== LURUSKAN HEADER TABLE (thead) ===== */
+#codes .tableWrap thead th,
+#history .tableWrap thead th{
+  border-radius: 0 !important;   /* buang lengkung */
+}
+
+/* pastikan bar lurus penuh */
+#codes .tableWrap thead,
+#history .tableWrap thead{
+  border-radius: 0 !important;
 }
 </style>
 </head>
