@@ -648,23 +648,28 @@ function renderCodes(list){
   }).join("");
 }
 function loadCodesLive(){
-  onValue(ref(db, "promo_codes"), (snap)=>{
-    const v = snap.val() || {};
-    allCodes = Object.keys(v).map(k=>v[k]);
+  onValue(
+    ref(db, "promo_codes"),
+    (snap)=>{
+      console.log("promo_codes exists?", snap.exists());
+      const v = snap.val() || {};
+      allCodes = Object.keys(v).map(k=>v[k]);
 
-    // ✅ build map: CODE -> customer
-    codeCustomerMap = {};
-    for(const c of allCodes){
-      if(c?.code) codeCustomerMap[String(c.code).toUpperCase()] = (c.customer || "");
+      codeCustomerMap = {};
+      for(const c of allCodes){
+        if(c?.code) codeCustomerMap[String(c.code).toUpperCase()] = (c.customer || "");
+      }
+
+      renderCodes(allCodes);
+      if (allHist?.length) renderHist(allHist);
+    },
+    (err)=>{
+      console.error("promo_codes onValue ERROR:", err);
+      toast("Load codes failed: " + (err?.code || err?.message || err));
     }
-
-    renderCodes(allCodes);
-
-    // ✅ refresh history view (supaya nama terus muncul bila promo_codes loaded)
-    if (allHist?.length) renderHist(allHist);
-  });
+  );
 }
-  loadCodesLive();
+loadCodesLive();
 
   $("searchCode").addEventListener("input", ()=>renderCodes(allCodes));
   $("btnRefresh").onclick = async ()=>{
