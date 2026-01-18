@@ -211,11 +211,26 @@
   background:rgba(0,0,0,.18);color:#fff;
   outline:none;
 }
-/* ===== HISTORY: max 15 rows, scroll ===== */
+/* ===== FIX FINAL: Redemption History jadi compact (kecil) ===== */
 #history .tableWrap{
-  max-height: calc(15 * 46px); /* 15 row, adjust kalau row tinggi */
+  max-height: 520px;        /* lebih stabil dari calc() */
   overflow: auto;
   border-radius: 14px;
+}
+
+#history table{ font-size:12px; }
+
+#history th, 
+#history td{
+  padding: 8px 10px !important;
+  line-height: 1.2 !important;
+}
+
+#history #histTbody tr{ height: 42px; }
+
+#history .btnDel{
+  padding: 6px 10px;
+  font-size: 12px;
 }
 
 /* sticky header bila scroll */
