@@ -211,26 +211,11 @@
   background:rgba(0,0,0,.18);color:#fff;
   outline:none;
 }
-/* ===== FIX FINAL: Redemption History jadi compact (kecil) ===== */
+/* ===== HISTORY: max 15 rows, scroll ===== */
 #history .tableWrap{
-  max-height: 520px;        /* lebih stabil dari calc() */
+  max-height: calc(15 * 46px); /* 15 row, adjust kalau row tinggi */
   overflow: auto;
   border-radius: 14px;
-}
-
-#history table{ font-size:12px; }
-
-#history th, 
-#history td{
-  padding: 8px 10px !important;
-  line-height: 1.2 !important;
-}
-
-#history #histTbody tr{ height: 42px; }
-
-#history .btnDel{
-  padding: 6px 10px;
-  font-size: 12px;
 }
 
 /* sticky header bila scroll */
@@ -267,145 +252,6 @@
 }
 .btnDel:hover{ background: rgba(255,80,80,.20); }
 .btnDel:active{ transform: translateY(1px); }
-.small-status {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0; 
-  text-transform: none;
-}
-.table-scroll {
-  max-height: calc(15 * 48px); /* 15 baris */
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-right: 6px;
-}
-
-/* ===== SCROLLBAR CANTIK ===== */
-.table-scroll::-webkit-scrollbar {
-  width: 6px;
-}
-
-.table-scroll::-webkit-scrollbar-track {
-  background: rgba(255,255,255,0.05);
-  border-radius: 10px;
-}
-
-.table-scroll::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #ffd166, #ffb703);
-  border-radius: 10px;
-}
-
-.table-scroll::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #ffe28a, #ffd166);
-}
-#codesTbody tr {
-  height: 48px;
-}
-.table-scroll-x{
-  overflow-x: auto;
-  border-radius: 14px;
-}
-
-/* table sizing */
-.codesTable{
-  width: 100%;
-  min-width: 1150px;   /* bagi boleh scroll kanan */
-  border-collapse: collapse;
-}
-
-/* sticky header */
-.codesTable thead th{
-  position: sticky;
-  top: 0;
-  z-index: 5;
-  background: rgba(20, 24, 55, .95);
-  backdrop-filter: blur(8px);
-}
-/* Actions column width */
-.colActions{ width: 120px; text-align: right; }
-.codesTable tbody tr{ height: 48px; }
-
-/* beautiful scrollbar */
-.table-scroll-x::-webkit-scrollbar,
-.codesTable tbody::-webkit-scrollbar{ height: 6px; width: 6px; }
-
-.table-scroll-x::-webkit-scrollbar-track,
-.codesTable tbody::-webkit-scrollbar-track{
-  background: rgba(255,255,255,0.06);
-  border-radius: 10px;
-}
-
-.table-scroll-x::-webkit-scrollbar-thumb,
-.codesTable tbody::-webkit-scrollbar-thumb{
-  background: linear-gradient(180deg, #ffd166, #ffb703);
-  border-radius: 10px;
-}
-
-.table-scroll-x::-webkit-scrollbar-thumb:hover,
-.codesTable tbody::-webkit-scrollbar-thumb:hover{
-  background: linear-gradient(180deg, #ffe28a, #ffd166);
-}
-
-/* make status text not all caps */
-.small-status{
-  text-transform: none !important;
-  letter-spacing: 0 !important;
-  font-size: 12px;
-  padding: 5px 10px;
-}
-.btnDelCode{
-  padding: 8px 12px;
-  border-radius: 10px;
-  border: 1px solid rgba(255,120,120,.35);
-  background: rgba(255,80,80,.12);
-  color: rgba(255,220,220,.95);
-  font-weight: 800;
-  cursor: pointer;
-}
-/* ===== Active Promo Codes scroll (15 rows) ===== */
-.codesScroll{
-  max-height: calc(15 * 48px + 48px); /* 15 row + header */
-  overflow: auto;                     /* scroll Y + X */
-  border-radius: 14px;
-}
-
-/* codes table */
-.codesTable{
-  width: 100%;
-  min-width: 1150px; /* supaya boleh scroll kanan */
-  border-collapse: collapse;
-}
-
-/* sticky header (codes sahaja) */
-.codesTable thead th{
-  position: sticky;
-  top: 0;
-  z-index: 5;
-  background: rgba(20, 24, 55, .95);
-  backdrop-filter: blur(8px);
-}
-
-/* Actions column */
-.codesTable .colActions{ width:120px; text-align:right; }
-
-/* scrollbar cantik untuk codes */
-.codesScroll::-webkit-scrollbar{ width: 8px; height: 8px; }
-.codesScroll::-webkit-scrollbar-track{
-  background: rgba(255,255,255,0.06);
-  border-radius: 10px;
-}
-.codesScroll::-webkit-scrollbar-thumb{
-  background: linear-gradient(180deg, #ffd166, #ffb703);
-  border-radius: 10px;
-}
-.codesScroll::-webkit-scrollbar-thumb:hover{
-  background: linear-gradient(180deg, #ffe28a, #ffd166);
-}
-.codesScroll{ scrollbar-width: thin; scrollbar-color:#ffb703 rgba(255,255,255,0.06); }
-.btnDelCode:hover{ background: rgba(255,80,80,.2); }
-/* ===== Redemption History jangan kacau layout ===== */
-#history table{ width:100%; border-collapse:collapse; }
-#history thead th{ position: sticky; top:0; z-index:2; } /* optional kalau nak sticky */
 </style>
 </head>
 <body>
@@ -526,28 +372,26 @@
         <input id="searchCode" placeholder="Search by code / customer..."/>
         <button class="btn2" id="btnRefresh">↻ Refresh</button>
       </div>
-<div class="tableWrap" style="margin-top:10px">
-  <div class="codesScroll">
-    <table class="codesTable">
-      <thead>
-        <tr>
-          <th>Code</th>
-          <th>Customer</th>
-          <th>Prize</th>
-          <th>Type</th>
-          <th>Used</th>
-          <th>Limit</th>
-          <th>Expires</th>
-          <th>Created At</th>
-          <th>Claimed At</th>
-          <th>Status</th>
-          <th class="colActions">Actions</th>
-        </tr>
-      </thead>
-      <tbody id="codesTbody"></tbody>
-    </table>
-  </div>
-</div>
+      <div class="tableWrap" style="margin-top:10px">
+        <table>
+<thead>
+  <tr>
+    <th>Code</th>
+    <th>Customer</th>
+    <th>Prize</th>
+    <th>Type</th>
+    <th>Used</th>
+    <th>Limit</th>
+    <th>Expires</th>
+    <th>Created At</th>
+    <th>Claimed At</th>
+    <th>Status</th>
+  </tr>
+</thead>
+          <tbody id="codesTbody">
+            <tr><td colspan="10" style="color:rgba(233,236,255,.65)">No data yet.</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -760,17 +604,7 @@ const payload = {
     const d = new Date(ts);
     return d.toLocaleString();
   }
-async function deletePromoCode(code){
-  const ok = confirm(`Delete promo code: ${code}?`);
-  if(!ok) return;
 
-  try{
-    await remove(ref(db, `promo_codes/${code}`));
-    toast("Deleted!");
-  }catch(e){
-    alert("Delete failed: " + (e.message || e));
-  }
-}
 function renderCodes(list){
   const q = $("searchCode").value.trim().toUpperCase();
   const filtered = !q ? list : list.filter(x=>{
@@ -791,33 +625,25 @@ function renderCodes(list){
   // ✅ status hanya 2: PENDING / APPROVED
 const statusBadge = (x)=>{
   if (x.claimedAt || (Number(x.usedCount||0) > 0)) {
-    return `<span class="tag ok small-status">Approved</span>`;
+    return `<span class="tag ok">APPROVED</span>`;
   }
-  return `<span class="tag warn small-status">Pending</span>`;
+  return `<span class="tag warn">PENDING</span>`;
 };
 
-tb.innerHTML = rows.map(x=>`
-  <tr>
-    <td style="font-weight:900;letter-spacing:1px">${x.code}</td>
-    <td>${x.customer||"-"}</td>
-    <td>FREE ${x.points}</td>
-    <td>${x.prizeType||"-"}</td>
-    <td>${x.usedCount||0}</td>
-    <td>${x.usageLimit||1}</td>
-    <td>${fmtTime(x.expiresAt)}</td>
-    <td>${x.createdAt ? fmtTime(x.createdAt) : "-"}</td>
-    <td>${x.claimedAt ? fmtTime(x.claimedAt) : "-"}</td>
-    <td>${statusBadge(x)}</td>
-
-    <td class="colActions" style="text-align:right;">
-      <button class="btnDelCode" data-code="${x.code}">Delete</button>
-    </td>
-  </tr>
-`).join("");
-
-tb.querySelectorAll(".btnDelCode").forEach(btn=>{
-  btn.onclick = ()=> deletePromoCode(btn.dataset.code);
-});
+  tb.innerHTML = rows.map(x=>`
+    <tr>
+      <td style="font-weight:900;letter-spacing:1px">${x.code}</td>
+      <td>${x.customer||"-"}</td>
+      <td>FREE ${x.points}</td>
+      <td>${x.prizeType||"-"}</td>
+      <td>${x.usedCount||0}</td>
+      <td>${x.usageLimit||1}</td>
+      <td>${fmtTime(x.expiresAt)}</td>
+      <td>${x.createdAt ? fmtTime(x.createdAt) : "-"}</td>
+      <td>${x.claimedAt ? fmtTime(x.claimedAt) : "-"}</td>
+      <td>${statusBadge(x)}</td>
+    </tr>
+  `).join("");
 }
 function loadCodesLive(){
   onValue(
