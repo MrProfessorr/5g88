@@ -387,6 +387,101 @@
   border-color: rgba(255,204,85,.55);
   box-shadow: 0 0 0 2px rgba(255,204,85,.10) inset;
 }
+/* hide native select */
+.nativeSelect{
+  position:absolute !important;
+  left:-9999px !important;
+  width:1px !important;
+  height:1px !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+
+/* ===== CUSTOM SELECT (FULL CONTROL) ===== */
+.cs{ position:relative; width:100%; }
+
+.csBtn{
+  width:100%;
+  padding:12px 40px 12px 12px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(0,0,0,.18);
+  color:var(--txt);
+  font-weight:900;
+  cursor:pointer;
+  user-select:none;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.csBtn:hover{ border-color: rgba(255,200,85,.45); }
+.csBtn:focus{
+  outline:none;
+  border-color: rgba(255,200,85,.7);
+  box-shadow: 0 0 0 3px rgba(255,180,0,.15);
+}
+
+.csArrow{
+  width:26px;height:26px;
+  display:grid;place-items:center;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  flex:0 0 auto;
+}
+.cs.open .csArrow{ transform: rotate(180deg); }
+
+.csMenu{
+  position:absolute;
+  left:0; right:0;
+  top: calc(100% + 8px);
+  z-index:9999;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(12,16,40,.92);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 18px 60px rgba(0,0,0,.55);
+  overflow:hidden;
+
+  max-height: 260px;
+  overflow:auto;
+
+  display:none;
+}
+.cs.open .csMenu{ display:block; }
+
+.csItem{
+  padding:12px 12px;
+  font-weight:900;
+  cursor:pointer;
+  color: rgba(233,236,255,.9);
+  background: transparent;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.csItem:last-child{ border-bottom:none; }
+
+.csItem:hover{
+  background: linear-gradient(90deg, rgba(255,204,85,.22), rgba(255,138,0,.14));
+}
+
+.csItem.active{
+  background: linear-gradient(90deg, rgba(40,110,255,.28), rgba(40,110,255,.14));
+  outline: 1px solid rgba(40,110,255,.45);
+}
+
+.csItem.selected{
+  background: linear-gradient(90deg, rgba(255,204,85,.26), rgba(255,138,0,.16));
+}
+
+/* scrollbar cantik */
+.csMenu::-webkit-scrollbar{ width:10px; }
+.csMenu::-webkit-scrollbar-track{ background: rgba(255,255,255,.06); }
+.csMenu::-webkit-scrollbar-thumb{
+  background: linear-gradient(180deg, #ffcc55, #ff8a00);
+  border-radius: 999px;
+}
+.csMenu{ scrollbar-width: thin; scrollbar-color:#ffb703 rgba(255,255,255,.06); }
 </style>
 </head>
 <body>
@@ -462,8 +557,9 @@
           <button class="pill" id="typeSuper">⭐ SUPER PRIZE</button>
         </div>
 
-        <label>Select Prize (Points)</label>
-        <select id="points"></select>
+<label>Select Prize (Points)</label>
+<select id="points" class="nativeSelect"></select>
+<div class="cs" id="pointsCS"></div>
 
         <div class="row">
           <div>
@@ -660,6 +756,104 @@ const firebaseConfig = {
     clearTimeout(window.__t);
     window.__t = setTimeout(()=> $("toast").style.display="none", 2200);
   };
+let pointsCSApi = null;
+
+function buildCustomSelect(selectEl, mountEl){
+  if(!selectEl || !mountEl) return;
+
+  mountEl.innerHTML = "";
+
+  const wrap = document.createElement("div");
+  wrap.className = "cs";
+
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "csBtn";
+  btn.innerHTML = `
+    <span class="csLabel">-- Select --</span>
+    <span class="csArrow">▾</span>
+  `;
+
+  const menu = document.createElement("div");
+  menu.className = "csMenu";
+
+  wrap.appendChild(btn);
+  wrap.appendChild(menu);
+  mountEl.appendChild(wrap);
+
+  const labelEl = btn.querySelector(".csLabel");
+
+  function close(){ wrap.classList.remove("open"); }
+  function open(){
+    wrap.classList.add("open");
+    const act = menu.querySelector(".csItem.active") || menu.querySelector(".csItem.selected");
+    if(act) act.scrollIntoView({block:"nearest"});
+  }
+  function toggle(){ wrap.classList.contains("open") ? close() : open(); }
+
+  function setLabelFromSelect(){
+    const opt = selectEl.options[selectEl.selectedIndex];
+    labelEl.textContent = opt ? opt.textContent : "-- Select --";
+  }
+
+  function syncActiveSelected(){
+    const v = selectEl.value;
+    menu.querySelectorAll(".csItem").forEach(it=>{
+      it.classList.remove("active","selected");
+      if(it.dataset.value === v) it.classList.add("active","selected");
+    });
+    setLabelFromSelect();
+  }
+
+  function rebuild(){
+    menu.innerHTML = "";
+    [...selectEl.options].forEach(opt=>{
+      const item = document.createElement("div");
+      item.className = "csItem";
+      item.textContent = opt.textContent;
+      item.dataset.value = opt.value;
+
+      item.addEventListener("click", ()=>{
+        selectEl.value = opt.value;
+        selectEl.dispatchEvent(new Event("change", {bubbles:true}));
+        close();
+      });
+
+      menu.appendChild(item);
+    });
+
+    setLabelFromSelect();
+    syncActiveSelected();
+  }
+
+  btn.addEventListener("click", toggle);
+
+  document.addEventListener("click", (e)=>{
+    if(!wrap.contains(e.target)) close();
+  });
+
+  btn.addEventListener("keydown", (e)=>{
+    if(e.key === "Enter" || e.key === " "){ e.preventDefault(); toggle(); }
+    if(e.key === "Escape"){ close(); }
+  });
+
+  selectEl.addEventListener("change", syncActiveSelected);
+
+  rebuild();
+
+  return { rebuild, close, open };
+}
+
+function initPointsCustomSelect(){
+  const sel = $("points");
+  const mount = document.getElementById("pointsCS");
+  if(!sel || !mount) return;
+  pointsCSApi = buildCustomSelect(sel, mount);
+}
+
+function refreshPointsCustomSelect(){
+  if(pointsCSApi && pointsCSApi.rebuild) pointsCSApi.rebuild();
+}
 
 function cleanPrizeList(arr){
   return (arr || [])
@@ -702,6 +896,7 @@ function renderPointsOptions(type){
   const sel = $("points");
   sel.innerHTML = list.map(p => `<option value="${p}">FREE ${p}</option>`).join("");
   if(list.length) sel.value = String(list[0]);
+  refreshPointsCustomSelect();
 }
 
 // Prize type toggle
@@ -709,6 +904,8 @@ let prizeType = "NORMAL";
 
 await loadPrizeConfig();
 renderPointsOptions(prizeType);
+initPointsCustomSelect();
+refreshPointsCustomSelect();
 
 $("typeNormal").onclick = ()=>{
   prizeType="NORMAL";
