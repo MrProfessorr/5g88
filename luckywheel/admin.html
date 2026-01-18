@@ -758,13 +758,22 @@ loadCodesLive();
   // ===== Load History (latest) =====
   let allHist = [];
 async function deleteHistRow(x){
-  const ok = confirm(`Delete history for code ${x.code || x._code}?`);
+  const ok = confirm(`Delete history for code ${x._code}?`);
   if(!ok) return;
 
   try{
-    // delete only the history row
-    await remove(ref(db, `redemptionsByCode/${x._code}/${x._rid}`));
-    toast("Deleted!");
+    const updates = {};
+    updates[`redemptionsByCode/${x._code}/${x._rid}`] = null;
+
+
+    updates[`redemptionsAll/${x._rid}`] = null;
+
+    if(x.userId){
+      updates[`userHistory/${x.userId}/${x._rid}`] = null;
+    }
+
+    await update(ref(db), updates);
+    toast("Deleted (admin + user)!");
   }catch(e){
     alert("Delete failed: " + (e.message || e));
   }
