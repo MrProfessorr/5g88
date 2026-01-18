@@ -623,11 +623,12 @@ function renderCodes(list){
     .slice(0,200);
 
   // ✅ status hanya 2: PENDING / APPROVED
-  const statusBadge = (x)=>{
-    const s = String(x.claimStatus || "PENDING").toUpperCase();
-    if(s === "APPROVED") return `<span class="tag ok">APPROVED</span>`;
-    return `<span class="tag warn">PENDING</span>`;
-  };
+const statusBadge = (x)=>{
+  if (x.claimedAt || (Number(x.usedCount||0) > 0)) {
+    return `<span class="tag ok">APPROVED</span>`;
+  }
+  return `<span class="tag warn">PENDING</span>`;
+};
 
   tb.innerHTML = rows.map(x=>`
     <tr>
