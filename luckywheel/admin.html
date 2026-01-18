@@ -560,10 +560,6 @@
         <input id="rangeTo" class="niceInput" type="date">
         <button id="rangeApply" class="btn2" style="width:auto;padding:10px 14px">Apply</button>
       </div>
-
-      <button id="btnSnapshotNow" class="btn2" style="width:auto;padding:10px 14px">
-        Save Today Snapshot
-      </button>
     </div>
 
     <div class="tableWrap" style="margin-top:12px">
@@ -1178,10 +1174,6 @@ async function saveSnapshotForDate(dateObj){
   await set(ref(db, `stats/daily/${payload.dateKey}`), payload);
 }
 
-async function saveTodaySnapshot(){
-  await saveSnapshotForDate(new Date());
-  toast("Saved today snapshot!");
-}
 
 async function saveYesterdaySnapshot(){
   const y = addDays(new Date(), -1);
@@ -1189,7 +1181,7 @@ async function saveYesterdaySnapshot(){
   toast("Auto-saved yesterday snapshot!");
 }
 
-$("btnSnapshotNow")?.addEventListener("click", saveTodaySnapshot);
+
 
 // auto schedule at midnight
 function scheduleMidnightJob(){
@@ -1273,7 +1265,14 @@ function getRangeByPreset(preset){
 
   return [todayS, todayE];
 }
-
+function getLiveTodayRow(){
+  const today = new Date();
+  const live = buildSnapshotForDate(today);
+  return {
+    ...live,
+    dateKey: toDateKey(today) + " (Today)"
+  };
+}
 function applyStatsFilter(){
   const sel = $("rangeSelect");
   if(!sel) return;
@@ -1298,12 +1297,15 @@ function applyStatsFilter(){
     return;
   }
 
-  const [s,e] = getRangeByPreset(preset);
-  const rows = statsDailyArr.filter(r=>{
-    const d = new Date(String(r.dateKey||"") + "T00:00:00");
-    return d >= s && d <= e;
-  });
-  renderStatsRows(rows);
+const [s,e] = getRangeByPreset(preset);
+let rows = statsDailyArr.filter(r=>{
+  const d = new Date(String(r.dateKey||"") + "T00:00:00");
+  return d >= s && d <= e;
+});
+if(preset === "today"){
+  rows = [getLiveTodayRow(), ...rows.filter(x => String(x.dateKey||"").slice(0,10) !== toDateKey(new Date()))];
+ }
+renderStatsRows(rows);
 }
 
 $("rangeSelect")?.addEventListener("change", ()=>{
