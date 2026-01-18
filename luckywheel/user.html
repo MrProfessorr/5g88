@@ -406,16 +406,12 @@ function watchPrizeConfig(){
         .sort((a,b)=>a-b);
     };
 
-    // ✅ INI YANG KAU TAK ADA: update cache ikut data admin
     prizeCfgCache = {
       NORMAL: clean(v.NORMAL ?? prizeCfgCache.NORMAL),
       SUPER:  clean(v.SUPER  ?? prizeCfgCache.SUPER)
     };
 
-    // ✅ kau nak campur NORMAL + SUPER dalam wheel
     const merged = [...prizeCfgCache.NORMAL, ...prizeCfgCache.SUPER];
-
-    // kalau user tengah di page wheel, auto refresh terus
     if(currentCode){
       buildSegmentsFromList(merged);
     }
@@ -426,11 +422,9 @@ watchPrizeConfig();
   async function loadPrizeConfig(){
   const snap = await get(ref(db, "settings/prizes"));
   if(snap.exists()) return snap.val();
-  return { NORMAL:[0,0,0,0], SUPER:[0,0,0,0] }; // fallback
+  return { NORMAL:[0,0,0,0], SUPER:[0,0,0,0] };
 }
 
-  // device userId (tak hilang kalau clear cache? — kalau clear cache memang ID berubah, tapi history tetap ada di Firebase global)
-  // untuk user personal history, kita simpan userId di localStorage (kalau clear cache, history personal reset, tapi admin history tetap ada)
   const LS_UID = "lucky.userId.v1";
   function uid(){
     let id = localStorage.getItem(LS_UID);
@@ -440,9 +434,7 @@ watchPrizeConfig();
     }
     return id;
   }
-  const userId = uid();
-
-// ===== dynamic wheel segments (from Firebase settings) =====
+const userId = uid();
 let segments = [];
 let segCount = 0;
 let segAngle = 0;
@@ -467,7 +459,7 @@ st.innerHTML = segments.map((s,i)=>{
     ${s.label}
   </span>`;
 }).join("");
-  // auto flip label bahagian bawah (supaya tak terbalik)
+
 st.querySelectorAll(".sliceLabel").forEach(el=>{
   const ang = parseFloat(el.style.getPropertyValue("--ang")) || 0;
   const norm = ((ang % 360) + 360) % 360;
@@ -478,7 +470,6 @@ function applyWheelTheme(){
   const wheel = $("wheel");
   if(!wheel) return;
 
-  // warna auto ulang
   const colors = [
     "#ff77e1","#ff6b6b","#4dd4c6","#3aa9ff",
     "#6ee7a6","#ffd166","#7c5cff","#50fa7b",
@@ -493,7 +484,6 @@ function applyWheelTheme(){
     stops.push(`${colors[i % colors.length]} ${(i*step)}% ${((i+1)*step)}%`);
   }
 
-  // from -90deg supaya pointer atas ngam
   wheel.style.background = `conic-gradient(from -90deg, ${stops.join(",")})`;
 }
 
@@ -539,14 +529,14 @@ function renderHistory(arr){
   `).join("");
 }
 
-// ✅ realtime global history: semua user, semua code
+
 function watchGlobalHistory(){
   onValue(ref(db, "redemptionsAll"), (snap)=>{
     const v = snap.val() || {};
     const arr = Object.keys(v).map(k => v[k])
       .filter(x => x && x.code && x.redeemedAt)
       .sort((a,b)=> (b.redeemedAt||0) - (a.redeemedAt||0))
-      .slice(0, 30); // last 30
+      .slice(0, 30);
 
     renderHistory(arr);
   });
@@ -560,7 +550,7 @@ watchGlobalHistory();
     const now = Date.now();
 
     if(now >= data.expiresAt) return { ok:false, msg:"Code expired." };
-    if((data.usedCount||0) >= (data.usageLimit||1)) return { ok:false, msg:"Code already reached usage limit." };
+    if((data.usedCount||0) >= (data.usageLimit||1)) return { ok:false, msg:"This code has already been used." };
 
     return { ok:true, data };
   }
@@ -569,8 +559,8 @@ $("btnStart").onclick = async ()=>{
   const cust = ($("customerInput").value || "").trim();
   const code = ($("promoInput").value || "").trim().toUpperCase();
 
-  if(!cust) return showEnter("Please enter Customer Name/ID.", true);
-  if(!code) return showEnter("Please enter promo code.", true);
+  if(!cust) return showEnter("Please enter Username.", true);
+  if(!code) return showEnter("Please enter code.", true);
 
   showEnter("Checking code...", false);
 
@@ -579,12 +569,12 @@ $("btnStart").onclick = async ()=>{
 
   const promoCustomer = String(res.data.customer || "").trim();
   if(!promoCustomer){
-    return showEnter("This code has no customer assigned. Please contact admin.", true);
+    return showEnter("This code has no customer assigned. Please contact us.", true);
   }
 
   // ✅ LOCK: customer mesti sama (case-insensitive)
   if(cust.toUpperCase() !== promoCustomer.toUpperCase()){
-    return showEnter(`This code is only for customer: ${promoCustomer}`, true);
+    return showEnter("Invalid username.", true);
   }
 
   currentCustomer = promoCustomer; // simpan nama customer yang betul
