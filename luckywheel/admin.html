@@ -9,7 +9,7 @@
     --bg1:#120a2a; --bg2:#1a2c6b;
     --card:rgba(255,255,255,.08);
     --stroke:rgba(255,255,255,.12);
-    --gold1:#ffcc55; --gold2:#ff8a00;
+    --gold1:#1668dc; --gold2:#ff8a00;
     --txt:#e9ecff; --muted:rgba(233,236,255,.7);
     --ok:#27d17f; --bad:#ff4d4d;
   }
@@ -17,9 +17,7 @@
   body{
     margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
     color:var(--txt);
-    background: radial-gradient(1200px 700px at 20% 20%, #6b2cff 0%, transparent 45%),
-                radial-gradient(900px 600px at 80% 30%, #2b6cff 0%, transparent 55%),
-                linear-gradient(135deg, var(--bg1), var(--bg2));
+    background:#000;
     min-height:100vh;
   }
   header{
@@ -69,17 +67,16 @@
   }
   .btn{
     width:100%; margin-top:14px;
-    padding:12px 14px; border-radius:12px; border:none;
-    font-weight:900; cursor:pointer; color:#081022;
-    background:linear-gradient(90deg,var(--ok),#18b86e);
+    padding:12px 14px; border-radius:12px; border:none;cursor:pointer; color:#fff;
+    background:#1668dc;
     box-shadow:0 10px 24px rgba(0,0,0,.25);
   }
   .btn:active{transform:translateY(1px)}
   .codeBox{
     border-radius:14px; padding:14px; border:1px solid var(--stroke);
-    background:rgba(0,0,0,.18);
+    background:rgba(0,0,0,.18);text-align: center;
   }
-  .bigCode{font-size:28px; font-weight:1000; letter-spacing:2px; margin:4px 0 2px}
+  .bigCode{font-size:25px;letter-spacing:2px; margin:4px 0 2px}
   .sub{color:var(--muted); font-size:12px}
   .btn2{
     margin-top:10px; width:100%;
@@ -332,6 +329,7 @@
   display:grid;
   grid-template-columns: repeat(3, 1fr);
   gap:10px;
+  text-align: center;
 }
 .sumCard{
   border-radius:14px;
@@ -339,8 +337,8 @@
   background:rgba(255,255,255,.06);
   padding:10px 12px;
 }
-.sumLabel{font-size:12px;color:var(--muted);font-weight:800}
-.sumValue{font-size:20px;font-weight:1000;letter-spacing:.5px;margin-top:2px}
+.sumLabel{font-size:12px;color:#fff;}
+.sumValue{font-size:14px;letter-spacing:.5px;margin-top:2px}
 @media (max-width:720px){
   .summaryRow{grid-template-columns:1fr}
 }
@@ -634,8 +632,8 @@
     <div class="card">
       <h3>🎟️ Generate Promo Code</h3>
       <div class="body">
-        <label>Customer Name/ID (optional)</label>
-        <input id="customer" placeholder="Example: SK0015 B20"/>
+        <label>Username Customer</label>
+        <input id="customer"/>
 
         <div class="toggle">
           <button class="pill active" id="typeNormal">🎯 NORMAL PRIZE</button>
