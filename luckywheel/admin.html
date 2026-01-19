@@ -1625,11 +1625,13 @@ function buildSnapshotForDate(dateObj){
   const s = startOfDay(dateObj).getTime();
   const e = endOfDay(dateObj).getTime();
 
+  // ✅ codes CREATED pada hari itu
   const createdCodes = (allCodes||[]).filter(x=>{
     const t = Number(x.createdAt||0);
     return t >= s && t <= e;
   });
 
+  // ✅ codes CLAIMED pada hari itu (tak kira dibuat hari apa)
   const claimedCodes = (allCodes||[]).filter(x=>{
     const t = Number(x.claimedAt||0);
     return t && t >= s && t <= e;
@@ -1637,9 +1639,25 @@ function buildSnapshotForDate(dateObj){
 
   const normalCodes = createdCodes.filter(x => String(x.prizeType||"").toUpperCase()==="NORMAL").length;
   const superCodes  = createdCodes.filter(x => String(x.prizeType||"").toUpperCase()==="SUPER").length;
+
   const totals = calcTotalsFromCodes(createdCodes);
-  const unclaimCount = createdCodes.length;
+
+  // ✅ Claim ikut hari claim
   const claimCount = claimedCodes.length;
+
+  // ✅ Default LOCK untuk hari lepas: unclaim = jumlah generated hari itu (closing)
+  let unclaimCount = createdCodes.length;
+
+  // ✅ TODAY: unclaim hanya tolak claim yang code dia CREATED TODAY
+  const todayKey = toDateKey(new Date());
+  if(toDateKey(dateObj) === todayKey){
+    const claimedTodayCreatedToday = claimedCodes.filter(x=>{
+      const ct = Number(x.createdAt||0);
+      return ct >= s && ct <= e;
+    }).length;
+
+    unclaimCount = Math.max(0, createdCodes.length - claimedTodayCreatedToday);
+  }
 
   return {
     dateKey: toDateKey(dateObj),
@@ -1709,7 +1727,7 @@ function renderStatsRows(rows){
   if(!tb) return;
 
   if(!rows.length){
-    tb.innerHTML = `<tr><td colspan="6" style="opacity:.7">No stats yet.</td></tr>`;
+    tb.innerHTML = `<tr><td colspan="8" style="opacity:.7">No stats yet.</td></tr>`;
     return;
   }
 
@@ -1717,7 +1735,7 @@ function renderStatsRows(rows){
 
 tb.innerHTML = sorted.map(r=>`
   <tr>
-    <td style="font-weight:900">${r.dateKey || "-"}</td>
+    <td style="font-weight:900">${r.dateKey || "-"} ${r._label || ""}</td>
     <td>${Number(r.totalCustomers||0)}</td>
     <td>${Number(r.totalPrize||0)}</td>
     <td>${Number(r.totalCodes||0)}</td>
@@ -1769,7 +1787,7 @@ function getLiveTodayRow(){
   const live = buildSnapshotForDate(today);
   return {
     ...live,
-    dateKey: toDateKey(today) + " (Today)"
+    _label: "(Today)"
   };
 }
 let activePreset = "today";
