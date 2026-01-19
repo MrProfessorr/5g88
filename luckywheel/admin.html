@@ -65,19 +65,7 @@
   margin-top: 0;          /* sebab .btn2 global ada margin-top:10px */
   white-space: nowrap;
 }
-#codes .row input,
-#codes .row .btn2,
-#codes .row .csBtn{
-  height: 44px;
-  line-height: 44px;
-  padding: 0 14px;
-  box-sizing: border-box;
-}
 
-/* buang margin-top khas btn2 hanya dalam row codes */
-#codes .row .btn2{
-  margin-top: 0;
-}
 /* Lock width dropdown status supaya tak berubah */
 #statusFilterCS{
   width: 200px !important;
@@ -605,6 +593,48 @@ table tbody tr:hover td{
 /* optional: smooth */
 table tbody td{
   transition: background .15s ease;
+}
+#codes .row{
+  display:grid;
+  grid-template-columns: 1fr 200px auto;
+  gap:10px;                 /* kalau nak rapat: 8px */
+  align-items:center;
+}
+
+/* Search input sama tinggi */
+#codes #searchCode{
+  height:44px;
+  padding:0 14px;
+  box-sizing:border-box;
+}
+
+/* Status dropdown LOCK 200px (tak berubah bila Approved/Pending) */
+#statusFilterCS{
+  width:200px !important;
+  min-width:200px !important;
+  max-width:200px !important;
+}
+
+/* Pastikan custom select betul-betul ikut 44px */
+#statusFilterCS .cs{ width:100% !important; }
+#statusFilterCS .csBtn{
+  width:100% !important;
+  height:44px !important;
+  line-height:44px !important;
+  padding:0 42px 0 14px !important;  /* kiri sama macam input, kanan ruang arrow */
+  box-sizing:border-box;
+}
+
+/* Refresh button jangan jauh & jangan stretch */
+#codes #btnRefresh{
+  width:auto !important;
+  min-width:160px;          /* boleh adjust */
+  height:44px;
+  line-height:44px;
+  padding:0 16px;
+  margin-top:0 !important;  /* override .btn2 global */
+  white-space:nowrap;
+  justify-self:end;         /* rapat ke kanan */
 }
 </style>
 </head>
