@@ -1167,6 +1167,7 @@ function loadCodesLive(){
 
 renderCodes(allCodes);
 updateSummaryUI();
+scheduleSaveTodaySnapshot();
 ensureYesterdaySaved();
 refreshTotalsHistoryLive();
 
@@ -1489,17 +1490,26 @@ async function saveSnapshotForDate(dateObj){
   const payload = buildSnapshotForDate(dateObj);
   await set(ref(db, `stats/daily/${payload.dateKey}`), payload);
 }
-window.saveTodaySnapshot = async function(){
-  await saveSnapshotForDate(new Date());
-  console.log("Saved today snapshot");
-};
+
 
 async function saveYesterdaySnapshot(){
   const y = addDays(new Date(), -1);
   await saveSnapshotForDate(y);
   toast("Auto-saved yesterday snapshot!");
 }
+let saveTodayTimer = null;
 
+function scheduleSaveTodaySnapshot(){
+  clearTimeout(saveTodayTimer);
+  saveTodayTimer = setTimeout(async ()=>{
+    try{
+      await saveSnapshotForDate(new Date());
+      console.log("[stats] auto-saved TODAY snapshot");
+    }catch(e){
+      console.error("[stats] auto-save today error", e);
+    }
+  }, 1200); // debounce 1.2s
+}
 
 
 // auto schedule at midnight
