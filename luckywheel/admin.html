@@ -1188,21 +1188,7 @@ loadCodesLive();
     renderCodes(allCodes);
     toast("Refreshed!");
   };
-async function ensureYesterdaySaved(){
-  const y = addDays(new Date(), -1);
-  const yKey = toDateKey(y);
 
-  try{
-    const snap = await get(ref(db, `stats/daily/${yKey}`));
-    if(!snap.exists()){
-      await saveSnapshotForDate(y);
-      console.log("[stats] catch-up saved:", yKey);
-      toast("Saved yesterday (catch-up)!");
-    }
-  }catch(e){
-    console.error("[stats] ensureYesterdaySaved error", e);
-  }
-}
   // ===== Load History (latest) =====
   let allHist = [];
 async function deleteHistRow(x){
@@ -1420,7 +1406,20 @@ function toDateKey(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2
 function startOfDay(d){ const x=new Date(d); x.setHours(0,0,0,0); return x; }
 function endOfDay(d){ const x=new Date(d); x.setHours(23,59,59,999); return x; }
 function addDays(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; }
+async function ensureYesterdaySaved(){
+  const y = addDays(new Date(), -1);
+  const yKey = toDateKey(y);
 
+  try{
+    const snap = await get(ref(db, `stats/daily/${yKey}`));
+    if(!snap.exists()){
+      await saveSnapshotForDate(y);
+      console.log("[stats] catch-up saved:", yKey);
+    }
+  }catch(e){
+    console.error("[stats] ensureYesterdaySaved error", e);
+  }
+}
 function filterCodesByType(list, type){
   if(type === "ALL") return list || [];
   return (list || []).filter(x => String(x.prizeType||"").toUpperCase() === type);
@@ -1490,7 +1489,10 @@ async function saveSnapshotForDate(dateObj){
   const payload = buildSnapshotForDate(dateObj);
   await set(ref(db, `stats/daily/${payload.dateKey}`), payload);
 }
-
+window.saveTodaySnapshot = async function(){
+  await saveSnapshotForDate(new Date());
+  console.log("Saved today snapshot");
+};
 
 async function saveYesterdaySnapshot(){
   const y = addDays(new Date(), -1);
