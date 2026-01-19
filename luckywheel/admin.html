@@ -29,7 +29,7 @@
   }
   .brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.5px}
   .dot{width:12px; height:12px; border-radius:999px; background:linear-gradient(90deg,var(--gold1),var(--gold2)); box-shadow:0 0 18px rgba(255,170,0,.55)}
-  nav a{color:#fff; text-decoration:none; margin-left:14px;}
+  nav a{color:#fff; text-decoration:none; margin-left:14px;transition: all 0.2s;}
   nav a:hover{color:#c8c8c8}
   .wrap{max-width:1150px; margin:22px auto; padding:0 16px}
   .grid{display:grid; grid-template-columns: 1.1fr .9fr; gap:16px}
@@ -163,7 +163,7 @@
   display:none;z-index:80;
 }
 .sidebar{
-  position:fixed;top:0;left:0;height:100vh;width:320px;
+  position:fixed;top:0;left:0;height:100vh;width:300px;
   transform:translateX(-110%);
   transition:transform .25s ease;
   background:#1d1d1d;
@@ -178,11 +178,12 @@
 .sideTitle{font-size:16px;font-weight:900}
 .sideClose{border:none;background:transparent;color:#fff;cursor:pointer}
 .sideItem{
-  width:100%;padding:12px 12px;border-radius:14px;
+  width:100%;padding:12px 12px;border-radius:8px;
   border:1px solid rgba(255,255,255,.10);
-  background:rgba(255,255,255,.06);
+  background:#141414;
   color:#fff;cursor:pointer;
   text-align:left;margin-top:10px;
+  transition: all 0.2s;
 }
 
 /* Prize Modal */
