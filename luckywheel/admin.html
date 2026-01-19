@@ -54,8 +54,18 @@
   .row{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
   #codes .row{
   display:grid;
-  grid-template-columns: 1fr 220px 1fr;
-  gap:12px;
+  grid-template-columns: 1fr 200px 1fr;
+  gap:10px;
+}
+/* Lock width dropdown status supaya tak berubah */
+#codes .selectWrap{
+  width: 200px;      /* boleh tukar ikut selera */
+  min-width: 200px;
+  max-width: 200px;
+}
+
+#codes .csBtn{
+  width: 100% !important;
 }
   .toggle{
     display:flex; gap:10px; margin-top:10px;
