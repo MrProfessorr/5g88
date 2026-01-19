@@ -1,0 +1,663 @@
+  :root{
+    --bg1:#120a2a; --bg2:#1a2c6b;
+    --card:rgba(255,255,255,.08);
+    --stroke:rgba(255,255,255,.12);
+    --gold1:#1668dc; --gold2:#ff8a00;
+    --txt:#e9ecff; --muted:rgba(233,236,255,.7);
+    --ok:#27d17f; --bad:#ff4d4d;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    color:var(--txt);
+    background:#000;
+    min-height:100vh;
+  }
+  header{
+    height:64px; display:flex; align-items:center; justify-content:space-between;
+    padding:0 18px;
+    background:#1668dc;
+    border-bottom:1px solid var(--stroke);
+    backdrop-filter: blur(10px);
+  }
+  .brand{display:flex; align-items:center; gap:10px; letter-spacing:.5px}
+  .dot{width:12px; height:12px; border-radius:999px; background:linear-gradient(90deg,var(--gold1),var(--gold2)); box-shadow:0 0 18px rgba(255,170,0,.55)}
+  nav a{color:#fff; text-decoration:none; margin-left:14px;transition: all 0.2s;}
+  nav a:hover{color:#c8c8c8}
+  .wrap{max-width:1150px; margin:22px auto; padding:0 16px}
+  .grid{display:grid; grid-template-columns: 1.1fr .9fr; gap:16px}
+  .card{
+    background:#1d1d1d; border:1px solid var(--stroke); border-radius:16px;
+    box-shadow: 0 18px 50px rgba(0,0,0,.35);
+    backdrop-filter: blur(12px);
+    overflow:hidden;
+  }
+  .card h3{margin:0; padding:14px 16px; border-bottom:1px solid var(--stroke); display:flex; align-items:center; gap:10px}
+  .card .body{padding:16px}
+  label{display:block; font-size:12px; color:var(--muted); margin:10px 0 6px}
+  input, select{
+    width:100%; padding:12px 12px; border-radius:8px;
+    border:1px solid rgba(255,255,255,.16);
+    background:rgba(0,0,0,.22);
+    color:var(--txt); outline:none;
+    transition: all 0.2s;
+  }
+  input:hover, select:hover{border-color:#3c89e8;}
+  input:focus, select:focus{border-color:#1668dc;}
+  .row{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
+#codes .row{
+  display:grid;
+  grid-template-columns: 1fr 200px auto; /* refresh ikut size button */
+  gap: 10px; /* kalau nak rapat: 8px */
+  align-items: center;
+}
+
+/* khas utk row codes sahaja: btn refresh jangan full */
+#codes .row .btn2{
+  width: auto;
+  margin-top: 0;          /* sebab .btn2 global ada margin-top:10px */
+  white-space: nowrap;
+}
+
+/* Lock width dropdown status supaya tak berubah */
+#statusFilterCS{
+  width: 200px !important;
+  min-width: 200px !important;
+  max-width: 200px !important;
+}
+#statusFilterCS .cs,
+#statusFilterCS .csBtn{
+  width: 100% !important;
+}
+  .toggle{
+    display:flex; gap:10px; margin-top:10px;
+  }
+  .pill{
+    flex:1; padding:11px 12px; border-radius:8px;
+    border:1px solid rgba(255,255,255,.16);
+    background:rgba(0,0,0,.18);
+    color:var(--muted); cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    transition: all 0.2s;
+  }
+  .pill.active{
+    background:rgba(40,110,255,.22);
+    border-color:#1668dc;
+    color:var(--txt);
+  }
+  .btn{
+    width:100%; margin-top:14px;
+    padding:12px 14px; border-radius:8px; border:none;cursor:pointer; color:#fff;
+    background:#1668dc;
+    box-shadow:0 10px 24px rgba(0,0,0,.25);
+    transition: all 0.2s;
+  }
+  .btn:active{transform:translateY(1px)}
+  .codeBox{
+    border-radius:14px; padding:14px; border:1px solid var(--stroke);
+    background:rgba(0,0,0,.18);text-align: center;
+  }
+  .bigCode{font-size:25px;letter-spacing:2px; margin:4px 0 2px}
+  .sub{color:var(--muted); font-size:12px}
+  .btn2{
+    margin-top:10px; width:100%;
+    padding:10px 12px; border-radius:8px; border:1px solid rgba(255,255,255,.16);
+    background:rgba(0,0,0,.18); color:var(--txt); cursor:pointer;
+    transition: all 0.2s;
+  }
+  .btn2:hover{border-color:#3c89e8;}
+  .btn2:active{border-color:#1554ad;}
+  .btn3{
+    width:100%;
+    padding:10px 12px; border-radius:8px; border:1px solid rgba(255,255,255,.16);
+    background:rgba(0,0,0,.18); color:var(--txt); cursor:pointer;
+    transition: all 0.2s;
+  }
+  .btn3:hover{border-color:#3c89e8;}
+  .btn3:active{border-color:#1554ad;}
+  .tableWrap{
+  overflow: hidden;   
+}
+  /* ===== ACTIVE CODES: scroll KANAN SAHAJA ===== */
+/* ===== ACTIVE CODES: 15 ROW + SCROLL (Y & X) ===== */
+#codes .tableWrap{
+  max-height: calc(15 * 48px);   /* 15 baris */
+  overflow: auto;               /* boleh scroll bawah + kanan */
+  -webkit-overflow-scrolling: touch;
+  background:#141414;
+}
+#codes .tableWrap table{
+  min-width: 1100px;
+  width: 100%;
+}
+
+/* scrollbar horizontal nipis & cantik */
+#codes .tableWrap::-webkit-scrollbar{
+  height: 6px;
+}
+#codes .tableWrap::-webkit-scrollbar-track{
+  background: rgba(255,255,255,.06);
+  border-radius: 999px;
+}
+#codes .tableWrap::-webkit-scrollbar-thumb{
+  background: linear-gradient(90deg, #ffcc55, #ff8a00);
+  border-radius: 999px;
+}
+#codes .tableWrap::-webkit-scrollbar-thumb:hover{
+  background: linear-gradient(90deg, #ffd97a, #ff9d20);
+}
+
+/* firefox */
+#codes .tableWrap{
+  scrollbar-width: thin;
+  scrollbar-color: grey rgba(255,255,255,.06);
+}
+  table{width:100%; border-collapse:collapse; font-size:13px;background:#141414;}
+  th,td{padding:10px 10px; border-bottom:1px solid rgba(255,255,255,.10); text-align:center; white-space:nowrap}
+  th{color:#fff; font-weight:600}
+  .tag{
+    display:inline-flex; align-items:center; gap:6px;
+     ; font-size:12px; font-weight:600;
+  }
+  .tag.ok{ color:#37ff9f}
+  .tag.bad{color:#ffd0d0}
+  .tag.warn{color:#ffac00}
+  .mini{
+    display:flex; gap:10px; align-items:center; justify-content:space-between;
+    margin-top:10px;
+  }
+  .toast{
+    position:fixed; right:16px; bottom:16px;
+    background:rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.14);
+    backdrop-filter:blur(10px);
+    padding:10px 12px; border-radius:8px; color:var(--txt);
+    display:none; max-width:360px;
+    transition: all 0.2s;
+  }
+  .headLeft{display:flex;align-items:center;gap:12px}
+.menuBtn{
+  border:none;
+  background:transparent;
+  color:#fff;font-size:20px;cursor:pointer;
+  transition: all 0.2s;
+}
+.menuBtn:hover{filter:brightness(1.1)}
+
+.sideOverlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.45);
+  display:none;z-index:80;
+}
+.sidebar{
+  position:fixed;top:0;left:0;height:100vh;width:300px;
+  transform:translateX(-110%);
+  transition:transform .25s ease;
+  background:#1d1d1d;
+  border-right:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(14px);
+  z-index:90;
+  padding:14px;
+  transition: all 0.2s;
+}
+.sidebar.show{transform:translateX(0)}
+.sideHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.sideTitle{font-size:16px;font-weight:900}
+.sideClose{border:none;background:transparent;color:#fff;cursor:pointer}
+.sideItem{
+  width:100%;padding:12px 12px;border-radius:8px;
+  border:1px solid rgba(255,255,255,.10);
+  background:#141414;
+  color:#fff;cursor:pointer;
+  text-align:left;margin-top:10px;
+  transition: all 0.2s;
+}
+
+/* Prize Modal */
+.modalOverlay{
+  position:fixed;inset:0;display:none;place-items:center;
+  background:rgba(0,0,0,.55);z-index:100;
+}
+.modalCard{
+  width:min(520px,92vw);
+  background:#1b1b1b;
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:8px;
+  box-shadow:0 20px 60px rgba(0,0,0,.45);
+  backdrop-filter:blur(14px);
+  overflow:hidden;
+  transition: all 0.2s;
+}
+.modalHead{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.10);
+}
+.modalTitle{font-weight:900}
+.modalX{
+  border:none;
+  background:transparent;
+  color:#fff;cursor:pointer;
+  transition: all 0.2s;
+}
+.modalBody{padding:14px 16px}
+.modalFoot{
+  padding:12px 16px;display:flex;justify-content:flex-end;gap:10px;
+  border-top:1px solid rgba(255,255,255,.10);
+}
+.tabsRow{display:flex;gap:10px;margin-bottom:10px}
+.tabBtn{
+  flex:1;padding:10px;border-radius:8px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);
+  color:#fff;font-weight:900;cursor:pointer;
+}
+.tabBtn.active{
+  background: rgba(40, 110, 255, .22);
+  border-color: #1668dc;
+}
+.pillRow{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+.pillTag{
+  display:flex;align-items:center;gap:8px;
+  padding:5px 10px;border-radius:8px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.10);
+  color:#fff;
+}
+.pillTag button{
+  width:26px;height:26px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.20);
+  color:#fff;cursor:pointer;font-weight:900;
+}
+.addRow{
+  display:grid;
+  grid-template-columns: 1fr auto;  /* input = full, button ikut size */
+  gap:10px;
+  margin-top:10px;
+  width:100%;
+  transition: all 0.2s;
+}
+
+.addRow input{
+  width:100%;           /* pastikan penuh */
+  padding:12px;
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(0,0,0,.18);
+  color:#fff;
+  outline:none;
+  transition: all 0.2s;
+}
+
+#prizeAdd{               /* buat button kemas */
+  min-width: 90px;
+  white-space:nowrap;
+}
+/* ===== HISTORY: max 15 rows, scroll ===== */
+#history .tableWrap{
+  max-height: calc(15 * 46px); 
+  overflow: auto;
+}
+
+/* sticky header bila scroll */
+#history .tableWrap thead th{
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background:#1d1d1d;
+  backdrop-filter: blur(10px);
+}
+
+#history .tableWrap::-webkit-scrollbar{ width: 10px; height:10px; }
+#history .tableWrap::-webkit-scrollbar-track{
+  background: rgba(255,255,255,.06);
+  border-radius: 999px;
+}
+#history .tableWrap::-webkit-scrollbar-thumb{
+  background: linear-gradient(180deg, rgba(255,77,216,.75), rgba(106,64,255,.75));
+  border-radius: 999px;
+  border: 2px solid rgba(0,0,0,.25);
+}
+#history .tableWrap{ scrollbar-width: thin; scrollbar-color: grey rgba(255,255,255,.06); }
+
+.btnDel{
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgb(129 26 26);
+  background: #1d1d1d;
+  color:#ca1818f2;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btnDel:hover{ background: rgba(255,80,80,.20); }
+.btnDel:active{ transform: translateY(1px); }
+.small-status {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0; 
+  text-transform: none;
+}
+
+#codesTbody tr {
+  height: 48px;
+}
+#codes .tableWrap thead th{
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background:#1d1d1d;
+  backdrop-filter: blur(10px);
+}
+
+.niceInput{
+  width:100%;
+  padding:12px 12px;
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(0,0,0,.18);
+  color:var(--txt);
+  font-weight:800;
+  outline:none;
+  transition: all 0.2s;
+}
+.niceInput:hover{border-color:#3c89e8;}
+.niceInput:focus{
+  border-color:#1668dc;
+
+}
+.niceInput::-webkit-calendar-picker-indicator{
+  filter: invert(1) opacity(.75);
+  cursor:pointer;
+}
+
+.summaryRow{
+  margin-top:10px;
+  display:grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap:10px;
+  text-align: center;
+}
+.sumCard{
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);
+  padding:10px 12px;
+}
+.sumLabel{font-size:12px;color:#fff;}
+.sumValue{font-size:14px;letter-spacing:.5px;margin-top:2px}
+@media (max-width:720px){
+  .summaryRow{grid-template-columns:1fr}
+}
+.chipBtn{
+  appearance:none;
+  color: rgba(255, 255, 255, 0.85);
+  background:transparent;
+  border:none;
+  cursor:pointer;
+  transition: all 0.2s;
+}
+.chipBtn:hover{color:#3c89e8;}
+.chipBtn.active{color:#1668dc;}
+
+/* hide native select */
+.nativeSelect{
+  position:absolute !important;
+  left:-9999px !important;
+  width:1px !important;
+  height:1px !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+.cs.open .csMenu{ display:block; }
+.csItem:last-child{ border-bottom:none; }
+
+.csItem:hover{
+  background: linear-gradient(90deg, rgba(255,204,85,.22), rgba(255,138,0,.14));
+}
+
+.csItem.active{
+  background: linear-gradient(90deg, rgba(40,110,255,.28), rgba(40,110,255,.14));
+  outline: 1px solid rgba(40,110,255,.45);
+}
+
+.csItem.selected{
+  background: linear-gradient(90deg, rgba(255,204,85,.26), rgba(255,138,0,.16));
+}
+
+/* scrollbar cantik */
+.csMenu::-webkit-scrollbar{ width:10px; }
+.csMenu::-webkit-scrollbar-track{ background: rgba(255,255,255,.06); }
+.csMenu::-webkit-scrollbar-thumb{
+  background: linear-gradient(180deg, #ffcc55, #ff8a00);
+  border-radius: 999px;
+}
+.csMenu{ scrollbar-width: thin; scrollbar-color:#1668dc rgba(255,255,255,.06); }
+/* ===== COMPACT CUSTOM SELECT (MATCH NATIVE SIZE) ===== */
+.cs{ position:relative; width:100%; }
+
+.csBtn{
+  width:100%;
+  height:44px;              
+  padding:0 42px 0 12px;       
+  border-radius:8px;     
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(0,0,0,.22);
+  color:var(--txt);
+  font-size:14px;
+  line-height:44px;
+  cursor:pointer;
+  user-select:none;
+  display:block;
+  text-align:left;
+  position:relative;
+  transition: all 0.2s;
+}
+
+.csBtn:hover{ border-color:#3c89e8; }
+.csBtn:focus{
+  outline:none;
+  border-color: #1668dc;
+  box-shadow: #286eff8c;
+}
+
+/* Arrow button kecil di kanan */
+.csArrow{
+  position:absolute;
+  right:10px;
+  top:50%;
+  transform:translateY(-50%);
+  display:grid;
+  place-items:center;
+  font-size:12px;
+  opacity:.9;
+}
+.cs.open .csArrow{ transform:translateY(-50%) rotate(180deg); }
+
+/* label jangan besar */
+.csLabel{
+  display:block;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* dropdown list compact */
+.csMenu{
+  position:absolute;
+  left:0; right:0;
+  top: calc(100% + 6px);
+  z-index:9999;
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(10,12,28,.92);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 14px 40px rgba(0,0,0,.45);
+  overflow:hidden;
+
+  max-height: 180px;           /* ✅ kecil */
+  overflow:auto;
+  transition: all 0.2s;
+  display:none;
+}
+.cs.open .csMenu{ display:block; }
+
+.csItem{
+  padding:10px 12px;           /* ✅ kecil */
+  font-size:13px;
+  font-weight:800;
+  color: rgba(233,236,255,.92);
+  cursor:pointer;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  background:transparent;
+  transition: all 0.2s;
+}
+.csItem:last-child{ border-bottom:none; }
+
+.csItem:hover{
+  background: rgba(40,110,255,.18);   /* hover macam native */
+}
+
+.csItem.selected{
+  background: rgba(255,204,85,.14);   /* selected */
+}
+
+.csItem.active{
+  background: rgba(40,110,255,.28);   /* active highlight */
+  outline: 1px solid rgba(40,110,255,.35);
+}
+
+/* scrollbar kecil */
+.csMenu::-webkit-scrollbar{ width:8px; }
+.csMenu::-webkit-scrollbar-track{ background: rgba(255,255,255,.06); }
+.csMenu::-webkit-scrollbar-thumb{
+  background: linear-gradient(180deg, #ffcc55, #ff8a00);
+  border-radius:999px;
+}
+/* FIX: selectWrap jangan shrink */
+.selectWrap{
+  width:100% !important;
+  display:flex !important;        /* dari inline-flex → flex */
+  align-items:center;
+}
+
+/* custom mount full width dalam selectWrap */
+.selectWrap > #prizeFilterCS{
+  flex:1 1 auto !important;
+  width:100% !important;
+  min-width:0 !important;
+}
+
+/* pastikan cs full */
+#prizeFilterCS .cs,
+#prizeFilterCS .csBtn{
+  width:100% !important;
+}
+/* === Prize add row: input & button sama tinggi === */
+.addRow input,
+#prizeAdd{
+  height:44px;
+  padding:0 14px;
+  line-height:44px;
+}
+
+/* buang margin-top khas btn2 dalam row add */
+#prizeAdd{ margin-top:0 !important; }
+
+/* === Modal footer: Cancel & Save sama tinggi === */
+.modalFoot .btn2,
+.modalFoot .btn{
+  height:44px;
+  padding:0 16px;
+  line-height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-top:0; /* penting untuk btn */
+}
+  
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"]{
+  -moz-appearance: textfield !important;
+  appearance: textfield !important;
+}
+/* ===== FULL ROW HOVER (semua table) ===== */
+table tbody tr:hover td{
+  background: rgba(255,255,255,.06);
+}
+
+/* optional: smooth */
+table tbody td{
+  transition: background .15s ease;
+}
+#codes .row{
+  display:grid;
+  grid-template-columns: 1fr 200px auto;
+  gap:10px;                 /* kalau nak rapat: 8px */
+  align-items:center;
+}
+
+/* Search input sama tinggi */
+#codes #searchCode{
+  height:44px;
+  padding:0 14px;
+  box-sizing:border-box;
+}
+
+/* Status dropdown LOCK 200px (tak berubah bila Approved/Pending) */
+#statusFilterCS{
+  width:200px !important;
+  min-width:200px !important;
+  max-width:200px !important;
+}
+
+/* Pastikan custom select betul-betul ikut 44px */
+#statusFilterCS .cs{ width:100% !important; }
+#statusFilterCS .csBtn{
+  width:100% !important;
+  height:44px !important;
+  line-height:44px !important;
+  padding:0 42px 0 14px !important;  /* kiri sama macam input, kanan ruang arrow */
+  box-sizing:border-box;
+}
+
+/* Refresh button jangan jauh & jangan stretch */
+#codes #btnRefresh{
+  width:auto !important;
+  min-width:160px;          /* boleh adjust */
+  height:44px;
+  line-height:44px;
+  padding:0 16px;
+  margin-top:0 !important;  /* override .btn2 global */
+  white-space:nowrap;
+  justify-self:end;         /* rapat ke kanan */
+}
+/* === SAMAKAN TINGGI INPUT & BUTTON REDEMPTION HISTORY === */
+#searchHist,
+#btnClearView {
+  height: 44px;          /* ikut tinggi Active Promo Codes */
+  padding: 10px 12px;
+  font-size: 14px;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+/* Pastikan button center elok */
+#btnClearView {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.label-required::before {
+  content: "*";
+  display: inline-block;
+  margin-right: 4px;
+  color: #dc4446;
+  font-size: 14px;
+  font-family: SimSun, sans-serif;
+  line-height: 1;
+}
