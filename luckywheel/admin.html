@@ -125,7 +125,7 @@
 /* firefox */
 #codes .tableWrap{
   scrollbar-width: thin;
-  scrollbar-color: #1668dc rgba(255,255,255,.06);
+  scrollbar-color: grey rgba(255,255,255,.06);
 }
   table{width:100%; border-collapse:collapse; font-size:13px;background:#141414;}
   th,td{padding:10px 10px; border-bottom:1px solid rgba(255,255,255,.10); text-align:center; white-space:nowrap}
@@ -273,7 +273,7 @@
 }
 /* ===== HISTORY: max 15 rows, scroll ===== */
 #history .tableWrap{
-  max-height: calc(15 * 46px); /* 15 row, adjust kalau row tinggi */
+  max-height: calc(15 * 46px); 
   overflow: auto;
 }
 
@@ -286,7 +286,6 @@
   backdrop-filter: blur(10px);
 }
 
-/* cantikkan scrollbar */
 #history .tableWrap::-webkit-scrollbar{ width: 10px; height:10px; }
 #history .tableWrap::-webkit-scrollbar-track{
   background: rgba(255,255,255,.06);
@@ -299,7 +298,6 @@
 }
 #history .tableWrap{ scrollbar-width: thin; scrollbar-color: rgba(255,77,216,.75) rgba(255,255,255,.06); }
 
-/* delete button */
 .btnDel{
   padding: 4px 10px;
   border-radius: 999px;
@@ -351,7 +349,6 @@
   cursor:pointer;
 }
 
-/* ===== SUMMARY CARDS ===== */
 .summaryRow{
   margin-top:10px;
   display:grid;
