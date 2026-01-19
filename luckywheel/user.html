@@ -286,6 +286,64 @@
 #customerInput{
   text-transform: none !important;
 }
+.toast-root{
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(520px, calc(100vw - 24px));
+  pointer-events: none;
+}
+.toast{
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 12px;
+  border-radius: 14px;
+  background: rgba(20,20,28,.92);
+  border: 1px solid rgba(255,255,255,.14);
+  box-shadow: 0 14px 40px rgba(0,0,0,.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #e9ecff;
+  opacity: 0;
+  transform: translateY(18px) scale(.98);
+  animation: toast-in .18s ease-out forwards;
+}
+.toast.hide{ animation: toast-out .18s ease-in forwards; }
+@keyframes toast-in{ to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes toast-out{ to { opacity: 0; transform: translateY(14px) scale(.98); } }
+
+.toast .t-icon{
+  width: 38px; height: 38px; border-radius: 12px;
+  display: grid; place-items: center; flex: 0 0 38px;
+}
+.toast .t-body{ flex: 1; min-width: 0; }
+.toast .t-title{ font-weight: 800; font-size: 14px; margin: 0 0 2px; }
+.toast .t-msg{ font-size: 13px; opacity: .9; margin: 0; word-break: break-word; }
+
+.toast .t-close{
+  appearance: none; border: 0; background: transparent;
+  width: 34px; height: 34px; border-radius: 10px;
+  cursor: pointer; display: grid; place-items: center;
+  transition: background .15s ease, transform .15s ease;
+  color: rgba(233,236,255,.9);
+}
+.toast .t-close:hover{ background: rgba(255,255,255,.10); }
+.toast .t-close:active{ transform: scale(.96); }
+
+.toast.success .t-icon{ background: rgba(39,209,127,.14); border: 1px solid rgba(39,209,127,.35); }
+.toast.info    .t-icon{ background: rgba(54,162,255,.14); border: 1px solid rgba(54,162,255,.35); }
+.toast.error   .t-icon{ background: rgba(255,77,77,.14); border: 1px solid rgba(255,77,77,.35); }
+
+.toast.success .t-title{ color: #27d17f; }
+.toast.info    .t-title{ color: #36a2ff; }
+.toast.error   .t-title{ color: #ff4d4d; }
 </style>
 </head>
 <body>
@@ -368,7 +426,7 @@
     <button class="okBtn" id="btnOk">🎉 Awesome!</button>
   </div>
 </div>
-
+<div id="toastRoot" class="toast-root" aria-live="polite" aria-atomic="true"></div>
 <script type="module">
   let currentRotationDeg = 0;
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
@@ -389,6 +447,69 @@ const firebaseConfig = {
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
   const $ = (id)=>document.getElementById(id);
+  function showToast(type, message, opts = {}){
+  const root = document.getElementById("toastRoot");
+  if(!root) return;
+
+  const t = (type==="success"||type==="info"||type==="error") ? type : "info";
+  const title = (opts.title != null) ? String(opts.title)
+    : (t==="success" ? "Success" : t==="error" ? "Error" : "Info");
+  const duration = Number.isFinite(opts.duration) ? opts.duration : 2600;
+
+  const ICONS = {
+    success: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path d="M9.2 16.6 4.9 12.3a1 1 0 1 1 1.4-1.4l2.9 2.9 8.5-8.5a1 1 0 1 1 1.4 1.4l-9.9 9.9a1 1 0 0 1-1.4 0Z" fill="#27d17f"/>
+    </svg>`,
+    info: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z" fill="rgba(54,162,255,.18)"/>
+      <path d="M12 10.2c.55 0 1 .45 1 1V17a1 1 0 1 1-2 0v-5.8c0-.55.45-1 1-1Zm0-3.2a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4Z" fill="#36a2ff"/>
+    </svg>`,
+    error: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z" fill="rgba(255,77,77,.18)"/>
+      <path d="M8.7 8.7a1 1 0 0 1 1.4 0L12 10.6l1.9-1.9a1 1 0 1 1 1.4 1.4L13.4 12l1.9 1.9a1 1 0 0 1-1.4 1.4L12 13.4l-1.9 1.9a1 1 0 0 1-1.4-1.4L10.6 12 8.7 10.1a1 1 0 0 1 0-1.4Z" fill="#ff4d4d"/>
+    </svg>`
+  };
+
+  const el = document.createElement("div");
+  el.className = `toast ${t}`;
+  el.setAttribute("role","status");
+
+  el.innerHTML = `
+    <div class="t-icon">${ICONS[t]}</div>
+    <div class="t-body">
+      <p class="t-title">${escapeHtml(title)}</p>
+      <p class="t-msg">${escapeHtml(String(message ?? ""))}</p>
+    </div>
+    <button class="t-close" type="button" aria-label="Close toast">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+        <path d="M7.5 7.5 16.5 16.5M16.5 7.5 7.5 16.5"
+          stroke="rgba(233,236,255,.9)" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  `;
+
+  let closed = false;
+  const close = () => {
+    if(closed) return;
+    closed = true;
+    el.classList.add("hide");
+    setTimeout(()=> el.remove(), 220);
+  };
+
+  el.querySelector(".t-close").addEventListener("click", close);
+
+  root.appendChild(el);
+  setTimeout(close, Math.max(800, duration));
+
+  function escapeHtml(s){
+    return String(s)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+}
   let currentCode = "";
   let currentPrize = null;
   let currentCustomer = "";
@@ -690,7 +811,7 @@ await update(ref(db, `promo_codes/${code}`), {
     // re-check before spin (avoid expired/full)
     const res = await validateCode(currentCode);
     if(!res.ok){
-      alert(res.msg);
+      showToast("error", res.msg);
       spinning = false;
       $("btnSpin").disabled = false;
       gotoEnter();
@@ -700,7 +821,7 @@ await update(ref(db, `promo_codes/${code}`), {
     const winPoints = Number(res.data.points||0);
     const idx = segmentIndexByPoints(winPoints);
 if(idx < 0){
-  alert(`Prize Angpao ${winPoints} not found in wheel list. Please update Prize Settings in admin.`);
+  showToast("error", `Invalid code lucky wheel.`, { duration: 4500 });
   spinning = false;
   $("btnSpin").disabled = false;
   return;
@@ -730,7 +851,7 @@ $("wheel").style.transform = `rotate(${wheelRot}deg)`;
         await redeemAndSave(currentCode, winPoints);
         openModal(winPoints, currentCode);
       }catch(e){
-        alert(e.message || "Redeem failed.");
+        showToast("error", e.message || "Redeem failed.");
       }finally{
         spinning = false;
         $("btnSpin").disabled = false;
