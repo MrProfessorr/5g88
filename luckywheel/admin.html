@@ -114,6 +114,14 @@
   }
   .btn2:hover{border-color:#3c89e8;}
   .btn2:active{border-color:#1554ad;}
+  .btn3{
+    width:100%;
+    padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.16);
+    background:rgba(0,0,0,.18); color:var(--txt); font-weight:800; cursor:pointer;
+    transition: all 0.2s;
+  }
+  .btn3:hover{border-color:#3c89e8;}
+  .btn3:active{border-color:#1554ad;}
   .tableWrap{
   overflow: hidden;   
 }
@@ -895,7 +903,7 @@ table tbody td{
     <div class="body">
       <div class="row">
         <input id="searchHist" placeholder="Search by code / userId..."/>
-        <button class="btn2" id="btnClearView">Clear Filter</button>
+        <button class="btn3" id="btnClearView">Clear Filter</button>
       </div>
       <div class="tableWrap" style="margin-top:10px">
         <table>
