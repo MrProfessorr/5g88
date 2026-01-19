@@ -52,6 +52,11 @@
   input:hover, select:hover{border-color:#3c89e8;}
   input:focus, select:focus{border-color:#1668dc;}
   .row{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
+  #codes .row{
+  display:grid;
+  grid-template-columns: 1fr 220px 1fr;
+  gap:12px;
+}
   .toggle{
     display:flex; gap:10px; margin-top:10px;
   }
@@ -713,10 +718,21 @@ table tbody td{
   <div class="card" id="codes">
     <h3>Active Promo Codes</h3>
     <div class="body">
-      <div class="row">
-        <input id="searchCode" placeholder="Search by code / customer..."/>
-        <button class="btn2" id="btnRefresh">↻ Refresh</button>
-      </div>
+<div class="row" style="grid-template-columns: 1fr 240px 1fr;">
+  <input id="searchCode" placeholder="Search by code / customer..."/>
+
+  <!-- STATUS FILTER (custom select macam points) -->
+  <div class="selectWrap">
+    <select id="statusFilter" class="nativeSelect">
+      <option value="ALL" selected>All</option>
+      <option value="APPROVED">Approved</option>
+      <option value="PENDING">Pending</option>
+    </select>
+    <div id="statusFilterCS"></div>
+  </div>
+
+  <button class="btn2" id="btnRefresh">↻ Refresh</button>
+</div>
 <div class="tableWrap table-scroll" style="margin-top:10px">
   <table>
     <thead>
@@ -847,6 +863,7 @@ const firebaseConfig = {
   };
 let pointsCSApi = null;
 let prizeFilterCSApi = null;
+let statusFilterCSApi = null;
   
 function buildCustomSelect(selectEl, mountEl){
   if(!selectEl || !mountEl) return;
@@ -952,6 +969,15 @@ function initPrizeFilterCustomSelect(){
 }
 function refreshPrizeFilterCustomSelect(){
   if(prizeFilterCSApi && prizeFilterCSApi.rebuild) prizeFilterCSApi.rebuild();
+}
+function initStatusFilterCustomSelect(){
+  const sel = $("statusFilter");
+  const mount = document.getElementById("statusFilterCS");
+  if(!sel || !mount) return;
+  statusFilterCSApi = buildCustomSelect(sel, mount);
+}
+function refreshStatusFilterCustomSelect(){
+  if(statusFilterCSApi && statusFilterCSApi.rebuild) statusFilterCSApi.rebuild();
 }
 function cleanPrizeList(arr){
   return (arr || [])
@@ -1112,11 +1138,24 @@ async function deletePromoCode(code){
 }
 
 function renderCodes(list){
-  const q = $("searchCode").value.trim().toUpperCase();
-  const filtered = !q ? list : list.filter(x=>{
-    return String(x.code||"").toUpperCase().includes(q) ||
-           String(x.customer||"").toUpperCase().includes(q);
-  });
+const q = $("searchCode").value.trim().toUpperCase();
+const st = ($("statusFilter")?.value || "ALL").toUpperCase();
+
+const filtered = (list || []).filter(x=>{
+  // 1) search filter
+  const hitSearch = !q
+    ? true
+    : (String(x.code||"").toUpperCase().includes(q) ||
+       String(x.customer||"").toUpperCase().includes(q));
+
+  // 2) status filter
+  // approved = claimedAt ada atau usedCount > 0
+  const isApproved = !!x.claimedAt || (Number(x.usedCount||0) > 0);
+  const rowStatus = isApproved ? "APPROVED" : "PENDING";
+  const hitStatus = (st === "ALL") ? true : (rowStatus === st);
+
+  return hitSearch && hitStatus;
+});
 
   const tb = $("codesTbody");
   if(!filtered.length){
@@ -1189,7 +1228,9 @@ if (allHist?.length) renderHist(allHist);;
   );
 }
 loadCodesLive();
-
+initStatusFilterCustomSelect();
+refreshStatusFilterCustomSelect();
+$("statusFilter")?.addEventListener("change", ()=>renderCodes(allCodes));
   $("searchCode").addEventListener("input", ()=>renderCodes(allCodes));
   $("btnRefresh").onclick = async ()=>{
     const snap = await get(ref(db, "promo_codes"));
