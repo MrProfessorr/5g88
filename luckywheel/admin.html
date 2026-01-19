@@ -43,7 +43,7 @@
   .card .body{padding:16px}
   label{display:block; font-size:12px; color:var(--muted); margin:10px 0 6px}
   input, select{
-    width:100%; padding:12px 12px; border-radius:12px;
+    width:100%; padding:12px 12px; border-radius:8px;
     border:1px solid rgba(255,255,255,.16);
     background:rgba(0,0,0,.22);
     color:var(--txt); outline:none;
@@ -80,7 +80,7 @@
     display:flex; gap:10px; margin-top:10px;
   }
   .pill{
-    flex:1; padding:11px 12px; border-radius:12px;
+    flex:1; padding:11px 12px; border-radius:8px;
     border:1px solid rgba(255,255,255,.16);
     background:rgba(0,0,0,.18);
     color:var(--muted); font-weight:800; cursor:pointer;
@@ -94,7 +94,7 @@
   }
   .btn{
     width:100%; margin-top:14px;
-    padding:12px 14px; border-radius:12px; border:none;cursor:pointer; color:#fff;
+    padding:12px 14px; border-radius:8px; border:none;cursor:pointer; color:#fff;
     background:#1668dc;
     box-shadow:0 10px 24px rgba(0,0,0,.25);
     transition: all 0.2s;
@@ -108,7 +108,7 @@
   .sub{color:var(--muted); font-size:12px}
   .btn2{
     margin-top:10px; width:100%;
-    padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.16);
+    padding:10px 12px; border-radius:8px; border:1px solid rgba(255,255,255,.16);
     background:rgba(0,0,0,.18); color:var(--txt); font-weight:800; cursor:pointer;
     transition: all 0.2s;
   }
@@ -116,7 +116,7 @@
   .btn2:active{border-color:#1554ad;}
   .btn3{
     width:100%;
-    padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.16);
+    padding:10px 12px; border-radius:8px; border:1px solid rgba(255,255,255,.16);
     background:rgba(0,0,0,.18); color:var(--txt); font-weight:800; cursor:pointer;
     transition: all 0.2s;
   }
@@ -161,7 +161,7 @@
 }
   table{width:100%; border-collapse:collapse; font-size:13px;background:#141414;}
   th,td{padding:10px 10px; border-bottom:1px solid rgba(255,255,255,.10); text-align:center; white-space:nowrap}
-  th{color:var(--muted); font-weight:800}
+  th{color:#fff; font-weight:600}
   .tag{
     display:inline-flex; align-items:center; gap:6px;
      ; font-size:12px; font-weight:600;
@@ -177,7 +177,7 @@
     position:fixed; right:16px; bottom:16px;
     background:rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.14);
     backdrop-filter:blur(10px);
-    padding:10px 12px; border-radius:12px; color:var(--txt);
+    padding:10px 12px; border-radius:8px; color:var(--txt);
     display:none; max-width:360px;
     transition: all 0.2s;
   }
@@ -227,7 +227,7 @@
   width:min(520px,92vw);
   background:#1b1b1b;
   border:1px solid rgba(255,255,255,.14);
-  border-radius:18px;
+  border-radius:8px;
   box-shadow:0 20px 60px rgba(0,0,0,.45);
   backdrop-filter:blur(14px);
   overflow:hidden;
@@ -251,7 +251,7 @@
 }
 .tabsRow{display:flex;gap:10px;margin-bottom:10px}
 .tabBtn{
-  flex:1;padding:10px;border-radius:14px;
+  flex:1;padding:10px;border-radius:8px;
   border:1px solid rgba(255,255,255,.12);
   background:rgba(255,255,255,.06);
   color:#fff;font-weight:900;cursor:pointer;
@@ -286,7 +286,7 @@
 .addRow input{
   width:100%;           /* pastikan penuh */
   padding:12px;
-  border-radius:14px;
+  border-radius:8px;
   border:1px solid rgba(255,255,255,.12);
   background:rgba(0,0,0,.18);
   color:#fff;
@@ -358,7 +358,7 @@
 .niceInput{
   width:100%;
   padding:12px 12px;
-  border-radius:14px;
+  border-radius:8px;
   border:1px solid rgba(255,255,255,.16);
   background:rgba(0,0,0,.18);
   color:var(--txt);
@@ -445,7 +445,7 @@
   width:100%;
   height:44px;              
   padding:0 42px 0 12px;       
-  border-radius:12px;     
+  border-radius:8px;     
   border:1px solid rgba(255,255,255,.16);
   background:rgba(0,0,0,.22);
   color:var(--txt);
@@ -494,7 +494,7 @@
   left:0; right:0;
   top: calc(100% + 6px);
   z-index:9999;
-  border-radius:12px;
+  border-radius:8px;
   border:1px solid rgba(255,255,255,.14);
   background: rgba(10,12,28,.92);
   backdrop-filter: blur(12px);
@@ -812,7 +812,7 @@ table tbody td{
     <h3>Active Promo Codes</h3>
     <div class="body">
 <div class="row" style="grid-template-columns: 1fr 240px 1fr;">
-  <input id="searchCode" placeholder="Search by code / customer..."/>
+  <input id="searchCode" placeholder="Search by code / Username..."/>
 
   <!-- STATUS FILTER (custom select macam points) -->
   <div class="selectWrap">
@@ -831,7 +831,7 @@ table tbody td{
     <thead>
       <tr>
         <th>Code</th>
-        <th>Customer</th>
+        <th>Username</th>
         <th>Prize</th>
         <th>Type</th>
         <th>Used</th>
@@ -902,7 +902,7 @@ table tbody td{
     <h3>Redemption History</h3>
     <div class="body">
       <div class="row">
-        <input id="searchHist" placeholder="Search by code / userId..."/>
+        <input id="searchHist" placeholder="Search by code / Username..."/>
         <button class="btn3" id="btnClearView">Clear Filter</button>
       </div>
       <div class="tableWrap" style="margin-top:10px">
@@ -911,7 +911,7 @@ table tbody td{
   <tr>
     <th>Code</th>
     <th>Points</th>
-    <th>User</th>
+    <th>Username</th>
     <th>Redeemed At</th>
     <th style="width:110px;text-align:right;">Actions</th>
   </tr>
