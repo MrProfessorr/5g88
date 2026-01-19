@@ -6,21 +6,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
-    html,body{
-      height:100%;
+    body{
       margin:0;
       background:#000;
-      display:grid;
-      place-items:center;
+      color:white;
+      font-family:system-ui, -apple-system, Arial, sans-serif;
     }
 
-    img{
-      width:120px;
+    /* BARIS HEADER DI KIRI */
+    .header-row{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px;
+    }
+
+    /* ICON KECIL */
+    .icon-left{
+      width:48px;      /* ubah ikut saiz yang kamu mahu */
       height:auto;
+    }
+
+    .title{
+      font-size:16px;
+      font-weight:600;
     }
   </style>
 </head>
+
 <body>
-  <img src="Luckydraw-preview.png" alt="5G88 Logo">
+
+  <div class="header-row">
+    <img src="assets/5g88-preview.png" class="icon-left" alt="5G88 Logo">
+    <span class="title">5G88 Lucky Draw</span>
+  </div>
+
 </body>
 </html>
