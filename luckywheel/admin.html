@@ -127,17 +127,16 @@
   scrollbar-width: thin;
   scrollbar-color: #1668dc rgba(255,255,255,.06);
 }
-  table{width:100%; border-collapse:collapse; font-size:13px}
+  table{width:100%; border-collapse:collapse; font-size:13px;background:#141414;}
   th,td{padding:10px 10px; border-bottom:1px solid rgba(255,255,255,.10); text-align:center; white-space:nowrap}
   th{color:var(--muted); font-weight:800}
   .tag{
     display:inline-flex; align-items:center; gap:6px;
-    padding:4px 10px; border-radius:999px; font-size:12px; font-weight:900;
-    border:1px solid rgba(255,255,255,.14); background:rgba(0,0,0,.2)
+     ; font-size:12px; font-weight:600;
   }
-  .tag.ok{border-color:rgba(39,209,127,.35); color:#bff7dc}
-  .tag.bad{border-color:rgba(255,77,77,.35); color:#ffd0d0}
-  .tag.warn{border-color:rgba(255,200,85,.35); color:#ffe7b5}
+  .tag.ok{ color:#37ff9f}
+  .tag.bad{color:#ffd0d0}
+  .tag.warn{color:#ffac00}
   .mini{
     display:flex; gap:10px; align-items:center; justify-content:space-between;
     margin-top:10px;
@@ -304,9 +303,9 @@
 .btnDel{
   padding: 4px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(255,255,255,.14);
-  background: rgba(255,80,80,.12);
-  color: rgba(255,210,210,.95);
+  border: 1px solid rgb(129 26 26);
+  background: #1d1d1d;
+  color:#ca1818f2;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
