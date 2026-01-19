@@ -1584,33 +1584,76 @@ function getStatsRowsForCurrentPreset(){
 
   return rows;
 }
+function buildSummaryTotalsForType(type){
+  const rows = getStatsRowsForCurrentPreset();
+
+  // ===== ALL: guna stats snapshot (cepat) =====
+  if(type === "ALL"){
+    let totalCustomers = 0, totalPrize = 0, totalCodes = 0, claim = 0, unclaim = 0;
+
+    for(const r of rows){
+      totalCustomers += Number(r.totalCustomers||0);
+      totalPrize     += Number(r.totalPrize||0);
+      totalCodes     += Number(r.totalCodes||0);
+      claim          += Number(r.claimCount||0);
+      unclaim        += Number(r.unclaimCount||0);
+    }
+
+    return { totalCustomers, totalPrize, totalCodes, claim, unclaim };
+  }
+
+  // ===== NORMAL/SUPER: kira berdasarkan allCodes ikut range =====
+  const range = getRangeFromInputs();
+  if(!range) return { totalCustomers:0,totalPrize:0,totalCodes:0,claim:0,unclaim:0 };
+
+  const [s,e] = range;
+  const sMs = s.getTime();
+  const eMs = e.getTime();
+
+  const want = type; // "NORMAL" / "SUPER"
+
+  const created = (allCodes||[]).filter(x=>{
+    const t = Number(x.createdAt||0);
+    return t>=sMs && t<=eMs && String(x.prizeType||"").toUpperCase()===want;
+  });
+
+  const claimed = (allCodes||[]).filter(x=>{
+    const t = Number(x.claimedAt||0);
+    return t && t>=sMs && t<=eMs && String(x.prizeType||"").toUpperCase()===want;
+  });
+
+  // customers & prize ikut created (macam snapshot)
+  const customers = new Set();
+  let prizeSum = 0;
+  for(const x of created){
+    const c = String(x.customer||"").trim();
+    if(c) customers.add(c.toUpperCase());
+    prizeSum += Number(x.points||0);
+  }
+
+  // unclaim utk summary: pending dalam range (simple)
+  const unclaim = Math.max(0, created.length - claimed.length);
+
+  return {
+    totalCustomers: customers.size,
+    totalPrize: prizeSum,
+    totalCodes: created.length,
+    claim: claimed.length,
+    unclaim
+  };
+}
 
 function updateSummaryUI(){
   const sel = $("prizeFilter");
   const type = (sel?.value || "ALL").toUpperCase();
 
-  const rows = getStatsRowsForCurrentPreset();
+  const sum = buildSummaryTotalsForType(type);
 
-  // sum from stats/daily (snapshot)
-  let totalCustomers = 0;
-  let totalPrize = 0;
-  let totalCodes = 0;
-  let claim = 0;
-  let unclaim = 0;
-
-  for(const r of rows){
-    totalCustomers += Number(r.totalCustomers||0);
-    totalPrize     += Number(r.totalPrize||0);
-    totalCodes     += Number(r.totalCodes||0);
-    claim          += Number(r.claimCount||0);
-    unclaim        += Number(r.unclaimCount||0);
-  }
-
-  $("sumCustomers").textContent = totalCustomers;
-  $("sumPrize").textContent     = totalPrize;
-  $("sumCodes").textContent     = totalCodes;
-  $("sumClaim").textContent     = claim;
-  $("sumUnclaim").textContent   = unclaim;
+  $("sumCustomers").textContent = Number(sum.totalCustomers||0);
+  $("sumPrize").textContent     = Number(sum.totalPrize||0);
+  $("sumCodes").textContent     = Number(sum.totalCodes||0);
+  $("sumClaim").textContent     = Number(sum.claim||0);
+  $("sumUnclaim").textContent   = Number(sum.unclaim||0);
 
   $("sumHint").textContent = `Summary based on Totals History (${type}).`;
 }
