@@ -765,6 +765,14 @@ table tbody td{
       <div class="sumLabel">Total Code</div>
       <div class="sumValue" id="sumCodes">0</div>
     </div>
+    <div class="sumCard">
+  <div class="sumLabel">Total Claim</div>
+  <div class="sumValue" id="sumClaim">0</div>
+</div>
+<div class="sumCard">
+  <div class="sumLabel">Total Unclaim</div>
+  <div class="sumValue" id="sumUnclaim">0</div>
+</div>
   </div>
 
   <div class="sub" id="sumHint" style="margin-top:8px;opacity:.75">
@@ -853,10 +861,12 @@ table tbody td{
             <th>Total Code</th>
             <th>Normal Codes</th>
             <th>Super Codes</th>
+            <th>Claim</th>
+            <th>Unclaim</th>
           </tr>
         </thead>
         <tbody id="statsTbody">
-          <tr><td colspan="6" style="opacity:.7">No stats yet.</td></tr>
+          <tr><td colspan="8" style="opacity:.7">No stats yet.</td></tr>
         </tbody>
       </table>
     </div>
@@ -1552,19 +1562,57 @@ function calcTotalsFromCodes(list){
   };
 }
 
+function getStatsRowsForCurrentPreset(){
+  const range = getRangeFromInputs();
+  if(!range) return [];
+
+  const [s,e] = range;
+
+  let rows = statsDailyArr.filter(r=>{
+    const d = new Date(String(r.dateKey||"") + "T00:00:00");
+    return d >= s && d <= e;
+  });
+
+  // include TODAY live if covered
+  const todayS = startOfDay(new Date());
+  const todayE = endOfDay(new Date());
+  const coverToday = (s <= todayS && e >= todayE);
+  if(coverToday){
+    const todayKey = toDateKey(new Date());
+    rows = [buildSnapshotForDate(new Date()), ...rows.filter(x => String(x.dateKey||"") !== todayKey)];
+  }
+
+  return rows;
+}
+
 function updateSummaryUI(){
   const sel = $("prizeFilter");
-  if(!sel) return;
+  const type = (sel?.value || "ALL").toUpperCase();
 
-  const type = sel.value || "ALL";
-  const filtered = filterCodesByType(allCodes, type);
-  const totals = calcTotalsFromCodes(filtered);
+  const rows = getStatsRowsForCurrentPreset();
 
-  $("sumCustomers").textContent = totals.totalCustomers;
-  $("sumPrize").textContent = totals.totalPrize;
-  $("sumCodes").textContent = totals.totalCodes;
+  // sum from stats/daily (snapshot)
+  let totalCustomers = 0;
+  let totalPrize = 0;
+  let totalCodes = 0;
+  let claim = 0;
+  let unclaim = 0;
 
-  $("sumHint").textContent = `Summary based on Active Promo Codes (${type}).`;
+  for(const r of rows){
+    totalCustomers += Number(r.totalCustomers||0);
+    totalPrize     += Number(r.totalPrize||0);
+    totalCodes     += Number(r.totalCodes||0);
+    claim          += Number(r.claimCount||0);
+    unclaim        += Number(r.unclaimCount||0);
+  }
+
+  $("sumCustomers").textContent = totalCustomers;
+  $("sumPrize").textContent     = totalPrize;
+  $("sumCodes").textContent     = totalCodes;
+  $("sumClaim").textContent     = claim;
+  $("sumUnclaim").textContent   = unclaim;
+
+  $("sumHint").textContent = `Summary based on Totals History (${type}).`;
 }
 initPrizeFilterCustomSelect();
 refreshPrizeFilterCustomSelect();
@@ -1577,14 +1625,21 @@ function buildSnapshotForDate(dateObj){
   const s = startOfDay(dateObj).getTime();
   const e = endOfDay(dateObj).getTime();
 
-  const codes = (allCodes||[]).filter(x=>{
+  const createdCodes = (allCodes||[]).filter(x=>{
     const t = Number(x.createdAt||0);
     return t >= s && t <= e;
   });
 
-  const normalCodes = codes.filter(x => String(x.prizeType||"").toUpperCase()==="NORMAL").length;
-  const superCodes  = codes.filter(x => String(x.prizeType||"").toUpperCase()==="SUPER").length;
-  const totals = calcTotalsFromCodes(codes);
+  const claimedCodes = (allCodes||[]).filter(x=>{
+    const t = Number(x.claimedAt||0);
+    return t && t >= s && t <= e;
+  });
+
+  const normalCodes = createdCodes.filter(x => String(x.prizeType||"").toUpperCase()==="NORMAL").length;
+  const superCodes  = createdCodes.filter(x => String(x.prizeType||"").toUpperCase()==="SUPER").length;
+  const totals = calcTotalsFromCodes(createdCodes);
+  const unclaimCount = createdCodes.length;
+  const claimCount = claimedCodes.length;
 
   return {
     dateKey: toDateKey(dateObj),
@@ -1593,7 +1648,9 @@ function buildSnapshotForDate(dateObj){
     totalPrize: totals.totalPrize,
     totalCodes: totals.totalCodes,
     normalCodes,
-    superCodes
+    superCodes,
+    claimCount,
+    unclaimCount
   };
 }
 
@@ -1658,16 +1715,18 @@ function renderStatsRows(rows){
 
   const sorted = rows.slice().sort((a,b)=> String(b.dateKey).localeCompare(String(a.dateKey)));
 
-  tb.innerHTML = sorted.map(r=>`
-    <tr>
-      <td style="font-weight:900">${r.dateKey || "-"}</td>
-      <td>${Number(r.totalCustomers||0)}</td>
-      <td>${Number(r.totalPrize||0)}</td>
-      <td>${Number(r.totalCodes||0)}</td>
-      <td>${Number(r.normalCodes||0)}</td>
-      <td>${Number(r.superCodes||0)}</td>
-    </tr>
-  `).join("");
+tb.innerHTML = sorted.map(r=>`
+  <tr>
+    <td style="font-weight:900">${r.dateKey || "-"}</td>
+    <td>${Number(r.totalCustomers||0)}</td>
+    <td>${Number(r.totalPrize||0)}</td>
+    <td>${Number(r.totalCodes||0)}</td>
+    <td>${Number(r.normalCodes||0)}</td>
+    <td>${Number(r.superCodes||0)}</td>
+    <td>${Number(r.claimCount||0)}</td>
+    <td>${Number(r.unclaimCount||0)}</td>
+  </tr>
+`).join("");
 }
 
 function getRangeByPreset(preset){
@@ -1765,6 +1824,7 @@ function applyStatsFilter(){
   }
 
   renderStatsRows(rows);
+  updateSummaryUI();
 }
 
 function refreshTotalsHistoryLive(){
@@ -1803,6 +1863,7 @@ onValue(STATS_REF, (snap)=>{
   const v = snap.val() || {};
   statsDailyArr = Object.keys(v).map(k => v[k]).filter(Boolean);
   setActiveChip(activePreset || "today");
+  updateSummaryUI();
 });
 </script>
 </body>
