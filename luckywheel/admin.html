@@ -1167,6 +1167,7 @@ function loadCodesLive(){
 
 renderCodes(allCodes);
 updateSummaryUI();
+ensureYesterdaySaved();
 refreshTotalsHistoryLive();
 
 if (allHist?.length) renderHist(allHist);;
@@ -1187,7 +1188,21 @@ loadCodesLive();
     renderCodes(allCodes);
     toast("Refreshed!");
   };
+async function ensureYesterdaySaved(){
+  const y = addDays(new Date(), -1);
+  const yKey = toDateKey(y);
 
+  try{
+    const snap = await get(ref(db, `stats/daily/${yKey}`));
+    if(!snap.exists()){
+      await saveSnapshotForDate(y);
+      console.log("[stats] catch-up saved:", yKey);
+      toast("Saved yesterday (catch-up)!");
+    }
+  }catch(e){
+    console.error("[stats] ensureYesterdaySaved error", e);
+  }
+}
   // ===== Load History (latest) =====
   let allHist = [];
 async function deleteHistRow(x){
@@ -1443,13 +1458,6 @@ function updateSummaryUI(){
 initPrizeFilterCustomSelect();
 refreshPrizeFilterCustomSelect();
 $("prizeFilter")?.addEventListener("change", updateSummaryUI);
-
-// ✅ panggil summary setiap kali renderCodes dipanggil
-const _renderCodes = renderCodes;
-renderCodes = function(list){
-  _renderCodes(list);
-  updateSummaryUI();
-};
 
 // ------------------------------
 // SAVE SNAPSHOT (BY CREATED TODAY)
