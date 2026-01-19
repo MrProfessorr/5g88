@@ -151,9 +151,8 @@
   }
   .headLeft{display:flex;align-items:center;gap:12px}
 .menuBtn{
-  width:44px;height:44px;border-radius:14px;
-  border:1px solid rgba(255,255,255,.14);
-  background:rgba(0,0,0,.18);
+  border:none;
+  background:transparent;
   color:#fff;font-size:20px;cursor:pointer;
   transition: all 0.2s;
 }
@@ -167,7 +166,7 @@
   position:fixed;top:0;left:0;height:100vh;width:320px;
   transform:translateX(-110%);
   transition:transform .25s ease;
-  background:rgba(12,16,40,.92);
+  background:#1d1d1d;
   border-right:1px solid rgba(255,255,255,.12);
   backdrop-filter:blur(14px);
   z-index:90;
@@ -177,16 +176,12 @@
 .sidebar.show{transform:translateX(0)}
 .sideHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .sideTitle{font-size:16px;font-weight:900}
-.sideClose{
-  width:38px;height:38px;border-radius:12px;
-  border:1px solid rgba(255,255,255,.14);
-  background:rgba(255,255,255,.06);color:#fff;cursor:pointer
-}
+.sideClose{border:none;background:transparent;color:#fff;cursor:pointer}
 .sideItem{
   width:100%;padding:12px 12px;border-radius:14px;
   border:1px solid rgba(255,255,255,.10);
   background:rgba(255,255,255,.06);
-  color:#fff;font-weight:800;cursor:pointer;
+  color:#fff;cursor:pointer;
   text-align:left;margin-top:10px;
 }
 
