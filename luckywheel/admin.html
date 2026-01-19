@@ -52,18 +52,29 @@
   input:hover, select:hover{border-color:#3c89e8;}
   input:focus, select:focus{border-color:#1668dc;}
   .row{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
-  #codes .row{
+#codes .row{
   display:grid;
-  grid-template-columns: 1fr 200px 1fr;
-  gap:10px;
-}
-/* Lock width dropdown status supaya tak berubah */
-#codes .selectWrap{
-  width: 200px;      /* boleh tukar ikut selera */
-  min-width: 200px;
-  max-width: 200px;
+  grid-template-columns: 1fr 200px auto; /* refresh ikut size button */
+  gap: 10px; /* kalau nak rapat: 8px */
+  align-items: center;
 }
 
+/* khas utk row codes sahaja: btn refresh jangan full */
+#codes .row .btn2{
+  width: auto;
+  margin-top: 0;          /* sebab .btn2 global ada margin-top:10px */
+  white-space: nowrap;
+}
+/* Lock width dropdown status supaya tak berubah */
+#statusFilterCS{
+  width: 200px !important;
+  min-width: 200px !important;
+  max-width: 200px !important;
+}
+#statusFilterCS .cs,
+#statusFilterCS .csBtn{
+  width: 100% !important;
+}
 #codes .csBtn{
   width: 100% !important;
 }
