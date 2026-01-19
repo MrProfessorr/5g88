@@ -562,6 +562,15 @@ input[type="number"]{
   -moz-appearance: textfield !important;
   appearance: textfield !important;
 }
+/* ===== FULL ROW HOVER (semua table) ===== */
+table tbody tr:hover td{
+  background: rgba(255,255,255,.06);
+}
+
+/* optional: smooth */
+table tbody td{
+  transition: background .15s ease;
+}
 </style>
 </head>
 <body>
