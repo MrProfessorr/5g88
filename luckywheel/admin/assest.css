@@ -796,3 +796,29 @@ table tbody td{
 .flatpickr-next-month svg {
   fill: #ffd87a !important;
 }
+/* === Tukar border putih jadi GOLD === */
+.flatpickr-calendar {
+  border: 1px solid #ffcc55 !important;   /* gold border luar */
+}
+
+/* border kotak hari */
+.flatpickr-day {
+  border: 1px solid rgba(255, 204, 85, 0.3) !important;
+}
+
+/* border range tengah */
+.flatpickr-day.inRange {
+  border-color: rgba(255, 204, 85, 0.5) !important;
+}
+
+/* border hari yang dipilih */
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange {
+  border: 1px solid #ffcc55 !important;
+}
+
+/* border header atas (bulan) */
+.flatpickr-month {
+  border-bottom: 1px solid rgba(255, 204, 85, 0.6) !important;
+}
