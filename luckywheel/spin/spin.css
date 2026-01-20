@@ -187,9 +187,8 @@
   }
   .histItem:last-child{margin-bottom:0}
   .badge{
-    font-weight:1000;
-    background:rgba(255,200,85,.18);
-    border:1px solid rgba(255,200,85,.25);
+    background:rgb(0 4 42 / 18%);
+    border:1px solid rgb(247 247 247 / 25%);
     padding:5px 10px; border-radius:999px;
   }
   .overlay{
