@@ -732,3 +732,67 @@ table tbody td{
     white-space:normal;
   }
 }
+/* ===== FLATPICKR THEME CUSTOM ===== */
+
+/* background utama calendar */
+.flatpickr-calendar {
+  background: #120a2a !important;
+  border: 1px solid rgba(255, 200, 80, 0.4);
+  box-shadow: 0 0 20px rgba(255, 200, 80, 0.15);
+}
+
+/* header bulan */
+.flatpickr-month {
+  background: #1a2c6b !important;
+}
+
+/* text bulan & tahun */
+.flatpickr-current-month,
+.flatpickr-monthDropdown-months,
+.flatpickr-monthDropdown-year {
+  color: #ffd87a !important;
+}
+
+/* hari (Mon Tue Wed dll) */
+.flatpickr-weekdays span {
+  color: #e9ecff !important;
+  font-weight: 600;
+}
+
+/* hari biasa */
+.flatpickr-day {
+  color: #e9ecff !important;
+  border-radius: 8px;
+}
+
+/* hover hari */
+.flatpickr-day:hover {
+  background: rgba(255, 200, 80, 0.15) !important;
+}
+
+/* hari dipilih */
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange {
+  background: linear-gradient(135deg, #ffcc55, #ff8a00) !important;
+  color: #120a2a !important;
+  font-weight: 700;
+}
+
+/* range tengah (di antara dua tarikh) */
+.flatpickr-day.inRange {
+  background: rgba(255, 200, 80, 0.15) !important;
+  color: #ffd87a !important;
+}
+
+/* hari luar bulan */
+.flatpickr-day.prevMonthDay,
+.flatpickr-day.nextMonthDay {
+  color: rgba(233,236,255,.4) !important;
+}
+
+/* arrow ◀ ▶ */
+.flatpickr-prev-month svg,
+.flatpickr-next-month svg {
+  fill: #ffd87a !important;
+}
