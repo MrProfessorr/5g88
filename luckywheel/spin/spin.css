@@ -60,7 +60,7 @@
     letter-spacing:1px;
     font-weight:900;
   }
-  input:focus{border-color:rgba(255,200,85,.6); box-shadow:0 0 0 3px rgba(255,180,0,.15)}
+  input:focus{border-color:rgb(241 45 244 / 60%); box-shadow:0 0 0 3px rgb(183 17 255 / 15%)}
   .btn{
     width:100%; margin-top:12px;
     padding:12px 14px; border-radius:12px; border:none;
