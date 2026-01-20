@@ -780,8 +780,8 @@ table tbody td{
 
 /* range tengah (di antara dua tarikh) */
 .flatpickr-day.inRange {
-  background: rgba(255, 200, 80, 0.15) !important;
-  color: #ffd87a !important;
+  background: #1668dc1a !important;
+  color: #fff !important;
 }
 
 /* hari luar bulan */
