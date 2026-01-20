@@ -661,12 +661,7 @@ table tbody td{
   font-family: SimSun, sans-serif;
   line-height: 1;
 }
-#rangePicker{
-  cursor:pointer;
-}
-#rangePicker::placeholder{
-  opacity:.7;
-}
+
 #rangePicker{
   font-variant-numeric: tabular-nums;
   letter-spacing: .4px;
