@@ -647,19 +647,24 @@ function initRangePicker(){
       inst.input.value = `${tKey}  →  ${tKey}`;
     },
 
-    onClose(selectedDates, dateStr, inst){
-      if(!selectedDates || selectedDates.length < 2) return;
+onClose(selectedDates, dateStr, inst){
+  if(!selectedDates || selectedDates.length < 2) return;
 
-      const fromKey = toDateKey(selectedDates[0]);
-      const toKey   = toDateKey(selectedDates[1]);
+  const fromKey = toDateKey(selectedDates[0]);
+  const toKey   = toDateKey(selectedDates[1]);
 
-      rf.value = fromKey;
-      rt.value = toKey;
-      inst.input.value = `${fromKey}  →  ${toKey}`;
-
-      document.querySelectorAll("#presetRow .chipBtn").forEach(b=>b.classList.remove("active"));
-      applyStatsFilter();
-    }
+  rf.value = fromKey;
+  rt.value = toKey;
+  inst.input.value = `${fromKey}  →  ${toKey}`;
+  const hit = detectPresetFromKeys(fromKey, toKey);
+  if(hit){
+    setActiveChip(hit);
+    return;
+  }
+  document.querySelectorAll("#presetRow .chipBtn").forEach(b=>b.classList.remove("active"));
+  activePreset = "";
+  applyStatsFilter();
+}
   });
 }
 
@@ -961,6 +966,18 @@ function getRangeByPreset(preset){
   }
 
   return [todayS, todayE];
+}
+function detectPresetFromKeys(fromKey, toKey){
+  const presets = ["today","yesterday","thisweek","lastweek","thismonth","lastmonth"];
+
+  for(const p of presets){
+    const [s,e] = getRangeByPreset(p);
+    const ps = toDateKey(s);
+    const pe = toDateKey(e);
+
+    if(fromKey === ps && toKey === pe) return p;
+  }
+  return null;
 }
 function getLiveTodayRow(){
   const today = new Date();
