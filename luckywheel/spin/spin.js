@@ -17,6 +17,80 @@ const firebaseConfig = {
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
   const $ = (id)=>document.getElementById(id);
+  const sfxStart = $("sfxStart");
+const sfxTick  = $("sfxTick");
+const sfxWin   = $("sfxWin");
+
+let soundArmed = false;
+let tickTimer = null;
+
+function armSoundsOnce(){
+  if(soundArmed) return;
+  soundArmed = true;
+
+  [sfxStart, sfxTick, sfxWin].forEach(a=>{
+    if(!a) return;
+    try{
+      a.volume = 0.8;
+      a.currentTime = 0;
+      const p = a.play();
+      if(p && p.then){
+        p.then(()=>{ a.pause(); a.currentTime = 0; }).catch(()=>{});
+      } else {
+        a.pause(); a.currentTime = 0;
+      }
+    }catch(e){}
+  });
+}
+
+document.addEventListener("click", armSoundsOnce, { once:true });
+
+function playStart(){
+  if(!sfxStart || !soundArmed) return;
+  try{
+    sfxStart.currentTime = 0;
+    sfxStart.volume = 0.9;
+    sfxStart.play().catch(()=>{});
+  }catch(e){}
+}
+
+function playTick(speed01 = 1){
+  if(!sfxTick || !soundArmed) return;
+  try{
+    const a = sfxTick.cloneNode(true);
+    a.volume = 0.35 + 0.35 * speed01;
+    a.playbackRate = 0.95 + 0.2 * speed01;
+    a.play().catch(()=>{});
+  }catch(e){}
+}
+
+function playWin(){
+  if(!sfxWin || !soundArmed) return;
+  try{
+    sfxWin.currentTime = 0;
+    sfxWin.volume = 0.95;
+    sfxWin.play().catch(()=>{});
+  }catch(e){}
+}
+
+function startTickLoop(durationMs = 4300){
+  stopTickLoop();
+
+  const startAt = performance.now();
+  tickTimer = setInterval(()=>{
+    const t = (performance.now() - startAt) / durationMs;
+    const speed = Math.max(0, Math.min(1, 1 - t));
+    playTick(speed);
+    if(t >= 1) stopTickLoop();
+  }, 40);
+}
+
+function stopTickLoop(){
+  if(tickTimer){
+    clearInterval(tickTimer);
+    tickTimer = null;
+  }
+}
   function showToast(type, message, opts = {}){
   const root = document.getElementById("toastRoot");
   if(!root) return;
@@ -344,6 +418,7 @@ await update(ref(db, `promo_codes/${code}`), {
   }
 
   function openModal(winPoints, code){
+    playWin();
     $("winText").textContent = `Angpao ${winPoints}`;
     $("winCode").textContent = code;
     $("overlay").style.display = "grid";
@@ -374,13 +449,16 @@ await update(ref(db, `promo_codes/${code}`), {
   $("btnSpin").onclick = async ()=>{
     if(spinning) return;
     if(!currentPrize || !currentCode) return;
-
+    armSoundsOnce();
+    playStart();
+    startTickLoop(4300);
     spinning = true;
     $("btnSpin").disabled = true;
 
   
     const res = await validateCode(currentCode);
     if(!res.ok){
+      stopTickLoop();
       showToast("error", res.msg);
       spinning = false;
       $("btnSpin").disabled = false;
@@ -415,6 +493,7 @@ $("wheel").style.transform = `rotate(${wheelRot}deg)`;
         await redeemAndSave(currentCode, winPoints);
         openModal(winPoints, currentCode);
       }catch(e){
+        stopTickLoop();
         showToast("error", e.message || "Redeem failed.");
       }finally{
         spinning = false;
