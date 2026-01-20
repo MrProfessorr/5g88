@@ -803,12 +803,6 @@ table tbody td{
 .flatpickr-day.inRange {
   border-color: #303030!important;
 }
-/* border hari yang dipilih */
-.flatpickr-day.selected,
-.flatpickr-day.startRange,
-.flatpickr-day.endRange {
-  border: 1px solid #303030!important;
-}
 
 /* border header atas (bulan) */
 .flatpickr-month {
