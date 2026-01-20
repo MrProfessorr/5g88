@@ -760,6 +760,8 @@ table tbody td{
 .flatpickr-day {
   color: #e9ecff !important;
   border-radius: 8px;
+  border:#303030!important;
+  background:#1b1b1b !important;
 }
 
 /* hover hari */
@@ -817,4 +819,7 @@ table tbody td{
 /* border header atas (bulan) */
 .flatpickr-month {
   border-bottom: 1px solid #303030 !important;
+}
+.flatpickr-days {
+background:#141414 !important;
 }
