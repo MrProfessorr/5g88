@@ -714,7 +714,6 @@ function buildSummaryTotalsForType(type){
     return t && t>=sMs && t<=eMs && String(x.prizeType||"").toUpperCase()===want;
   });
 
-  // customers & prize ikut created (macam snapshot)
   const customers = new Set();
   let prizeSum = 0;
   for(const x of created){
@@ -722,10 +721,7 @@ function buildSummaryTotalsForType(type){
     if(c) customers.add(c.toUpperCase());
     prizeSum += Number(x.points||0);
   }
-
-  // unclaim utk summary: pending dalam range (simple)
   const unclaim = Math.max(0, created.length - claimed.length);
-
   return {
     totalCustomers: customers.size,
     totalPrize: prizeSum,
@@ -753,20 +749,15 @@ initPrizeFilterCustomSelect();
 refreshPrizeFilterCustomSelect();
 $("prizeFilter")?.addEventListener("change", updateSummaryUI);
 
-// ------------------------------
-// SAVE SNAPSHOT (BY CREATED TODAY)
-// ------------------------------
 function buildSnapshotForDate(dateObj){
   const s = startOfDay(dateObj).getTime();
   const e = endOfDay(dateObj).getTime();
 
-  // ✅ codes CREATED pada hari itu
   const createdCodes = (allCodes||[]).filter(x=>{
     const t = Number(x.createdAt||0);
     return t >= s && t <= e;
   });
 
-  // ✅ codes CLAIMED pada hari itu (tak kira dibuat hari apa)
   const claimedCodes = (allCodes||[]).filter(x=>{
     const t = Number(x.claimedAt||0);
     return t && t >= s && t <= e;
@@ -776,23 +767,19 @@ function buildSnapshotForDate(dateObj){
   const superCodes  = createdCodes.filter(x => String(x.prizeType||"").toUpperCase()==="SUPER").length;
 
   const totals = calcTotalsFromCodes(createdCodes);
-
-  // ✅ Claim ikut hari claim
   const claimCount = claimedCodes.length;
+  const createdSet = new Set(
+    createdCodes.map(x => String(x.code || "").toUpperCase()).filter(Boolean)
+  );
 
-  // ✅ Default LOCK untuk hari lepas: unclaim = jumlah generated hari itu (closing)
-  let unclaimCount = createdCodes.length;
+  const claimedSameDayForCreatedSameDay = (allCodes || []).filter(x => {
+    const code = String(x.code || "").toUpperCase();
+    if (!createdSet.has(code)) return false;
+    const t = Number(x.claimedAt || 0);
+    return t && t >= s && t <= e;
+  }).length;
 
-  // ✅ TODAY: unclaim hanya tolak claim yang code dia CREATED TODAY
-  const todayKey = toDateKey(new Date());
-  if(toDateKey(dateObj) === todayKey){
-    const claimedTodayCreatedToday = claimedCodes.filter(x=>{
-      const ct = Number(x.createdAt||0);
-      return ct >= s && ct <= e;
-    }).length;
-
-    unclaimCount = Math.max(0, createdCodes.length - claimedTodayCreatedToday);
-  }
+  const unclaimCount = Math.max(0, createdCodes.length - claimedSameDayForCreatedSameDay);
 
   return {
     dateKey: toDateKey(dateObj),
@@ -815,6 +802,12 @@ async function saveSnapshotForDate(dateObj){
 
 async function saveYesterdaySnapshot(){
   const y = addDays(new Date(), -1);
+  const yKey = toDateKey(y);
+  const snap = await get(ref(db, `stats/daily/${yKey}`));
+  if(snap.exists()){
+    console.log("[stats] yesterday already saved:", yKey);
+    return;
+  }
   await saveSnapshotForDate(y);
   toast("Auto-saved yesterday snapshot!");
 }
