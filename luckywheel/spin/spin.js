@@ -68,6 +68,10 @@ function playTick(speed01 = 1){
     a.volume = 0.25 + 0.35 * speed01;
     a.playbackRate = 0.95 + 0.2 * speed01;
     tickInstances.push(a);
+    if(tickInstances.length > 30){
+  const old = tickInstances.shift();
+  try{ old.pause(); old.currentTime = 0; }catch(e){}
+}
     a.addEventListener("ended", () => {
       tickInstances = tickInstances.filter(x => x !== a);
     });
@@ -85,7 +89,7 @@ function playWin(){
   }catch(e){}
 }
 
-function startTickLoop(durationMs = 4300){
+function startTickLoop(durationMs = 4200){
   stopTickLoop();
 
   const startAt = performance.now();
@@ -302,12 +306,13 @@ function applyWheelTheme(){
     $("codeLabel").textContent = code;
   }
 
-  function gotoEnter(){
-    $("pageWheel").classList.add("hidden");
-    $("pageEnter").classList.remove("hidden");
-    $("promoInput").value = "";
-    showEnter("");
-  }
+ function gotoEnter(){
+  stopTickLoop(); 
+  $("pageWheel").classList.add("hidden");
+  $("pageEnter").classList.remove("hidden");
+  $("promoInput").value = "";
+  showEnter("");
+}
 
   $("navSpin").onclick = (e)=>{ e.preventDefault(); gotoEnter(); };
   function fmtTime(ts){
@@ -473,14 +478,17 @@ await update(ref(db, `promo_codes/${code}`), {
     },1000);
   }
 
-  $("btnClose").onclick = ()=>{
-    $("overlay").style.display="none";
-    gotoEnter();
-  };
-  $("btnOk").onclick = ()=>{
-    $("overlay").style.display="none";
-    gotoEnter();
-  };
+$("btnClose").onclick = ()=>{
+  stopTickLoop();
+  $("overlay").style.display="none";
+  gotoEnter();
+};
+
+$("btnOk").onclick = ()=>{
+  stopTickLoop();
+  $("overlay").style.display="none";
+  gotoEnter();
+};
 
   $("btnSpin").onclick = async ()=>{
     if(spinning) return;
@@ -537,5 +545,5 @@ $("wheel").style.transform = `rotate(${wheelRot}deg)`;
         spinning = false;
         $("btnSpin").disabled = false;
       }
-    }, 4300);
+    }, 4200);
   };
