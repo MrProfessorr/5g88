@@ -23,6 +23,7 @@ const sfxWin   = $("sfxWin");
 
 let soundArmed = false;
 let tickTimer = null;
+let tickInstances = [];
 
 function armSoundsOnce(){
   if(soundArmed) return;
@@ -64,8 +65,13 @@ function playTick(speed01 = 1){
   if(!sfxTick || !soundArmed) return;
   try{
     const a = sfxTick.cloneNode(true);
-    a.volume = 0.35 + 0.35 * speed01;
+    a.volume = 0.25 + 0.35 * speed01;
     a.playbackRate = 0.95 + 0.2 * speed01;
+    tickInstances.push(a);
+    a.addEventListener("ended", () => {
+      tickInstances = tickInstances.filter(x => x !== a);
+    });
+
     a.play().catch(()=>{});
   }catch(e){}
 }
@@ -95,6 +101,12 @@ function stopTickLoop(){
   if(tickTimer){
     clearInterval(tickTimer);
     tickTimer = null;
+  }
+  if(tickInstances.length){
+    tickInstances.forEach(a=>{
+      try{ a.pause(); a.currentTime = 0; }catch(e){}
+    });
+    tickInstances = [];
   }
 }
 
