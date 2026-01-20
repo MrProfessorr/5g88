@@ -757,6 +757,7 @@ table tbody td{
 }
 .flatpickr-weekdays {
   background:#1b1b1b!important;
+  border:#303030 !important;
 }
 /* hari biasa */
 .flatpickr-day {
@@ -768,7 +769,7 @@ table tbody td{
 
 /* hover hari */
 .flatpickr-day:hover {
-  background: rgba(255, 200, 80, 0.15) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
 }
 
 /* hari dipilih */
