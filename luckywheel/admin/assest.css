@@ -701,10 +701,7 @@ table tbody td{
   width:100%;
   font-variant-numeric: tabular-nums;
   letter-spacing:.4px;
-
-  text-align:center;            /* ✅ center text */
-  font-weight:800;
-
+  text-align:center;       
   background: rgba(0,0,0,.18);
   border:1px solid rgba(255,255,255,.16);
   outline:none;
@@ -776,8 +773,8 @@ table tbody td{
 .flatpickr-day.selected,
 .flatpickr-day.startRange,
 .flatpickr-day.endRange {
-  background: linear-gradient(135deg, #ffcc55, #ff8a00) !important;
-  color: #120a2a !important;
+  background:#1668dc!important;
+  color: #fff !important;
   font-weight: 700;
 }
 
