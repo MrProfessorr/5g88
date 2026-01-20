@@ -29,15 +29,26 @@ async function armSoundsOnce(){
   if(soundArmed) return;
   soundArmed = true;
 
-  try{
- 
-    sfxTick.volume = 0.01;
-    sfxTick.currentTime = 0;
-    await sfxTick.play();
-    sfxTick.pause();
-    sfxTick.currentTime = 0;
-    sfxTick.volume = 0.35;
-  }catch(e){}
+  const warm = async (a, vol=0.01)=>{
+    if(!a) return;
+    try{
+      a.volume = vol;
+      a.currentTime = 0;
+      await a.play();
+      a.pause();
+      a.currentTime = 0;
+      a.volume = 1;
+    }catch(e){}
+  };
+
+  await warm(sfxStart);
+  await warm(sfxTick);
+  await warm(sfxWin);
+
+  // set volume default lepas warm
+  if(sfxStart) sfxStart.volume = 0.95;
+  if(sfxTick)  sfxTick.volume  = 0.35;
+  if(sfxWin)   sfxWin.volume   = 0.95;
 }
 
 document.addEventListener("click", armSoundsOnce, { once:true });
@@ -47,13 +58,12 @@ document.addEventListener("click", armSoundsOnce, { once:true });
 });
 
 function playStart(){
-  if(!sfxStart) return;
+  if(!sfxStart || !soundArmed) return;
   try{
-    armSoundsOnce();
-    const a = sfxStart.cloneNode(true);
-    a.volume = 0.95;
-    a.currentTime = 0;
-    a.play().catch(()=>{});
+    sfxStart.pause();
+    sfxStart.currentTime = 0;
+    sfxStart.volume = 0.95;
+    sfxStart.play().catch(()=>{});
   }catch(e){}
 }
 
@@ -95,21 +105,33 @@ function stopTickLoop(){
     clearInterval(tickTimer);
     tickTimer = null;
   }
-  if(tickInstances.length){
-    tickInstances.forEach(a=>{
-      try{ a.pause(); a.currentTime = 0; }catch(e){}
-    });
-    tickInstances = [];
-  }
+  try{
+    if(sfxTick){
+      sfxTick.pause();
+      sfxTick.currentTime = 0;
+    }
+  }catch(e){}
 }
 
-function startTickLoopFree(){
+function startTickLoopFree(totalMs = 4200){
   stopTickLoop();
-  let speed = 1;
+  const startAt = performance.now();
+  let nextAt = startAt;
+
   tickTimer = setInterval(()=>{
-    playTick(speed);
-    speed = Math.max(0.12, speed - 0.02);
-  }, 40);
+    const now = performance.now();
+    const t = (now - startAt) / totalMs;
+    if(t >= 1){
+      stopTickLoop();
+      return;
+    }
+    const interval = 55 + (140 - 55) * t;
+
+    if(now >= nextAt){
+      playTick(1 - t);
+      nextAt = now + interval;
+    }
+  }, 16);
 }
 const wheelEl = $("wheel");
 if (wheelEl) {
@@ -479,14 +501,15 @@ $("btnOk").onclick = ()=>{
   gotoEnter();
 };
 
-  $("btnSpin").onclick = async ()=>{
-    if(spinning) return;
-    if(!currentPrize || !currentCode) return;
-    await armSoundsOnce();
-    playStart();
-    startTickLoopFree();
-    spinning = true;
-    $("btnSpin").disabled = true;
+$("btnSpin").onclick = async ()=>{
+  if(spinning) return;
+  if(!currentPrize || !currentCode) return;
+  await armSoundsOnce();
+  playStart();
+  const SPIN_MS = 4200;
+  startTickLoopFree(SPIN_MS);
+  spinning = true;
+  $("btnSpin").disabled = true;
 
   
     const res = await validateCode(currentCode);
@@ -522,17 +545,17 @@ if(delta < 0) delta += 360;
 wheelRot = wheelRot + base + delta;
 
 $("wheel").style.transform = `rotate(${wheelRot}deg)`;
-    setTimeout(async ()=>{
-      try{
-        await redeemAndSave(currentCode, winPoints);
-        openModal(winPoints, currentCode);
-      }catch(e){
-        stopTickLoop();
-        showToast("error", e.message || "Redeem failed.");
-      }finally{
-        stopTickLoop();
-        spinning = false;
-        $("btnSpin").disabled = false;
-      }
-    }, 4200);
-  };
+setTimeout(async ()=>{
+  try{
+    await redeemAndSave(currentCode, winPoints);
+    openModal(winPoints, currentCode);
+  }catch(e){
+    stopTickLoop();
+    showToast("error", e.message || "Redeem failed.");
+  }finally{
+    stopTickLoop();
+    spinning = false;
+    $("btnSpin").disabled = false;
+  }
+}, SPIN_MS);
+};
