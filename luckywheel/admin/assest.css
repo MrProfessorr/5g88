@@ -755,13 +755,15 @@ table tbody td{
   color: #e9ecff !important;
   font-weight: 500;
 }
-
+.flatpickr-weekdays {
+  background:#141414!important;
+}
 /* hari biasa */
 .flatpickr-day {
   color: #e9ecff !important;
   border-radius: 8px;
-  border:#303030!important;
-  background:#1b1b1b !important;
+  border:#303030 !important;
+  background:#141414 !important;
 }
 
 /* hover hari */
@@ -798,12 +800,6 @@ table tbody td{
 /* === Tukar border putih jadi GOLD === */
 .flatpickr-calendar {
   border: 1px solid #303030 !important;
-}
-
-/* border kotak hari */
-.flatpickr-day {
-  border:#303030!important;
-  background:#141414 !important;
 }
 /* border range tengah */
 .flatpickr-day.inRange {
