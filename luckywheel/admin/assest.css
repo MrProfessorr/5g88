@@ -173,9 +173,6 @@
   flex:0 0 auto;               
   white-space:nowrap;        
 }
-#rangePicker{
-  width:100% !important;
-}
 @media (max-width: 900px){
   .mini{ flex-wrap:wrap; }
   #presetRow{ width:100%; }
@@ -676,19 +673,6 @@ table tbody td{
   line-height: 1;
 }
 
-#rangePicker{
-  font-variant-numeric: tabular-nums;
-  letter-spacing: .4px;
-  background-image: linear-gradient(to right,
-    transparent 0,
-    transparent calc(50% - 1px),
-    rgba(255,255,255,.12) calc(50% - 1px),
-    rgba(255,255,255,.12) calc(50% + 1px),
-    transparent calc(50% + 1px),
-    transparent 100%
-  );
-  background-repeat: no-repeat;
-}
 /* ===== Totals History: FIX ruang kanan (macam 2 input) ===== */
 #totalsHistoryCard .mini{
   display:flex;
@@ -713,11 +697,30 @@ table tbody td{
   white-space:nowrap;
   justify-content:flex-end;
 }
+/* ===== RANGE PICKER FINAL (1 INPUT, CENTER, ACTIVE BORDER) ===== */
 #rangePicker{
-  background-image: none !important;   /* buang garis tengah */
-  background: rgba(0,0,0,.18) !important;
-  border: 1px solid rgba(255,255,255,.16);
-  letter-spacing: .3px;
+  width:100%;
+  font-variant-numeric: tabular-nums;
+  letter-spacing:.4px;
+
+  text-align:center;            /* ✅ center text */
+  font-weight:800;
+
+  background: rgba(0,0,0,.18);
+  border:1px solid rgba(255,255,255,.16);
+  outline:none;
+  transition: all .2s;
+}
+
+#rangePicker:hover{
+  border-color:#3c89e8;
+}
+
+/* ✅ active/focus border biru balik */
+#rangePicker:focus,
+#rangePicker.flatpickr-input.active{
+  border-color:#1668dc;
+  box-shadow: 0 0 0 3px rgba(22,104,220,.22);
 }
 #rangePicker::-webkit-calendar-picker-indicator{
   filter: invert(1) opacity(.75);
