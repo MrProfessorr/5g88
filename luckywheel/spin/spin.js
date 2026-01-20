@@ -85,7 +85,7 @@ const firebaseConfig = {
   let currentCustomer = "";
   let spinning = false;
   let wheelRot = 0;
-let prizeCfgCache = { NORMAL:[3,6,8,12], SUPER:[15,20,30,40] };
+let prizeCfgCache = { NORMAL:[], SUPER:[] };
 
 function watchPrizeConfig(){
   onValue(ref(db,"settings/prizes"), (snap)=>{
