@@ -631,25 +631,34 @@ function initRangePicker(){
   fpRange = flatpickr(rp, {
     mode: "range",
     dateFormat: "Y-m-d",
+    showMonths: 2,                 // ✅ 2 bulan (Jan/Feb)
     allowInput: false,
     clickOpens: true,
-    onClose(selectedDates, dateStr){
-      if(!dateStr || !dateStr.includes(" to ")) return;
-      const [from, to] = dateStr.split(" to ");
-      rf.value = from;
-      rt.value = to;
+    locale: { rangeSeparator: "  →  " }, // ✅ nampak macam FROM → TO
+    onClose(selectedDates){
+      if(!selectedDates || selectedDates.length < 2) return;
+
+      const from = selectedDates[0];
+      const to   = selectedDates[1];
+
+      rf.value = toDateKey(from);
+      rt.value = toDateKey(to);
+
+      // buang chip active kalau user pilih manual range
       document.querySelectorAll("#presetRow .chipBtn").forEach(b=>b.classList.remove("active"));
+
       applyStatsFilter();
     }
   });
 }
 
+// bila chip preset click, sync UI rangePicker juga
 function syncRangePickerUI(fromKey, toKey){
-  const rp = document.getElementById("rangePicker");
   if(fpRange){
     fpRange.setDate([fromKey, toKey], true);
-  }else if(rp){
-    rp.value = `${fromKey} to ${toKey}`;
+  }else{
+    const rp = document.getElementById("rangePicker");
+    if(rp) rp.value = `${fromKey}  →  ${toKey}`;
   }
 }
 async function ensureYesterdaySaved(){
