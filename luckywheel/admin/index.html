@@ -201,11 +201,13 @@
   <div class="body">
 <div class="mini" style="gap:12px;flex-wrap:wrap;align-items:center">
 
-  <!-- kiri: date range -->
-  <div class="dateRangeRow" style="display:flex;gap:10px;flex:1;min-width:320px">
-    <input id="rangeFrom" class="niceInput" type="date">
-    <input id="rangeTo" class="niceInput" type="date">
-  </div>
+<!-- Flatpickr CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<div class="dateRangeRow" style="display:flex;gap:10px;flex:1;min-width:320px">
+  <input id="rangePicker" class="niceInput" type="text" placeholder="Select date range" readonly>
+  <input id="rangeFrom" type="date" hidden>
+  <input id="rangeTo" type="date" hidden>
+</div>
 
   <!-- kanan: preset chips -->
   <div class="presetRow" id="presetRow" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
@@ -269,6 +271,7 @@
   </div>
 </div>
 <div class="toast" id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script type="module" src="./assestman.js"></script>
 </body>
 </html>
