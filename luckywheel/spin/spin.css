@@ -71,8 +71,6 @@
   }
   .btn:active{transform:translateY(1px)}
   .hidden{display:none !important}
-
-  /* Wheel page */
   .wheelCard{
     width:min(520px, 100%);
     background: radial-gradient(1200px 700px at 20% 20%, #6b2cff 0%, transparent 45%), radial-gradient(900px 600px at 80% 30%, #2b6cff 0%, transparent 55%), linear-gradient(135deg, var(--bg1), var(--bg2));
@@ -121,7 +119,7 @@
     text-shadow:0 1px 0 rgba(255,255,255,.35);
     pointer-events:none;
   }
-/* ==== WHEEL LABEL (miring ke dalam) ==== */
+
 .sliceText{
   position:absolute;
   inset:0;
@@ -134,7 +132,7 @@
   left:50%;
   top:50%;
 
-  width: 110px;              /* kecik sikit */
+  width: 110px; 
   text-align:center;
 
   font-weight:1000;
@@ -151,9 +149,9 @@
     rotate(-90deg);
 
   transform-origin:center;
-  white-space: normal;        /* ✅ boleh turun line */
+  white-space: normal;    
   line-height: 1.05;
-  word-break: break-word;     /* ✅ pecahkan nombor panjang */
+  word-break: break-word; 
 }
 
 .sliceText .sliceLabel[data-flip="1"]{
@@ -194,8 +192,6 @@
     border:1px solid rgba(255,200,85,.25);
     padding:5px 10px; border-radius:999px;
   }
-
-  /* Popup result */
   .overlay{
     position:fixed; inset:0;
     background:rgba(0,0,0,.55);
@@ -260,9 +256,8 @@
     font-weight:900;
     display:none;
   }
-
 #histList{
-  max-height: 220px;      /* bila lebih dari 5 row, jadi scroll */
+  max-height: 220px;
   overflow-y: auto;
   padding-right: 6px;
 }
