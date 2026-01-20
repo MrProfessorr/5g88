@@ -661,3 +661,9 @@ table tbody td{
   font-family: SimSun, sans-serif;
   line-height: 1;
 }
+#rangePicker{
+  cursor:pointer;
+}
+#rangePicker::placeholder{
+  opacity:.7;
+}
