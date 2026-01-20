@@ -620,6 +620,38 @@ function toDateKey(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2
 function startOfDay(d){ const x=new Date(d); x.setHours(0,0,0,0); return x; }
 function endOfDay(d){ const x=new Date(d); x.setHours(23,59,59,999); return x; }
 function addDays(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; }
+let fpRange = null;
+
+function initRangePicker(){
+  const rp = document.getElementById("rangePicker");
+  const rf = document.getElementById("rangeFrom");
+  const rt = document.getElementById("rangeTo");
+  if(!rp || !rf || !rt || !window.flatpickr) return;
+
+  fpRange = flatpickr(rp, {
+    mode: "range",
+    dateFormat: "Y-m-d",
+    allowInput: false,
+    clickOpens: true,
+    onClose(selectedDates, dateStr){
+      if(!dateStr || !dateStr.includes(" to ")) return;
+      const [from, to] = dateStr.split(" to ");
+      rf.value = from;
+      rt.value = to;
+      document.querySelectorAll("#presetRow .chipBtn").forEach(b=>b.classList.remove("active"));
+      applyStatsFilter();
+    }
+  });
+}
+
+function syncRangePickerUI(fromKey, toKey){
+  const rp = document.getElementById("rangePicker");
+  if(fpRange){
+    fpRange.setDate([fromKey, toKey], true);
+  }else if(rp){
+    rp.value = `${fromKey} to ${toKey}`;
+  }
+}
 async function ensureYesterdaySaved(){
   const y = addDays(new Date(), -1);
   const yKey = toDateKey(y);
@@ -930,7 +962,7 @@ function setActiveChip(preset){
   const [s,e] = getRangeByPreset(preset);
   $("rangeFrom").value = toDateKey(s);
   $("rangeTo").value   = toDateKey(e);
-
+  syncRangePickerUI(toDateKey(s), toDateKey(e));
   applyStatsFilter();
 }
 
@@ -993,11 +1025,11 @@ $("rangeTo").addEventListener("change", ()=>{
   applyStatsFilter();
 });
 function initTotalsHistory(){
-  // tunggu element wujud dulu
   if(!$("rangeFrom") || !$("rangeTo") || !document.querySelector("#presetRow .chipBtn")){
     setTimeout(initTotalsHistory, 80);
     return;
   }
+   initRangePicker();
   setActiveChip(activePreset || "today");
 }
 
