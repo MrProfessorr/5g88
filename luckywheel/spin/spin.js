@@ -44,13 +44,19 @@ function armSoundsOnce(){
 }
 
 document.addEventListener("click", armSoundsOnce, { once:true });
+[sfxStart, sfxTick, sfxWin].forEach(a=>{
+  if(!a) return;
+  try { a.load(); } catch(e){}
+});
 
 function playStart(){
-  if(!sfxStart || !soundArmed) return;
+  if(!sfxStart) return;
   try{
-    sfxStart.currentTime = 0;
-    sfxStart.volume = 0.9;
-    sfxStart.play().catch(()=>{});
+    armSoundsOnce();
+    const a = sfxStart.cloneNode(true);
+    a.volume = 0.95;
+    a.currentTime = 0;
+    a.play().catch(()=>{});
   }catch(e){}
 }
 
@@ -90,6 +96,22 @@ function stopTickLoop(){
     clearInterval(tickTimer);
     tickTimer = null;
   }
+}
+
+function startTickLoopFree(){
+  stopTickLoop();
+  let speed = 1;
+  tickTimer = setInterval(()=>{
+    playTick(speed);
+    speed = Math.max(0.12, speed - 0.02);
+  }, 40);
+}
+const wheelEl = $("wheel");
+if (wheelEl) {
+  wheelEl.addEventListener("transitionend", (e) => {
+    if (e.propertyName !== "transform") return;
+    stopTickLoop();
+  });
 }
   function showToast(type, message, opts = {}){
   const root = document.getElementById("toastRoot");
@@ -325,6 +347,7 @@ watchGlobalHistory();
   }
 
 $("btnStart").onclick = async ()=>{
+  armSoundsOnce();
   const cust = ($("customerInput").value || "").trim();
   const code = ($("promoInput").value || "").trim().toUpperCase();
 
@@ -419,6 +442,7 @@ await update(ref(db, `promo_codes/${code}`), {
 
   function openModal(winPoints, code){
     playWin();
+    stopTickLoop();
     $("winText").textContent = `Angpao ${winPoints}`;
     $("winCode").textContent = code;
     $("overlay").style.display = "grid";
@@ -451,7 +475,7 @@ await update(ref(db, `promo_codes/${code}`), {
     if(!currentPrize || !currentCode) return;
     armSoundsOnce();
     playStart();
-    startTickLoop(4300);
+    startTickLoopFree();
     spinning = true;
     $("btnSpin").disabled = true;
 
@@ -469,6 +493,7 @@ await update(ref(db, `promo_codes/${code}`), {
     const winPoints = Number(res.data.points||0);
     const idx = segmentIndexByPoints(winPoints);
 if(idx < 0){
+  stopTickLoop();
   showToast("error", `Invalid code lucky wheel.`, { duration: 4500 });
   spinning = false;
   $("btnSpin").disabled = false;
@@ -496,6 +521,7 @@ $("wheel").style.transform = `rotate(${wheelRot}deg)`;
         stopTickLoop();
         showToast("error", e.message || "Redeem failed.");
       }finally{
+        stopTickLoop();
         spinning = false;
         $("btnSpin").disabled = false;
       }
