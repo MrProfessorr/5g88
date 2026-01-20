@@ -794,31 +794,29 @@ table tbody td{
 /* arrow ◀ ▶ */
 .flatpickr-prev-month svg,
 .flatpickr-next-month svg {
-  fill: #ffd87a !important;
+  fill: #1668dc !important;
 }
 /* === Tukar border putih jadi GOLD === */
 .flatpickr-calendar {
-  border: 1px solid #ffcc55 !important;   /* gold border luar */
+  border: 1px solid #303030 !important;
 }
 
 /* border kotak hari */
 .flatpickr-day {
-  border: 1px solid rgba(255, 204, 85, 0.3) !important;
+  border:#303030!important;
 }
-
 /* border range tengah */
 .flatpickr-day.inRange {
-  border-color: rgba(255, 204, 85, 0.5) !important;
+  border-color: #303030!important;
 }
-
 /* border hari yang dipilih */
 .flatpickr-day.selected,
 .flatpickr-day.startRange,
 .flatpickr-day.endRange {
-  border: 1px solid #ffcc55 !important;
+  border: 1px solid #303030!important;
 }
 
 /* border header atas (bulan) */
 .flatpickr-month {
-  border-bottom: 1px solid rgba(255, 204, 85, 0.6) !important;
+  border-bottom: 1px solid #303030 !important;
 }
