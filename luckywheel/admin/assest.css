@@ -731,9 +731,8 @@ table tbody td{
 
 /* background utama calendar */
 .flatpickr-calendar {
-  background: #120a2a !important;
-  border: 1px solid rgba(255, 200, 80, 0.4);
-  box-shadow: 0 0 20px rgba(255, 200, 80, 0.15);
+  border: 1px solid #303030 !important;
+  -webkit-box-shadow: 1px 0 0 #303030, -1px 0 0 #303030, 0 1px 0 #303030, 0 -1px 0 #303030, 0 3px 13px rgba(0, 0, 0, 0.08) !important;
 }
 
 /* header bulan */
@@ -782,6 +781,9 @@ table tbody td{
 .flatpickr-day.inRange {
   background: #1668dc1a !important;
   color: #fff !important;
+  border-color: #303030!important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 /* hari luar bulan */
@@ -794,14 +796,6 @@ table tbody td{
 .flatpickr-prev-month svg,
 .flatpickr-next-month svg {
   fill: #1668dc !important;
-}
-/* === Tukar border putih jadi GOLD === */
-.flatpickr-calendar {
-  border: 1px solid #303030 !important;
-}
-/* border range tengah */
-.flatpickr-day.inRange {
-  border-color: #303030!important;
 }
 
 /* border header atas (bulan) */
