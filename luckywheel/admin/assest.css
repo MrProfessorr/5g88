@@ -741,20 +741,19 @@ table tbody td{
 
 /* header bulan */
 .flatpickr-month {
-  background: #1a2c6b !important;
+  background: #141414 !important;
 }
-
 /* text bulan & tahun */
 .flatpickr-current-month,
 .flatpickr-monthDropdown-months,
 .flatpickr-monthDropdown-year {
-  color: #ffd87a !important;
+  color: #fff !important;
 }
 
 /* hari (Mon Tue Wed dll) */
 .flatpickr-weekdays span {
   color: #e9ecff !important;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 /* hari biasa */
@@ -802,6 +801,7 @@ table tbody td{
 /* border kotak hari */
 .flatpickr-day {
   border:#303030!important;
+  background:#141414 !important;
 }
 /* border range tengah */
 .flatpickr-day.inRange {
