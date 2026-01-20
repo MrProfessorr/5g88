@@ -506,7 +506,7 @@ $("btnSpin").onclick = async ()=>{
   if(!currentPrize || !currentCode) return;
   await armSoundsOnce();
   playStart();
-  const SPIN_MS = 8000;
+  const SPIN_MS = 7500;
   startTickLoopFree(SPIN_MS);
   spinning = true;
   $("btnSpin").disabled = true;
