@@ -863,7 +863,7 @@ function renderStatsRows(rows){
 
 tb.innerHTML = sorted.map(r=>`
   <tr>
-    <td style="font-weight:900">${r.dateKey || "-"} ${r._label || ""}</td>
+    <td>${r.dateKey || "-"} ${r._label || ""}</td>
     <td>${Number(r.totalCustomers||0)}</td>
     <td>${Number(r.totalPrize||0)}</td>
     <td>${Number(r.totalCodes||0)}</td>
