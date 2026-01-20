@@ -366,7 +366,6 @@
   border:1px solid rgba(255,255,255,.16);
   background:rgba(0,0,0,.18);
   color:var(--txt);
-  font-weight:800;
   outline:none;
   transition: all 0.2s;
 }
@@ -720,7 +719,6 @@ table tbody td{
 #rangePicker:focus,
 #rangePicker.flatpickr-input.active{
   border-color:#1668dc;
-  box-shadow: 0 0 0 3px rgba(22,104,220,.22);
 }
 #rangePicker::-webkit-calendar-picker-indicator{
   filter: invert(1) opacity(.75);
