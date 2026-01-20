@@ -744,12 +744,14 @@ table tbody td{
 .flatpickr-monthDropdown-months,
 .flatpickr-monthDropdown-year {
   color: #fff !important;
+  font-size:14px !important;
+  font-weight:400 !important;
 }
 
 /* hari (Mon Tue Wed dll) */
 .flatpickr-weekdays span {
-  color: #e9ecff !important;
-  font-weight: 500;
+  color: #fff !important;
+  font-weight: 500 !important;
 }
 .flatpickr-weekdays {
   background:#1b1b1b!important;
