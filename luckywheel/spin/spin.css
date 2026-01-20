@@ -332,8 +332,8 @@
 
 .toast.success .t-icon{ background: rgba(39,209,127,.14);}
 .toast.info    .t-icon{ background: rgba(54,162,255,.14);}
-.toast.error   .t-icon{ background: rgba(255,77,77,.14);}
 
-.toast.success .t-title{ color: #27d17f; }
+
+.toast.success .t-title{ color: #00ff84; }
 .toast.info    .t-title{ color: #36a2ff; }
-.toast.error   .t-title{ color: #ff4d4d; }
+.toast.error   .t-title{ color: #ff0000b3; }
