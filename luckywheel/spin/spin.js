@@ -506,7 +506,7 @@ $("btnSpin").onclick = async ()=>{
   if(!currentPrize || !currentCode) return;
   await armSoundsOnce();
   playStart();
-  const SPIN_MS = 3000;
+  const SPIN_MS = 8000;
   startTickLoopFree(SPIN_MS);
   spinning = true;
   $("btnSpin").disabled = true;
@@ -532,7 +532,7 @@ if(idx < 0){
   return;
 }
 
-const spins = 5 + Math.floor(Math.random()*3);
+const spins = 6 + Math.floor(Math.random()*3);
 const base  = 360 * spins;
 const stopAngle = norm360(calcStopRotationForIndex(idx));
 
