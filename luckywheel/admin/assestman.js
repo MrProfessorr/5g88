@@ -154,8 +154,8 @@ const PRIZES_REF = ref(db, "settings/prizes");
 
 // default kalau Firebase kosong
 let prizeConfig = {
-  NORMAL: [3, 6, 9, 12, 15, 18],
-  SUPER:  [20, 25, 30, 35, 40, 88]
+  NORMAL: [],
+  SUPER:  []
 };
 
 async function loadPrizeConfig(){
