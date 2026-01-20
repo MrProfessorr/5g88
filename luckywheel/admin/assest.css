@@ -168,18 +168,13 @@
   align-items:center;
   justify-content:flex-start; 
 }
-.dateRangeRow{
-  flex:1 1 auto;                /* ✅ input ambil ruang */
-  min-width:320px;
-}
 
 #presetRow{
-  flex:0 0 auto;                /* ✅ chips ikut content */
-  white-space:nowrap;           /* ✅ chips tak pecah line */
+  flex:0 0 auto;               
+  white-space:nowrap;        
 }
 #rangePicker{
   width:100% !important;
-  flex:1 1 auto !important;
 }
 @media (max-width: 900px){
   .mini{ flex-wrap:wrap; }
@@ -693,4 +688,34 @@ table tbody td{
     transparent 100%
   );
   background-repeat: no-repeat;
+}
+/* ===== Totals History: FIX ruang kanan (macam 2 input) ===== */
+#totalsHistoryCard .mini{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content:flex-start;
+  flex-wrap:wrap;
+}
+
+#totalsHistoryCard .dateRangeRow{
+  flex:1 1 360px;
+  min-width:320px;
+  display:block !important;   /* penting: paksa bukan flex */
+}
+
+#totalsHistoryCard #rangePicker{
+  width:100% !important;
+  display:block;
+}
+#totalsHistoryCard #presetRow{
+  flex:0 0 auto;
+  white-space:nowrap;
+  justify-content:flex-end;
+}
+@media (max-width: 900px){
+  #totalsHistoryCard #presetRow{
+    width:100%;
+    white-space:normal;
+  }
 }
