@@ -796,8 +796,12 @@ table tbody td{
 .flatpickr-prev-month svg,
 .flatpickr-next-month svg {
   fill: #1668dc !important;
+  transition: fill .2s ease;
 }
-
+.flatpickr-prev-month:hover svg,
+.flatpickr-next-month:hover svg {
+  fill: #3c89e8 !important;
+}
 /* border header atas (bulan) */
 .flatpickr-month {
   border-bottom: 1px solid #303030 !important;
