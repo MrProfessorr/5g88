@@ -162,10 +162,29 @@
   .tag.ok{ color:#37ff9f}
   .tag.bad{color:#ffd0d0}
   .tag.warn{color:#ffac00}
-  .mini{
-    display:flex; gap:10px; align-items:center; justify-content:space-between;
-    margin-top:10px;
-  }
+.mini{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  justify-content:flex-start; 
+}
+.dateRangeRow{
+  flex:1 1 auto;                /* ✅ input ambil ruang */
+  min-width:320px;
+}
+
+#presetRow{
+  flex:0 0 auto;                /* ✅ chips ikut content */
+  white-space:nowrap;           /* ✅ chips tak pecah line */
+}
+#rangePicker{
+  width:100% !important;
+  flex:1 1 auto !important;
+}
+@media (max-width: 900px){
+  .mini{ flex-wrap:wrap; }
+  #presetRow{ width:100%; }
+}
   .toast{
     position:fixed; right:16px; bottom:16px;
     background:rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.14);
