@@ -628,32 +628,39 @@ function initRangePicker(){
   const rt = document.getElementById("rangeTo");
   if(!rp || !rf || !rt || !window.flatpickr) return;
 
+  const tKey = toDateKey(new Date());
+
   fpRange = flatpickr(rp, {
     mode: "range",
     dateFormat: "Y-m-d",
     showMonths: 2,
-    allowInput: false,
     clickOpens: true,
+    allowInput: false,
     locale: { rangeSeparator: "  →  " },
-    onClose(selectedDates){
+
+    // ✅ terus ada 2 tarikh bila load
+    defaultDate: [tKey, tKey],
+
+    onReady(selectedDates, dateStr, inst){
+      rf.value = tKey;
+      rt.value = tKey;
+      inst.input.value = `${tKey}  →  ${tKey}`;
+    },
+
+    onClose(selectedDates, dateStr, inst){
       if(!selectedDates || selectedDates.length < 2) return;
 
-      const from = selectedDates[0];
-      const to   = selectedDates[1];
+      const fromKey = toDateKey(selectedDates[0]);
+      const toKey   = toDateKey(selectedDates[1]);
 
-      rf.value = toDateKey(from);
-      rt.value = toDateKey(to);
-
-      syncRangePickerUI(rf.value, rt.value);
+      rf.value = fromKey;
+      rt.value = toKey;
+      inst.input.value = `${fromKey}  →  ${toKey}`;
 
       document.querySelectorAll("#presetRow .chipBtn").forEach(b=>b.classList.remove("active"));
       applyStatsFilter();
     }
   });
-  const tKey = toDateKey(new Date());
-  rf.value = tKey;
-  rt.value = tKey;
-  syncRangePickerUI(tKey, tKey);
 }
 
 function syncRangePickerUI(fromKey, toKey){
@@ -662,6 +669,7 @@ function syncRangePickerUI(fromKey, toKey){
 
   if(fpRange){
     fpRange.setDate([fromKey, toKey], false);
+    fpRange.input.value = `${fromKey}  →  ${toKey}`;
   }
 }
 async function ensureYesterdaySaved(){
@@ -1027,15 +1035,6 @@ document.querySelectorAll("#presetRow .chipBtn").forEach(btn=>{
   });
 });
 
-// bila user ubah date manual → auto filter (tanpa apply)
-$("rangeFrom").addEventListener("change", ()=>{
-  document.querySelectorAll("#presetRow .chipBtn").forEach(b=>b.classList.remove("active"));
-  applyStatsFilter();
-});
-$("rangeTo").addEventListener("change", ()=>{
-  document.querySelectorAll("#presetRow .chipBtn").forEach(b=>b.classList.remove("active"));
-  applyStatsFilter();
-});
 function initTotalsHistory(){
   if(!$("rangeFrom") || !$("rangeTo") || !document.querySelector("#presetRow .chipBtn")){
     setTimeout(initTotalsHistory, 80);
