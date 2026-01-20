@@ -631,10 +631,10 @@ function initRangePicker(){
   fpRange = flatpickr(rp, {
     mode: "range",
     dateFormat: "Y-m-d",
-    showMonths: 2,                 // ✅ 2 bulan (Jan/Feb)
+    showMonths: 2,
     allowInput: false,
     clickOpens: true,
-    locale: { rangeSeparator: "  →  " }, // ✅ nampak macam FROM → TO
+    locale: { rangeSeparator: "  →  " },
     onClose(selectedDates){
       if(!selectedDates || selectedDates.length < 2) return;
 
@@ -644,21 +644,24 @@ function initRangePicker(){
       rf.value = toDateKey(from);
       rt.value = toDateKey(to);
 
-      // buang chip active kalau user pilih manual range
-      document.querySelectorAll("#presetRow .chipBtn").forEach(b=>b.classList.remove("active"));
+      syncRangePickerUI(rf.value, rt.value);
 
+      document.querySelectorAll("#presetRow .chipBtn").forEach(b=>b.classList.remove("active"));
       applyStatsFilter();
     }
   });
+  const tKey = toDateKey(new Date());
+  rf.value = tKey;
+  rt.value = tKey;
+  syncRangePickerUI(tKey, tKey);
 }
 
-// bila chip preset click, sync UI rangePicker juga
 function syncRangePickerUI(fromKey, toKey){
+  const rp = document.getElementById("rangePicker");
+  if(rp) rp.value = `${fromKey}  →  ${toKey}`;
+
   if(fpRange){
-    fpRange.setDate([fromKey, toKey], true);
-  }else{
-    const rp = document.getElementById("rangePicker");
-    if(rp) rp.value = `${fromKey}  →  ${toKey}`;
+    fpRange.setDate([fromKey, toKey], false);
   }
 }
 async function ensureYesterdaySaved(){
@@ -1039,7 +1042,7 @@ function initTotalsHistory(){
     return;
   }
    initRangePicker();
-  setActiveChip(activePreset || "today");
+  setTimeout(()=> setActiveChip(activePreset || "today"), 0);
 }
 
 // bila page siap (refresh terus auto render)
