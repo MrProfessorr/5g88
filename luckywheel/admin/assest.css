@@ -713,6 +713,9 @@ table tbody td{
   white-space:nowrap;
   justify-content:flex-end;
 }
+#rangePicker{
+  background-image: none !important;
+}
 @media (max-width: 900px){
   #totalsHistoryCard #presetRow{
     width:100%;
