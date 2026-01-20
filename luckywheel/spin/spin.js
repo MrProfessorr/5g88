@@ -25,23 +25,19 @@ let soundArmed = false;
 let tickTimer = null;
 let tickInstances = [];
 
-function armSoundsOnce(){
+async function armSoundsOnce(){
   if(soundArmed) return;
   soundArmed = true;
 
-  [sfxStart, sfxTick, sfxWin].forEach(a=>{
-    if(!a) return;
-    try{
-      a.volume = 0.8;
-      a.currentTime = 0;
-      const p = a.play();
-      if(p && p.then){
-        p.then(()=>{ a.pause(); a.currentTime = 0; }).catch(()=>{});
-      } else {
-        a.pause(); a.currentTime = 0;
-      }
-    }catch(e){}
-  });
+  try{
+ 
+    sfxTick.volume = 0.01;
+    sfxTick.currentTime = 0;
+    await sfxTick.play();
+    sfxTick.pause();
+    sfxTick.currentTime = 0;
+    sfxTick.volume = 0.35;
+  }catch(e){}
 }
 
 document.addEventListener("click", armSoundsOnce, { once:true });
@@ -63,20 +59,13 @@ function playStart(){
 
 function playTick(speed01 = 1){
   if(!sfxTick || !soundArmed) return;
-  try{
-    const a = sfxTick.cloneNode(true);
-    a.volume = 0.25 + 0.35 * speed01;
-    a.playbackRate = 0.95 + 0.2 * speed01;
-    tickInstances.push(a);
-    if(tickInstances.length > 30){
-  const old = tickInstances.shift();
-  try{ old.pause(); old.currentTime = 0; }catch(e){}
-}
-    a.addEventListener("ended", () => {
-      tickInstances = tickInstances.filter(x => x !== a);
-    });
 
-    a.play().catch(()=>{});
+  try{
+    sfxTick.pause();
+    sfxTick.currentTime = 0;
+    sfxTick.volume = 0.35;
+    sfxTick.playbackRate = 1.0;
+    sfxTick.play().catch(()=>{});
   }catch(e){}
 }
 
@@ -493,7 +482,7 @@ $("btnOk").onclick = ()=>{
   $("btnSpin").onclick = async ()=>{
     if(spinning) return;
     if(!currentPrize || !currentCode) return;
-    armSoundsOnce();
+    await armSoundsOnce();
     playStart();
     startTickLoopFree();
     spinning = true;
