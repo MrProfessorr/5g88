@@ -461,7 +461,6 @@ header nav.topNav #userMenu{
   border: 1px solid #dc4446;
   background: #141414;
   color:#dc4446;
-  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
 }
