@@ -19,7 +19,11 @@
     background:#1668dc;
     border-bottom:1px solid var(--stroke);
     backdrop-filter: blur(10px);
+    position: sticky;
+    z-index: 9999999;
+    top: 0;
   }
+header, header nav, header .topNav{ overflow: visible !important; }
 /* nav jadi flex */
 header nav.topNav{
   display:flex;
