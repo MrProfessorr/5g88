@@ -16,16 +16,17 @@
     place-items:center;
     padding:24px;
   }
-  .loginWrap{width:min(980px,100%); display:grid; grid-template-columns:1.2fr .8fr; gap:16px}
+  .loginWrap{width:min(460px,100%); display:block;}
   @media (max-width: 860px){ .loginWrap{grid-template-columns:1fr} }
 
-  .hero,.loginCard{
+  .loginCard{
     background:#1d1d1d;
     border:1px solid rgba(255,255,255,.12);
     border-radius:16px;
     box-shadow:0 18px 50px rgba(0,0,0,.35);
     backdrop-filter: blur(12px);
     overflow:hidden;
+    padding:18px;
   }
   .hero{padding:22px}
   .loginCard{padding:18px}
@@ -42,18 +43,11 @@
 <body>
 
 <div class="loginWrap">
-  <div class="hero">
-    <div class="brandRow"><span class="dot"></span> 5G88 <span style="opacity:.7">ADMIN PANEL</span></div>
-    <h1>Secure Admin Login</h1>
-    <p>Login menggunakan <b>ID + Password</b>. Hanya akaun admin yang dibenarkan boleh masuk ke halaman admin.</p>
-    <div class="chips">
-      <div class="chip">Firebase Auth</div>
-      <div class="chip">Admin Allowlist</div>
-      <div class="chip">Rules Protected</div>
-    </div>
-  </div>
-
   <div class="loginCard">
+    <div class="brandRow" style="margin-bottom:10px">
+      <span class="dot"></span> 5G88 <span style="opacity:.7">ADMIN PANEL</span>
+    </div>
+
     <h3 style="margin:0 0 6px;">Login</h3>
     <div class="body" style="padding:0;">
       <label>Admin ID</label>
