@@ -119,7 +119,7 @@
   async function doLogin(){
     const id = $("uid").value.trim();
     const pw = $("pw").value;
-    if(!id || !pw){ toast("Please enter Admin ID & Password."); return; }
+    if(!id || !pw){ toast("Please fill Username & Password."); return; }
 
     try{
       await setPersistence(auth, browserLocalPersistence);
@@ -127,7 +127,7 @@
 
       const ok = await isAllowedAdmin(cred.user.uid);
       if(!ok){
-        toast("This account is not allowed as Admin.");
+        toast("This account is not allowed.");
         await signOut(auth);
         return;
       }
