@@ -206,8 +206,8 @@ header nav.topNav #userMenu{
     background:rgba(0,0,0,.18); color:var(--txt); cursor:pointer;
     transition: all 0.2s;
   }
-  .btn2:hover{border-color:#3c89e8;}
-  .btn2:active{border-color:#1554ad;}
+  .btn2:hover{border-color:#3c89e8;color:#3c89e8;}
+  .btn2:active{border-color:#1554ad;color:#1554ad;}
   .btn3{
     width:100%;
     padding:10px 12px; border-radius:8px; border:1px solid rgba(255,255,255,.16);
