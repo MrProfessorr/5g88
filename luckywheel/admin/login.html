@@ -162,7 +162,7 @@ async function doLogin(){
   const pw = $("pw").value;
 
   if(!id || !pw){
-    toast("Please enter Admin ID & Password");
+    toast("Please fill Username & Password");
     return;
   }
   setLoginButton("loading");
@@ -179,7 +179,7 @@ async function doLogin(){
     const ok = await isAllowedAdmin(cred.user.uid);
 
     if(!ok){
-      toast("This account is not allowed as Admin");
+      toast("This account is not allowed.");
       await signOut(auth);
       setLoginButton("idle");
       return;
@@ -189,7 +189,6 @@ async function doLogin(){
     setTimeout(()=>{
       location.replace(getRedirectTarget());
     }, 600);
-
   }catch(err){
     toast("Login failed");
     setLoginButton("idle");
