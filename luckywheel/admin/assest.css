@@ -81,7 +81,6 @@ header nav.topNav #userMenu{
   align-items:center;
   padding:0px 15px;
   border-radius:6px;
-  border:0;
   background:transparent;
   color:rgba(255,255,255,0.85);
   cursor:pointer;
@@ -90,6 +89,7 @@ header nav.topNav #userMenu{
   font-size: 14px;
   transition: all 0.2s;
   white-space: nowrap;
+  gap:8px;
 }
 .dropItem:hover{ background: rgba(255,255,255,.08); }
 .dropItem .ico{
