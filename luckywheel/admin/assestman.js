@@ -24,7 +24,7 @@ function goLogin(){
 }
 
 async function isAllowedAdmin(uid){
-  const snap = await get(ref(db, `admins/${uid}`));
+  const snap = await get(ref(db, `isloading/${uid}`));
   return snap.exists() && snap.val() === true;
 }
 
