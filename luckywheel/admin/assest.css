@@ -458,15 +458,15 @@ header nav.topNav #userMenu{
 .btnDel{
   padding: 4px 10px;
   border-radius: 999px;
-  border: 1px solid rgb(129 26 26);
-  background: #1d1d1d;
-  color:#ca1818f2;
+  border: 1px solid #dc4446;
+  background: #141414;
+  color:#dc4446;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
 }
-.btnDel:hover{ background: rgba(255,80,80,.20); }
-.btnDel:active{ transform: translateY(1px); }
+.btnDel:hover{color:#e86e6b;border-color:#7e2e2f;}
+.btnDel:active{ color:#ad393a;border-color:#ad393a;transform: translateY(1px); }
 .small-status {
   font-size: 12px;
   font-weight: 600;
