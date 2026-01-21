@@ -422,7 +422,7 @@ const filtered = (list || []).filter(x=>{
       <td>${x.createdAt ? fmtTime(x.createdAt) : "-"}</td>
       <td>${x.claimedAt ? fmtTime(x.claimedAt) : "-"}</td>
       <td>${statusBadge(x)}</td>
-      <td style="text-align:right;">
+      <td style="text-align:center;">
         <button class="btnDel" data-delcode="${x.code}">Delete</button>
       </td>
     </tr>
