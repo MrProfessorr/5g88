@@ -571,10 +571,14 @@ $("btnSideClose").onclick = closeSidebar;
 $("sideOverlay").onclick = closeSidebar;
 
 $("sideLogout").onclick = async ()=>{
-  const ok = confirm("Logout now?");
-  if(!ok) return;
-  await signOut(auth);
-  goLogin();
+  try{
+    closeSidebar();
+    showToast?.("info", "Logging out...");
+    await signOut(auth);
+  }catch(e){
+  }finally{
+    goLogin();
+  }
 };
 // ===== Prize Modal UI =====
 let editingType = "NORMAL";
