@@ -214,8 +214,8 @@ header nav.topNav #userMenu{
     background:rgba(0,0,0,.18); color:var(--txt); cursor:pointer;
     transition: all 0.2s;
   }
-  .btn3:hover{border-color:#3c89e8;}
-  .btn3:active{border-color:#1554ad;}
+  .btn3:hover{border-color:#3c89e8;color:#3c89e8;}
+  .btn3:active{border-color:#1554ad;color:#1554ad;}
   .tableWrap{
   overflow: hidden;   
 }
