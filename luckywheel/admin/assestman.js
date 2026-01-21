@@ -33,7 +33,7 @@ onAuthStateChanged(auth, async (user)=>{
 
   const ok = await isAllowedAdmin(user.uid);
   if(!ok){
-    alert("Not allowed as admin.");
+    showToast("error", "Not allowed as admin.");
     await signOut(auth);
     goLogin();
     return;
@@ -42,12 +42,27 @@ onAuthStateChanged(auth, async (user)=>{
 });
 
   const $ = (id)=>document.getElementById(id);
-  const toast = (msg)=>{
-    $("toast").textContent = msg;
-    $("toast").style.display="block";
-    clearTimeout(window.__t);
-    window.__t = setTimeout(()=> $("toast").style.display="none", 2200);
-  };
+function showToast(type, msg, opt = {}){
+  const el = $("toast");
+  if(!el) return;
+
+  const duration = opt.duration ?? 2400;
+  el.className = "toast show";
+  if(type === "error") el.style.borderColor = "rgba(255,77,77,.55)";
+  else if(type === "success") el.style.borderColor = "rgba(39,209,127,.55)";
+  else el.style.borderColor = "rgba(255,255,255,.14)";
+
+  el.textContent = msg;
+
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(()=>{
+    el.classList.remove("show");
+    el.style.display = "none";
+  }, duration);
+}
+
+// alias lama kalau masih ada panggilan toast("...")
+const toast = (msg)=> showToast("info", msg);
 let pointsCSApi = null;
 let prizeFilterCSApi = null;
 let statusFilterCSApi = null;
@@ -320,7 +335,7 @@ async function deletePromoCode(code){
     await remove(ref(db, `promo_codes/${code}`));
     toast("Promo code deleted!");
   }catch(e){
-    alert("Delete failed: " + (e.message || e));
+    showToast("error", "Delete failed: " + (e?.message || e));
   }
 }
 
@@ -1100,4 +1115,12 @@ onValue(STATS_REF, (snap)=>{
   statsDailyArr = Object.keys(v).map(k => v[k]).filter(Boolean);
   setActiveChip(activePreset || "today");
   updateSummaryUI();
+});
+window.addEventListener("error", (ev)=>{
+  showToast("error", ev?.message || "Unexpected error");
+});
+
+window.addEventListener("unhandledrejection", (ev)=>{
+  const msg = ev?.reason?.message || String(ev?.reason || "Promise error");
+  showToast("error", msg);
 });
