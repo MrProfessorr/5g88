@@ -645,7 +645,27 @@ function openPrizeModal(){
 function closePrizeModal(){
   $("prizeOverlay").style.display = "none";
 }
+// ===== USER DROPDOWN ACTIONS =====
+document.getElementById("dropPrize")?.addEventListener("click", async ()=>{
+  // tutup dropdown dulu
+  document.getElementById("userMenu")?.classList.remove("open");
 
+  // load config then open modal
+  try{
+    await loadPrizeConfig();
+  }catch(e){
+    console.error(e);
+  }
+  openPrizeModal();
+});
+
+document.getElementById("dropLogout")?.addEventListener("click", async ()=>{
+  document.getElementById("userMenu")?.classList.remove("open");
+
+  // terus logout (tanpa confirm)
+  await signOut(auth);
+  goLogin();
+});
 $("sidePrize").onclick = async ()=>{
   closeSidebar();
   await loadPrizeConfig();
