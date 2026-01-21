@@ -76,8 +76,9 @@ header nav.topNav #userMenu{
 
 .dropItem{
   width:100%;
-  display:flex; align-items:center; gap:10px;
-  justify-content:flex-start;
+  display:grid;
+  grid-template-columns: 22px 1fr 22px; /* icon | text | spacer */
+  align-items:center;
   padding:0px 15px;
   border-radius:6px;
   border:0;
@@ -96,17 +97,20 @@ header nav.topNav #userMenu{
 .dropItem .ico{
   width:18px;
   height:18px;
-  flex:0 0 18px;
+  justify-self:start;     
   fill:currentColor;
   opacity:.95;
 }
 
 .dropItem .dropText{
-  flex:1;
-  text-align:center;          /* ✅ text tengah */
+  text-align:center;
+  font-weight:700;
   letter-spacing:.2px;
-  transform: translateX(-9px); /* ✅ compensate sebab icon kiri ambil ruang */
 }
+.dropItem::after{
+  content:"";
+}
+
   .brand{display:flex; align-items:center; gap:10px; letter-spacing:.5px}
   .dot{width:12px; height:12px; border-radius:999px; background:linear-gradient(90deg,var(--gold1),var(--gold2)); box-shadow:0 0 18px rgba(255,170,0,.55)}
   nav a{color:#fff; text-decoration:none; margin-left:14px;transition: all 0.2s;}
