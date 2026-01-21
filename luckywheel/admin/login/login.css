@@ -1,0 +1,76 @@
+  /* tambah style khas login (tak kacau css utama) */
+  body{
+    background: radial-gradient(900px 600px at 20% 10%, rgba(22, 104, 220, .35), transparent 60%), radial-gradient(900px 600px at 80% 30%, rgba(22, 104, 220, .35), transparent 60%), linear-gradient(180deg, #070A16, #000 60%, #0E1B4E);
+    display:grid;
+    place-items:center;
+    padding:24px;
+  }
+  label {
+    display: block;
+    font-size: 12px;
+    color: rgb(233 236 255 / 85%);
+    margin: 10px 0 6px;
+  }
+  .loginWrap{width:min(420px,100%); display:block;}
+  @media (max-width: 860px){ .loginWrap{grid-template-columns:1fr} }
+
+  .loginCard{
+    background: rgb(142 142 142 / 6%);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:12px;
+    box-shadow:0 18px 50px rgba(0,0,0,.35);
+    backdrop-filter: blur(12px);
+    overflow:hidden;
+    padding:18px;
+  }
+  .where-style{margin:0 0 6px;text-align:center;padding: 10px;font-size: 25px;}
+  .brandRow{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.5px}
+  .dot{width:12px;height:12px;border-radius:999px;background:linear-gradient(90deg,var(--gold1),var(--gold2))}
+  .hero h1{margin:10px 0 8px;font-size:28px}
+  .hero p{margin:0;color:var(--muted);line-height:1.5}
+  .chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+  .chip{padding:8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.18);font-size:12px;color:rgba(233,236,255,.86)}
+  .btn{margin-top:10px}
+  /* ✅ Toast center */
+/* ✅ Toast bottom-center (kecil macam contoh) */
+#toast.toast{
+  position: fixed !important;
+  left: 50% !important;
+  bottom: 28px !important;
+  top: auto !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  width: auto !important;
+  height: auto !important;
+  min-width: auto !important;
+  max-width: min(520px, calc(100vw - 32px)) !important;
+
+  padding: 10px 14px !important;
+  border-radius: 12px !important;
+
+  background: rgba(10,12,16,.92) !important;
+  border: 1px solid rgba(255,255,255,.14) !important;
+  color: #fff !important;
+
+  box-shadow: 0 14px 40px rgba(0,0,0,.45) !important;
+  backdrop-filter: blur(10px);
+
+  opacity: 0;
+  pointer-events: none;
+  z-index: 999999 !important;
+}
+#toast.toast.show{
+  opacity: 1;
+  pointer-events: auto;
+  animation: toastUp .18s ease-out;
+}
+@keyframes toastUp{
+  from{ transform: translateX(-50%) translateY(8px); opacity: .2; }
+  to{ transform: translateX(-50%) translateY(0); opacity: 1; }
+}
