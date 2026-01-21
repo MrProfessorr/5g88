@@ -14,11 +14,32 @@
     <div class="brand"><span class="dot"></span> LUCKY DRAW <span style="opacity:.6;font-weight:700">ADMIN</span></div>
   </div>
 
-  <nav>
-    <a href="5g88/luckywheel/spin">Home</a>
-    <a href="#codes">Codes</a>
-    <a href="#history">History</a>
-  </nav>
+<nav class="topNav" id="topNav">
+  <a href="5g88/luckywheel/spin">Home</a>
+  <a href="#codes">Codes</a>
+  <a href="#history">History</a>
+
+  <!-- ✅ USER BUTTON (KANAN) -->
+  <div class="userMenu" id="userMenu">
+    <button class="userBtn" id="userBtn" type="button">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8V22h19.2v-2.8c0-3.2-6.4-4.8-9.6-4.8z"></path>
+      </svg>
+
+      <span id="navUsername">—</span>
+      <span class="caret">▾</span>
+    </button>
+
+    <div class="userDrop" id="userDrop">
+      <button class="dropItem" id="dropLogout" type="button">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 21V3h9v2H5v14h7v2zm13-4l-1.375-1.45l2.55-2.55H9v-2h8.175l-2.55-2.55L16 7l5 5z"></path>
+        </svg>
+        <span>Logout</span>
+      </button>
+    </div>
+  </div>
+</nav>
 </header>
 
 <!-- Sidebar overlay -->
