@@ -107,7 +107,19 @@ header nav.topNav #userMenu{
 .dropItem::after{
   content:"";
 }
+.copyBtn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;                /* jarak icon & text */
+}
 
+.copyBtn .btnIcon{
+  width:18px;
+  height:18px;
+  fill:currentColor;      /* ikut warna text */
+  flex-shrink:0;
+}
   .brand{display:flex; align-items:center; gap:10px; letter-spacing:.5px}
   .dot{width:12px; height:12px; border-radius:999px; background:linear-gradient(90deg,var(--gold1),var(--gold2)); box-shadow:0 0 18px rgba(255,170,0,.55)}
   nav a{color:#fff; text-decoration:none; margin-left:14px;transition: all 0.2s;}
