@@ -55,8 +55,8 @@ header nav.topNav #userMenu{
   top: calc(100% + 10px);
   right: 0;
   min-width: 180px;
-  padding: 8px;
-  border-radius: 18px;
+  padding:12px;
+  border-radius: 8px;
   border: 1px solid rgba(255,255,255,.14);
   background: rgba(18,18,18,.92);
   box-shadow: 0 14px 40px rgba(0,0,0,.5);
