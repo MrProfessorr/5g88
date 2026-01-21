@@ -547,7 +547,7 @@ function renderHist(list){
       <td>FREE ${x.points}</td>
       <td>${(codeCustomerMap[String(x.code || x._code || "").toUpperCase()] || x.customer || x.userId || "-")}</td>
       <td>${fmtTime(x.redeemedAt)}</td>
-      <td style="text-align:right;">
+      <td style="text-align:center;">
         <button class="btnDel" data-del="${x._code}__${x._rid}">Delete</button>
       </td>
     </tr>
