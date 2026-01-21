@@ -91,9 +91,7 @@ header nav.topNav #userMenu{
   transition: all 0.2s;
   white-space: nowrap;
 }
-
 .dropItem:hover{ background: rgba(255,255,255,.08); }
-.dropItem .ico{ width:18px; height:18px; fill:currentColor; opacity:.95; }
 .dropItem .ico{
   width:18px;
   height:18px;
@@ -101,10 +99,8 @@ header nav.topNav #userMenu{
   fill:currentColor;
   opacity:.95;
 }
-
 .dropItem .dropText{
   text-align:center;
-  font-weight:700;
   letter-spacing:.2px;
 }
 .dropItem::after{
