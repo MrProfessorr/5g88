@@ -20,16 +20,17 @@
   @media (max-width: 860px){ .loginWrap{grid-template-columns:1fr} }
 
   .loginCard{
-    background:#1d1d1d;
+    background:#141414;
     border:1px solid rgba(255,255,255,.12);
-    border-radius:16px;
+    border-radius:12px;
     box-shadow:0 18px 50px rgba(0,0,0,.35);
     backdrop-filter: blur(12px);
     overflow:hidden;
     padding:18px;
   }
-  .hero{padding:22px}
+  
   .loginCard{padding:18px}
+  .where-style{margin:0 0 6px;}
   .brandRow{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.5px}
   .dot{width:12px;height:12px;border-radius:999px;background:linear-gradient(90deg,var(--gold1),var(--gold2))}
   .hero h1{margin:10px 0 8px;font-size:28px}
@@ -72,8 +73,6 @@
   pointer-events: none;
   z-index: 999999 !important;
 }
-
-/* show/hide anim */
 #toast.toast.show{
   opacity: 1;
   pointer-events: auto;
@@ -89,7 +88,7 @@
 
 <div class="loginWrap">
   <div class="loginCard">
-    <h3 style="margin:0 0 6px;">Login</h3>
+    <h3 class="where-style">Login</h3>
     <div class="body" style="padding:0;">
       <label>Username</label>
       <input id="uid"autocomplete="username">
