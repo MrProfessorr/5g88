@@ -39,35 +39,49 @@
   .btn{margin-top:10px}
   .hint{margin-top:10px;color:var(--muted);font-size:12px;line-height:1.4}
   /* ✅ Toast center */
-.toast{
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 9999;
+/* ✅ Toast bottom-center (kecil macam contoh) */
+#toast.toast{
+  position: fixed !important;
+  left: 50% !important;
+  bottom: 28px !important;
+  top: auto !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
 
-  display: none;
-  padding: 12px 14px;
-  border-radius: 12px;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 
-  background: rgba(0,0,0,.78);
-  border: 1px solid rgba(255,255,255,.14);
-  color: #fff;
+  width: auto !important;
+  height: auto !important;
+  min-width: auto !important;
+  max-width: min(520px, calc(100vw - 32px)) !important;
 
-  min-width: min(360px, calc(100vw - 40px));
-  text-align: center;
-  box-shadow: 0 18px 60px rgba(0,0,0,.45);
+  padding: 10px 14px !important;
+  border-radius: 12px !important;
+
+  background: rgba(10,12,16,.92) !important;
+  border: 1px solid rgba(255,255,255,.14) !important;
+  color: #fff !important;
+
+  box-shadow: 0 14px 40px rgba(0,0,0,.45) !important;
   backdrop-filter: blur(10px);
+
+  opacity: 0;
+  pointer-events: none;
+  z-index: 999999 !important;
 }
 
-/* optional: animasi pop */
-.toast.show{
-  display: block;
-  animation: toastPop .18s ease-out;
+/* show/hide anim */
+#toast.toast.show{
+  opacity: 1;
+  pointer-events: auto;
+  animation: toastUp .18s ease-out;
 }
-@keyframes toastPop{
-  from{ transform: translate(-50%, -50%) scale(.96); opacity: .2; }
-  to{ transform: translate(-50%, -50%) scale(1); opacity: 1; }
+@keyframes toastUp{
+  from{ transform: translateX(-50%) translateY(8px); opacity: .2; }
+  to{ transform: translateX(-50%) translateY(0); opacity: 1; }
 }
 </style>
 </head>
