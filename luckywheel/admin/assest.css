@@ -67,9 +67,11 @@ header nav.topNav #userMenu{
   background: rgba(18,18,18,.92);
   box-shadow: 0 14px 40px rgba(0,0,0,.5);
   backdrop-filter: blur(10px);
-  display:none;
+  display:flex;
   z-index: 99999999;
   transition: all 0.2s;
+  flex-direction: column;
+  gap: 8px;  
 }
 
 .userMenu.open .userDrop{ display:block; }
