@@ -89,6 +89,7 @@ header nav.topNav #userMenu{
   height: 32px;
   font-size: 14px;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .dropItem:hover{ background: rgba(255,255,255,.08); }
@@ -104,7 +105,6 @@ header nav.topNav #userMenu{
 .dropItem .dropText{
   flex:1;
   text-align:center;          /* ✅ text tengah */
-  font-weight:700;
   letter-spacing:.2px;
   transform: translateX(-9px); /* ✅ compensate sebab icon kiri ambil ruang */
 }
