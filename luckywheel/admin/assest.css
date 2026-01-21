@@ -936,22 +936,3 @@ table tbody td{
 .flatpickr-days {
 background:#141414 !important;
 }
-/* ===== FIX CENTER ACTION COLUMN ===== */
-th.actionCol,
-td.actionCol{
-  text-align:center !important;
-  vertical-align: middle !important;
-}
-
-td.actionCol{
-  padding-left:10px !important;
-  padding-right:10px !important;
-}
-
-/* button delete memang center */
-td.actionCol .btnDel{
-  display:inline-flex !important;
-  align-items:center;
-  justify-content:center;
-  margin:0 auto !important;
-}
