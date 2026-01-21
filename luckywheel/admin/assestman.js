@@ -17,7 +17,39 @@ const firebaseConfig = {
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
   const auth = getAuth(app);
+function getNiceUsername(user){
+  const dn = (user?.displayName || "").trim();
+  if(dn) return dn;
 
+  const em = (user?.email || "").trim();
+  if(em && em.includes("@")) return em.split("@")[0];
+
+  return (user?.uid || "User").slice(0,8);
+}
+
+function initUserMenuUI(){
+  const menu = document.getElementById("userMenu");
+  const btn  = document.getElementById("userBtn");
+  const out  = document.getElementById("navUsername");
+
+  if(!menu || !btn || !out) return;
+
+  btn.addEventListener("click", (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    menu.classList.toggle("open");
+  });
+
+  document.addEventListener("click", (e)=>{
+    if(!menu.contains(e.target)) menu.classList.remove("open");
+  });
+
+  document.addEventListener("keydown", (e)=>{
+    if(e.key === "Escape") menu.classList.remove("open");
+  });
+}
+
+window.addEventListener("DOMContentLoaded", initUserMenuUI);
 function goLogin(){
   const rt = encodeURIComponent(location.href);
   location.replace(`./login?redirect=${rt}`);
@@ -38,6 +70,8 @@ onAuthStateChanged(auth, async (user)=>{
     goLogin();
     return;
   }
+const nameEl = document.getElementById("navUsername");
+  if(nameEl) nameEl.textContent = getNiceUsername(user);
   document.documentElement.style.visibility = "visible";
 });
 
@@ -1128,3 +1162,14 @@ window.addEventListener("unhandledrejection", (ev)=>{
   const msg = ev?.reason?.message || String(ev?.reason || "Promise error");
   showToast("error", msg);
 });
+const dropLogoutBtn = document.getElementById("dropLogout");
+if(dropLogoutBtn){
+  dropLogoutBtn.onclick = async ()=>{
+    try{
+      document.getElementById("userMenu")?.classList.remove("open");
+      await signOut(auth);
+    }finally{
+      goLogin();
+    }
+  };
+}
