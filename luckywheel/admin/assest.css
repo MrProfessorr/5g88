@@ -20,6 +20,69 @@
     border-bottom:1px solid var(--stroke);
     backdrop-filter: blur(10px);
   }
+/* nav jadi flex */
+header nav.topNav{
+  display:flex;
+  align-items:center;
+  gap:18px;
+}
+
+/* userMenu tolak ke kanan */
+header nav.topNav #userMenu{
+  margin-left:auto;
+}
+
+/* ===== USER DROPDOWN ===== */
+.userMenu{ position:relative; display:inline-flex; align-items:center; }
+
+.userBtn{
+  display:flex; align-items:center; gap:8px;
+  padding:8px 12px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(0,0,0,.18);
+  color:#e9ecff;
+  cursor:pointer;
+  font-weight:800;
+  line-height:1;
+}
+
+.userBtn:hover{ background:rgba(0,0,0,.28); }
+.userBtn .ico{ width:18px; height:18px; fill:currentColor; opacity:.95; }
+.userBtn .caret{ opacity:.8; font-size:12px; margin-left:2px; }
+
+.userDrop{
+  position:absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 180px;
+  padding: 8px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(18,18,18,.92);
+  box-shadow: 0 14px 40px rgba(0,0,0,.5);
+  backdrop-filter: blur(10px);
+  display:none;
+  z-index: 9999;
+}
+
+.userMenu.open .userDrop{ display:block; }
+
+.dropItem{
+  width:100%;
+  display:flex; align-items:center; gap:10px;
+  padding:10px 10px;
+  border-radius:12px;
+  border:0;
+  background:transparent;
+  color:#e9ecff;
+  cursor:pointer;
+  font-weight:800;
+  text-align:left;
+}
+
+.dropItem:hover{ background: rgba(255,255,255,.08); }
+.dropItem .ico{ width:18px; height:18px; fill:currentColor; opacity:.95; }
   .brand{display:flex; align-items:center; gap:10px; letter-spacing:.5px}
   .dot{width:12px; height:12px; border-radius:999px; background:linear-gradient(90deg,var(--gold1),var(--gold2)); box-shadow:0 0 18px rgba(255,170,0,.55)}
   nav a{color:#fff; text-decoration:none; margin-left:14px;transition: all 0.2s;}
