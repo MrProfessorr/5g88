@@ -91,7 +91,8 @@ header nav.topNav #userMenu{
   white-space: nowrap;
   gap:8px;
 }
-.dropItem:hover{ background: rgba(255,255,255,.08); }
+.dropItem:hover{ border-color:#3c89e8}
+.dropItem:active{ border-color:#1668dc}
 .dropItem .ico{
   width:18px;
   height:18px;
