@@ -1,7 +1,8 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-  import {
-    getDatabase, ref, set, get, child, onValue, query, limitToLast,remove,update
-  } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+  import {getDatabase, ref, set, get, child, onValue, query, limitToLast,remove,update} 
+  from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+  import { getAuth, onAuthStateChanged, signOut } 
+  from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDSqpbnkb3GLNFlHLYSz5XyRYPvKLAOCOA",
@@ -15,8 +16,31 @@ const firebaseConfig = {
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
+  const auth = getAuth(app);
 
-  // ===== UI helpers =====
+function goLogin(){
+  const rt = encodeURIComponent(location.href);
+  location.replace(`./login.html?redirect=${rt}`);
+}
+
+async function isAllowedAdmin(uid){
+  const snap = await get(ref(db, `admins/${uid}`));
+  return snap.exists() && snap.val() === true;
+}
+
+onAuthStateChanged(auth, async (user)=>{
+  if(!user){ goLogin(); return; }
+
+  const ok = await isAllowedAdmin(user.uid);
+  if(!ok){
+    alert("Not allowed as admin.");
+    await signOut(auth);
+    goLogin();
+    return;
+  }
+  document.documentElement.style.visibility = "visible";
+});
+
   const $ = (id)=>document.getElementById(id);
   const toast = (msg)=>{
     $("toast").textContent = msg;
@@ -531,6 +555,12 @@ $("btnMenu").onclick = openSidebar;
 $("btnSideClose").onclick = closeSidebar;
 $("sideOverlay").onclick = closeSidebar;
 
+$("sideLogout").onclick = async ()=>{
+  const ok = confirm("Logout now?");
+  if(!ok) return;
+  await signOut(auth);
+  goLogin();
+};
 // ===== Prize Modal UI =====
 let editingType = "NORMAL";
 
