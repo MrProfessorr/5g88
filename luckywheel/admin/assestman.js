@@ -360,6 +360,25 @@ const payload = {
     const d = new Date(ts);
     return d.toLocaleString();
   }
+function toDateKeyLocal(d){
+  const x = new Date(d);
+  const y = x.getFullYear();
+  const m = String(x.getMonth()+1).padStart(2,"0");
+  const da = String(x.getDate()).padStart(2,"0");
+  return `${y}-${m}-${da}`;
+}
+
+function getCodesRangeFromInputs(){
+  const fromV = $("codesRangeFrom")?.value;
+  const toV   = $("codesRangeTo")?.value;
+  if(!fromV || !toV) return null;
+
+  const s = new Date(fromV + "T00:00:00");
+  const e = new Date(toV   + "T23:59:59");
+  if(s > e) return null;
+
+  return [s.getTime(), e.getTime()];
+}
 
 async function deletePromoCode(code){
   const ok = confirm(`Delete promo code: ${code}?`);
@@ -377,20 +396,27 @@ function renderCodes(list){
 const q = $("searchCode").value.trim().toUpperCase();
 const st = ($("statusFilter")?.value || "ALL").toUpperCase();
 
+const range = getCodesRangeFromInputs();
 const filtered = (list || []).filter(x=>{
-  // 1) search filter
   const hitSearch = !q
     ? true
     : (String(x.code||"").toUpperCase().includes(q) ||
        String(x.customer||"").toUpperCase().includes(q));
 
   // 2) status filter
-  // approved = claimedAt ada atau usedCount > 0
   const isApproved = !!x.claimedAt || (Number(x.usedCount||0) > 0);
   const rowStatus = isApproved ? "APPROVED" : "PENDING";
   const hitStatus = (st === "ALL") ? true : (rowStatus === st);
 
-  return hitSearch && hitStatus;
+  // 3) ✅ date range filter (createdAt)
+  let hitDate = true;
+  if(range){
+    const [sMs, eMs] = range;
+    const t = Number(x.createdAt || 0);
+    hitDate = (t >= sMs && t <= eMs);
+  }
+
+  return hitSearch && hitStatus && hitDate;
 });
 
   const tb = $("codesTbody");
@@ -764,7 +790,46 @@ onClose(selectedDates, dateStr, inst){
 }
   });
 }
+let fpCodesRange = null;
 
+function initCodesRangePicker(){
+  const rp = document.getElementById("codesRangePicker");
+  const rf = document.getElementById("codesRangeFrom");
+  const rt = document.getElementById("codesRangeTo");
+  if(!rp || !rf || !rt || !window.flatpickr) return;
+
+  const tKey = toDateKeyLocal(new Date());
+
+  fpCodesRange = flatpickr(rp, {
+    mode: "range",
+    dateFormat: "Y-m-d",
+    showMonths: 2,
+    clickOpens: true,
+    allowInput: false,
+    locale: { rangeSeparator: "  →  " },
+    defaultDate: [tKey, tKey],
+
+    onReady(selectedDates, dateStr, inst){
+      rf.value = tKey;
+      rt.value = tKey;
+      inst.input.value = `${tKey}  →  ${tKey}`;
+      renderCodes(allCodes); // ✅ auto filter masa load
+    },
+
+    onClose(selectedDates, dateStr, inst){
+      if(!selectedDates || selectedDates.length < 2) return;
+
+      const fromKey = toDateKeyLocal(selectedDates[0]);
+      const toKey   = toDateKeyLocal(selectedDates[1]);
+
+      rf.value = fromKey;
+      rt.value = toKey;
+      inst.input.value = `${fromKey}  →  ${toKey}`;
+
+      renderCodes(allCodes); // ✅ refresh table active codes
+    }
+  });
+}
 function syncRangePickerUI(fromKey, toKey){
   const rp = document.getElementById("rangePicker");
   if(rp) rp.value = `${fromKey}  →  ${toKey}`;
@@ -1160,6 +1225,7 @@ function initTotalsHistory(){
 
 // bila page siap (refresh terus auto render)
 window.addEventListener("DOMContentLoaded", initTotalsHistory);
+window.addEventListener("DOMContentLoaded", initCodesRangePicker);
 setTimeout(initTotalsHistory, 200); // fallback kalau browser lambat
 
 onValue(STATS_REF, (snap)=>{
