@@ -396,6 +396,7 @@ header nav.topNav #userMenu{
   background:rgba(255,255,255,.08);
   border:1px solid rgba(255,255,255,.10);
   color:#fff;
+  transition: all 0.2s;
 }
 .pillTag button{
   border:none;
@@ -403,9 +404,12 @@ header nav.topNav #userMenu{
   color:rgba(255,255,255,0.65);
   cursor:pointer;
   font-size: 10px;
+  transition: all 0.2s;
 }
 .pillTag button:hover{color:#fff;transform: scale(1.15);}
 .pillTag button:active{transform: translateY(1px);
+#prizeInput:hover{border-color:#3c89e8;}
+#prizeInput:focus{border-color:#1668dc;}
 .addRow{
   display:grid;
   grid-template-columns: 1fr auto;  /* input = full, button ikut size */
