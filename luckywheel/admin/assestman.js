@@ -1222,10 +1222,6 @@ function initTotalsHistory(){
    initRangePicker();
   setTimeout(()=> setActiveChip(activePreset || "today"), 0);
 }
-
-// bila page siap (refresh terus auto render)
-window.addEventListener("DOMContentLoaded", initTotalsHistory);
-window.addEventListener("DOMContentLoaded", initCodesRangePicker);
 setTimeout(initTotalsHistory, 200); // fallback kalau browser lambat
 
 onValue(STATS_REF, (snap)=>{
@@ -1253,3 +1249,16 @@ if(dropLogoutBtn){
     }
   };
 }
+// ✅ BOOT INIT (safe even if DOMContentLoaded already fired)
+(function bootUI(){
+  const run = ()=>{
+    try{ initTotalsHistory(); }catch(e){ console.error("initTotalsHistory err", e); }
+    try{ initCodesRangePicker(); }catch(e){ console.error("initCodesRangePicker err", e); }
+  };
+
+  if(document.readyState !== "loading") run();
+  else window.addEventListener("DOMContentLoaded", run);
+
+  // fallback kalau element lambat render
+  setTimeout(run, 250);
+})();
