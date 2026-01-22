@@ -372,7 +372,7 @@ header nav.topNav #userMenu{
   transition: all 0.2s;
 }
 .modalX:hover{color:#fff;transform: scale(1.15);}
-.modalX:active{transform: translateY(1px);
+.modalX:active{transform: translateY(1px);}
 .modalBody{padding:14px 16px}
 .modalFoot{
   padding:12px 16px;display:flex;justify-content:flex-end;gap:10px;
