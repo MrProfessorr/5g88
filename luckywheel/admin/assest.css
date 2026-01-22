@@ -340,7 +340,8 @@ header nav.topNav #userMenu{
   text-align:left;margin-top:10px;
   transition: all 0.2s;
 }
-
+.sideItem:hover{border-color:#3c89e8;color:#3c89e8;}
+.sideItem:active{border-color:#1554ad;color:#1554ad;}
 /* Prize Modal */
 .modalOverlay{
   position:fixed;inset:0;display:none;place-items:center;
