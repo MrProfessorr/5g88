@@ -158,16 +158,11 @@ header nav.topNav #userMenu{
   margin-top: 0;          /* sebab .btn2 global ada margin-top:10px */
   white-space: nowrap;
 }
-
 /* Lock width dropdown status supaya tak berubah */
 #statusFilterCS{
   width:100% !important;
   min-width:0 !important;
   max-width: none !important;
-}
-#statusFilterCS .cs,
-#statusFilterCS .csBtn{
-  width: 100% !important;
 }
   .toggle{
     display:flex; gap:10px; margin-top:10px;
@@ -729,25 +724,12 @@ table tbody tr:hover td{
 table tbody td{
   transition: background .15s ease;
 }
-#codes .row{
-  display:grid;
-  grid-template-columns: 1fr 200px auto;
-  gap:10px;                 /* kalau nak rapat: 8px */
-  align-items:center;
-}
 
 /* Search input sama tinggi */
 #codes #searchCode{
   height:44px;
   padding:0 14px;
   box-sizing:border-box;
-}
-
-/* Status dropdown LOCK 200px (tak berubah bila Approved/Pending) */
-#statusFilterCS{
-  width:200px !important;
-  min-width:200px !important;
-  max-width:200px !important;
 }
 
 /* Pastikan custom select betul-betul ikut 44px */
