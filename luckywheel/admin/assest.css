@@ -331,7 +331,9 @@ header nav.topNav #userMenu{
 .sidebar.show{transform:translateX(0)}
 .sideHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .sideTitle{font-size:16px;font-weight:900}
-.sideClose{border:none;background:transparent;color:#fff;cursor:pointer}
+.sideClose{border:none;background:transparent;color:rgba(255,255,255,0.65);cursor:pointer}
+.sideClose:hover{color:#fff;transform: scale(1.15);}
+.sideClose:active{transform: translateY(1px);}
 .sideItem{
   width:100%;padding:12px 12px;border-radius:8px;
   border:1px solid rgba(255,255,255,.10);
