@@ -468,13 +468,7 @@ initStatusFilterCustomSelect();
 refreshStatusFilterCustomSelect();
 $("statusFilter")?.addEventListener("change", ()=>renderCodes(allCodes));
   $("searchCode").addEventListener("input", ()=>renderCodes(allCodes));
-  $("btnRefresh").onclick = async ()=>{
-    const snap = await get(ref(db, "promo_codes"));
-    const v = snap.val() || {};
-    allCodes = Object.keys(v).map(k=>v[k]);
-    renderCodes(allCodes);
-    toast("Refreshed!");
-  };
+
 
   // ===== Load History (latest) =====
   let allHist = [];
