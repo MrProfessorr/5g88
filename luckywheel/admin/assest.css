@@ -760,17 +760,6 @@ table tbody td{
   box-sizing:border-box;
 }
 
-/* Refresh button jangan jauh & jangan stretch */
-#codes #btnRefresh{
-  width:auto !important;
-  min-width:160px;          /* boleh adjust */
-  height:44px;
-  line-height:44px;
-  padding:0 16px;
-  margin-top:0 !important;  /* override .btn2 global */
-  white-space:nowrap;
-  justify-self:end;         /* rapat ke kanan */
-}
 /* === SAMAKAN TINGGI INPUT & BUTTON REDEMPTION HISTORY === */
 #searchHist,
 #btnClearView {
