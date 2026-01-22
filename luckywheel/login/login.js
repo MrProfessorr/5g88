@@ -48,10 +48,25 @@ function toast(msg){
     return clean ? `${clean}@5g88.admin` : "";
   }
 
-  function getRedirectTarget(){
-    const u = new URL(location.href);
-    return u.searchParams.get("redirect") || "https://mrprofessorr.github.io/5g88/luckywheel/admin";
-  }
+function getBasePath(){
+  // contoh: /5g88/luckywheel/login/ -> /5g88/luckywheel
+  // contoh: /login/ -> ""
+  const parts = location.pathname.split("/").filter(Boolean);
+
+  // buang "login" jika memang sedang dalam /login
+  const last = parts[parts.length - 1];
+  if (last === "login") parts.pop();
+
+  return "/" + parts.join("/");
+}
+
+function getRedirectTarget(){
+  const u = new URL(location.href);
+  const rt = u.searchParams.get("redirect");
+  if(rt) return rt;
+  const base = getBasePath();
+  return `${location.origin}${base}/drawheel/`;
+}
 
   async function isAllowedAdmin(uid){
     const snap = await get(ref(db, `isloading/${uid}`));
