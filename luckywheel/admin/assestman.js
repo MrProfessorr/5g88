@@ -367,6 +367,18 @@ function toDateKeyLocal(d){
   const da = String(x.getDate()).padStart(2,"0");
   return `${y}-${m}-${da}`;
 }
+function startOfMonthKeyLocal(d){
+  const x = new Date(d);
+  x.setHours(0,0,0,0);
+  x.setDate(1);
+  return toDateKeyLocal(x);
+}
+function endOfMonthKeyLocal(d){
+  const x = new Date(d);
+  x.setHours(0,0,0,0);
+  x.setMonth(x.getMonth()+1, 0); // last day current month
+  return toDateKeyLocal(x);
+}
 function centerFlatpickr(inst){
   const cal = inst?.calendarContainer;
   const input = inst?.input;
@@ -850,7 +862,11 @@ function initCodesRangePicker(){
   const rt = document.getElementById("codesRangeTo");
   if(!rp || !rf || !rt || !window.flatpickr) return;
 
-  const tKey = toDateKeyLocal(new Date());
+  const now = new Date();
+
+  // ✅ default 1 bulan penuh
+  const from0 = startOfMonthKeyLocal(now);
+  const to0   = endOfMonthKeyLocal(now);
 
   fpCodesRange = flatpickr(rp, {
     mode: "range",
@@ -859,36 +875,52 @@ function initCodesRangePicker(){
     clickOpens: true,
     allowInput: false,
     locale: { rangeSeparator: "  →  " },
-    defaultDate: [tKey, tKey],
 
-onReady(selectedDates, dateStr, inst){
-  rf.value = tKey;
-  rt.value = tKey;
-  inst.input.value = `${tKey}  →  ${tKey}`;
-  renderCodes(allCodes);
-  applyResponsiveFlatpickr(inst);
-},
-onOpen(selectedDates, dateStr, inst){
-  applyResponsiveFlatpickr(inst);
-},
- onMonthChange(sd, ds, inst){
-  applyResponsiveFlatpickr(inst);
-},
- onYearChange(sd, ds, inst){
-  applyResponsiveFlatpickr(inst);
-},
-    
+    // ✅ start terus 1 bulan
+    defaultDate: [from0, to0],
+
+    onReady(selectedDates, dateStr, inst){
+      rf.value = from0;
+      rt.value = to0;
+
+      // ✅ paksa input terus tunjuk 2 tarikh (tanpa click)
+      inst.input.value = `${from0}  →  ${to0}`;
+
+      renderCodes(allCodes);
+      applyResponsiveFlatpickr(inst);
+    },
+
+    onOpen(selectedDates, dateStr, inst){
+      // ✅ pastikan bila open pun kekal 2 tarikh
+      inst.input.value = `${rf.value || from0}  →  ${rt.value || to0}`;
+      applyResponsiveFlatpickr(inst);
+    },
+
+    onMonthChange(sd, ds, inst){
+      inst.input.value = `${rf.value || from0}  →  ${rt.value || to0}`;
+      applyResponsiveFlatpickr(inst);
+    },
+
+    onYearChange(sd, ds, inst){
+      inst.input.value = `${rf.value || from0}  →  ${rt.value || to0}`;
+      applyResponsiveFlatpickr(inst);
+    },
+
     onClose(selectedDates, dateStr, inst){
-      if(!selectedDates || selectedDates.length < 2) return;
+      // kalau user pilih 1 tarikh je, jangan overwrite
+      if(!selectedDates || selectedDates.length < 2){
+        inst.input.value = `${rf.value || from0}  →  ${rt.value || to0}`;
+        return;
+      }
 
       const fromKey = toDateKeyLocal(selectedDates[0]);
       const toKey   = toDateKeyLocal(selectedDates[1]);
 
       rf.value = fromKey;
       rt.value = toKey;
-      inst.input.value = `${fromKey}  →  ${toKey}`;
 
-      renderCodes(allCodes); // ✅ refresh table active codes
+      inst.input.value = `${fromKey}  →  ${toKey}`;
+      renderCodes(allCodes);
     }
   });
 }
