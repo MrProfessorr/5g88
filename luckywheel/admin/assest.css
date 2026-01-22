@@ -145,11 +145,10 @@ header nav.topNav #userMenu{
   input:hover, select:hover{border-color:#3c89e8;}
   input:focus, select:focus{border-color:#1668dc;}
   .row{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
-#codes .row{
+#codes .row{ 
   display:grid;
-  grid-template-columns: 1fr 240px;
-  gap: 10px; /* kalau nak rapat: 8px */
-  align-items: center;
+  gap:10px;
+  align-items:center;
 }
 
 /* khas utk row codes sahaja: btn refresh jangan full */
@@ -906,4 +905,47 @@ table tbody td{
 }
 .flatpickr-days {
 background:#141414 !important;
+}
+#codes .codesToolsRow{
+  display:grid !important;
+  grid-template-columns: 1fr 240px 280px;
+  gap:10px;
+  align-items:center;
+}
+
+/* Mobile: stack */
+@media (max-width: 980px){
+  #codes .codesToolsRow{
+    grid-template-columns: 1fr;
+  }
+}
+
+/* DateRange input (flatpickr) ikut style niceInput, tinggi sama 44px */
+#codes #codesRangePicker{
+  height:44px;
+  padding:0 14px;
+  line-height:44px;
+  text-align:center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* dateRangeRow jangan shrink & width penuh */
+#codes .dateRangeRow{
+  width:100%;
+  min-width:0;
+}
+
+/* pastikan dropdown status & daterange sama tinggi */
+#codes #searchCode{
+  height:44px;
+  padding:0 14px;
+}
+#codes #statusFilterCS .csBtn{
+  height:44px !important;
+  line-height:44px !important;
+}
+
+/* ✅ paling penting: popup flatpickr jangan kena hidden/clip */
+#codes, #codes .body, #codes .card, #codes .row{
+  overflow: visible !important;
 }
