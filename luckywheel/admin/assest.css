@@ -950,11 +950,10 @@ background:#141414 !important;
   overflow: visible !important;
 }
 /* ✅ paksa flatpickr popup center */
-.flatpickr-calendar.centered {
+.flatpickr-calendar.fp-input-center {
   position: fixed !important;
-  left: 50% !important;
-  right: auto !important;
-  transform: translateX(-50%) !important;
+  left: 0 !important;          /* JS akan set left */
+  transform: none !important;  /* jangan translate */
   z-index: 99999999 !important;
 }
 
