@@ -52,7 +52,7 @@ function initUserMenuUI(){
 window.addEventListener("DOMContentLoaded", initUserMenuUI);
 function goLogin(){
   const rt = encodeURIComponent(location.href);
-  location.replace(`./login?redirect=${rt}`);
+  location.replace(`/login?redirect=${rt}`);
 }
 
 async function isAllowedAdmin(uid){
