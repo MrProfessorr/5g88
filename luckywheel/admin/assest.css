@@ -147,7 +147,7 @@ header nav.topNav #userMenu{
   .row{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
 #codes .row{
   display:grid;
-  grid-template-columns: 1fr 200px auto; /* refresh ikut size button */
+  grid-template-columns: 1fr 240px;
   gap: 10px; /* kalau nak rapat: 8px */
   align-items: center;
 }
@@ -161,9 +161,9 @@ header nav.topNav #userMenu{
 
 /* Lock width dropdown status supaya tak berubah */
 #statusFilterCS{
-  width: 200px !important;
-  min-width: 200px !important;
-  max-width: 200px !important;
+  width:100% !important;
+  min-width:0 !important;
+  max-width: none !important;
 }
 #statusFilterCS .cs,
 #statusFilterCS .csBtn{
