@@ -956,10 +956,3 @@ background:#141414 !important;
   transform: none !important;  /* jangan translate */
   z-index: 99999999 !important;
 }
-
-/* optional: bagi responsive width */
-@media (max-width: 900px){
-  .flatpickr-calendar.centered{
-    width: min(96vw, 720px) !important;
-  }
-}
