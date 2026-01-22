@@ -949,3 +949,18 @@ background:#141414 !important;
 #codes, #codes .body, #codes .card, #codes .row{
   overflow: visible !important;
 }
+/* ✅ paksa flatpickr popup center */
+.flatpickr-calendar.centered {
+  position: fixed !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  z-index: 99999999 !important;
+}
+
+/* optional: bagi responsive width */
+@media (max-width: 900px){
+  .flatpickr-calendar.centered{
+    width: min(96vw, 720px) !important;
+  }
+}
