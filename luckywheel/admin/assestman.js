@@ -367,7 +367,22 @@ function toDateKeyLocal(d){
   const da = String(x.getDate()).padStart(2,"0");
   return `${y}-${m}-${da}`;
 }
+function centerFlatpickr(inst){
+  const cal = inst?.calendarContainer;
+  const input = inst?.input;
+  if(!cal || !input) return;
 
+  cal.classList.add("centered");
+
+  // letak bawah input tapi horizontally center screen
+  const r = input.getBoundingClientRect();
+  const top = Math.min(
+    window.innerHeight - cal.offsetHeight - 12,
+    r.bottom + 8
+  );
+
+  cal.style.top = `${Math.max(12, top)}px`;
+}
 function getCodesRangeFromInputs(){
   const fromV = $("codesRangeFrom")?.value;
   const toV   = $("codesRangeTo")?.value;
@@ -760,16 +775,17 @@ function initRangePicker(){
     clickOpens: true,
     allowInput: false,
     locale: { rangeSeparator: "  →  " },
-
-    // ✅ terus ada 2 tarikh bila load
     defaultDate: [tKey, tKey],
 
     onReady(selectedDates, dateStr, inst){
       rf.value = tKey;
       rt.value = tKey;
       inst.input.value = `${tKey}  →  ${tKey}`;
+      centerFlatpickr(inst);
     },
-
+  onOpen(selectedDates, dateStr, inst){
+    centerFlatpickr(inst);
+  },
 onClose(selectedDates, dateStr, inst){
   if(!selectedDates || selectedDates.length < 2) return;
 
@@ -813,9 +829,12 @@ function initCodesRangePicker(){
       rf.value = tKey;
       rt.value = tKey;
       inst.input.value = `${tKey}  →  ${tKey}`;
-      renderCodes(allCodes); // ✅ auto filter masa load
+      renderCodes(allCodes);
+      centerFlatpickr(inst);
     },
-
+   onOpen(selectedDates, dateStr, inst){
+    centerFlatpickr(inst);
+  },
     onClose(selectedDates, dateStr, inst){
       if(!selectedDates || selectedDates.length < 2) return;
 
