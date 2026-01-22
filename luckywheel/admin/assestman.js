@@ -50,9 +50,18 @@ function initUserMenuUI(){
 }
 
 window.addEventListener("DOMContentLoaded", initUserMenuUI);
+
+function getBasePath(){
+  const parts = location.pathname.split("/").filter(Boolean);
+  const last = parts[parts.length - 1];
+  if (last === "drawheel" || last === "login") parts.pop();
+  return "/" + parts.join("/");
+}
+
 function goLogin(){
   const rt = encodeURIComponent(location.href);
-  location.replace(`./login?redirect=${rt}`);
+  const base = getBasePath();
+  location.replace(`${location.origin}${base}/login/?redirect=${rt}`);
 }
 
 async function isAllowedAdmin(uid){
