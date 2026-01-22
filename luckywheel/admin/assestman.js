@@ -372,16 +372,33 @@ function centerFlatpickr(inst){
   const input = inst?.input;
   if(!cal || !input) return;
 
+  // class untuk css optional
   cal.classList.add("centered");
 
-  // letak bawah input tapi horizontally center screen
-  const r = input.getBoundingClientRect();
-  const top = Math.min(
-    window.innerHeight - cal.offsetHeight - 12,
-    r.bottom + 8
-  );
+  requestAnimationFrame(()=>{
+    const r = input.getBoundingClientRect();
 
-  cal.style.top = `${Math.max(12, top)}px`;
+    const calW = cal.offsetWidth || 320;
+    const calH = cal.offsetHeight || 300;
+
+    // ✅ bawah input
+    let top = r.bottom + 8;
+
+    // ✅ tengah input
+    let left = (r.left + r.width / 2) - (calW / 2);
+
+    // clamp supaya tak keluar screen
+    const pad = 12;
+    left = Math.max(pad, Math.min(left, window.innerWidth - calW - pad));
+    top  = Math.max(pad, Math.min(top,  window.innerHeight - calH - pad));
+
+    // ✅ pakai fixed supaya tak lari bila parent ada transform
+    cal.style.position = "fixed";
+    cal.style.left = `${left}px`;
+    cal.style.top  = `${top}px`;
+    cal.style.transform = "none";
+    cal.style.zIndex = "99999999";
+  });
 }
 function getCodesRangeFromInputs(){
   const fromV = $("codesRangeFrom")?.value;
@@ -786,6 +803,9 @@ function initRangePicker(){
   onOpen(selectedDates, dateStr, inst){
     centerFlatpickr(inst);
   },
+  onMonthChange(sd, ds, inst){ centerFlatpickr(inst); },
+  onYearChange(sd, ds, inst){ centerFlatpickr(inst); },
+
 onClose(selectedDates, dateStr, inst){
   if(!selectedDates || selectedDates.length < 2) return;
 
@@ -835,6 +855,9 @@ function initCodesRangePicker(){
    onOpen(selectedDates, dateStr, inst){
     centerFlatpickr(inst);
   },
+  onMonthChange(sd, ds, inst){ centerFlatpickr(inst); },
+  onYearChange(sd, ds, inst){ centerFlatpickr(inst); },
+    
     onClose(selectedDates, dateStr, inst){
       if(!selectedDates || selectedDates.length < 2) return;
 
