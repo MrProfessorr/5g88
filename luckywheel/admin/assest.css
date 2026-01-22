@@ -252,7 +252,7 @@ header nav.topNav #userMenu{
   th{color:#fff; font-weight:600}
   .tag{
     display:inline-flex; align-items:center; gap:6px;
-     ; font-size:12px; font-weight:600;
+     font-size:12px; font-weight:600;
   }
   .tag.ok{ color:#37ff9f}
   .tag.bad{color:#ffd0d0}
@@ -407,7 +407,7 @@ header nav.topNav #userMenu{
   transition: all 0.2s;
 }
 .pillTag button:hover{color:#fff;transform: scale(1.15);}
-.pillTag button:active{transform: translateY(1px);
+.pillTag button:active{transform: translateY(1px);}
 .addRow{
   display:grid;
   grid-template-columns: 1fr auto;  /* input = full, button ikut size */
