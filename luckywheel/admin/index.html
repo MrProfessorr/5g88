@@ -193,10 +193,9 @@
   <div class="card" id="codes">
     <h3>Active Promo Codes</h3>
     <div class="body">
-<div class="row" style="grid-template-columns: 1fr 240px;">
+<div class="row codesToolsRow">
   <input id="searchCode" placeholder="Search by code / Username..."/>
 
-  <!-- STATUS FILTER (custom select macam points) -->
   <div class="selectWrap">
     <select id="statusFilter" class="nativeSelect">
       <option value="ALL" selected>All</option>
@@ -204,6 +203,13 @@
       <option value="PENDING">Pending</option>
     </select>
     <div id="statusFilterCS"></div>
+  </div>
+
+  <!-- ✅ NEW: Date Range (Active Codes) -->
+  <div class="dateRangeRow">
+    <input id="codesRangePicker" class="niceInput" type="text" placeholder="Select date range" readonly>
+    <input id="codesRangeFrom" type="date" hidden>
+    <input id="codesRangeTo" type="date" hidden>
   </div>
 </div>
       
