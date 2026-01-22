@@ -327,7 +327,6 @@ header nav.topNav #userMenu{
   backdrop-filter:blur(14px);
   z-index: 9999999;
   padding:14px;
-  transition: all 0.2s;
 }
 .sidebar.show{transform:translateX(0)}
 .sideHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
@@ -949,10 +948,49 @@ background:#141414 !important;
 #codes, #codes .body, #codes .card, #codes .row{
   overflow: visible !important;
 }
-/* ✅ paksa flatpickr popup center */
-.flatpickr-calendar.fp-input-center {
+.flatpickr-calendar.centered{
   position: fixed !important;
-  left: 0 !important;          /* JS akan set left */
-  transform: none !important;  /* jangan translate */
+  transform: none !important;
   z-index: 99999999 !important;
+}
+/* ===== FLATPICKR MOBILE FIX ===== */
+@media (max-width: 520px){
+
+  /* input date range: bagi ruang & text elok */
+  #rangePicker, #codesRangePicker{
+    font-size: 13px;
+    padding: 0 10px;
+  }
+
+  /* calendar jangan overflow screen */
+  .flatpickr-calendar{
+    width: min(96vw, 360px) !important;
+    max-width: 96vw !important;
+    left: 2vw !important;
+    right: auto !important;
+  }
+
+  /* bila 2 bulan, paksa stack ke bawah (jadi 1 column) */
+  .flatpickr-calendar.showTimeInput,
+  .flatpickr-calendar.multiMonth{
+    width: min(96vw, 360px) !important;
+  }
+
+  /* container bulan jadi flex-wrap supaya tak terpotong */
+  .flatpickr-calendar .flatpickr-months,
+  .flatpickr-calendar .flatpickr-innerContainer{
+    flex-wrap: wrap !important;
+  }
+
+  /* paksa 1 bulan sahaja nampak elok */
+  .flatpickr-calendar .flatpickr-month{
+    width: 100% !important;
+  }
+
+  /* grid hari ikut width */
+  .flatpickr-days, .dayContainer{
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
 }
