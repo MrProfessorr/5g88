@@ -144,6 +144,8 @@ header nav.topNav #userMenu{
   }
   input:hover, select:hover{border-color:#3c89e8;}
   input:focus, select:focus{border-color:#1668dc;}
+  #prizeinput:hover{border-color:#3c89e8;}
+  #prizeinput:focus{border-color:#1668dc;}
   .row{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
 #codes .row{ 
   display:grid;
@@ -154,7 +156,7 @@ header nav.topNav #userMenu{
 /* khas utk row codes sahaja: btn refresh jangan full */
 #codes .row .btn2{
   width: auto;
-  margin-top: 0;          /* sebab .btn2 global ada margin-top:10px */
+  margin-top: 0; 
   white-space: nowrap;
 }
 /* Lock width dropdown status supaya tak berubah */
