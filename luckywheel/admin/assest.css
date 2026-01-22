@@ -144,8 +144,8 @@ header nav.topNav #userMenu{
   }
   input:hover, select:hover{border-color:#3c89e8;}
   input:focus, select:focus{border-color:#1668dc;}
-  #prizeinput:hover{border-color:#3c89e8;}
-  #prizeinput:focus{border-color:#1668dc;}
+  .addRow input:hover{border-color:#3c89e8;}
+  .addRow input:focus{border-color:#1668dc;}
   .row{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
 #codes .row{ 
   display:grid;
