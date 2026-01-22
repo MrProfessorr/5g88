@@ -400,6 +400,18 @@ function centerFlatpickr(inst){
     cal.style.zIndex = "99999999";
   });
 }
+function applyResponsiveFlatpickr(inst){
+  if(!inst) return;
+
+  const isMobile = window.matchMedia("(max-width: 560px)").matches;
+  inst.set("showMonths", isMobile ? 1 : 2);
+  setTimeout(()=> centerFlatpickr(inst), 0);
+}
+
+window.addEventListener("resize", ()=>{
+  if(fpRange) applyResponsiveFlatpickr(fpRange);
+  if(fpCodesRange) applyResponsiveFlatpickr(fpCodesRange);
+});
 function getCodesRangeFromInputs(){
   const fromV = $("codesRangeFrom")?.value;
   const toV   = $("codesRangeTo")?.value;
@@ -794,17 +806,21 @@ function initRangePicker(){
     locale: { rangeSeparator: "  →  " },
     defaultDate: [tKey, tKey],
 
-    onReady(selectedDates, dateStr, inst){
-      rf.value = tKey;
-      rt.value = tKey;
-      inst.input.value = `${tKey}  →  ${tKey}`;
-      centerFlatpickr(inst);
-    },
-  onOpen(selectedDates, dateStr, inst){
-    centerFlatpickr(inst);
-  },
-  onMonthChange(sd, ds, inst){ centerFlatpickr(inst); },
-  onYearChange(sd, ds, inst){ centerFlatpickr(inst); },
+ onReady(selectedDates, dateStr, inst){
+  rf.value = tKey;
+  rt.value = tKey;
+  inst.input.value = `${tKey}  →  ${tKey}`;
+  applyResponsiveFlatpickr(inst);
+},
+ onOpen(selectedDates, dateStr, inst){
+  applyResponsiveFlatpickr(inst);
+},
+ onMonthChange(sd, ds, inst){
+  applyResponsiveFlatpickr(inst);
+},
+  onYearChange(sd, ds, inst){
+  applyResponsiveFlatpickr(inst);
+},
 
 onClose(selectedDates, dateStr, inst){
   if(!selectedDates || selectedDates.length < 2) return;
@@ -845,18 +861,22 @@ function initCodesRangePicker(){
     locale: { rangeSeparator: "  →  " },
     defaultDate: [tKey, tKey],
 
-    onReady(selectedDates, dateStr, inst){
-      rf.value = tKey;
-      rt.value = tKey;
-      inst.input.value = `${tKey}  →  ${tKey}`;
-      renderCodes(allCodes);
-      centerFlatpickr(inst);
-    },
-   onOpen(selectedDates, dateStr, inst){
-    centerFlatpickr(inst);
-  },
-  onMonthChange(sd, ds, inst){ centerFlatpickr(inst); },
-  onYearChange(sd, ds, inst){ centerFlatpickr(inst); },
+onReady(selectedDates, dateStr, inst){
+  rf.value = tKey;
+  rt.value = tKey;
+  inst.input.value = `${tKey}  →  ${tKey}`;
+  renderCodes(allCodes);
+  applyResponsiveFlatpickr(inst);
+},
+onOpen(selectedDates, dateStr, inst){
+  applyResponsiveFlatpickr(inst);
+},
+ onMonthChange(sd, ds, inst){
+  applyResponsiveFlatpickr(inst);
+},
+ onYearChange(sd, ds, inst){
+  applyResponsiveFlatpickr(inst);
+},
     
     onClose(selectedDates, dateStr, inst){
       if(!selectedDates || selectedDates.length < 2) return;
