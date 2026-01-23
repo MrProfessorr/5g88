@@ -29,7 +29,9 @@ header {
 }
 
 body{ padding-bottom: 76px; }
-
+header nav{
+  display: none !important;
+}
 
 .bottomNav{
   position: fixed;
