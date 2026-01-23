@@ -41,8 +41,7 @@ body{ padding-bottom: 76px; }
   grid-template-columns: repeat(3, 1fr);
   align-items: center;
   padding: 8px 10px;
-
-  background: linear-gradient(180deg, rgba(10,14,24,.92), rgba(0,0,0,.96));
+  background-image: url("https://api.5g88.homes/media/Untitled_design_Hjq8KRJ_Y6ldTH5.png");
   border-top: 1px solid rgba(255,255,255,.12);
   backdrop-filter: blur(10px);
   z-index: 999999;
