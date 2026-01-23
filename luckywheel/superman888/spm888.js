@@ -436,9 +436,11 @@ function norm360(deg){
     }
     const ridRef = push(ref(db, `redemptionsByCode/${code}`));
     const ridKey = ridRef.key;
+    const siteName = String(currentPrize?.site || "").trim() || "-";
 
 const payload = {
   code,
+  site: siteName,
   points,
   customer: currentCustomer || (currentPrize?.customer || ""),
   userId,
@@ -446,13 +448,17 @@ const payload = {
 };
 
     await set(ridRef, payload);
-    await set(ref(db, `userHistory/${userId}/${ridKey}`), {
-      code, points, redeemedAt: payload.redeemedAt
-    });
+await set(ref(db, `userHistory/${userId}/${ridKey}`), {
+  code,
+  site: siteName,
+  points,
+  redeemedAt: payload.redeemedAt
+});
 
 await set(ref(db, `redemptionsAll/${ridKey}`), {
   ridKey,
   code,
+  site: siteName,
   points,
   customer: payload.customer || "",
   userId,
