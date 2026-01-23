@@ -119,23 +119,27 @@ function showToast(type, msg, opt = {}) {
 
   const duration = opt.duration ?? 2400;
 
-  // ✅ WAJIB: hidupkan balik toast
+  // ✅ show
   el.style.display = "block";
-  el.className = "toast show";
+  el.style.opacity = "1";
+  el.classList.add("show");
 
-  if (type === "error") {
-    el.style.borderColor = "rgba(255,77,77,.55)";
-  } else if (type === "success") {
-    el.style.borderColor = "rgba(39,209,127,.55)";
-  } else {
-    el.style.borderColor = "rgba(255,255,255,.14)";
-  }
+  if (type === "error") el.style.borderColor = "rgba(255,77,77,.55)";
+  else if (type === "success") el.style.borderColor = "rgba(39,209,127,.55)";
+  else el.style.borderColor = "rgba(255,255,255,.14)";
+
   el.textContent = msg;
 
   clearTimeout(window.__toastTimer);
   window.__toastTimer = setTimeout(() => {
+    // ✅ start hide
     el.classList.remove("show");
-    // ❌ JANGAN letak display:none
+    el.style.opacity = "0";
+
+    // ✅ lepas fade sikit, baru betul2 hilang
+    setTimeout(() => {
+      el.style.display = "none";
+    }, 220);
   }, duration);
 }
 
