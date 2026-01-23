@@ -1,22 +1,13 @@
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-  import {getDatabase, ref, set, get, child, onValue, query, limitToLast,remove,update} 
-  from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
-  import { getAuth, onAuthStateChanged, signOut } 
-  from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { db, auth } from "../common/firebase.js";
+import { siteRoot, getAdminSite, setAdminSite } from "../common/site.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDSqpbnkb3GLNFlHLYSz5XyRYPvKLAOCOA",
-  authDomain: "lucky-spined.firebaseapp.com",
-  databaseURL: "https://lucky-spined-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "lucky-spined",
-  storageBucket: "lucky-spined.firebasestorage.app",
-  messagingSenderId: "708886212396",
-  appId: "1:708886212396:web:2cb7a900fe1a7891510689"
-};
+import { ref, set, get, onValue, remove, update } 
+from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-  const auth = getAuth(app);
+import { onAuthStateChanged, signOut } 
+from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+let SITE = getAdminSite();
+let ROOT = siteRoot(SITE);
 function getNiceUsername(user){
   const dn = (user?.displayName || "").trim();
   if(dn) return dn;
@@ -65,7 +56,7 @@ function goLogin(){
 }
 
 async function isAllowedAdmin(uid){
-  const snap = await get(ref(db, `isloading/${uid}`));
+  const snap = await get(ref(db, `${ROOT}/isloading/${uid}`));
   return snap.exists() && snap.val() === true;
 }
 
@@ -84,7 +75,30 @@ const nameEl = document.getElementById("navUsername");
   document.documentElement.style.visibility = "visible";
 });
 
-  const $ = (id)=>document.getElementById(id);
+const $ = (id)=>document.getElementById(id);
+function applySiteUI(){
+  const b1 = document.getElementById("site5g88");
+  const b2 = document.getElementById("siteSpm888");
+  const cust = document.getElementById("customer");
+  if(!b1 || !b2 || !cust) return;
+
+  b1.classList.toggle("active", SITE==="5g88");
+  b2.classList.toggle("active", SITE==="spm888");
+
+  cust.disabled = !SITE;
+}
+
+function setSite(site){
+  SITE = setAdminSite(site);
+  ROOT = siteRoot(SITE);
+  applySiteUI();
+  location.reload();
+}
+
+document.getElementById("site5g88")?.addEventListener("click", ()=> setSite("5g88"));
+document.getElementById("siteSpm888")?.addEventListener("click", ()=> setSite("spm888"));
+
+window.addEventListener("DOMContentLoaded", applySiteUI);
 function showToast(type, msg, opt = {}){
   const el = $("toast");
   if(!el) return;
@@ -232,7 +246,7 @@ function cleanPrizeList(arr){
     .sort((a,b)=>a-b);
 }
 // ===== Prize settings in Firebase =====
-const PRIZES_REF = ref(db, "settings/prizes");
+const PRIZES_REF = ref(db, `${ROOT}/settings/prizes`);
 
 // default kalau Firebase kosong
 let prizeConfig = {
@@ -300,7 +314,7 @@ $("typeSuper").onclick = ()=>{
   async function generateUniqueCode(){
     for(let i=0;i<20;i++){
       const c = genCode(6);
-      const snap = await get(ref(db, `promo_codes/${c}`));
+      const snap = await get(ref(db, `${ROOT}/promo_codes/${c}`));
       if(!snap.exists()) return c;
     }
     // fallback
@@ -337,8 +351,7 @@ const payload = {
   status: "ACTIVE"
 };
 
-    await set(ref(db, `promo_codes/${code}`), payload);
-
+    await set(ref(db, `${ROOT}/promo_codes/${code}`), payload);
     $("genCode").textContent = code;
     $("genMeta").textContent = `${prizeType} • FREE ${points} • limit ${usageLimit} • expires in ${expHours}h`;
     $("btnCopy").disabled = false;
@@ -450,7 +463,7 @@ async function deletePromoCode(code){
   if(!ok) return;
 
   try{
-    await remove(ref(db, `promo_codes/${code}`));
+    await remove(ref(db, `${ROOT}/promo_codes/${code}`));
     toast("Promo code deleted!");
   }catch(e){
     showToast("error", "Delete failed: " + (e?.message || e));
@@ -529,7 +542,7 @@ const filtered = (list || []).filter(x=>{
 }
 function loadCodesLive(){
   onValue(
-    ref(db, "promo_codes"),
+    ref(db, `${ROOT}/promo_codes`),
     (snap)=>{
       console.log("promo_codes exists?", snap.exists());
       const v = snap.val() || {};
@@ -571,18 +584,18 @@ async function deleteHistRow(x){
     const updates = {};
 
     // 1) delete group utama
-    updates[`redemptionsByCode/${x._code}/${x._rid}`] = null;
+    updates[`${ROOT}/redemptionsByCode/${x._code}/${x._rid}`] = null;
 
     // 2) cuba delete redemptionsAll by same key (untuk data baru)
-    updates[`redemptionsAll/${x._rid}`] = null;
+    updates[`${ROOT}/redemptionsAll/${x._rid}`] = null;
 
     // 3) optional userHistory
     if(x.userId){
-      updates[`userHistory/${x.userId}/${x._rid}`] = null;
+      updates[`${ROOT}/userHistory/${x.userId}/${x._rid}`] = null;
     }
 
     // ====== fallback untuk DATA LAMA (redemptionsAll key random) ======
-    const allSnap = await get(ref(db, "redemptionsAll"));
+    const allSnap = await get(ref(db, `${ROOT}/redemptionsAll`));
     if(allSnap.exists()){
       const all = allSnap.val() || {};
       const targetCode = String(x._code || x.code || "").toUpperCase();
@@ -595,7 +608,7 @@ async function deleteHistRow(x){
 
         // match paling selamat: code + redeemedAt
         if(itCode === targetCode && itAt === targetAt){
-          updates[`redemptionsAll/${k}`] = null;
+          updates[`${ROOT}/redemptionsAll/${k}`] = null;
           break;
         }
       }
@@ -650,7 +663,7 @@ function renderHist(list){
 }
 
 function loadHistoryLive(){
-  onValue(ref(db, "redemptionsByCode"), (snap)=>{
+  onValue(ref(db, `${ROOT}/redemptionsByCode`), (snap)=>{
     const v = snap.val() || {};
     const arr = [];
 
@@ -801,7 +814,7 @@ $("prizeSave").onclick = async ()=>{
   closePrizeModal();
   toast("Prize settings saved!");
 };
-const STATS_REF = ref(db, "stats/daily");
+const STATS_REF = ref(db, `${ROOT}/stats/daily`);
 
 function pad2(n){ return String(n).padStart(2,"0"); }
 function toDateKey(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
@@ -947,7 +960,7 @@ async function ensureYesterdaySaved(){
   const yKey = toDateKey(y);
 
   try{
-    const snap = await get(ref(db, `stats/daily/${yKey}`));
+    const snap = await get(ref(db, `${ROOT}/stats/daily/${yKey}`));
     if(!snap.exists()){
       await saveSnapshotForDate(y);
       console.log("[stats] catch-up saved:", yKey);
@@ -1016,7 +1029,6 @@ function buildSummaryTotalsForType(type){
     return { totalCustomers, totalPrize, totalCodes, claim, unclaim };
   }
 
-  // ===== NORMAL/SUPER: kira berdasarkan allCodes ikut range =====
   const range = getRangeFromInputs();
   if(!range) return { totalCustomers:0,totalPrize:0,totalCodes:0,claim:0,unclaim:0 };
 
@@ -1118,14 +1130,14 @@ function buildSnapshotForDate(dateObj){
 
 async function saveSnapshotForDate(dateObj){
   const payload = buildSnapshotForDate(dateObj);
-  await set(ref(db, `stats/daily/${payload.dateKey}`), payload);
+  await set(ref(db, `${ROOT}/stats/daily/${payload.dateKey}`), payload);
 }
 
 
 async function saveYesterdaySnapshot(){
   const y = addDays(new Date(), -1);
   const yKey = toDateKey(y);
-  const snap = await get(ref(db, `stats/daily/${yKey}`));
+  const snap = await get(ref(db, `${ROOT}/stats/daily/${yKey}`));
   if(snap.exists()){
     console.log("[stats] yesterday already saved:", yKey);
     return;
