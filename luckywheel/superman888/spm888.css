@@ -80,8 +80,8 @@ header {
   .hidden{display:none !important}
   .wheelCard{
     width:min(520px, 100%);
-    background: radial-gradient(1200px 700px at 20% 20%, #6b2cff 0%, transparent 45%), radial-gradient(900px 600px at 80% 30%, #2b6cff 0%, transparent 55%), linear-gradient(135deg, var(--bg1), var(--bg2));
-    border:1px solid var(--stroke); border-radius:18px;
+    background: radial-gradient(1200px 700px at 20% 20%, #f44336 0%, transparent 45%), radial-gradient(900px 600px at 80% 30%, #9e0b00 0%, transparent 55%), linear-gradient(135deg, var(--bg1), #ffbf01);
+    border:1px solid rgb(236 142 135); border-radius:18px;
     box-shadow: 0 18px 50px rgba(0,0,0,.35);
     backdrop-filter: blur(12px);
     overflow:hidden;
@@ -181,9 +181,9 @@ header {
   .history{
     margin-top:12px; padding:12px;
     border-radius:14px; border:1px solid rgba(255,255,255,.12);
-    background: radial-gradient(1200px 700px at 20% 20%, #6b2cff 0%, transparent 45%), radial-gradient(900px 600px at 80% 30%, #2b6cff 0%, transparent 55%), linear-gradient(135deg, var(--bg1), var(--bg2));
+    background: radial-gradient(1200px 700px at 20% 20%, #f44336 0%, transparent 45%), radial-gradient(900px 600px at 80% 30%, #9e0b00 0%, transparent 55%), linear-gradient(135deg, var(--bg1), var(--bg2));
   }
-  .history h4{margin:0 0 8px; color:var(--muted)}
+  .history h4{margin:0 0 8px; color:#FFC107;}
   .histItem{
     padding:10px 10px; border-radius:12px;
     background:rgba(255,255,255,.06);
