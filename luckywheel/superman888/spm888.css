@@ -11,16 +11,22 @@
   body{
     margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
     color:var(--txt);
-    background:url(https://api.superman888.ws/media/280000_AK7OZFs_X8K4pfk_tkVaHdG.png);
+    background:url("https://api.superman888.ws/media/280000_AK7OZFs_X8K4pfk_tkVaHdG.png");
     min-height:100vh;
   }
-  header{
-    height:64px; display:flex; align-items:center; justify-content:space-between;
-    padding:0 18px;
-    background:linear-gradient(90deg, rgba(0,0,0,.45), rgba(0,0,0,.15));
-    border-bottom:1px solid var(--stroke);
-    backdrop-filter: blur(10px);
-  }
+header {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  background-image: url("https://api.superman888.ws/media/xOri_SPM_CNY_hdr_.gif");
+  background-size: cover;
+  background-position: center; 
+  background-repeat: no-repeat;
+  border-bottom: 1px solid var(--stroke);
+  backdrop-filter: blur(10px);
+}
   .brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.5px}
   .dot{width:12px; height:12px; border-radius:999px; background:linear-gradient(90deg,var(--gold1),var(--gold2)); box-shadow:0 0 18px rgba(255,170,0,.55)}
   nav a{color:var(--muted); text-decoration:none; margin-left:14px; font-weight:600}
