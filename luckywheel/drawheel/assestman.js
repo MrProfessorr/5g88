@@ -246,7 +246,9 @@ function cleanPrizeList(arr){
     .sort((a,b)=>a-b);
 }
 // ===== Prize settings in Firebase =====
-const PRIZES_REF = ref(db, `${ROOT}/settings/prizes`);
+function PRIZES_REF(){
+  return ref(db, `${ROOT}/settings/prizes`);
+}
 
 // default kalau Firebase kosong
 let prizeConfig = {
@@ -255,7 +257,7 @@ let prizeConfig = {
 };
 
 async function loadPrizeConfig(){
-  const snap = await get(PRIZES_REF);
+  const snap = await get(PRIZES_REF());
 
   if(snap.exists()){
     const v = snap.val() || {};
@@ -806,7 +808,7 @@ $("prizeSave").onclick = async ()=>{
     SUPER:  cleanPrizeList(prizeConfig.SUPER)
   };
 
-  await set(PRIZES_REF, prizeConfig);
+  await set(PRIZES_REF(), prizeConfig);
 
   // refresh dropdown ikut tab yang dipilih
   renderPointsOptions(prizeType);
@@ -814,7 +816,9 @@ $("prizeSave").onclick = async ()=>{
   closePrizeModal();
   toast("Prize settings saved!");
 };
-const STATS_REF = ref(db, `${ROOT}/stats/daily`);
+function STATS_REF(){
+  return ref(db, `${ROOT}/stats/daily`);
+}
 
 function pad2(n){ return String(n).padStart(2,"0"); }
 function toDateKey(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
@@ -1339,7 +1343,7 @@ function initTotalsHistory(){
 }
 setTimeout(initTotalsHistory, 200); // fallback kalau browser lambat
 
-onValue(STATS_REF, (snap)=>{
+onValue(STATS_REF(), (snap)=>{
   const v = snap.val() || {};
   statsDailyArr = Object.keys(v).map(k => v[k]).filter(Boolean);
   setActiveChip(activePreset || "today");
