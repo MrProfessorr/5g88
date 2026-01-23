@@ -29,7 +29,7 @@ header {
 }
   .brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.5px}
   .dot{width:12px; height:12px; border-radius:999px; background:linear-gradient(90deg,var(--gold1),var(--gold2)); box-shadow:0 0 18px rgba(255,170,0,.55)}
-  nav a{color:var(--muted); text-decoration:none; margin-left:14px; font-weight:600;text-shadow:
+  nav a{color:#FFC107; text-decoration:none; margin-left:14px; font-weight:600;text-shadow:
     0 1px 1px rgba(0,0,0,.8),
     0 2px 4px rgba(0,0,0,.4);}
   nav a:hover{color:gold}
