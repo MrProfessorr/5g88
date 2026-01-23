@@ -1072,8 +1072,9 @@ background:#141414 !important;
 
 /* active */
 .siteChip.active{
-  background:#222;
-  color:#fff;
+  background:transparent;
+  color:#ccc;
+  border-color:#303030;
 }
 
 /* warna site */
@@ -1083,6 +1084,6 @@ background:#141414 !important;
 }
 
 .siteChip[data-site="SPM888"].active{
-  border-color:#ff0404;
-  color:#ff0404;
+  border-color: rgba(255,4,4,.55);
+  color:#f20606;
 }
