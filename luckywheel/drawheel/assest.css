@@ -1045,3 +1045,44 @@ background:#141414 !important;
   border-color: rgba(255,4,4,.55);
   color:#f20606;
 }
+/* Header row (tajuk + filter kanan) */
+.cardTitleRow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+/* container button */
+.siteFilter{
+  display:flex;
+  gap:8px;
+}
+
+/* button asas */
+.siteChip{
+  padding:4px 10px;
+  font-size:12px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.18);
+  background:transparent;
+  color:#ccc;
+  cursor:pointer;
+}
+
+/* active */
+.siteChip.active{
+  background:#222;
+  color:#fff;
+}
+
+/* warna site */
+.siteChip[data-site="5G88"].active{
+  border-color:#1668dc;
+  color:#1668dc;
+}
+
+.siteChip[data-site="SPM888"].active{
+  border-color:#ff0404;
+  color:#ff0404;
+}
