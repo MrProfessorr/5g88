@@ -1007,22 +1007,15 @@ background:#141414 !important;
     max-width: 100% !important;
   }
 }
+.sitePick{display:flex;gap:8px;margin:6px 0 10px}
 .siteBtn{
-    flex: 1;
-    padding: 4px 10px;
-    border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, .16);
-    background: rgba(0, 0, 0, .18);
-    color: var(--muted);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.2s;
+  padding:6px 10px;border-radius:10px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.06);
+  color:#e9ecff;font-weight:800;font-size:12px;
+  cursor:pointer;
 }
-.siteBtn.active {
-    background: rgba(40, 110, 255, .22);
-    border-color: #1668dc;
-    color: var(--txt);
+.siteBtn.active{
+  background:rgba(22,104,220,.25);
+  outline:2px solid rgba(22,104,220,.55);
 }
