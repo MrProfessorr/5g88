@@ -83,17 +83,29 @@ const nameEl = document.getElementById("navUsername");
   if(nameEl) nameEl.textContent = getNiceUsername(user);
   document.documentElement.style.visibility = "visible";
 });
-let selectedSite = "5G88";
+let selectedSite = "";
 
 function initSitePicker(){
   const wrap = document.getElementById("sitePick");
-  if(!wrap) return;
+  const customerInput = document.getElementById("customer");
+  if(!wrap || !customerInput) return;
 
   const btns = wrap.querySelectorAll(".siteBtn");
+  customerInput.disabled = true;
+
   btns.forEach(btn=>{
+    btn.classList.remove("active");
+
     btn.addEventListener("click", ()=>{
-      selectedSite = btn.dataset.site || "5G88";
-      btns.forEach(b=>b.classList.toggle("active", b===btn));
+      // set site
+      selectedSite = btn.dataset.site || "";
+
+      // toggle active
+      btns.forEach(b=>b.classList.toggle("active", b === btn));
+
+      // enable input bila site dipilih
+      customerInput.disabled = false;
+      customerInput.focus();
     });
   });
 }
@@ -325,6 +337,10 @@ $("typeSuper").onclick = ()=>{
 
   // Generate button
   $("btnGenerate").onclick = async ()=>{
+    if(!selectedSite){
+    toast("Please select site first!");
+    return;
+  }
     const customer = $("customer").value.trim();
     if(!customer){
     toast("Please enter Customer Name/ID first!");
