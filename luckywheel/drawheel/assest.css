@@ -274,7 +274,6 @@ header nav.topNav #userMenu{
   .mini{ flex-wrap:wrap; }
   #presetRow{ width:100%; }
 }
-/* Toast: tengah bawah */
 .toast{
   position: fixed;
   left: 50%;
@@ -283,6 +282,9 @@ header nav.topNav #userMenu{
   z-index: 99999;
 
   display: none;
+  opacity: 0;
+  transition: opacity .22s ease;
+
   max-width: min(520px, calc(100vw - 32px));
   padding: 12px 14px;
   border-radius: 14px;
@@ -298,10 +300,9 @@ header nav.topNav #userMenu{
   letter-spacing: .2px;
 }
 
-/* optional: anim cantik */
 .toast.show{
   display: block;
-  animation: toastIn .18s ease-out;
+  opacity: 1;
 }
 @keyframes toastIn{
   from{ transform: translateX(-50%) translateY(10px); opacity:0; }
