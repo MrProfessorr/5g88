@@ -83,8 +83,24 @@ const nameEl = document.getElementById("navUsername");
   if(nameEl) nameEl.textContent = getNiceUsername(user);
   document.documentElement.style.visibility = "visible";
 });
+let selectedSite = "5G88";
 
-  const $ = (id)=>document.getElementById(id);
+function initSitePicker(){
+  const wrap = document.getElementById("sitePick");
+  if(!wrap) return;
+
+  const btns = wrap.querySelectorAll(".siteBtn");
+  btns.forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      selectedSite = btn.dataset.site || "5G88";
+      btns.forEach(b=>b.classList.toggle("active", b===btn));
+    });
+  });
+}
+
+window.addEventListener("DOMContentLoaded", initSitePicker);
+
+const $ = (id)=>document.getElementById(id);
 function showToast(type, msg, opt = {}){
   const el = $("toast");
   if(!el) return;
@@ -325,6 +341,7 @@ $("typeSuper").onclick = ()=>{
 
 const payload = {
   code,
+  site: selectedSite,
   customer: customer || "",
   points,
   prizeType,
@@ -486,7 +503,7 @@ const filtered = (list || []).filter(x=>{
 
   const tb = $("codesTbody");
   if(!filtered.length){
-    tb.innerHTML = `<tr><td colspan="11" style="color:rgba(233,236,255,.65)">No promo codes found.</td></tr>`;
+    tb.innerHTML = `<tr><td colspan="12" style="color:rgba(233,236,255,.65)">No promo codes found.</td></tr>`;
     return;
   }
 
@@ -504,6 +521,7 @@ const filtered = (list || []).filter(x=>{
   tb.innerHTML = rows.map(x=>`
     <tr>
       <td style="font-weight:900;letter-spacing:1px">${x.code}</td>
+      <td>${x.site || "-"}</td>             <!-- ✅ NEW -->
       <td>${x.customer||"-"}</td>
       <td>FREE ${x.points}</td>
       <td>${x.prizeType||"-"}</td>
@@ -618,7 +636,7 @@ function renderHist(list){
 
   const tb = $("histTbody");
   if(!filtered.length){
-    tb.innerHTML = `<tr><td colspan="5" style="color:rgba(233,236,255,.65)">No history found.</td></tr>`;
+    tb.innerHTML = `<tr><td colspan="6" style="color:rgba(233,236,255,.65)">No history found.</td></tr>`;
     return;
   }
 
@@ -626,17 +644,18 @@ function renderHist(list){
     .sort((a,b)=> (b.redeemedAt||0)-(a.redeemedAt||0))
     .slice(0, 500);
 
-  tb.innerHTML = rows.map(x=>`
-    <tr>
-      <td style="font-weight:900;letter-spacing:1px">${x.code || x._code}</td>
-      <td>FREE ${x.points}</td>
-      <td>${(codeCustomerMap[String(x.code || x._code || "").toUpperCase()] || x.customer || x.userId || "-")}</td>
-      <td>${fmtTime(x.redeemedAt)}</td>
-      <td style="text-align:center;">
-        <button class="btnDel" data-del="${x._code}__${x._rid}">Delete</button>
-      </td>
-    </tr>
-  `).join("");
+tb.innerHTML = rows.map(x=>`
+  <tr>
+    <td style="font-weight:900;letter-spacing:1px">${x.code || x._code}</td>
+    <td>${x.site || "-"}</td>            <!-- ✅ NEW -->
+    <td>FREE ${x.points}</td>
+    <td>${(codeCustomerMap[String(x.code || x._code || "").toUpperCase()] || x.customer || x.userId || "-")}</td>
+    <td>${fmtTime(x.redeemedAt)}</td>
+    <td style="text-align:center;">
+      <button class="btnDel" data-del="${x._code}__${x._rid}">Delete</button>
+    </td>
+  </tr>
+`).join("");
 
   // attach delete events
   tb.querySelectorAll("[data-del]").forEach(btn=>{
