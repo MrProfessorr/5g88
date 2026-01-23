@@ -317,7 +317,7 @@ body{
   .modal{
     width:min(520px, 100%);
     border-radius:18px;
-    background:rgba(20, 35, 90, .92);
+    background: radial-gradient(1200px 700px at 20% 20%, #f44336 0%, transparent 45%), radial-gradient(900px 600px at 80% 30%, #9e0b00 0%, transparent 55%), linear-gradient(135deg, var(--bg1), #ffbf01);
     border:1px solid rgba(255,255,255,.18);
     box-shadow:0 22px 60px rgba(0,0,0,.45);
     padding:16px;
