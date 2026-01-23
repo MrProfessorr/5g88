@@ -411,6 +411,13 @@ $("btnCopy").onclick = async () => {
     const d = new Date(ts);
     return d.toLocaleString();
   }
+function renderSiteBadge(site){
+  const s = String(site || "-").trim().toUpperCase();
+  let cls = "";
+  if(s === "5G88") cls = "site-5g88";
+  else if(s === "SPM888") cls = "site-spm888";
+  return `<span class="siteBadge ${cls}">${s || "-"}</span>`;
+}
 function toDateKeyLocal(d){
   const x = new Date(d);
   const y = x.getFullYear();
@@ -545,7 +552,7 @@ const filtered = (list || []).filter(x=>{
 
   tb.innerHTML = rows.map(x=>`
     <tr>
-      <td>${x.site || "-"}</td> 
+      <td>${renderSiteBadge(x.site)}</td>
       <td style="font-weight:900;letter-spacing:1px">${x.code}</td>
       <td>${x.customer||"-"}</td>
       <td>FREE ${x.points}</td>
@@ -671,7 +678,7 @@ function renderHist(list){
 
 tb.innerHTML = rows.map(x=>`
   <tr>
-    <td>${x.site || "-"}</td>
+    <td>${renderSiteBadge(x.site)}</td>
     <td style="font-weight:900;letter-spacing:1px">${x.code || x._code}</td>
     <td>FREE ${x.points}</td>
     <td>${(codeCustomerMap[String(x.code || x._code || "").toUpperCase()] || x.customer || x.userId || "-")}</td>
