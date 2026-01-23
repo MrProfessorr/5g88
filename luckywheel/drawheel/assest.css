@@ -1021,3 +1021,28 @@ background:#141414 !important;
   border-color:#1668dc;
   color:#1668dc;
 }
+.siteBadge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:4px 10px;
+  border-radius:999px;
+  font-weight:900;
+  font-size:12px;
+  letter-spacing:.4px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  color: rgba(233,236,255,.9);
+}
+
+.siteBadge.site-5g88{
+  background: rgba(22,104,220,.16);
+  border-color: rgba(22,104,220,.55);
+  color:#1668dc;
+}
+
+.siteBadge.site-spm888{
+  background: rgba(255,4,4,.12);
+  border-color: rgba(255,4,4,.55);
+  color:#ff0404;
+}
