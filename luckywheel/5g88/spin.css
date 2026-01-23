@@ -129,7 +129,7 @@ body{
   .brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.5px}
   .dot{width:12px; height:12px; border-radius:999px; background:linear-gradient(90deg,var(--gold1),var(--gold2)); box-shadow:0 0 18px rgba(255,170,0,.55)}
   nav a{color:var(--muted); text-decoration:none; margin-left:14px; font-weight:600}
-  nav a:hover{color:var(--txt)}
+  nav a:hover{color:rgb(226 192 89)}
   .wrap{max-width:980px; margin:22px auto; padding:0 16px}
   .center{display:grid; place-items:center; margin-top:18px}
   .card{
