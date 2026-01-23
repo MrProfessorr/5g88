@@ -398,6 +398,8 @@ $("btnCopy").onclick = async () => {
   // ===== Load Active Codes =====
   let allCodes = [];
   let codeCustomerMap = {};
+  let activeSiteFilterCodes = "";
+  let activeSiteFilterHist  = "";
   function statusTag(obj){
     const now = Date.now();
     const expired = now >= obj.expiresAt;
@@ -512,17 +514,17 @@ const st = ($("statusFilter")?.value || "ALL").toUpperCase();
 
 const range = getCodesRangeFromInputs();
 const filtered = (list || []).filter(x=>{
+  if(activeSiteFilterCodes && x.site !== activeSiteFilterCodes) return false;
+
   const hitSearch = !q
     ? true
     : (String(x.code||"").toUpperCase().includes(q) ||
        String(x.customer||"").toUpperCase().includes(q));
 
-  // 2) status filter
   const isApproved = !!x.claimedAt || (Number(x.usedCount||0) > 0);
   const rowStatus = isApproved ? "APPROVED" : "PENDING";
   const hitStatus = (st === "ALL") ? true : (rowStatus === st);
 
-  // 3) ✅ date range filter (createdAt)
   let hitDate = true;
   if(range){
     const [sMs, eMs] = range;
@@ -659,12 +661,16 @@ async function deleteHistRow(x){
 }
 function renderHist(list){
   const q = $("searchHist").value.trim().toUpperCase();
- const filtered = !q ? list : list.filter(x=>{
-    const code = String(x.code || x._code || "").toUpperCase();
-    const user = String(x.userId || "").toUpperCase();
-    const cust = String(codeCustomerMap[code] || x.customer || "").toUpperCase();
-    return code.includes(q) || user.includes(q) || cust.includes(q);
-  });
+const filtered = (list || []).filter(x=>{
+  if(activeSiteFilterHist && x.site !== activeSiteFilterHist) return false;
+
+  if(!q) return true;
+
+  const code = String(x.code || x._code || "").toUpperCase();
+  const user = String(x.userId || "").toUpperCase();
+  const cust = String(codeCustomerMap[code] || x.customer || "").toUpperCase();
+  return code.includes(q) || user.includes(q) || cust.includes(q);
+});
 
   const tb = $("histTbody");
   if(!filtered.length){
@@ -1416,3 +1422,27 @@ if(dropLogoutBtn){
   // fallback kalau element lambat render
   setTimeout(run, 250);
 })();
+document.querySelectorAll(".siteFilter").forEach(group=>{
+  const target = group.dataset.target;
+
+  group.querySelectorAll(".siteChip").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      group.querySelectorAll(".siteChip")
+        .forEach(b=>b.classList.remove("active"));
+
+      btn.classList.add("active");
+
+      const site = btn.dataset.site || "";
+
+      if(target === "codes"){
+        activeSiteFilterCodes = site;
+        renderCodes(allCodes);
+      }
+
+      if(target === "history"){
+        activeSiteFilterHist = site;
+        renderHist(allHist);
+      }
+    });
+  });
+});
