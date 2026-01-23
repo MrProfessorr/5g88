@@ -1,21 +1,15 @@
   let currentRotationDeg = 0;
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-  import {
-  getDatabase, ref, get, set, push, child, runTransaction, onValue, update
- } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+import { db } from "../common/firebase.js";
+import { siteRoot } from "../common/site.js";
+const SITE = "5g88";
+const ROOT = siteRoot(SITE);
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDSqpbnkb3GLNFlHLYSz5XyRYPvKLAOCOA",
-  authDomain: "lucky-spined.firebaseapp.com",
-  databaseURL: "https://lucky-spined-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "lucky-spined",
-  storageBucket: "lucky-spined.firebasestorage.app",
-  messagingSenderId: "708886212396",
-  appId: "1:708886212396:web:2cb7a900fe1a7891510689"
-};
+import {
+  ref, get, set, push, child, runTransaction, onValue, update
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
+const SITE = getSiteKey();
+const ROOT = siteRoot(SITE);
   const $ = (id)=>document.getElementById(id);
   const sfxStart = $("sfxStart");
 const sfxTick  = $("sfxTick");
@@ -211,7 +205,7 @@ if (wheelEl) {
 let prizeCfgCache = { NORMAL:[], SUPER:[] };
 
 function watchPrizeConfig(){
-  onValue(ref(db,"settings/prizes"), (snap)=>{
+  onValue(ref(db, `${ROOT}/settings/prizes`), (snap)=>{
     if(!snap.exists()) return;
 
     const v = snap.val() || {};
@@ -238,7 +232,7 @@ function watchPrizeConfig(){
 watchPrizeConfig();
   
   async function loadPrizeConfig(){
-  const snap = await get(ref(db, "settings/prizes"));
+  const snap = await get(ref(db, `${ROOT}/settings/prizes`));
   if(snap.exists()) return snap.val();
   return { NORMAL:[0,0,0,0], SUPER:[0,0,0,0] };
 }
@@ -350,7 +344,7 @@ function renderHistory(arr){
 
 
 function watchGlobalHistory(){
-  onValue(ref(db, "redemptionsAll"), (snap)=>{
+  onValue(ref(db, `${ROOT}/redemptionsAll`), (snap)=>{
     const v = snap.val() || {};
     const arr = Object.keys(v).map(k => v[k])
       .filter(x => x && x.code && x.redeemedAt)
@@ -363,7 +357,7 @@ function watchGlobalHistory(){
 watchGlobalHistory();
 
   async function validateCode(code){
-    const snap = await get(ref(db, `promo_codes/${code}`));
+    const snap = await get(ref(db, `${ROOT}/promo_codes/${code}`))
     if(!snap.exists()) return { ok:false, msg:"Code not found." };
     const data = snap.val();
     const now = Date.now();
@@ -425,7 +419,7 @@ function norm360(deg){
   return ((deg % 360) + 360) % 360;
 }
   async function redeemAndSave(code, points){
-    const usedRef = ref(db, `promo_codes/${code}/usedCount`);
+    const usedRef = ref(db, `${ROOT}/promo_codes/${code}/usedCount`);
     const result = await runTransaction(usedRef, (cur)=>{
       if(cur === null) return 1;
       return cur + 1;
@@ -434,7 +428,7 @@ function norm360(deg){
     if(!result.committed){
       throw new Error("Failed to redeem. Please try again.");
     }
-    const ridRef = push(ref(db, `redemptionsByCode/${code}`));
+    const ridRef = push(ref(db, `${ROOT}/redemptionsByCode/${code}`));
     const ridKey = ridRef.key;
 
 const payload = {
@@ -446,11 +440,11 @@ const payload = {
 };
 
     await set(ridRef, payload);
-    await set(ref(db, `userHistory/${userId}/${ridKey}`), {
+    await set(ref(db, `${ROOT}/userHistory/${userId}/${ridKey}`), {
       code, points, redeemedAt: payload.redeemedAt
     });
 
-await set(ref(db, `redemptionsAll/${ridKey}`), {
+await set(ref(db, `${ROOT}/redemptionsAll/${ridKey}`), {
   ridKey,
   code,
   points,
@@ -459,7 +453,7 @@ await set(ref(db, `redemptionsAll/${ridKey}`), {
   redeemedAt: payload.redeemedAt
 });
 
-await update(ref(db, `promo_codes/${code}`), {
+await update(ref(db, `${ROOT}/promo_codes/${code}`), {
   claimedAt: payload.redeemedAt,
   claimStatus: "APPROVED",
   claimedByUserId: userId,
