@@ -1025,9 +1025,8 @@ background:#141414 !important;
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  padding:4px 10px;
+  padding:2px 8px;
   border-radius:999px;
-  font-weight:900;
   font-size:12px;
   letter-spacing:.4px;
   border:1px solid rgba(255,255,255,.14);
@@ -1036,13 +1035,13 @@ background:#141414 !important;
 }
 
 .siteBadge.site-5g88{
-  background: rgba(22,104,220,.16);
-  border-color: rgba(22,104,220,.55);
+  background: transparent;
+  border-color: #1668dc;;
   color:#1668dc;
 }
 
 .siteBadge.site-spm888{
-  background: rgba(255,4,4,.12);
+  background: transparent;
   border-color: rgba(255,4,4,.55);
-  color:#ff0404;
+  color:#f20606;
 }
