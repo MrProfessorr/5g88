@@ -520,8 +520,8 @@ const filtered = (list || []).filter(x=>{
 
   tb.innerHTML = rows.map(x=>`
     <tr>
+      <td>${x.site || "-"}</td> 
       <td style="font-weight:900;letter-spacing:1px">${x.code}</td>
-      <td>${x.site || "-"}</td>             <!-- ✅ NEW -->
       <td>${x.customer||"-"}</td>
       <td>FREE ${x.points}</td>
       <td>${x.prizeType||"-"}</td>
@@ -646,8 +646,8 @@ function renderHist(list){
 
 tb.innerHTML = rows.map(x=>`
   <tr>
+    <td>${x.site || "-"}</td>
     <td style="font-weight:900;letter-spacing:1px">${x.code || x._code}</td>
-    <td>${x.site || "-"}</td>            <!-- ✅ NEW -->
     <td>FREE ${x.points}</td>
     <td>${(codeCustomerMap[String(x.code || x._code || "").toUpperCase()] || x.customer || x.userId || "-")}</td>
     <td>${fmtTime(x.redeemedAt)}</td>
