@@ -565,3 +565,37 @@ setTimeout(async ()=>{
   }
 }, SPIN_MS);
 };
+(function initBottomNav(){
+  const items = document.querySelectorAll(".bnItem");
+  if(!items.length) return;
+
+  function setActiveByUrl(){
+    const url = location.href;
+    items.forEach(a=>{
+      a.classList.remove("active");
+
+      const href = a.getAttribute("href");
+      if(!href) return;
+      if(href.startsWith("#") && location.hash === href){
+        a.classList.add("active");
+      }
+
+      if(href.startsWith("http") && url.startsWith(href)){
+        a.classList.add("active");
+      }
+      if(!href.startsWith("http") && url.includes(href)){
+        a.classList.add("active");
+      }
+    });
+  }
+
+  items.forEach(a=>{
+    a.addEventListener("click", ()=>{
+      items.forEach(x=>x.classList.remove("active"));
+      a.classList.add("active");
+    });
+  });
+
+  window.addEventListener("hashchange", setActiveByUrl);
+  setActiveByUrl();
+})();
