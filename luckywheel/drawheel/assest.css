@@ -1007,3 +1007,22 @@ background:#141414 !important;
     max-width: 100% !important;
   }
 }
+.siteBtn{
+    flex: 1;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, .16);
+    background: rgba(0, 0, 0, .18);
+    color: var(--muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+.siteBtn.active {
+    background: rgba(40, 110, 255, .22);
+    border-color: #1668dc;
+    color: var(--txt);
+}
