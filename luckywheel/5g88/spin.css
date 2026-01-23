@@ -40,7 +40,7 @@ header nav{
   bottom: 0;
   height: 72px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   align-items: center;
   padding: 8px 10px;
 
