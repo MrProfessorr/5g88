@@ -60,7 +60,7 @@ header {
   }
   .iconBubble{
     width:54px; height:54px; border-radius:999px;
-    background:radial-gradient(circle at 30% 30%, var(--pink), #6a40ff);
+    background: radial-gradient(circle at 30% 30%, #FFC107, #0033f9);
     display:grid; place-items:center;
     box-shadow:0 10px 30px rgba(0,0,0,.25);
     font-size:22px;
