@@ -1010,13 +1010,14 @@ background:#141414 !important;
 }
 .sitePick{display:flex;gap:8px;margin:6px 0 10px}
 .siteBtn{
-  padding:6px 10px;border-radius:10px;
+  padding:5px 10px;border-radius:6px;
   border:1px solid rgba(255,255,255,.14);
-  background:rgba(255,255,255,.06);
-  color:#e9ecff;font-weight:800;font-size:12px;
+  background:#1b1b1b;
+  color:#fff;font-size:12px;
   cursor:pointer;
+  transition: all 0.2s;
 }
 .siteBtn.active{
-  background:rgba(22,104,220,.25);
-  outline:2px solid rgba(22,104,220,.55);
+  border-color:#1668dc;
+  color:#1668dc;
 }
