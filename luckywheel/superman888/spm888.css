@@ -11,9 +11,7 @@
   body{
     margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
     color:var(--txt);
-    background: radial-gradient(1200px 700px at 20% 20%, #6b2cff 0%, transparent 45%),
-                radial-gradient(900px 600px at 80% 30%, #2b6cff 0%, transparent 55%),
-                linear-gradient(135deg, var(--bg1), var(--bg2));
+    background:url(https://api.superman888.ws/media/280000_AK7OZFs_X8K4pfk_tkVaHdG.png);
     min-height:100vh;
   }
   header{
