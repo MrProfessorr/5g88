@@ -181,7 +181,7 @@ header {
     width:100%;
     padding:12px 14px; border-radius:12px; border:none;
     font-weight:600; cursor:pointer; color:#fff;
-    background:linear-gradient(90deg, #ff4fd8, #6a40ff);
+    background-color: rgb(205, 159, 21);
     box-shadow:0 10px 24px rgba(0,0,0,.25);
     display:flex; align-items:center; justify-content:center; gap:10px;
   }
@@ -190,7 +190,7 @@ header {
   .history{
     margin-top:12px; padding:12px;
     border-radius:14px; border:1px solid rgba(255,255,255,.12);
-    background: radial-gradient(1200px 700px at 20% 20%, #6b2cff 0%, transparent 45%), radial-gradient(900px 600px at 80% 30%, #2b6cff 0%, transparent 55%), linear-gradient(135deg, var(--bg1), var(--bg2));
+        background: radial-gradient(1200px 700px at 20% 20%, #73737324 0%, transparent 45%), radial-gradient(900px 600px at 80% 30%, #161616 0%, transparent 55%), linear-gradient(135deg, var(--bg1), #000000);
   }
   .history h4{margin:0 0 8px; color:var(--muted)}
   .histItem{
