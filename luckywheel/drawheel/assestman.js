@@ -386,13 +386,17 @@ const payload = {
     toast("Code generated!");
   };
 
-  $("btnCopy").onclick = async ()=>{
-    const code = $("btnCopy").dataset.code;
-    if(!code) return;
+$("btnCopy").onclick = async () => {
+  const code = $("btnCopy").dataset.code;
+  if (!code) return;
+  try {
     await navigator.clipboard.writeText(code);
-    toast("Copied!");
-  };
-;
+    showToast("success", "Code copied!");
+  } catch (err) {
+    showToast("error", "Copy failed!");
+    console.error(err);
+  }
+};
   // ===== Load Active Codes =====
   let allCodes = [];
   let codeCustomerMap = {};
