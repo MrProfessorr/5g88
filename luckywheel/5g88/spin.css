@@ -76,7 +76,7 @@ header {
     letter-spacing:1px;
     font-weight:900;
   }
-  input:focus{border-color:rgb(205, 159, 21); box-shadow:0 0 0 3px rgb(205 159 21 / 34%)}
+  input:focus{border-color:rgb(205, 159, 21); box-shadow:0 0 0 2px rgb(205 159 21 / 34%)}
   .btn{
     width:100%; margin-top:12px;
     padding:12px 14px; border-radius:12px; border:none;
