@@ -271,7 +271,7 @@ async function loadPrizeConfig(){
       NORMAL: cleanPrizeList(prizeConfig.NORMAL),
       SUPER:  cleanPrizeList(prizeConfig.SUPER)
     };
-    await set(PRIZES_REF, prizeConfig);
+    await set(PRIZES_REF(), prizeConfig);
   }
 }
 
