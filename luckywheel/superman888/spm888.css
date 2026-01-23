@@ -10,7 +10,7 @@
   *{box-sizing:border-box}
   body{
     margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-    color:var(--txt);
+    color:#FFC107;
     background:url("https://api.superman888.ws/media/280000_AK7OZFs_X8K4pfk_tkVaHdG.png");
     min-height:100vh;
   }
