@@ -113,22 +113,29 @@ function initSitePicker(){
 window.addEventListener("DOMContentLoaded", initSitePicker);
 
 const $ = (id)=>document.getElementById(id);
-function showToast(type, msg, opt = {}){
-  const el = $("toast");
-  if(!el) return;
+function showToast(type, msg, opt = {}) {
+  const el = document.getElementById("toast");
+  if (!el) return;
 
   const duration = opt.duration ?? 2400;
-  el.className = "toast show";
-  if(type === "error") el.style.borderColor = "rgba(255,77,77,.55)";
-  else if(type === "success") el.style.borderColor = "rgba(39,209,127,.55)";
-  else el.style.borderColor = "rgba(255,255,255,.14)";
 
+  // ✅ WAJIB: hidupkan balik toast
+  el.style.display = "block";
+  el.className = "toast show";
+
+  if (type === "error") {
+    el.style.borderColor = "rgba(255,77,77,.55)";
+  } else if (type === "success") {
+    el.style.borderColor = "rgba(39,209,127,.55)";
+  } else {
+    el.style.borderColor = "rgba(255,255,255,.14)";
+  }
   el.textContent = msg;
 
   clearTimeout(window.__toastTimer);
-  window.__toastTimer = setTimeout(()=>{
+  window.__toastTimer = setTimeout(() => {
     el.classList.remove("show");
-    el.style.display = "none";
+    // ❌ JANGAN letak display:none
   }, duration);
 }
 
