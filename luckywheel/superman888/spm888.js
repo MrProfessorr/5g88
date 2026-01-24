@@ -13,11 +13,11 @@ const firebaseConfig = {
   messagingSenderId: "708886212396",
   appId: "1:708886212396:web:2cb7a900fe1a7891510689"
 };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-  const $ = (id)=>document.getElementById(id);
-  const sfxStart = $("sfxStart");
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const $ = (id)=>document.getElementById(id);
+const CURRENT_SITE = "spm888"; 
+const sfxStart = $("sfxStart");
 const sfxTick  = $("sfxTick");
 const sfxWin   = $("sfxWin");
 
@@ -356,17 +356,25 @@ function watchGlobalHistory(){
 }
 watchGlobalHistory();
 
-  async function validateCode(code){
-    const snap = await get(ref(db, `promo_codes/${code}`));
-    if(!snap.exists()) return { ok:false, msg:"Code not found." };
-    const data = snap.val();
-    const now = Date.now();
+async function validateCode(code){
+  const c = String(code || "").trim().toUpperCase();
 
-    if(now >= data.expiresAt) return { ok:false, msg:"Code expired." };
-    if((data.usedCount||0) >= (data.usageLimit||1)) return { ok:false, msg:"This code has already been used." };
+  const snap = await get(ref(db, `promo_codes/${c}`));
+  if(!snap.exists()) return { ok:false, msg:"Code not found." };
 
-    return { ok:true, data };
+  const data = snap.val() || {};
+  const now = Date.now();
+  const codeSite = String(data.site || "").trim().toLowerCase();
+  const pageSite = String(CURRENT_SITE || "").trim().toLowerCase();
+  if(codeSite && pageSite && codeSite !== pageSite){
+    return { ok:false, msg:"Code not available for this site." };
   }
+
+  // else if(!codeSite) return { ok:false, msg:"Code not available for this site." };
+  if(now >= Number(data.expiresAt||0)) return { ok:false, msg:"Code expired." };
+  if((data.usedCount||0) >= (data.usageLimit||1)) return { ok:false, msg:"This code has already been used." };
+  return { ok:true, data };
+}
 
 $("btnStart").onclick = async ()=>{
   armSoundsOnce();
