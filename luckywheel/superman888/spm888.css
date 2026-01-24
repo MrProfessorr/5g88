@@ -225,7 +225,7 @@ body{
     width:64px; height:64px; border-radius:999px;
     background: radial-gradient(circle at 30% 30%, #9e1313, rgb(151 14 14 / 92%));
     border:10px solid rgba(0,0,0,.15);
-    box-shadow:0 10px 20px rgba(0,0,0,.25);
+    box-shadow: 0 0 20px rgb(84 15 15);
     position: relative; overflow: hidden; display: grid;place-items: center;
   }
 .hubImg{
