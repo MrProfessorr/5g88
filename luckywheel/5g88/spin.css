@@ -184,28 +184,7 @@ body{
   }
   .btn:active{transform:translateY(1px)}
   .hidden{display:none !important}
-  .wheelCard{
-    width:min(520px, 100%);
-    background: radial-gradient(1200px 700px at 20% 20%, #6b2cff 0%, transparent 45%), radial-gradient(900px 600px at 80% 30%, #2b6cff 0%, transparent 55%), linear-gradient(135deg, var(--bg1), var(--bg2));
-    border:1px solid var(--stroke); border-radius:18px;
-    box-shadow: 0 18px 50px rgba(0,0,0,.35);
-    backdrop-filter: blur(12px);
-    overflow:hidden;
-    padding:18px 16px;
-  }
-  .wheelTitle{display:flex; align-items:center; justify-content:center; gap:10px}
-  .wheelTitle h2{margin:0}
-  .codeLine{margin-top:6px; text-align:center; color:var(--muted); font-size:12px}
-  .wheelWrap{display:grid; place-items:center; margin:14px 0 10px; position:relative}
-  .pointer{
-    position:absolute; top:-6px;
-    width:0; height:0;
-    border-left:14px solid transparent;
-    border-right:14px solid transparent;
-    border-bottom:22px solid var(--gold1);
-    filter: drop-shadow(0 8px 10px rgba(0,0,0,.4));
-  }
- .wheelCard {
+  .wheelCard {
   width: min(520px, 100%);
   background:
     radial-gradient(900px 600px at 20% 15%, rgba(255, 200, 80, .25) 0%, transparent 45%),
@@ -229,6 +208,27 @@ body{
     radial-gradient(circle at center, rgba(255,255,255,.08), transparent 60%);
   pointer-events:none;
 }
+  .wheelTitle{display:flex; align-items:center; justify-content:center; gap:10px}
+  .wheelTitle h2{margin:0}
+  .codeLine{margin-top:6px; text-align:center; color:var(--muted); font-size:12px}
+  .wheelWrap{display:grid; place-items:center; margin:14px 0 10px; position:relative}
+  .pointer{
+    position:absolute; top:-6px;
+    width:0; height:0;
+    border-left:14px solid transparent;
+    border-right:14px solid transparent;
+    border-bottom:22px solid var(--gold1);
+    filter: drop-shadow(0 8px 10px rgba(0,0,0,.4));
+  }
+  .wheel{
+    width:320px; height:320px; border-radius:999px;
+    border:10px solid rgba(255,255,255,.15);
+    box-shadow: inset 0 0 0 10px rgba(0,0,0,.18), 0 18px 45px rgba(0,0,0,.35);
+    position:relative;
+    transform:rotate(0deg);
+    transition: transform 8s cubic-bezier(.12,.85,.12,1);
+    will-change: transform;
+  }
 .wheel::after{
   content:"";
   position:absolute;
