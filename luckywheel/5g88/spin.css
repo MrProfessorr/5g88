@@ -407,7 +407,7 @@ body{
     margin-top:14px;
     width:100%;
     padding:12px 14px; border-radius:12px; border:none;
-    font-weight:1000; cursor:pointer; color:#081022;
+    font-weight:1000; cursor:pointer; color:#fff;
     background-color: rgb(205, 159, 21);
     box-shadow:0 10px 24px rgba(0,0,0,.25);
   }
