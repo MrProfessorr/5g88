@@ -288,11 +288,18 @@ function applyWheelTheme(){
   const wheel = $("wheel");
   if(!wheel) return;
 
-  const colors = [
-    "#ff77e1","#ff6b6b","#4dd4c6","#3aa9ff",
-    "#6ee7a6","#ffd166","#7c5cff","#50fa7b",
-    "#ff9f1c","#00d2ff"
-  ];
+const colors = [
+  "#FFD166", // Gold terang
+  "#F4A261", // Gold oren
+  "#E9C46A", // Gold lembut
+  "#2A9D8F", // Teal premium (kontras sejuk)
+  "#264653", // Navy gelap
+  "#C1121F", // Merah gelap (blend bg)
+  "#FFB703", // Gold kuning
+  "#003566", // Royal blue
+  "#FB8500", // Orange gold
+  "#6A040F"  // Dark red
+];
 
   const n = segments.length || 1;
   const step = 100 / n;
