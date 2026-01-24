@@ -44,8 +44,6 @@ async function armSoundsOnce(){
   await warm(sfxStart);
   await warm(sfxTick);
   await warm(sfxWin);
-
-  // set volume default lepas warm
   if(sfxStart) sfxStart.volume = 0.95;
   if(sfxTick)  sfxTick.volume  = 0.35;
   if(sfxWin)   sfxWin.volume   = 0.95;
@@ -288,19 +286,8 @@ function applyWheelTheme(){
   const wheel = $("wheel");
   if(!wheel) return;
 
-const colors = [
-  "#FFD166",
-  "#F4A261",
-  "#E9C46A",
-  "#2A9D8F",
-  "#264653",
-  "#C1121F",
-  "#FFB703",
-  "#003566",
-  "#FB8500",
-  "#6A040F"
+const colors = ["#FFD166","#F4A261","#E9C46A","#2A9D8F","#264653","#C1121F","#FFB703","#003566","#FB8500","#6A040F"
 ];
-
   const n = segments.length || 1;
   const step = 100 / n;
   const stops = [];
