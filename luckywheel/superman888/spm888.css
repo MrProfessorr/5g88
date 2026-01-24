@@ -326,7 +326,7 @@ body{
   }
   .x{
     position:absolute; right:12px; top:10px;
-    background:transparent;
+    background:transparent;border:none;
     color:rgba(255,255,255,.88); cursor:pointer;
     transition: all .2s;
   }
