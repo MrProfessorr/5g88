@@ -323,11 +323,11 @@ body{
   }
   .x{
     position:absolute; right:12px; top:10px;
-    width:36px; height:36px; border-radius:12px;
-    border:1px solid rgba(255,255,255,.16);
-    background:rgba(0,0,0,.22);
-    color:var(--txt); cursor:pointer;
+    background:transparent;border:none;
+    color:rgba(255,255,255,.85); cursor:pointer;
+    transition: all .2s;
   }
+  .x:hover{color:#fff;}.x:active{color:rgba(255,255,255,.65);}
   .modal h3{margin:4px 0 6px; text-align:center}
   .win{
     text-align:center;
@@ -355,7 +355,7 @@ body{
     width:100%;
     padding:12px 14px; border-radius:12px; border:none;
     font-weight:1000; cursor:pointer; color:#081022;
-    background:linear-gradient(90deg, var(--gold1), var(--gold2));
+    background-color: rgb(205, 159, 21);
     box-shadow:0 10px 24px rgba(0,0,0,.25);
   }
   .noteTop{
