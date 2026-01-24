@@ -226,7 +226,27 @@ body{
     background: radial-gradient(circle at 30% 30%, #9e1313, rgb(151 14 14 / 92%));
     border:10px solid rgba(0,0,0,.15);
     box-shadow:0 10px 20px rgba(0,0,0,.25);
+    position: relative; overflow: hidden; display: grid;place-items: center;
   }
+.hubImg{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;       
+  border-radius: 999px;
+  transform: scale(1.05); 
+  filter: drop-shadow(0 6px 14px rgba(0,0,0,.45));
+}
+
+.hub::after{
+  content:"";
+  position:absolute;
+  inset: 6px;
+  border-radius: 999px;
+  box-shadow:
+    inset 0 0 0 2px rgba(255, 204, 85, .75),
+    0 0 18px rgba(255, 170, 0, .25);
+  pointer-events:none;
+}
   .sliceText{
     position:absolute; inset:0;
     display:grid; place-items:center;
