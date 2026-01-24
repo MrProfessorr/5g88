@@ -289,16 +289,16 @@ function applyWheelTheme(){
   if(!wheel) return;
 
 const colors = [
-  "#FFD166", // Gold terang
-  "#F4A261", // Gold oren
-  "#E9C46A", // Soft gold
-  "#FFB703", // Gold kuning
-  "#FB8500", // Orange gold
-  "#C1121F", // Dark red (blend bg)
-  "#6A040F", // Maroon gelap
-  "#264653", // Navy gelap (kontras text)
   "#D4AF37", // Classic casino gold
-  "#B8860B"  // Dark gold
+  "#F5C16C", // Light luxury gold
+  "#B8860B", // Dark gold
+  "#FFD700", // Royal gold
+  "#C9A227", // Antique gold
+  "#8B0000", // Deep casino red
+  "#5C0A0A", // Dark maroon
+  "#2C2C2C", // Luxury dark charcoal
+  "#7A5C00", // Bronze gold
+  "#A67C00"  // Old gold
 ];
 
   const n = segments.length || 1;
