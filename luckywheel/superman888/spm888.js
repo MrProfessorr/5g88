@@ -289,16 +289,16 @@ function applyWheelTheme(){
   if(!wheel) return;
 
 const colors = [
-  "#FFD166", // Gold terang
-  "#F4A261", // Gold oren
-  "#E9C46A", // Gold lembut
-  "#2A9D8F", // Teal premium (kontras sejuk)
-  "#264653", // Navy gelap
-  "#C1121F", // Merah gelap (blend bg)
-  "#FFB703", // Gold kuning
-  "#003566", // Royal blue
-  "#FB8500", // Orange gold
-  "#6A040F"  // Dark red
+  "#FFD166",
+  "#F4A261",
+  "#E9C46A",
+  "#2A9D8F",
+  "#264653",
+  "#C1121F",
+  "#FFB703",
+  "#003566",
+  "#FB8500",
+  "#6A040F"
 ];
 
   const n = segments.length || 1;
