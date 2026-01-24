@@ -14,10 +14,11 @@ const firebaseConfig = {
   appId: "1:708886212396:web:2cb7a900fe1a7891510689"
 };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-  const $ = (id)=>document.getElementById(id);
-  const sfxStart = $("sfxStart");
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const $ = (id)=>document.getElementById(id);
+const CURRENT_SITE = "5g88";
+const sfxStart = $("sfxStart");
 const sfxTick  = $("sfxTick");
 const sfxWin   = $("sfxWin");
 
@@ -288,17 +289,7 @@ function applyWheelTheme(){
   const wheel = $("wheel");
   if(!wheel) return;
 
-const colors = [
-  "#F9D976", // Luxury gold light
-  "#E6B65C", // Rich gold
-  "#D4AF37", // Classic casino gold
-  "#B8860B", // Dark gold
-  "#FFB703", // Gold orange highlight
-  "#C1121F", // Royal red
-  "#8B0000", // Deep casino red
-  "#3A1F04", // Dark brown gold
-  "#1C1C1C", // Black luxury
-  "#5C2C0C"  // Bronze gold
+const colors = ["#F9D976","#E6B65C","#D4AF37","#B8860B","#FFB703","#C1121F","#8B0000","#3A1F04","#1C1C1C","#5C2C0C"
 ];
 
   const n = segments.length || 1;
@@ -369,17 +360,23 @@ function watchGlobalHistory(){
 }
 watchGlobalHistory();
 
-  async function validateCode(code){
-    const snap = await get(ref(db, `promo_codes/${code}`));
-    if(!snap.exists()) return { ok:false, msg:"Code not found." };
-    const data = snap.val();
-    const now = Date.now();
+async function validateCode(code){
+  const c = String(code || "").trim().toUpperCase();
+  const snap = await get(ref(db, `promo_codes/${c}`));
+  if(!snap.exists()) return { ok:false, msg:"Code not found." };
+  const data = snap.val() || {};
+  const now = Date.now();
+  const codeSite = String(data.site || "").trim().toLowerCase();
+  const pageSite = String(CURRENT_SITE || "").trim().toLowerCase();
 
-    if(now >= data.expiresAt) return { ok:false, msg:"Code expired." };
-    if((data.usedCount||0) >= (data.usageLimit||1)) return { ok:false, msg:"This code has already been used." };
-
-    return { ok:true, data };
+  if(codeSite && pageSite && codeSite !== pageSite){
+    return { ok:false, msg:"Code not available for this site." };
   }
+  // else if(!codeSite) return { ok:false, msg:"Code not available for this site." };
+  if(now >= Number(data.expiresAt||0)) return { ok:false, msg:"Code expired." };
+  if((data.usedCount||0) >= (data.usageLimit||1)) return { ok:false, msg:"This code has already been used." };
+  return { ok:true, data };
+}
 
 $("btnStart").onclick = async ()=>{
   armSoundsOnce();
