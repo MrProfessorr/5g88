@@ -214,6 +214,14 @@ body{
     transition: transform 8s cubic-bezier(.12,.85,.12,1);
     will-change: transform;
   }
+.wheel::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  background: radial-gradient(circle, rgba(255,255,255,.15), transparent 60%);
+  pointer-events:none;
+}
   .wheelCenter{
     position:absolute; inset:0;
     display:grid; place-items:center;
@@ -233,11 +241,9 @@ body{
     pointer-events:none;
   }
 .sliceText .sliceLabel{
-  color: #1a1200;
   font-weight: 800;
-  text-shadow:
-    0 1px 1px rgba(255,255,255,.6),
-    0 2px 4px rgba(0,0,0,.35);
+  color: #2b1b00;
+  text-shadow: 0 1px 1px rgba(255,255,255,.4);
 }
 .wheel{
   background:
@@ -245,11 +251,11 @@ body{
     radial-gradient(circle at 70% 70%, rgba(0,0,0,.25), transparent 45%);
 }
 .hub{
-  background: radial-gradient(circle at 30% 30%, #FFD700, #8B6508);
-  border: 4px solid rgba(212,175,55,.8);
+  background: radial-gradient(circle at 30% 30%, #FFD700, #8B0000);
+  border: 4px solid #D4AF37;
   box-shadow:
-    0 0 20px rgba(212,175,55,.55),
-    inset 0 0 10px rgba(0,0,0,.4);
+    0 0 25px rgba(255,215,0,.6),
+    inset 0 0 12px rgba(0,0,0,.4);
 }
 .wheel{
   border: 10px solid rgba(212,175,55,.75);
