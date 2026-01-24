@@ -184,19 +184,16 @@ body{
   }
   .btn:active{transform:translateY(1px)}
   .hidden{display:none !important}
-  .wheelCard {
+.wheelCard {
   width: min(520px, 100%);
   background:
-    radial-gradient(900px 600px at 20% 15%, rgba(255, 200, 80, .25) 0%, transparent 45%),
-    radial-gradient(700px 500px at 80% 30%, rgba(140, 0, 0, .35) 0%, transparent 55%),
-    linear-gradient(135deg, #1b1206, #3a2406 45%, #0f0a04 100%);
-  border: 1px solid rgba(255, 200, 80, .35);
+    radial-gradient(800px 600px at 50% 20%, rgba(255, 215, 100, .18), transparent 55%),
+    linear-gradient(180deg, #0b0b0b, #1a1206 45%, #000 100%);
+  border: 1px solid rgba(255, 215, 100, .28);
   border-radius: 18px;
   box-shadow:
-    0 18px 50px rgba(0, 0, 0, .55),
-    inset 0 0 0 1px rgba(255, 200, 80, .12);
-  backdrop-filter: blur(12px);
-  overflow: hidden;
+    0 20px 60px rgba(0,0,0,.7),
+    inset 0 0 0 1px rgba(255,215,100,.12);
   padding: 18px 16px;
 }
 .wheelCard::after{
