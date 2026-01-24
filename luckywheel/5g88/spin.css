@@ -232,7 +232,13 @@ body{
     text-shadow:0 1px 0 rgba(255,255,255,.35);
     pointer-events:none;
   }
-
+.sliceText .sliceLabel{
+  color: #1b1b1b;
+  text-shadow: 0 1px 1px rgba(255,255,255,.45);
+}
+.wheel{
+  border: 10px solid rgba(255, 204, 85, .55);
+}
 .sliceText{
   position:absolute;
   inset:0;
