@@ -1409,7 +1409,7 @@ if(dropLogoutBtn){
     }
   };
 }
-// ✅ BOOT INIT (safe even if DOMContentLoaded already fired)
+
 (function bootUI(){
   const run = ()=>{
     try{ initTotalsHistory(); }catch(e){ console.error("initTotalsHistory err", e); }
@@ -1419,7 +1419,6 @@ if(dropLogoutBtn){
   if(document.readyState !== "loading") run();
   else window.addEventListener("DOMContentLoaded", run);
 
-  // fallback kalau element lambat render
   setTimeout(run, 250);
 })();
 document.querySelectorAll(".siteFilter").forEach(group=>{
