@@ -39,7 +39,7 @@ header nav{
   bottom: 0;
   height: 72px;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   align-items: center;
   padding: 8px 10px;
   background:url("https://api.superman888.ws/media/280000_AK7OZFs_X8K4pfk_tkVaHdG.png");
