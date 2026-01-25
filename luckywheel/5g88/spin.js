@@ -622,7 +622,6 @@ function handleHashPage(){
   if(h === "#pagearticle"){
     gotoArticle();
   } else if(h === "#pagewheel"){
-    // optional: kalau kau nak direct buka wheel page
     $("pageEnter")?.classList.add("hidden");
     $("pageArticle")?.classList.add("hidden");
     $("pageWheel")?.classList.remove("hidden");
