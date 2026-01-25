@@ -633,3 +633,76 @@ function handleHashPage(){
 
 window.addEventListener("hashchange", handleHashPage);
 handleHashPage();
+  (function initHomeSlider(){
+    const track = document.getElementById("slideTrack");
+    if (!track) return;
+
+    const prevBtn = document.getElementById("sliderPrev");
+    const nextBtn = document.getElementById("sliderNext");
+
+    let slides = Array.from(track.children).filter(el => el.tagName === "IMG" || el.querySelector?.("img") || el.classList?.contains("slide"));
+    if (!slides.length) slides = Array.from(track.querySelectorAll("img"));
+
+    const realCount = slides.length;
+    if (realCount <= 1) return;
+
+    const firstClone = slides[0].cloneNode(true);
+    const lastClone  = slides[realCount - 1].cloneNode(true);
+
+    track.insertBefore(lastClone, track.firstChild);
+    track.appendChild(firstClone);
+
+    let index = 1;
+    let isAnimating = false;
+    const DURATION = 800;
+    const INTERVAL = 3500;
+
+    function setTransform(withAnim = true){
+      track.style.transition = withAnim ? `transform ${DURATION}ms ease-in-out` : "none";
+      track.style.transform = `translateX(-${index * 100}%)`;
+    }
+
+    setTransform(false);
+
+    function goNext(){
+      if (isAnimating) return;
+      isAnimating = true;
+      index += 1;
+      setTransform(true);
+    }
+
+    function goPrev(){
+      if (isAnimating) return;
+      isAnimating = true;
+      index -= 1;
+      setTransform(true);
+    }
+
+    track.addEventListener("transitionend", () => {
+      if (index === 0) {
+        index = realCount;
+        setTransform(false);
+      }
+      if (index === realCount + 1) {
+        index = 1;
+        setTransform(false);
+      }
+      isAnimating = false;
+    });
+
+    let timer = setInterval(goNext, INTERVAL);
+
+    function resetTimer(){
+      clearInterval(timer);
+      timer = setInterval(goNext, INTERVAL);
+    }
+
+    if (nextBtn) nextBtn.addEventListener("click", () => { goNext(); resetTimer(); });
+    if (prevBtn) prevBtn.addEventListener("click", () => { goPrev(); resetTimer(); });
+
+    const slider = track.closest(".home-hero-slider");
+    if (slider) {
+      slider.addEventListener("mouseenter", () => clearInterval(timer));
+      slider.addEventListener("mouseleave", () => timer = setInterval(goNext, INTERVAL));
+    }
+  })();
