@@ -497,3 +497,126 @@ body{
 .toast.success .t-title{ color: #00ff84; }
 .toast.info    .t-title{ color: #36a2ff; }
 .toast.error   .t-title{ color: #ff0000b3; }
+.home-article{
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 18px 18px;
+  line-height: 1.75;
+}
+
+.home-title{
+  font-size: 1.55rem;
+  letter-spacing: .2px;
+  margin: 0 0 10px;
+}
+
+.home-article h3{
+  margin: 22px 0 10px;
+  font-size: 1.12rem;
+  letter-spacing: .2px;
+}
+
+.home-article h4{
+  margin: 10px 0 6px;
+  font-size: 1rem;
+  letter-spacing: .2px;
+}
+
+.home-article p{
+  margin: 10px 0;
+  color: rgba(255,255,255,.88);
+}
+
+
+.home-list{
+  margin: 10px 0 14px 22px;
+  padding: 0;
+}
+
+.home-list li{
+  margin: 8px 0;
+  color: rgba(255,255,255,.9);
+}
+
+.home-list li::marker{
+  color: #facc15; 
+}
+
+
+.home-game-block{
+  margin: 12px 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(250,204,21,.22);
+  border-radius: 14px;
+  background: rgba(255,255,255,.03);
+  box-shadow: 0 10px 24px rgba(0,0,0,.25);
+}
+
+.home-game-block p{
+  margin: 6px 0 0;
+  color: rgba(255,255,255,.86);
+}
+
+
+.home-faq{
+  margin-top: 18px;
+}
+
+.faq-item{
+  margin: 12px 0;
+  border: 1px solid rgba(250,204,21,.22);
+  border-radius: 14px;
+  background: rgba(255,255,255,.03);
+  box-shadow: 0 10px 24px rgba(0,0,0,.25);
+  overflow: hidden;
+}
+
+.faq-item summary{
+  list-style: none;
+  cursor: pointer;
+  padding: 12px 14px;
+  font-size: .98rem;
+  color: rgba(255,255,255,.92);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.faq-item summary::-webkit-details-marker{
+  display: none;
+}
+
+
+.faq-item summary::after{
+  content: "▾";
+  font-size: 1.05rem;
+  color: #facc15;
+  transition: transform .18s ease;
+}
+
+.faq-item[open] summary::after{
+  transform: rotate(180deg);
+}
+
+.faq-item p{
+  margin: 0;
+  padding: 0 14px 14px;
+  color: rgba(255,255,255,.86);
+}
+
+
+.home-article strong{
+  color: #facc15;
+  font-weight: 700;
+}
+
+
+@media (max-width: 520px){
+  .home-article{
+    padding: 14px 12px;
+  }
+  .home-title{
+    font-size: 1.3rem;
+  }
+}
