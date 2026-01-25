@@ -88,6 +88,7 @@
   height: 18px;
   fill: rgba(255,255,255,.55);
   pointer-events: none;
+  transition: all 0.2s;
 }
 
 /* ikut style input sedia ada, tapi tambah padding kiri */
@@ -118,11 +119,12 @@
   background:transparent;
   padding:6px;
   cursor:pointer;
+  transition: all 0.2s;
 }
 
 .togglePw .eye{
-  width:20px;
-  height:20px;
+  width:18px;
+  height:18px;
   fill:rgba(255,255,255,.6);
 }
 
