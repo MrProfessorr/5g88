@@ -311,12 +311,19 @@ const colors = ["#FFD166","#F4A261","#E9C46A","#2A9D8F","#264653","#C1121F","#FF
     $("codeLabel").textContent = code;
   }
 
- function gotoEnter(){
-  stopTickLoop(); 
+function gotoEnter(){
+  stopTickLoop();
   $("pageWheel").classList.add("hidden");
+  $("pageArticle")?.classList.add("hidden");
   $("pageEnter").classList.remove("hidden");
   $("promoInput").value = "";
   showEnter("");
+}
+function gotoArticle(){
+  stopTickLoop();
+  $("pageEnter").classList.add("hidden");
+  $("pageWheel").classList.add("hidden");
+  $("pageArticle").classList.remove("hidden");
 }
 
   $("navSpin").onclick = (e)=>{ e.preventDefault(); gotoEnter(); };
@@ -601,3 +608,100 @@ setTimeout(async ()=>{
   window.addEventListener("hashchange", setActiveByUrl);
   setActiveByUrl();
 })();
+const btnBackHome = $("btnBackHome");
+if(btnBackHome){
+  btnBackHome.onclick = ()=>{
+    location.hash = "#pageEnter";
+    gotoEnter();
+  };
+}
+function handleHashPage(){
+  const h = (location.hash || "#pageEnter").toLowerCase();
+
+  if(h === "#pagearticle"){
+    gotoArticle();
+  } else if(h === "#pagewheel"){
+    // optional: kalau kau nak direct buka wheel page
+    $("pageEnter")?.classList.add("hidden");
+    $("pageArticle")?.classList.add("hidden");
+    $("pageWheel")?.classList.remove("hidden");
+  } else {
+    gotoEnter();
+  }
+}
+
+window.addEventListener("hashchange", handleHashPage);
+handleHashPage();
+  (function initHomeSlider(){
+    const track = document.getElementById("slideTrack");
+    if (!track) return;
+
+    const prevBtn = document.getElementById("sliderPrev");
+    const nextBtn = document.getElementById("sliderNext");
+
+    let slides = Array.from(track.children).filter(el => el.tagName === "IMG" || el.querySelector?.("img") || el.classList?.contains("slide"));
+    if (!slides.length) slides = Array.from(track.querySelectorAll("img"));
+
+    const realCount = slides.length;
+    if (realCount <= 1) return;
+
+    const firstClone = slides[0].cloneNode(true);
+    const lastClone  = slides[realCount - 1].cloneNode(true);
+
+    track.insertBefore(lastClone, track.firstChild);
+    track.appendChild(firstClone);
+
+    let index = 1;
+    let isAnimating = false;
+    const DURATION = 800;
+    const INTERVAL = 3500;
+
+    function setTransform(withAnim = true){
+      track.style.transition = withAnim ? `transform ${DURATION}ms ease-in-out` : "none";
+      track.style.transform = `translateX(-${index * 100}%)`;
+    }
+
+    setTransform(false);
+
+    function goNext(){
+      if (isAnimating) return;
+      isAnimating = true;
+      index += 1;
+      setTransform(true);
+    }
+
+    function goPrev(){
+      if (isAnimating) return;
+      isAnimating = true;
+      index -= 1;
+      setTransform(true);
+    }
+
+    track.addEventListener("transitionend", () => {
+      if (index === 0) {
+        index = realCount;
+        setTransform(false);
+      }
+      if (index === realCount + 1) {
+        index = 1;
+        setTransform(false);
+      }
+      isAnimating = false;
+    });
+
+    let timer = setInterval(goNext, INTERVAL);
+
+    function resetTimer(){
+      clearInterval(timer);
+      timer = setInterval(goNext, INTERVAL);
+    }
+
+    if (nextBtn) nextBtn.addEventListener("click", () => { goNext(); resetTimer(); });
+    if (prevBtn) prevBtn.addEventListener("click", () => { goPrev(); resetTimer(); });
+
+    const slider = track.closest(".home-hero-slider");
+    if (slider) {
+      slider.addEventListener("mouseenter", () => clearInterval(timer));
+      slider.addEventListener("mouseleave", () => timer = setInterval(goNext, INTERVAL));
+    }
+  })();
