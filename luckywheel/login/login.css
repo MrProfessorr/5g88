@@ -73,3 +73,34 @@
   from{ transform: translateX(-50%) translateY(8px); opacity: .2; }
   to{ transform: translateX(-50%) translateY(0); opacity: 1; }
 }
+/* input with left svg icon */
+.field{
+  position: relative;
+  width: 100%;
+}
+
+.field .icon{
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  fill: rgba(255,255,255,.55);
+  pointer-events: none;
+}
+
+/* ikut style input sedia ada, tapi tambah padding kiri */
+.field input{
+  width: 100%;
+  padding-left: 46px !important; /* space untuk icon */
+}
+
+/* glow masa focus (optional, nice) */
+.field input:focus{
+  outline: none;
+}
+
+.field input:focus ~ .icon{
+  fill: rgba(47,128,255,.95);
+}
