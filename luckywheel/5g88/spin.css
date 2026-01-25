@@ -40,15 +40,13 @@ header nav{
   bottom: 0;
   height: 72px;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   align-items: center;
   padding: 8px 10px;
-
   background-image: url("https://api.5g88.homes/media/Untitled_design_Hjq8KRJ_Y6ldTH5.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-
   border-top: 1px solid rgba(255,255,255,.12);
   backdrop-filter: blur(10px);
   z-index: 999999;
