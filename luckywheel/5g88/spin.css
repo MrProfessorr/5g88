@@ -508,6 +508,7 @@ body{
   font-size: 1.55rem;
   letter-spacing: .2px;
   margin: 0 0 10px;
+  text-align: left;
 }
 
 .home-article h3{
@@ -521,12 +522,6 @@ body{
   font-size: 1rem;
   letter-spacing: .2px;
 }
-
-.home-article p{
-  margin: 10px 0;
-  color: rgba(255,255,255,.88);
-}
-
 
 .home-list{
   margin: 10px 0 14px 22px;
@@ -722,14 +717,13 @@ body{
 .home-article p{
   margin-bottom:10px;
   font-size:0.95rem;
+  margin: 10px 0;font-size: 0.95rem;
+  color: rgba(255, 255, 255, .88);
+  text-align: left;
 }
 .home-article h2, .home-article h3 {
     color: #f9fafb;
     margin: 18px 0 8px;
-}
-.home-article p {
-    margin: 10px 0;font-size: 0.95rem;
-    color: rgba(255, 255, 255, .88);
 }
 * {
     box-sizing: border-box;
