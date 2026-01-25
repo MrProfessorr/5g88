@@ -1,21 +1,8 @@
-  let currentRotationDeg = 0;
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-  import {
-  getDatabase, ref, get, set, push, child, runTransaction, onValue, update
- } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDSqpbnkb3GLNFlHLYSz5XyRYPvKLAOCOA",
-  authDomain: "lucky-spined.firebaseapp.com",
-  databaseURL: "https://lucky-spined-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "lucky-spined",
-  storageBucket: "lucky-spined.firebasestorage.app",
-  messagingSenderId: "708886212396",
-  appId: "1:708886212396:web:2cb7a900fe1a7891510689"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+let currentRotationDeg = 0;
+import { db } from "../share/cmdconfig-firebase-jsq1a42b.js"; 
+import {
+  ref, get, set, push, child, runTransaction, onValue, update
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 const $ = (id)=>document.getElementById(id);
 const CURRENT_SITE = "5g88";
 const sfxStart = $("sfxStart");
