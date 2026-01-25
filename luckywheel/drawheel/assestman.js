@@ -17,18 +17,6 @@ const firebaseConfig = {
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
   const auth = getAuth(app);
-const LS_USERMENU = "admin.navUsername";
-function saveNavUsername(name){
-  localStorage.setItem(LS_USERMENU, String(name || "").trim());
-}
-function loadNavUsername(){
-  return (localStorage.getItem(LS_USERMENU) || "").trim();
-}
-
-function paintNavUsername(name){
-  const out = document.getElementById("navUsername");
-  if(out) out.textContent = name || "ADMIN";
-}
 function getNiceUsername(user){
   const dn = (user?.displayName || "").trim();
   if(dn) return dn;
@@ -38,10 +26,6 @@ function getNiceUsername(user){
 
   return (user?.uid || "User").slice(0,8);
 }
-(function bootNavUsername(){
-  const saved = loadNavUsername();
-  if(saved) paintNavUsername(saved);
-})();
 
 function initUserMenuUI(){
   const menu = document.getElementById("userMenu");
@@ -95,10 +79,9 @@ onAuthStateChanged(auth, async (user)=>{
     goLogin();
     return;
   }
-const nice = getNiceUsername(user);
-paintNavUsername(nice);
-saveNavUsername(nice);
-document.documentElement.style.visibility = "visible";
+const nameEl = document.getElementById("navUsername");
+  if(nameEl) nameEl.textContent = getNiceUsername(user);
+  document.documentElement.style.visibility = "visible";
 });
 let selectedSite = "";
 
@@ -767,7 +750,6 @@ $("sideLogout").onclick = async ()=>{
   try{
     closeSidebar();
     showToast?.("info", "Logging out...");
-    localStorage.removeItem(LS_USERMENU);
     await signOut(auth);
   }catch(e){
   }finally{
@@ -821,7 +803,8 @@ document.getElementById("dropPrize")?.addEventListener("click", async ()=>{
 
 document.getElementById("dropLogout")?.addEventListener("click", async ()=>{
   document.getElementById("userMenu")?.classList.remove("open");
-  localStorage.removeItem(LS_USERMENU);
+
+  // terus logout (tanpa confirm)
   await signOut(auth);
   goLogin();
 });
