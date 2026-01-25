@@ -315,14 +315,20 @@ const colors = ["#F9D976","#E6B65C","#D4AF37","#B8860B","#FFB703","#C1121F","#8B
     $("codeLabel").textContent = code;
   }
 
- function gotoEnter(){
-  stopTickLoop(); 
+function gotoEnter(){
+  stopTickLoop();
   $("pageWheel").classList.add("hidden");
+  $("pageArticle")?.classList.add("hidden");
   $("pageEnter").classList.remove("hidden");
   $("promoInput").value = "";
   showEnter("");
 }
-
+function gotoArticle(){
+  stopTickLoop();
+  $("pageEnter").classList.add("hidden");
+  $("pageWheel").classList.add("hidden");
+  $("pageArticle").classList.remove("hidden");
+}
   $("navSpin").onclick = (e)=>{ e.preventDefault(); gotoEnter(); };
   function fmtTime(ts){
     const d=new Date(ts);
@@ -603,3 +609,27 @@ setTimeout(async ()=>{
   window.addEventListener("hashchange", setActiveByUrl);
   setActiveByUrl();
 })();
+const btnBackHome = $("btnBackHome");
+if(btnBackHome){
+  btnBackHome.onclick = ()=>{
+    location.hash = "#pageEnter";
+    gotoEnter();
+  };
+}
+function handleHashPage(){
+  const h = (location.hash || "#pageEnter").toLowerCase();
+
+  if(h === "#pagearticle"){
+    gotoArticle();
+  } else if(h === "#pagewheel"){
+    // optional: kalau kau nak direct buka wheel page
+    $("pageEnter")?.classList.add("hidden");
+    $("pageArticle")?.classList.add("hidden");
+    $("pageWheel")?.classList.remove("hidden");
+  } else {
+    gotoEnter();
+  }
+}
+
+window.addEventListener("hashchange", handleHashPage);
+handleHashPage();
