@@ -1,127 +1,130 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<link rel="icon" type="image/png" href="https://5g88.baby/favicon.png" />
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>5G88 Spin Angpao Lucky Draw</title>
-<link rel="stylesheet" href="./spin.css">
-<meta property="og:site_name" content="5G88">
-<meta name="description" content="Spin the 5G88 Lucky Draw Angpao and seize your chance to win exciting rewards! Every spin offers a new opportunity to receive exclusive angpao prizes of varying values. This feature is specially designed for selected partners and can be used free of charge by users who have obtained an official code.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="5G88 Lucky Draw">
-<meta property="og:description" content="Spin the 5G88 Lucky Draw Angpao and seize your chance to win exciting rewards! Every spin offers a new opportunity to receive exclusive angpao prizes of varying values. This feature is specially designed for selected partners and can be used free of charge by users who have obtained an official code.">
-<meta property="og:url" content="https://mrprofessorr.github.io/5g88/luckywheel/5g88/">
-<meta property="og:image" content="https://mrprofessorr.github.io/5g88/luckywheel/image5g88/favicon.png">
-<meta property="og:image:width" content="512">
-<meta property="og:image:height" content="512">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="5G88 Lucky Draw">
-<meta name="twitter:description" content="Spin the 5G88 Lucky Draw Angpao and seize your chance to win exciting rewards! Every spin offers a new opportunity to receive exclusive angpao prizes of varying values. This feature is specially designed for selected partners and can be used free of charge by users who have obtained an official code.">
-<meta name="twitter:image" content="https://mrprofessorr.github.io/5g88/luckywheel/image5g88/favicon.png">
+  <meta charset="utf-8"/>
+  <link rel="icon" type="image/png" href="https://5g88.baby/favicon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>5G88 Spin Angpao Lucky Draw</title>
+
+  <link rel="stylesheet" href="./spin.css">
+
+  <meta property="og:site_name" content="5G88">
+  <meta name="description" content="Spin the 5G88 Lucky Draw Angpao and seize your chance to win exciting rewards! Every spin offers a new opportunity to receive exclusive angpao prizes of varying values. This feature is specially designed for selected partners and can be used free of charge by users who have obtained an official code.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="5G88 Lucky Draw">
+  <meta property="og:description" content="Spin the 5G88 Lucky Draw Angpao and seize your chance to win exciting rewards! Every spin offers a new opportunity to receive exclusive angpao prizes of varying values. This feature is specially designed for selected partners and can be used free of charge by users who have obtained an official code.">
+  <meta property="og:url" content="https://mrprofessorr.github.io/5g88/luckywheel/5g88/">
+  <meta property="og:image" content="https://mrprofessorr.github.io/5g88/luckywheel/image5g88/favicon.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="5G88 Lucky Draw">
+  <meta name="twitter:description" content="Spin the 5G88 Lucky Draw Angpao and seize your chance to win exciting rewards! Every spin offers a new opportunity to receive exclusive angpao prizes of varying values. This feature is specially designed for selected partners and can be used free of charge by users who have obtained an official code.">
+  <meta name="twitter:image" content="https://mrprofessorr.github.io/5g88/luckywheel/image5g88/favicon.png">
 </head>
+
 <body>
-<header>
-  <nav>
-    <a href="#pageEnter">Home</a>
-    <a href="5g88/luckywheel/spin" id="navSpin">Spin</a>
-    <a href="https://5g88.baby/">Notice</a>
-  </nav>
-</header>
+  <header>
+    <nav>
+      <a href="#pageEnter">Home</a>
+      <a href="#pageWheel" id="navSpin">Spin</a>
+      <a href="https://5g88.baby/">Notice</a>
+    </nav>
+  </header>
 
-<div class="noteTop" id="blockedInfo"></div>
+  <div class="noteTop" id="blockedInfo"></div>
 
-<div class="wrap">
-  <div class="center" id="pageEnter">
-    <div class="card">
-      <div class="top">
-        <div class="iconBubble">
-  <img src="https://5g88.baby/favicon.png" alt="ticket" class="bubbleIcon">
-</div>
-      </div>
-      <div class="body">
-        <h2>Enter Promo Code</h2>
-        <p>Enter your unique promotional code to start the wheel spin</p>
+  <!-- ✅ Semua page (Enter, Wheel, Article) letak dalam .wrap -->
+  <div class="wrap">
 
-<label>Username</label>
-<input id="customerInput" placeholder="ENTER USERNAME" maxlength="30"/>
-
-<label>Promo Code</label>
-<input id="promoInput" placeholder="ENTER PROMO CODE" maxlength="12"/>
-
-        <button class="btn" id="btnStart">🎯 Start Lucky Draw →</button>
-        <p id="enterMsg" class="small" style="margin-top:10px;"></p>
-      </div>
-    </div>
-  </div>
-
- 
-  <div class="center hidden" id="pageWheel">
-    <div class="wheelCard">
-      <div class="wheelTitle">
-        <h2>🎡 Lucky Wheel</h2>
-      </div>
-      <div class="codeLine">Code: <b id="codeLabel">—</b></div>
-
-      <div class="wheelWrap">
-        <div class="pointer"></div>
-        <div class="wheel" id="wheel">
-          <div class="sliceText" id="sliceText"></div>
-          <div class="wheelCenter">
-       <div class="hub">
-    <img class="hubImg" src="https://5g88.baby/favicon.png" alt="Hub">
-  </div>
-</div>
-        </div>
-      </div>
-
-      <button class="spinBtn" id="btnSpin">▶ Start Spinning!</button>
-
-      <div class="history">
-        <h4>Drawing History</h4>
-        <div id="histList" style="color:rgba(233,236,255,.75);font-size:13px">No history yet.</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<div class="overlay" id="overlay">
-  <div class="modal">
-    <button class="x" id="btnClose">✕</button>
-    <h3>🎉 Congratulations!</h3>
-    <div class="win" id="winText">FREE 0</div>
-
-    <div class="promoBox">
-      <div class="small">Promo Code Used:</div>
-      <div class="code" id="winCode">—</div>
-      <div class="small" style="margin-top:6px">✨ Screenshot this for verification ✨</div>
-    </div>
-
-    <div class="small">Congratulations on your win! Please contact customer service to claim your prize!</div>
-    <div class="small" id="redirectText" style="margin-top:6px;opacity:.75">Auto-redirect in 25 seconds</div>
-    <button class="okBtn" id="btnOk">🎉 Awesome!</button>
-  </div>
-</div>
-    
-      <section id="homePage" class="home-page">
-        <div class="home-hero-slider">
-          <div class="home-slide-track" id="slideTrack">
-            <img src="https://i.imgur.com/G65i2c2.png" loading="lazy">
-            <img src="https://i.imgur.com/qQZ2nwz.png" class="home-hero-img" loading="lazy">
-            <img src="https://i.imgur.com/ZkB5QoQ.png" class="home-hero-img" loading="lazy">
-            <img src="https://i.imgur.com/yNIOg5Z.png" class="home-hero-img" loading="lazy">
-            <img src="https://i.imgur.com/sInSAfC.png" class="home-hero-img" loading="lazy">
-            <img src="https://i.imgur.com/dJ0EYmV.png" class="home-hero-img" loading="lazy">
+    <!-- =======================
+         PAGE: ENTER (HOME)
+    ======================== -->
+    <div class="center" id="pageEnter">
+      <div class="card">
+        <div class="top">
+          <div class="iconBubble">
+            <img src="https://5g88.baby/favicon.png" alt="ticket" class="bubbleIcon">
           </div>
-            <button class="slider-btn prev" id="sliderPrev" type="button" aria-label="Prev">
-    <svg viewBox="0 0 24 24"><path d="M9.474 5.209s-4.501 4.505-6.254 6.259c-.147.146-.22.338-.22.53s.073.384.22.53c1.752 1.754 6.252 6.257 6.252 6.257.145.145.336.217.527.217.191-.001.383-.074.53-.221.293-.293.294-.766.004-1.057l-4.976-4.976h14.692c.414 0 .75-.336.75-.75s-.336-.75-.75-.75h-14.692l4.978-4.979c.289-.289.287-.761-.006-1.054-.147-.147-.339-.221-.53-.221-.191-.001-.38.071-.525.215z"/></svg>
-  </button>
-
-  <button class="slider-btn next" id="sliderNext" type="button" aria-label="Next">
-    <svg viewBox="0 0 24 24"><path d="M14.523 18.787s4.501-4.505 6.255-6.26c.146-.146.219-.338.219-.53s-.073-.383-.219-.53c-1.753-1.754-6.255-6.258-6.255-6.258-.144-.145-.334-.217-.524-.217-.193 0-.385.074-.532.221-.293.292-.295.766-.004 1.056l4.978 4.978h-14.692c-.414 0-.75.336-.75.75s.336.75.75.75h14.692l-4.979 4.979c-.289.289-.286.762.006 1.054.148.148.341.222.533.222.19 0 .378-.072.522-.215z"/></svg>
-  </button>
         </div>
+
+        <div class="body">
+          <h2>Enter Promo Code</h2>
+          <p>Enter your unique promotional code to start the wheel spin</p>
+
+          <label>Username</label>
+          <input id="customerInput" placeholder="ENTER USERNAME" maxlength="30"/>
+
+          <label>Promo Code</label>
+          <input id="promoInput" placeholder="ENTER PROMO CODE" maxlength="12"/>
+
+          <button class="btn" id="btnStart">🎯 Start Lucky Draw →</button>
+          <p id="enterMsg" class="small" style="margin-top:10px;"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================
+         PAGE: WHEEL
+    ======================== -->
+    <div class="center hidden" id="pageWheel">
+      <div class="wheelCard">
+        <div class="wheelTitle">
+          <h2>🎡 Lucky Wheel</h2>
+        </div>
+
+        <div class="codeLine">Code: <b id="codeLabel">—</b></div>
+
+        <div class="wheelWrap">
+          <div class="pointer"></div>
+          <div class="wheel" id="wheel">
+            <div class="sliceText" id="sliceText"></div>
+
+            <div class="wheelCenter">
+              <div class="hub">
+                <img class="hubImg" src="https://5g88.baby/favicon.png" alt="Hub">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="spinBtn" id="btnSpin">▶ Start Spinning!</button>
+
+        <div class="history">
+          <h4>Drawing History</h4>
+          <div id="histList" style="color:rgba(233,236,255,.75);font-size:13px">No history yet.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================
+         PAGE: ARTICLE
+         ✅ letak sini (selepas pageWheel, masih dalam wrap)
+    ======================== -->
+    <section id="pageArticle" class="center hidden home-page">
+      <div class="home-hero-slider">
+        <div class="home-slide-track" id="slideTrack">
+          <img src="https://i.imgur.com/G65i2c2.png" loading="lazy" alt="banner">
+          <img src="https://i.imgur.com/qQZ2nwz.png" class="home-hero-img" loading="lazy" alt="banner">
+          <img src="https://i.imgur.com/ZkB5QoQ.png" class="home-hero-img" loading="lazy" alt="banner">
+          <img src="https://i.imgur.com/yNIOg5Z.png" class="home-hero-img" loading="lazy" alt="banner">
+          <img src="https://i.imgur.com/sInSAfC.png" class="home-hero-img" loading="lazy" alt="banner">
+          <img src="https://i.imgur.com/dJ0EYmV.png" class="home-hero-img" loading="lazy" alt="banner">
+        </div>
+
+        <button class="slider-btn prev" id="sliderPrev" type="button" aria-label="Prev">
+          <svg viewBox="0 0 24 24">
+            <path d="M9.474 5.209s-4.501 4.505-6.254 6.259c-.147.146-.22.338-.22.53s.073.384.22.53c1.752 1.754 6.252 6.257 6.252 6.257.145.145.336.217.527.217.191-.001.383-.074.53-.221.293-.293.294-.766.004-1.057l-4.976-4.976h14.692c.414 0 .75-.336.75-.75s-.336-.75-.75-.75h-14.692l4.978-4.979c.289-.289.287-.761-.006-1.054-.147-.147-.339-.221-.53-.221-.191-.001-.38.071-.525.215z"/>
+          </svg>
+        </button>
+
+        <button class="slider-btn next" id="sliderNext" type="button" aria-label="Next">
+          <svg viewBox="0 0 24 24">
+            <path d="M14.523 18.787s4.501-4.505 6.255-6.26c.146-.146.219-.338.219-.53s-.073-.383-.219-.53c-1.753-1.754-6.255-6.258-6.255-6.258-.144-.145-.334-.217-.524-.217-.193 0-.385.074-.532.221-.293.292-.295.766-.004 1.056l4.978 4.978h-14.692c-.414 0-.75.336-.75.75s.336.75.75.75h14.692l-4.979 4.979c-.289.289-.286.762.006 1.054.148.148.341.222.533.222.19 0 .378-.072.522-.215z"/>
+          </svg>
+        </button>
+      </div>
 
 <article class="home-article">
   <h2 class="home-title">5G88 Casino Review | 200% Slots Welcome Bonus in Malaysia</h2>
@@ -294,35 +297,65 @@
     </p>
   </details>
 </article>
-</section>
-<nav class="bottomNav" id="bottomNav">
-  <a class="bnItem" href="#pageArticle" data-active="article" id="navArticle">
-    <img src="https://api.5g88.homes/media/NEWS_ICON.webp" alt="Article">
-    <span>ARTICLE</span>
-  </a>
-  <a class="bnItem" href="#pageEnter" data-active="home">
-    <img src="https://api.5g88.homes/media/HOME_ICON.webp" alt="Home">
-    <span>HOME</span>
-  </a>
+    </section>
 
-  <a class="bnItem" href="https://5g88.baby/promotions" data-active="spin">
-    <img src="https://api.5g88.homes/media/PROMO_ICON.webp" alt="Spin">
-    <span>PROMO</span>
-  </a>
+  </div>
+  <!-- ✅ tutup .wrap -->
 
-  <a class="bnItem" href="https://5g88.baby/" data-active="notice">
-    <img src="https://api.5g88.homes/media/PROFILE_ICON.webp" alt="Notice">
-    <span>NOTICE</span>
-  </a>
-  <a class="bnItem" href="https://5g88.baby/livechat">
-    <img src="https://api.5g88.homes/media/CONTACT_ICON.webp" alt="Contact">
-    <span>CONTACT</span>
-  </a>
-</nav>
-<div id="toastRoot" class="toast-root" aria-live="polite" aria-atomic="true"></div>
-<audio id="sfxStart" preload="auto" src="../assets/start.mp3"></audio>
-<audio id="sfxTick"  preload="auto" src="../assets/tick.mp3"></audio>
-<audio id="sfxWin"   preload="auto" src="../assets/win1.mp3"></audio>
-<script type="module" src="./spin.js"></script>
+
+  <!-- ✅ overlay hanya SEKALI, letak luar .wrap -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <button class="x" id="btnClose">✕</button>
+      <h3>🎉 Congratulations!</h3>
+      <div class="win" id="winText">FREE 0</div>
+
+      <div class="promoBox">
+        <div class="small">Promo Code Used:</div>
+        <div class="code" id="winCode">—</div>
+        <div class="small" style="margin-top:6px">✨ Screenshot this for verification ✨</div>
+      </div>
+
+      <div class="small">Congratulations on your win! Please contact customer service to claim your prize!</div>
+      <div class="small" id="redirectText" style="margin-top:6px;opacity:.75">Auto-redirect in 25 seconds</div>
+      <button class="okBtn" id="btnOk">🎉 Awesome!</button>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav class="bottomNav" id="bottomNav">
+    <a class="bnItem" href="#pageArticle" data-active="article" id="navArticle">
+      <img src="https://api.5g88.homes/media/NEWS_ICON.webp" alt="Article">
+      <span>ARTICLE</span>
+    </a>
+
+    <a class="bnItem" href="#pageEnter" data-active="home">
+      <img src="https://api.5g88.homes/media/HOME_ICON.webp" alt="Home">
+      <span>HOME</span>
+    </a>
+
+    <a class="bnItem" href="#pageWheel" data-active="spin">
+      <img src="https://api.5g88.homes/media/PROMO_ICON.webp" alt="Spin">
+      <span>PROMO</span>
+    </a>
+
+    <a class="bnItem" href="https://5g88.baby/" data-active="notice">
+      <img src="https://api.5g88.homes/media/PROFILE_ICON.webp" alt="Notice">
+      <span>NOTICE</span>
+    </a>
+
+    <a class="bnItem" href="https://5g88.baby/livechat">
+      <img src="https://api.5g88.homes/media/CONTACT_ICON.webp" alt="Contact">
+      <span>CONTACT</span>
+    </a>
+  </nav>
+
+  <div id="toastRoot" class="toast-root" aria-live="polite" aria-atomic="true"></div>
+
+  <audio id="sfxStart" preload="auto" src="../assets/start.mp3"></audio>
+  <audio id="sfxTick"  preload="auto" src="../assets/tick.mp3"></audio>
+  <audio id="sfxWin"   preload="auto" src="../assets/win1.mp3"></audio>
+
+  <script type="module" src="./spin.js"></script>
 </body>
 </html>
