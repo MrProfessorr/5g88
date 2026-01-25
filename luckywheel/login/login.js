@@ -17,6 +17,28 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebas
   const db = getDatabase(app);
 
   const $ = (id)=>document.getElementById(id);
+function initPasswordToggle(){
+  const pwInput = $("pw");
+  const btn = document.querySelector(".togglePw");
+  if(!pwInput || !btn) return;
+
+  const eyeShow = btn.querySelector(".show");
+  const eyeHide = btn.querySelector(".hide");
+
+  btn.addEventListener("click", () => {
+    const isHidden = pwInput.type === "password";
+    pwInput.type = isHidden ? "text" : "password";
+
+    if (eyeShow && eyeHide) {
+      eyeShow.style.display = isHidden ? "none" : "block";
+      eyeHide.style.display = isHidden ? "block" : "none";
+    }
+
+    btn.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
+  });
+}
+initPasswordToggle();
+
   function setLoginButton(state){
   const btn = $("btnLogin");
 
