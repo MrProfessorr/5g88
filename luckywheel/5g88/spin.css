@@ -697,3 +697,29 @@ body{
 @media (max-width:480px){
   .slider-btn{ width:40px; height:40px; }
 }
+.home-article{
+  max-width:980px;
+  margin:0 auto 48px;
+  line-height:1.7;
+  color:#e5e7eb;
+}
+
+.home-article h2,
+.home-article h3{
+  color:#f9fafb;
+  margin:18px 0 8px;
+}
+
+.home-article h2{
+  font-size:1.6rem;
+}
+
+.home-article h3{
+  font-size:1.1rem;
+  color:#facc15;
+}
+
+.home-article p{
+  margin-bottom:10px;
+  font-size:0.95rem;
+}
