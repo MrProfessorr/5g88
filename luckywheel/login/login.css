@@ -104,3 +104,30 @@
 .field input:focus ~ .icon{
   fill: rgba(47,128,255,.95);
 }
+/* ===== password eye toggle (kanan) ===== */
+.pwField input{
+  padding-right:46px !important; /* ruang untuk eye */
+}
+
+.togglePw{
+  position:absolute;
+  right:10px;
+  top:50%;
+  transform:translateY(-50%);
+  border:none;
+  background:transparent;
+  padding:6px;
+  cursor:pointer;
+}
+
+.togglePw .eye{
+  width:20px;
+  height:20px;
+  fill:rgba(255,255,255,.6);
+}
+
+.togglePw .hide{ display:none; }
+
+.togglePw:hover .eye{
+  fill:#2f80ff;
+}
