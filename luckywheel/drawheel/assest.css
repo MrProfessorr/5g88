@@ -28,7 +28,7 @@ header, header nav, header .topNav{ overflow: visible !important; }
 header nav.topNav{
   display:flex;
   align-items:center;
-  gap:18px;
+  gap:5px;
 }
 
 /* userMenu tolak ke kanan */
