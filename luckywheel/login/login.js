@@ -1,13 +1,21 @@
-import { auth, db } from "../share/cmdconfig-firebase-jsq1a42b.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+  import { getAuth, setPersistence, browserLocalPersistence, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+  import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-import {
-  setPersistence, browserLocalPersistence,
-  signInWithEmailAndPassword, signOut
-} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+  const firebaseConfig = {
+    apiKey: "AIzaSyDSqpbnkb3GLNFlHLYSz5XyRYPvKLAOCOA",
+    authDomain: "lucky-spined.firebaseapp.com",
+    databaseURL: "https://lucky-spined-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "lucky-spined",
+    storageBucket: "lucky-spined.firebasestorage.app",
+    messagingSenderId: "708886212396",
+    appId: "1:708886212396:web:2cb7a900fe1a7891510689"
+  };
 
-import {
-  ref, get
-} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
   const $ = (id)=>document.getElementById(id);
 function initPasswordToggle(){
   const pwInput = $("pw");
