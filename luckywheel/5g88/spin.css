@@ -723,3 +723,15 @@ body{
   margin-bottom:10px;
   font-size:0.95rem;
 }
+.home-article h2, .home-article h3 {
+    color: #f9fafb;
+    margin: 18px 0 8px;
+}
+.home-article p {
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+}
+.home-article p {
+    margin: 10px 0;
+    color: rgba(255, 255, 255, .88);
+}
