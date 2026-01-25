@@ -460,3 +460,239 @@ body{
 .toast.success .t-title{ color: #00ff84; }
 .toast.info    .t-title{ color: #36a2ff; }
 .toast.error   .t-title{ color: #ff0000b3; }
+.home-article{
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 18px 18px;
+  line-height: 1.75;
+}
+
+.home-title{
+  font-size: 1.55rem;
+  letter-spacing: .2px;
+  margin: 0 0 10px;
+  text-align: left;
+}
+
+.home-article h3{
+  margin: 22px 0 10px;
+  font-size: 1.12rem;
+  letter-spacing: .2px;
+}
+
+.home-article h4{
+  margin: 10px 0 6px;
+  font-size: 1rem;
+  letter-spacing: .2px;
+}
+
+.home-list{
+  margin: 10px 0 14px 22px;
+  padding: 0;
+}
+
+.home-list li{
+  margin: 8px 0;
+  color: rgba(255,255,255,.9);
+}
+
+.home-list li::marker{
+  color: #facc15; 
+}
+
+
+.home-game-block{
+  margin: 12px 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(250,204,21,.22);
+  border-radius: 14px;
+  background: rgba(255,255,255,.03);
+  box-shadow: 0 10px 24px rgba(0,0,0,.25);
+}
+
+.home-game-block p{
+  margin: 6px 0 0;
+  color: rgba(255,255,255,.86);
+}
+
+
+.home-faq{
+  margin-top: 18px;
+}
+
+.faq-item{
+  margin: 12px 0;
+  border: 1px solid rgba(250,204,21,.22);
+  border-radius: 14px;
+  background: rgba(255,255,255,.03);
+  box-shadow: 0 10px 24px rgba(0,0,0,.25);
+  overflow: hidden;
+}
+
+.faq-item summary{
+  list-style: none;
+  cursor: pointer;
+  padding: 12px 14px;
+  font-size: .98rem;
+  color: rgba(255,255,255,.92);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.faq-item summary::-webkit-details-marker{
+  display: none;
+}
+
+
+.faq-item summary::after{
+  content: "▾";
+  font-size: 1.05rem;
+  color: #facc15;
+  transition: transform .18s ease;
+}
+
+.faq-item[open] summary::after{
+  transform: rotate(180deg);
+}
+
+.faq-item p{
+  margin: 0;
+  padding: 0 14px 14px;
+  color: rgba(255,255,255,.86);
+}
+
+
+.home-article strong{
+  color: #facc15;
+  font-weight: 700;
+}
+
+
+@media (max-width: 520px){
+  .home-article{
+    padding: 14px 12px;
+  }
+  .home-title{
+    font-size: 1.3rem;
+  }
+}
+.home-hero-slider{
+  width: 500px;
+  height: 500px;
+  margin:0 auto 32px;
+  overflow:hidden;
+  border-radius:22px;
+  box-shadow:0 20px 50px rgba(0,0,0,0.8);
+  position:relative;
+}
+
+.home-slide-track{
+  display:flex;
+  transition:transform 0.8s ease-in-out;
+  width:100%;
+}
+
+#slideTrack img,
+.home-slide-track img{
+  width:100%;
+  height:100% ; 
+  display:block;
+  object-fit: cover;   
+  object-position:center;
+  border-radius:22px;
+}
+#slideTrack > * ,
+.home-slide-track > *{
+  flex: 0 0 100%;
+  width: 100%;
+}
+@media (max-width:500px){
+  .home-hero-slider{
+    width:100%;
+    height: 100%; 
+  }
+
+  #slideTrack img,
+  .home-slide-track img{
+    width:100%;
+    height:100%;
+    object-fit: cover;     
+    object-position:center;
+    background:#000; 
+  }
+}
+.slider-btn{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  width:44px;
+  height:44px;
+  border-radius:999px;
+  border:1px solid #fdfeff1c;
+  background: rgb(255 255 255 / 0%);
+  backdrop-filter: blur(6px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  z-index:5;
+}
+
+.slider-btn svg{
+  width:22px;
+  height:22px;
+  fill: #0ea5e9;
+}
+
+.slider-btn.prev{ left:10px; }
+.slider-btn.next{ right:10px; }
+
+.slider-btn:hover{ background: rgb(255 255 255 / 15%); }
+.slider-btn:active{ transform:translateY(-50%) scale(.98); }
+
+@media (max-width:480px){
+  .slider-btn{ width:40px; height:40px; }
+}
+.home-article{
+  max-width:980px;
+  margin:0 auto 48px;
+  line-height:1.7;
+  color:#e5e7eb;
+}
+
+.home-article h2,
+.home-article h3{
+  color:#f9fafb;
+  margin:18px 0 8px;
+}
+
+.home-article h2{
+  font-size:1.6rem;
+}
+
+.home-article h3{
+  font-size:1.1rem;
+  color:#facc15;
+}
+
+.home-article p{
+  margin-bottom:10px;
+  font-size:0.95rem;
+  margin: 10px 0;font-size: 0.95rem;
+  color: rgba(255, 255, 255, .88);
+  text-align: left;
+}
+.home-article h2, .home-article h3 {
+    color: #f9fafb;
+    margin: 18px 0 8px;
+}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+.home-page{
+  margin-top:0; 
+}
