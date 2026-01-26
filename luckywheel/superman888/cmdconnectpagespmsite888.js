@@ -294,7 +294,7 @@ const colors = ["#FFD166","#F4A261","#E9C46A","#2A9D8F","#264653","#C1121F","#FF
   }
 
   function gotoWheel(code){
-    $("luckydraw").classList.add("hidden");
+    $("pageEnter").classList.add("hidden");
     $("pageWheel").classList.remove("hidden");
     $("codeLabel").textContent = code;
   }
@@ -303,13 +303,13 @@ function gotoEnter(){
   stopTickLoop();
   $("pageWheel").classList.add("hidden");
   $("homearticle")?.classList.add("hidden");
-  $("luckydraw").classList.remove("hidden");
+  $("pageEnter").classList.remove("hidden");
   $("promoInput").value = "";
   showEnter("");
 }
 function gotoArticle(){
   stopTickLoop();
-  $("luckydraw").classList.add("hidden");
+  $("pageEnter").classList.add("hidden");
   $("pageWheel").classList.add("hidden");
   $("homearticle").classList.remove("hidden");
 }
@@ -599,18 +599,18 @@ setTimeout(async ()=>{
 const btnBackHome = $("btnBackHome");
 if(btnBackHome){
   btnBackHome.onclick = ()=>{
-    location.hash = "#luckydraw";
+    location.hash = "#pageEnter";
     gotoEnter();
   };
 }
 function handleHashPage(){
-  const h = (location.hash || "#luckydraw").toLowerCase();
+  const h = (location.hash || "#pageEnter").toLowerCase();
 
   if(h === "#homearticle"){
     gotoArticle();
   } else if(h === "#pagewheel"){
     // optional: kalau kau nak direct buka wheel page
-    $("luckydraw")?.classList.add("hidden");
+    $("pageEnter")?.classList.add("hidden");
     $("homearticle")?.classList.add("hidden");
     $("pageWheel")?.classList.remove("hidden");
   } else {
