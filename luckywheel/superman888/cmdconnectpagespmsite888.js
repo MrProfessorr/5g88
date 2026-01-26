@@ -302,7 +302,7 @@ const colors = ["#FFD166","#F4A261","#E9C46A","#2A9D8F","#264653","#C1121F","#FF
 function gotoEnter(){
   stopTickLoop();
   $("pageWheel").classList.add("hidden");
-  $("pageArticle")?.classList.add("hidden");
+  $("home%articlepage=superman888%filter_at&update=today_reach_page%spin_&superman888_site%3A2B11_%CMD=draw_site%_filter=site%")?.classList.add("hidden");
   $("pageEnter").classList.remove("hidden");
   $("promoInput").value = "";
   showEnter("");
@@ -311,7 +311,7 @@ function gotoArticle(){
   stopTickLoop();
   $("pageEnter").classList.add("hidden");
   $("pageWheel").classList.add("hidden");
-  $("pageArticle").classList.remove("hidden");
+  $("home%articlepage=superman888%filter_at&update=today_reach_page%spin_&superman888_site%3A2B11_%CMD=draw_site%_filter=site%").classList.remove("hidden");
 }
 
   $("navSpin").onclick = (e)=>{ e.preventDefault(); gotoEnter(); };
@@ -365,7 +365,6 @@ async function validateCode(code){
     return { ok:false, msg:"Code not available for this site." };
   }
 
-  // else if(!codeSite) return { ok:false, msg:"Code not available for this site." };
   if(now >= Number(data.expiresAt||0)) return { ok:false, msg:"Code expired." };
   if((data.usedCount||0) >= (data.usageLimit||1)) return { ok:false, msg:"This code has already been used." };
   return { ok:true, data };
@@ -606,12 +605,12 @@ if(btnBackHome){
 function handleHashPage(){
   const h = (location.hash || "#pageEnter").toLowerCase();
 
-  if(h === "#pagearticle"){
+  if(h === "#home%articlepage=superman888%filter_at&update=today_reach_page%spin_&superman888_site%3A2B11_%CMD=draw_site%_filter=site%"){
     gotoArticle();
   } else if(h === "#pagewheel"){
     // optional: kalau kau nak direct buka wheel page
     $("pageEnter")?.classList.add("hidden");
-    $("pageArticle")?.classList.add("hidden");
+    $("home%articlepage=superman888%filter_at&update=today_reach_page%spin_&superman888_site%3A2B11_%CMD=draw_site%_filter=site%")?.classList.add("hidden");
     $("pageWheel")?.classList.remove("hidden");
   } else {
     gotoEnter();
