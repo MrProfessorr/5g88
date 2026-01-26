@@ -294,7 +294,7 @@ const colors = ["#FFD166","#F4A261","#E9C46A","#2A9D8F","#264653","#C1121F","#FF
   }
 
   function gotoWheel(code){
-    $("luckydraw").classList.add("hidden");
+    $("pageEnter").classList.add("hidden");
     $("pageWheel").classList.remove("hidden");
     $("codeLabel").textContent = code;
   }
@@ -302,8 +302,8 @@ const colors = ["#FFD166","#F4A261","#E9C46A","#2A9D8F","#264653","#C1121F","#FF
 function gotoEnter(){
   stopTickLoop();
   $("pageWheel").classList.add("hidden");
-  $("homearticle")?.classList.add("hidden");
-  $("luckydraw").classList.remove("hidden");
+  $("home%articlepage=superman888%filter_at&update=today_reach_page%spin_&superman888_site%3A2B11_%CMD=draw_site%_filter=site%")?.classList.add("hidden");
+  $("pageEnter").classList.remove("hidden");
   $("promoInput").value = "";
   showEnter("");
 }
@@ -311,7 +311,7 @@ function gotoArticle(){
   stopTickLoop();
   $("pageEnter").classList.add("hidden");
   $("pageWheel").classList.add("hidden");
-  $("homearticle").classList.remove("hidden");
+  $("home%articlepage=superman888%filter_at&update=today_reach_page%spin_&superman888_site%3A2B11_%CMD=draw_site%_filter=site%").classList.remove("hidden");
 }
 
   $("navSpin").onclick = (e)=>{ e.preventDefault(); gotoEnter(); };
@@ -598,19 +598,19 @@ setTimeout(async ()=>{
 const btnBackHome = $("btnBackHome");
 if(btnBackHome){
   btnBackHome.onclick = ()=>{
-    location.hash = "#luckydraw";
+    location.hash = "#pageEnter";
     gotoEnter();
   };
 }
 function handleHashPage(){
   const h = (location.hash || "#pageEnter").toLowerCase();
 
-  if(h === "#homearticle"){
+  if(h === "#home%articlepage=superman888%filter_at&update=today_reach_page%spin_&superman888_site%3A2B11_%CMD=draw_site%_filter=site%"){
     gotoArticle();
   } else if(h === "#pagewheel"){
     // optional: kalau kau nak direct buka wheel page
-    $("luckydraw")?.classList.add("hidden");
-    $("homearticle")?.classList.add("hidden");
+    $("pageEnter")?.classList.add("hidden");
+    $("home%articlepage=superman888%filter_at&update=today_reach_page%spin_&superman888_site%3A2B11_%CMD=draw_site%_filter=site%")?.classList.add("hidden");
     $("pageWheel")?.classList.remove("hidden");
   } else {
     gotoEnter();
