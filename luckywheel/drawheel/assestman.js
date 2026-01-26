@@ -58,49 +58,7 @@ async function isAllowedAdmin(uid){
   const snap = await get(ref(db, `isloading/${uid}`));
   return snap.exists() && snap.val() === true;
 }
-let __startedAfterOK = false;
 
-async function startAfterAdminOK(){
-  if(__startedAfterOK) return;
-  __startedAfterOK = true;
-
-  // ✅ 1) load prize config (dulu block page sebab await di top-level)
-  try{
-
-    renderPointsOptions(prizeType);
-    initPointsCustomSelect();
-    refreshPointsCustomSelect();
-  }catch(e){
-    console.warn("loadPrizeConfig fail", e);
-  }
-
-  // ✅ 2) start listeners (yang berat)
-  loadCodesLive();
-  loadHistoryLive();
-
-  // ✅ 3) totals stats listener
-  onValue(STATS_REF, (snap)=>{
-    const v = snap.val() || {};
-    statsDailyArr = Object.keys(v).map(k => v[k]).filter(Boolean);
-    setActiveChip(activePreset || "today");
-    updateSummaryUI();
-  });
-
-  // ✅ 4) init UI heavy sekali sahaja
-  safeBootUI();
-}
-
-function safeBootUI(){
-  const run = ()=>{
-    try{ initTotalsHistory(); }catch(e){ console.error("initTotalsHistory", e); }
-    try{ initCodesRangePicker(); }catch(e){ console.error("initCodesRangePicker", e); }
-  };
-
-  if(document.readyState !== "loading") run();
-  else window.addEventListener("DOMContentLoaded", run);
-
-  setTimeout(run, 250); // fallback slow device
-}
 onAuthStateChanged(auth, async (user)=>{
   if(!user){ goLogin(); return; }
 
@@ -111,16 +69,9 @@ onAuthStateChanged(auth, async (user)=>{
     goLogin();
     return;
   }
-
-  const nice = getNiceUsername(user);
-  paintNavUsername(nice);
-  saveNavUsername(nice);
-
-  // ✅ bagi UI cepat nampak dulu
+const nameEl = document.getElementById("navUsername");
+  if(nameEl) nameEl.textContent = getNiceUsername(user);
   document.documentElement.style.visibility = "visible";
-
-  // ✅ baru load data & listener
-  startAfterAdminOK();
 });
 let selectedSite = "";
 
