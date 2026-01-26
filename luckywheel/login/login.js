@@ -1,23 +1,10 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-  import { getAuth, setPersistence, browserLocalPersistence, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-  import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyDSqpbnkb3GLNFlHLYSz5XyRYPvKLAOCOA",
-    authDomain: "lucky-spined.firebaseapp.com",
-    databaseURL: "https://lucky-spined-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "lucky-spined",
-    storageBucket: "lucky-spined.firebasestorage.app",
-    messagingSenderId: "708886212396",
-    appId: "1:708886212396:web:2cb7a900fe1a7891510689"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getDatabase(app);
-
+let currentRotationDeg = 0;
+import { db } from "../assets/limited-pageconfigak41.js"; 
+import {
+  ref, get, set, push, child, runTransaction, onValue, update
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
   const $ = (id)=>document.getElementById(id);
-function initPasswordToggle(){
+  function initPasswordToggle(){
   const pwInput = $("pw");
   const btn = document.querySelector(".togglePw");
   if(!pwInput || !btn) return;
