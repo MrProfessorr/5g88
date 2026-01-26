@@ -603,11 +603,12 @@ if(btnBackHome){
   };
 }
 function handleHashPage(){
-  const h = (location.hash || "#luckydraw").toLowerCase();
+  const h = (location.hash || "#pageEnter").toLowerCase();
 
   if(h === "#homearticle"){
     gotoArticle();
   } else if(h === "#pagewheel"){
+    // optional: kalau kau nak direct buka wheel page
     $("luckydraw")?.classList.add("hidden");
     $("homearticle")?.classList.add("hidden");
     $("pageWheel")?.classList.remove("hidden");
