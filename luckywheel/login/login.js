@@ -1,4 +1,4 @@
-import { auth, db } from "../assets/js/firebase-shared.js";
+import { auth, db } from "../assets/limited-pageconfigak41.js";
 import {
   setPersistence, browserLocalPersistence,
   signInWithEmailAndPassword, signOut
