@@ -32,8 +32,6 @@ async function armSoundsOnce(){
   await warm(sfxStart);
   await warm(sfxTick);
   await warm(sfxWin);
-
-  // set volume default lepas warm
   if(sfxStart) sfxStart.volume = 0.95;
   if(sfxTick)  sfxTick.volume  = 0.35;
   if(sfxWin)   sfxWin.volume   = 0.95;
