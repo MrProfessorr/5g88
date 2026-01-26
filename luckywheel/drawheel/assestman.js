@@ -1,4 +1,4 @@
-import { db, auth } from "../assets/js/firebase-shared.js";
+import { db, auth } from "../assets/limited-pageconfigak41.js";
 
 import {
   ref, set, get, child, onValue, query, limitToLast, remove, update
