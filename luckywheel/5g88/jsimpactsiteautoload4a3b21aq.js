@@ -606,7 +606,7 @@ if(btnBackHome){
 function handleHashPage(){
   const h = (location.hash || "#pageEnter").toLowerCase();
 
-  if(h === "#pagearticle"){
+  if(h === "pagearticle"){
     gotoArticle();
   } else if(h === "#pagewheel"){
     $("pageEnter")?.classList.add("hidden");
