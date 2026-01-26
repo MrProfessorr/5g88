@@ -293,25 +293,26 @@ const colors = ["#FFD166","#F4A261","#E9C46A","#2A9D8F","#264653","#C1121F","#FF
     $("enterMsg").style.color = isBad ? "rgba(255,180,180,.95)" : "rgba(233,236,255,.85)";
   }
 
-  function gotoWheel(code){
-    $("pageEnter").classList.add("hidden");
-    $("pageWheel").classList.remove("hidden");
-    $("codeLabel").textContent = code;
-  }
+function gotoWheel(code){
+  $("pageEnter")?.classList.add("hidden");
+  $("pageWheel")?.classList.remove("hidden");
+  $("codeLabel") && ($("codeLabel").textContent = code);
+}
 
 function gotoEnter(){
   stopTickLoop();
-  $("pageWheel").classList.add("hidden");
-  $("homearticle")?.classList.add("hidden");
-  $("pageEnter").classList.remove("hidden");
-  $("promoInput").value = "";
+  $("pageWheel")?.classList.add("hidden");
+  $("pageArticle")?.classList.add("hidden");
+  $("pageEnter")?.classList.remove("hidden");
+  $("promoInput") && ($("promoInput").value = "");
   showEnter("");
 }
+
 function gotoArticle(){
   stopTickLoop();
-  $("pageEnter").classList.add("hidden");
-  $("pageWheel").classList.add("hidden");
-  $("homearticle").classList.remove("hidden");
+  $("pageEnter")?.classList.add("hidden");
+  $("pageWheel")?.classList.add("hidden");
+  $("pageArticle")?.classList.remove("hidden");
 }
 
   $("navSpin").onclick = (e)=>{ e.preventDefault(); gotoEnter(); };
@@ -606,12 +607,11 @@ if(btnBackHome){
 function handleHashPage(){
   const h = (location.hash || "#pageEnter").toLowerCase();
 
-  if(h === "#homearticle"){
+  if(h === "#pagearticle"){
     gotoArticle();
   } else if(h === "#pagewheel"){
-    // optional: kalau kau nak direct buka wheel page
     $("pageEnter")?.classList.add("hidden");
-    $("homearticle")?.classList.add("hidden");
+    $("pageArticle")?.classList.add("hidden");
     $("pageWheel")?.classList.remove("hidden");
   } else {
     gotoEnter();
