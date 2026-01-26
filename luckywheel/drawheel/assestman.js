@@ -1,4 +1,4 @@
-import { db, auth } from "../assets/limited-pageconfigak41.js";
+import { db, auth } from "../shared404/limited-pageconfigak41.js";
 
 import {
   ref, set, get, child, onValue, query, limitToLast, remove, update
