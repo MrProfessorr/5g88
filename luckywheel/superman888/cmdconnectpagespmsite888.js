@@ -1,5 +1,5 @@
 let currentRotationDeg = 0;
-import { db } from "../shared404/limited-pageconfigak41.js";
+import { db } from "./shared404/limited-pageconfigak41.js";
 import {
   ref, get, set, push, child, runTransaction, onValue, update
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
