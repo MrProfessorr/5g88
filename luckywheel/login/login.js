@@ -1,7 +1,10 @@
-let currentRotationDeg = 0;
-import { db } from "../assets/limited-pageconfigak41.js"; 
+import { auth, db } from "../assets/js/firebase-shared.js";
 import {
-  ref, get, set, push, child, runTransaction, onValue, update
+  setPersistence, browserLocalPersistence,
+  signInWithEmailAndPassword, signOut
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import {
+  ref, get
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
   const $ = (id)=>document.getElementById(id);
   function initPasswordToggle(){
