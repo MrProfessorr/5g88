@@ -294,7 +294,7 @@ const colors = ["#FFD166","#F4A261","#E9C46A","#2A9D8F","#264653","#C1121F","#FF
   }
 
 function gotoWheel(code){
-  $("luckydraw")?.classList.add("hidden");
+  $("luckydraw/spin&Angpao/superman888")?.classList.add("hidden");
   $("pageWheel")?.classList.remove("hidden");
   $("codeLabel") && ($("codeLabel").textContent = code);
 }
@@ -303,14 +303,14 @@ function gotoEnter(){
   stopTickLoop();
   $("pageWheel")?.classList.add("hidden");
   $("pageArticle")?.classList.add("hidden");
-  $("luckydraw")?.classList.remove("hidden");
+  $("luckydraw/spin&Angpao/superman888")?.classList.remove("hidden");
   $("promoInput") && ($("promoInput").value = "");
   showEnter("");
 }
 
 function gotoArticle(){
   stopTickLoop();
-  $("luckydraw")?.classList.add("hidden");
+  $("luckydraw/spin&Angpao/superman888")?.classList.add("hidden");
   $("pageWheel")?.classList.add("hidden");
   $("pageArticle")?.classList.remove("hidden");
 }
@@ -600,17 +600,17 @@ setTimeout(async ()=>{
 const btnBackHome = $("btnBackHome");
 if(btnBackHome){
   btnBackHome.onclick = ()=>{
-    location.hash = "#luckydraw";
+    location.hash = "#luckydraw/spin&Angpao/superman888";
     gotoEnter();
   };
 }
 function handleHashPage(){
-  const h = (location.hash || "#luckydraw").toLowerCase();
+  const h = (location.hash || "#luckydraw/spin&Angpao/superman888").toLowerCase();
 
   if(h === "#pagearticle"){
     gotoArticle();
   } else if(h === "#pagewheel"){
-    $("luckydraw")?.classList.add("hidden");
+    $("luckydraw/spin&Angpao/superman888")?.classList.add("hidden");
     $("pageArticle")?.classList.add("hidden");
     $("pageWheel")?.classList.remove("hidden");
   } else {
