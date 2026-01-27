@@ -1,4 +1,5 @@
 import { auth, db } from "./shared403/page1site0oilzip92abqtry0314aq.js";
+const ADMIN_ORIGIN = "https://dashboard-prize.vercel.app";
 import {
   setPersistence, browserLocalPersistence,
   signInWithEmailAndPassword, signOut
@@ -75,11 +76,14 @@ function getBasePath(){
 function getRedirectTarget(){
   const u = new URL(location.href);
   const rt = u.searchParams.get("redirect");
-  if(rt) return rt;
-  const base = getBasePath();
-  return `${location.origin}${base}/drawheel/`;
+  if(rt){
+    try{
+      const x = new URL(rt);
+      if(x.origin === ADMIN_ORIGIN) return x.href;
+    }catch(e){}
+  }
+  return `${ADMIN_ORIGIN}/`;
 }
-
   async function isAllowedAdmin(uid){
     const snap = await get(ref(db, `isloading/${uid}`));
     return snap.exists() && snap.val() === true;
