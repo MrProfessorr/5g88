@@ -1,5 +1,5 @@
-import { db, auth } from "../shared404/limited-pageconfigak41.js";
-
+import { db, auth } from "./shared505/indexps0134aq2bfc1c2ba40ao.js";
+const LOGIN_ORIGIN = "https://dashboard-prize-home.vercel.app";
 import {
   ref, set, get, child, onValue, query, limitToLast, remove, update
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
@@ -50,8 +50,7 @@ function getBasePath(){
 
 function goLogin(){
   const rt = encodeURIComponent(location.href);
-  const base = getBasePath();
-  location.replace(`${location.origin}${base}/login/?redirect=${rt}`);
+  location.replace(`${LOGIN_ORIGIN}/?redirect=${rt}`);
 }
 
 async function isAllowedAdmin(uid){
