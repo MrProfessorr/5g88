@@ -295,7 +295,7 @@ const colors = ["#F9D976","#E6B65C","#D4AF37","#B8860B","#FFB703","#C1121F","#8B
   }
 
   function gotoWheel(code){
-    $("pageEnter").classList.add("hidden");
+    $("spin&draw/angpao/site/5g88.baby").classList.add("hidden");
     $("pageWheel").classList.remove("hidden");
     $("codeLabel").textContent = code;
   }
@@ -304,13 +304,13 @@ function gotoEnter(){
   stopTickLoop();
   $("pageWheel").classList.add("hidden");
   $("pageArticle")?.classList.add("hidden");
-  $("pageEnter").classList.remove("hidden");
+  $("spin&draw/angpao/site/5g88.baby").classList.remove("hidden");
   $("promoInput").value = "";
   showEnter("");
 }
 function gotoArticle(){
   stopTickLoop();
-  $("pageEnter").classList.add("hidden");
+  $("spin&draw/angpao/site/5g88.baby").classList.add("hidden");
   $("pageWheel").classList.add("hidden");
   $("pageArticle").classList.remove("hidden");
 }
@@ -597,17 +597,17 @@ setTimeout(async ()=>{
 const btnBackHome = $("btnBackHome");
 if(btnBackHome){
   btnBackHome.onclick = ()=>{
-    location.hash = "#pageEnter";
+    location.hash = "#spin&draw/angpao/site/5g88.baby";
     gotoEnter();
   };
 }
 function handleHashPage(){
-  const h = (location.hash || "#pageEnter").toLowerCase();
+  const h = (location.hash || "#spin&draw/angpao/site/5g88.baby").toLowerCase();
 
   if(h === "#pagearticle"){
     gotoArticle();
   } else if(h === "#pagewheel"){
-    $("pageEnter")?.classList.add("hidden");
+    $("spin&draw/angpao/site/5g88.baby")?.classList.add("hidden");
     $("pageArticle")?.classList.add("hidden");
     $("pageWheel")?.classList.remove("hidden");
   } else {
