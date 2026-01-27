@@ -302,7 +302,7 @@ function gotoWheel(code){
 function gotoEnter(){
   stopTickLoop();
   $("pageWheel")?.classList.add("hidden");
-  $("pageArticle")?.classList.add("hidden");
+  $("superman888&article/homepage/online")?.classList.add("hidden");
   $("luckydraw/spin&Angpao/superman888")?.classList.remove("hidden");
   $("promoInput") && ($("promoInput").value = "");
   showEnter("");
@@ -312,7 +312,7 @@ function gotoArticle(){
   stopTickLoop();
   $("luckydraw/spin&Angpao/superman888")?.classList.add("hidden");
   $("pageWheel")?.classList.add("hidden");
-  $("pageArticle")?.classList.remove("hidden");
+  $("superman888&article/homepage/online")?.classList.remove("hidden");
 }
 
   $("navSpin").onclick = (e)=>{ e.preventDefault(); gotoEnter(); };
@@ -607,11 +607,11 @@ if(btnBackHome){
 function handleHashPage(){
   const h = (location.hash || "#luckydraw/spin&Angpao/superman888").toLowerCase();
 
-  if(h === "#pagearticle"){
+  if(h === "#superman888&article/homepage/online"){
     gotoArticle();
   } else if(h === "#pagewheel"){
     $("luckydraw/spin&Angpao/superman888")?.classList.add("hidden");
-    $("pageArticle")?.classList.add("hidden");
+    $("superman888&article/homepage/online")?.classList.add("hidden");
     $("pageWheel")?.classList.remove("hidden");
   } else {
     gotoEnter();
