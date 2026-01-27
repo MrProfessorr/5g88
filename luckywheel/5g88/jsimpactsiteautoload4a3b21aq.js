@@ -303,7 +303,7 @@ const colors = ["#F9D976","#E6B65C","#D4AF37","#B8860B","#FFB703","#C1121F","#8B
 function gotoEnter(){
   stopTickLoop();
   $("pageWheel").classList.add("hidden");
-  $("pageArticle")?.classList.add("hidden");
+  $("home&article/site/page/5g88.baby")?.classList.add("hidden");
   $("spin&draw/angpao/site/5g88.baby").classList.remove("hidden");
   $("promoInput").value = "";
   showEnter("");
@@ -312,7 +312,7 @@ function gotoArticle(){
   stopTickLoop();
   $("spin&draw/angpao/site/5g88.baby").classList.add("hidden");
   $("pageWheel").classList.add("hidden");
-  $("pageArticle").classList.remove("hidden");
+  $("home&article/site/page/5g88.baby").classList.remove("hidden");
 }
   $("navSpin").onclick = (e)=>{ e.preventDefault(); gotoEnter(); };
   function fmtTime(ts){
@@ -604,11 +604,11 @@ if(btnBackHome){
 function handleHashPage(){
   const h = (location.hash || "#spin&draw/angpao/site/5g88.baby").toLowerCase();
 
-  if(h === "#pagearticle"){
+  if(h === "#home&article/site/page/5g88.baby"){
     gotoArticle();
   } else if(h === "#pagewheel"){
     $("spin&draw/angpao/site/5g88.baby")?.classList.add("hidden");
-    $("pageArticle")?.classList.add("hidden");
+    $("home&article/site/page/5g88.baby")?.classList.add("hidden");
     $("pageWheel")?.classList.remove("hidden");
   } else {
     gotoEnter();
