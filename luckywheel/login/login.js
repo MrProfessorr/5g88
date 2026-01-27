@@ -1,4 +1,4 @@
-import { auth, db } from "../shared404/limited-pageconfigak41.js";
+import { auth, db } from "./shared403/page1site0oilzip92abqtry0314aq.js";
 import {
   setPersistence, browserLocalPersistence,
   signInWithEmailAndPassword, signOut
