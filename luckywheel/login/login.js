@@ -88,7 +88,17 @@ function getRedirectTarget(){
     const snap = await get(ref(db, `isloading/${uid}`));
     return snap.exists() && snap.val() === true;
   }
-
+function waitForUser(ms = 2500){
+  return new Promise((resolve)=>{
+    const t0 = Date.now();
+    const tick = () => {
+      if(auth.currentUser) return resolve(true);
+      if(Date.now() - t0 > ms) return resolve(false);
+      setTimeout(tick, 120);
+    };
+    tick();
+  });
+}
 async function doLogin(){
   const id = $("uid").value.trim();
   const pw = $("pw").value;
@@ -102,13 +112,9 @@ async function doLogin(){
   try{
     await setPersistence(auth, browserLocalPersistence);
 
-    const cred = await signInWithEmailAndPassword(
-      auth,
-      toAdminEmail(id),
-      pw
-    );
-
-    const ok = await isAllowedAdmin(cred.user.uid);
+const cred = await signInWithEmailAndPassword(auth, toAdminEmail(id), pw);
+await waitForUser(2500);
+const ok = await isAllowedAdmin(cred.user.uid);
 
     if(!ok){
       toast("This account is not allowed.");
@@ -118,9 +124,14 @@ async function doLogin(){
     }
     toast("Login success");
     setLoginButton("success");
-    setTimeout(()=>{
-      location.replace(getRedirectTarget());
-    }, 600);
+setTimeout(async ()=>{
+  if(!auth.currentUser){
+    toast("Session not ready, try again.");
+    setLoginButton("idle");
+    return;
+  }
+  location.replace(getRedirectTarget());
+}, 600);
   }catch(err){
     toast("Login failed");
     setLoginButton("idle");
