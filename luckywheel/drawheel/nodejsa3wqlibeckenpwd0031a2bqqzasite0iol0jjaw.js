@@ -59,8 +59,10 @@ async function isAllowedAdmin(uid){
 }
 
 onAuthStateChanged(auth, async (user)=>{
-  if(!user){ goLogin(); return; }
-
+  if(!user){
+    goLogin();
+    return;
+  }
   const ok = await isAllowedAdmin(user.uid);
   if(!ok){
     showToast("error", "Not allowed as admin.");
@@ -68,8 +70,9 @@ onAuthStateChanged(auth, async (user)=>{
     goLogin();
     return;
   }
-const nameEl = document.getElementById("navUsername");
+  const nameEl = document.getElementById("navUsername");
   if(nameEl) nameEl.textContent = getNiceUsername(user);
+
   document.documentElement.style.visibility = "visible";
 });
 let selectedSite = "";
