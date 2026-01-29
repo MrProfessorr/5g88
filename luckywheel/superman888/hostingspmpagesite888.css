@@ -271,7 +271,7 @@ body{
   font-weight:600;
   font-size:13px;
   letter-spacing:.3px;
-  color: #000;
+  color: #fff;
   transform:
     translate(-50%,-50%)
     rotate(var(--ang))
