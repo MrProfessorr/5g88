@@ -316,6 +316,7 @@ body{
   white-space: normal;    
   line-height: 1.05;
   word-break: break-word; 
+  text-shadow: 0 0 black;
 }
 
 .sliceText .sliceLabel[data-flip="1"]{
