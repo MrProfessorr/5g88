@@ -697,3 +697,22 @@ body{
 .home-page{
   margin-top:0; 
 }
+.wheel{
+  position: relative;
+  overflow: hidden;
+}
+.wheel::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:3;
+
+  /* garis putih nipis */
+  background: repeating-conic-gradient(
+    from -90deg,
+    rgba(255,255,255,.9) 0deg 1deg,
+    transparent 1deg calc(360deg / var(--slice-count))
+  );
+}
