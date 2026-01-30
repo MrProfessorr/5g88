@@ -220,6 +220,7 @@ body{
   .wheelCenter{
     position:absolute; inset:0;
     display:grid; place-items:center;
+    z-index: 3;
   }
   .hub{
     width:64px; height:64px; border-radius:999px;
@@ -253,14 +254,8 @@ body{
     font-weight:1000;
     color:rgba(0,0,0,.7);
     pointer-events:none;
+    user-select:none; z-index: 2;
   }
-
-.sliceText{
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  user-select:none;
-}
 
 .sliceText .sliceLabel{
   position:absolute;
@@ -697,25 +692,34 @@ body{
 .home-page{
   margin-top:0; 
 }
-/* auto white divider lines for any slice count */
+
 .wheel{
   position: relative;
   overflow: hidden;
-  --slice-count: 8; /* default (akan ditimpa oleh JS) */
-  --line: 1deg;     /* tebal garis */
+  --slice-count: 8;  /* akan ditimpa oleh JS */
+  --line: 0.9deg;    /* ketebalan garis (try 0.7deg - 1.2deg) */
 }
 
+/* GARIS PUTIH (solid, tak putus) */
 .wheel::before{
   content:"";
   position:absolute;
   inset:0;
   border-radius: inherit;
   pointer-events:none;
-  z-index: 3;
+  z-index: 1; /* ✅ bawah hub */
 
-  background: repeating-conic-gradient(
+  background: #fff;
+
+  /* ✅ ini buat garis solid tanpa pecah2 */
+  -webkit-mask: repeating-conic-gradient(
     from -90deg,
-    rgba(255,255,255,.95) 0deg var(--line),
+    #000 0deg var(--line),
+    transparent var(--line) calc(360deg / var(--slice-count))
+  );
+          mask: repeating-conic-gradient(
+    from -90deg,
+    #000 0deg var(--line),
     transparent var(--line) calc(360deg / var(--slice-count))
   );
 }
