@@ -253,6 +253,7 @@ function buildSegmentsFromList(list){
   segments = arr.map(v => ({ label:`Angpao ${v}`, points:v }));
   segCount = segments.length || 1;
   segAngle = 360 / segCount;
+  $("wheel")?.style.setProperty("--slice-count", segCount);
   applyWheelTheme();
 const radius = 95;
 
