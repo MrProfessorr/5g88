@@ -220,7 +220,6 @@ body{
   .wheelCenter{
     position:absolute; inset:0;
     display:grid; place-items:center;
-    z-index: 3;
   }
   .hub{
     width:64px; height:64px; border-radius:999px;
@@ -254,8 +253,14 @@ body{
     font-weight:1000;
     color:rgba(0,0,0,.7);
     pointer-events:none;
-    user-select:none;
   }
+
+.sliceText{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  user-select:none;
+}
 
 .sliceText .sliceLabel{
   position:absolute;
@@ -692,35 +697,3 @@ body{
 .home-page{
   margin-top:0; 
 }
-
-/* IMPORTANT: wheel kena relative */
-.wheel{
-  position: relative;
-  overflow: hidden;
-}
-
-/* divider layer */
-.wheelDividers{
-  position:absolute;
-  inset:0;
-  border-radius: 50%;
-  pointer-events:none;
-  z-index: 2;              /* bawah text & bawah hub */
-}
-
-/* 1 line = 1 span */
-.wheelDividers span{
-  position:absolute;
-  left:50%;
-  top:50%;
-  width:50%;
-  height:0;
-  border-top:1px solid rgba(255,255,255,.95); /* ✅ 1px solid */
-  transform-origin:0 0;
-}
-
-/* pastikan slice text di atas divider */
-.sliceText{ z-index: 3; }
-
-/* pastikan hub paling atas */
-.wheelCenter{ z-index: 5; position:absolute; inset:0; }
