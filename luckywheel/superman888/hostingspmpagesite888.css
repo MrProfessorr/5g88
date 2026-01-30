@@ -693,33 +693,34 @@ body{
   margin-top:0; 
 }
 
+/* IMPORTANT: wheel kena relative */
 .wheel{
   position: relative;
   overflow: hidden;
-  --slice-count: 8;  /* akan ditimpa oleh JS */
-  --line: 0.9deg;    /* ketebalan garis (try 0.7deg - 1.2deg) */
 }
 
-/* GARIS PUTIH (solid, tak putus) */
-.wheel::before{
-  content:"";
+/* divider layer */
+.wheelDividers{
   position:absolute;
   inset:0;
-  border-radius: inherit;
+  border-radius: 50%;
   pointer-events:none;
-  z-index: 1; /* ✅ bawah hub */
-
-  background: #fff;
-
-  /* ✅ ini buat garis solid tanpa pecah2 */
-  -webkit-mask: repeating-conic-gradient(
-    from -90deg,
-    #000 0deg var(--line),
-    transparent var(--line) calc(360deg / var(--slice-count))
-  );
-          mask: repeating-conic-gradient(
-    from -90deg,
-    #000 0deg var(--line),
-    transparent var(--line) calc(360deg / var(--slice-count))
-  );
+  z-index: 2;              /* bawah text & bawah hub */
 }
+
+/* 1 line = 1 span */
+.wheelDividers span{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:50%;
+  height:0;
+  border-top:1px solid rgba(255,255,255,.95); /* ✅ 1px solid */
+  transform-origin:0 0;
+}
+
+/* pastikan slice text di atas divider */
+.sliceText{ z-index: 3; }
+
+/* pastikan hub paling atas */
+.wheelCenter{ z-index: 5; position:absolute; inset:0; }
