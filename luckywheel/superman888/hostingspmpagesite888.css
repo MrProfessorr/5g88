@@ -199,21 +199,21 @@ body{
   .wheelTitle{display:flex; align-items:center; justify-content:center; gap:10px}
   .wheelTitle h2{margin:0}
   .codeLine{margin-top:6px; text-align:center; color:var(--muted); font-size:12px}
-  .wheelWrap{display:grid; place-items:center; margin:14px 0 10px; position:relative;isolation:isolate;}
+  .wheelWrap{display:grid; place-items:center; margin:14px 0 10px; position:relative; isolation:isolate;}
 .pointer{
   position:absolute;
   left:50%;
-  bottom:-18px; /* adjust: -10 / -18 / -24 ikut kau nak keluar bawah banyak mana */
+  bottom:-18px;              /* adjust: -10 / -18 / -24 */
   transform:translateX(-50%);
 
   width:0; height:0;
   border-left:14px solid transparent;
   border-right:14px solid transparent;
-  border-top:22px solid var(--gold1); /* IMPORTANT: pakai border-top sebab panah menghala ke atas */
+  border-top:22px solid var(--gold1); /* panah menghala ke atas */
 
   filter: drop-shadow(0 8px 10px rgba(0,0,0,.4));
-  z-index: 1;          /* pointer bawah wheel */
-  pointer-events:none; /* tak kacau click */
+  z-index: 3;                /* lebih tinggi dari sliceText */
+  pointer-events:none;
 }
   .wheel{
     width:320px; height:320px; border-radius:999px;
@@ -259,15 +259,8 @@ body{
     display:grid; place-items:center;
     font-weight:1000;
     color:rgba(0,0,0,.7);
-    pointer-events:none;
+    pointer-events:none;user-select:none; z-index: 1;
   }
-
-.sliceText{
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  user-select:none;
-}
 
 .sliceText .sliceLabel{
   position:absolute;
