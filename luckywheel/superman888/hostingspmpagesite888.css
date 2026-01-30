@@ -697,22 +697,25 @@ body{
 .home-page{
   margin-top:0; 
 }
+/* auto white divider lines for any slice count */
 .wheel{
   position: relative;
   overflow: hidden;
+  --slice-count: 8; /* default (akan ditimpa oleh JS) */
+  --line: 1deg;     /* tebal garis */
 }
+
 .wheel::before{
   content:"";
   position:absolute;
   inset:0;
-  border-radius:50%;
+  border-radius: inherit;
   pointer-events:none;
-  z-index:3;
+  z-index: 3;
 
-  /* garis putih nipis */
   background: repeating-conic-gradient(
     from -90deg,
-    rgba(255,255,255,.9) 0deg 1deg,
-    transparent 1deg calc(360deg / var(--slice-count))
+    rgba(255,255,255,.95) 0deg var(--line),
+    transparent var(--line) calc(360deg / var(--slice-count))
   );
 }
