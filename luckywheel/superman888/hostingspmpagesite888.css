@@ -200,28 +200,14 @@ body{
   .wheelTitle h2{margin:0}
   .codeLine{margin-top:6px; text-align:center; color:var(--muted); font-size:12px}
   .wheelWrap{display:grid; place-items:center; margin:14px 0 10px; position:relative}
-/* Pointer duduk tengah (atas hub area) & bawah hub (z-index) */
-.pointer{
-  position:absolute;
-  left:50%;
-  top:50%;
-
-  width:0; height:0;
-  border-left:14px solid transparent;
-  border-right:14px solid transparent;
-  border-bottom:22px solid var(--gold1);
-
-  /* adjust jarak pointer dari tengah hub */
-  transform: translate(-50%, -50%) translateY(-92px);
-
-  filter: drop-shadow(0 8px 10px rgba(0,0,0,.4));
-  pointer-events:none;
-
-  z-index: 4; /* bawah hub */
-}
-.wheel{ position: relative; }
-.wheelCenter{ position:absolute; inset:0; z-index: 6; }
-.hub{ position: relative; z-index: 7; }
+  .pointer{
+    position:absolute; top:-6px;
+    width:0; height:0;
+    border-left:14px solid transparent;
+    border-right:14px solid transparent;
+    border-bottom:22px solid var(--gold1);
+    filter: drop-shadow(0 8px 10px rgba(0,0,0,.4));
+  }
   .wheel{
     width:320px; height:320px; border-radius:999px;
     border:10px solid rgb(106 0 0);
