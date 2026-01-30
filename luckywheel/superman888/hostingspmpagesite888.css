@@ -201,13 +201,12 @@ body{
   .codeLine{margin-top:6px; text-align:center; color:var(--muted); font-size:12px}
   .wheelWrap{display:grid; place-items:center; margin:14px 0 10px; position:relative}
   .pointer{
-    position:absolute; top:-9px;
+    position:absolute; top:-6px;
     width:0; height:0;
-    border-left:10px solid transparent;
-    border-right:10px solid transparent;
-    border-top:20px solid var(--gold1);
+    border-left:14px solid transparent;
+    border-right:14px solid transparent;
+    border-bottom:22px solid var(--gold1);
     filter: drop-shadow(0 8px 10px rgba(0,0,0,.4));
-    z-index:1;
   }
   .wheel{
     width:320px; height:320px; border-radius:999px;
