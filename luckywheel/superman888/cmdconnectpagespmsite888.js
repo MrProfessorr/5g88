@@ -242,7 +242,20 @@ const userId = uid();
 let segments = [];
 let segCount = 0;
 let segAngle = 0;
+function renderDividers(count){
+  const wrap = $("wheelDividers");
+  if(!wrap) return;
 
+  const n = Math.max(1, Number(count)||1);
+  const ang = 360 / n;
+
+  wrap.innerHTML = "";
+  for(let i=0;i<n;i++){
+    const line = document.createElement("span");
+    line.style.transform = `rotate(${i * ang}deg)`;
+    wrap.appendChild(line);
+  }
+}
 function buildSegmentsFromList(list){
   const arr = (list || [])
     .map(v => Number(v))
@@ -255,6 +268,7 @@ function buildSegmentsFromList(list){
   segAngle = 360 / segCount;
   $("wheel")?.style.setProperty("--slice-count", segCount);
   applyWheelTheme();
+  renderDividers(segCount);
 const radius = 95;
 
 const st = $("sliceText");
