@@ -5,7 +5,8 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
 import {
-  onAuthStateChanged, signOut
+  onAuthStateChanged, signOut,
+  setPersistence, browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 function getNiceUsername(user){
   const dn = (user?.displayName || "").trim();
@@ -49,28 +50,50 @@ function getBasePath(){
 }
 
 function goLogin(){
-  const rt = encodeURIComponent(location.href);
-  location.replace(`${LOGIN_ORIGIN}/?redirect=${rt}`);
+  location.replace(`${LOGIN_ORIGIN}`);
 }
 
 async function isAllowedAdmin(uid){
   const snap = await get(ref(db, `isloading/${uid}`));
   return snap.exists() && snap.val() === true;
 }
-
-onAuthStateChanged(auth, async (user)=>{
-  if(!user){ goLogin(); return; }
-
-  const ok = await isAllowedAdmin(user.uid);
-  if(!ok){
-    showToast("error", "Not allowed as admin.");
-    await signOut(auth);
-    goLogin();
-    return;
+window.addEventListener("DOMContentLoaded", async ()=>{
+  try{
+    // ✅ penting: simpan session supaya tak "null sekejap"
+    await setPersistence(auth, browserLocalPersistence);
+  }catch(e){
+    console.warn("setPersistence failed", e);
   }
-const nameEl = document.getElementById("navUsername");
-  if(nameEl) nameEl.textContent = getNiceUsername(user);
-  document.documentElement.style.visibility = "visible";
+
+  let firstNull = true;
+
+  onAuthStateChanged(auth, async (user)=>{
+    if(!user){
+      // ✅ guard supaya tak redirect terlalu cepat
+      if(firstNull){
+        firstNull = false;
+        setTimeout(()=>{
+          if(!auth.currentUser) goLogin();
+        }, 900);
+        return;
+      }
+      goLogin();
+      return;
+    }
+
+    const ok = await isAllowedAdmin(user.uid);
+    if(!ok){
+      showToast("error", "Not allowed as admin.");
+      await signOut(auth);
+      goLogin();
+      return;
+    }
+
+    const nameEl = document.getElementById("navUsername");
+    if(nameEl) nameEl.textContent = getNiceUsername(user);
+
+    document.documentElement.style.visibility = "visible";
+  });
 });
 let selectedSite = "";
 
