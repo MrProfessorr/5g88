@@ -7,6 +7,15 @@ import {
   ref, get
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
   const $ = (id)=>document.getElementById(id);
+  const SESSION_HOURS = 6;
+
+function setAdminSession(uid, email){
+  const until = Date.now() + SESSION_HOURS * 60 * 60 * 1000;
+  localStorage.setItem("admin_uid", uid);
+  localStorage.setItem("admin_email", email || "");
+  localStorage.setItem("admin_until", String(until));
+}
+
   function initPasswordToggle(){
   const pwInput = $("pw");
   const btn = document.querySelector(".togglePw");
@@ -112,11 +121,15 @@ async function doLogin(){
       setLoginButton("idle");
       return;
     }
-    toast("Login success");
-    setLoginButton("success");
-    setTimeout(()=>{
-      location.replace(getRedirectTarget());
-    }, 600);
+toast("Login success");
+setLoginButton("success");
+
+// ✅ penting: bagi drawheel lulus check session
+setAdminSession(cred.user.uid, cred.user.email || "");
+
+setTimeout(()=>{
+  location.replace(getRedirectTarget());
+}, 600);
   }catch(err){
     toast("Login failed");
     setLoginButton("idle");
