@@ -1,5 +1,4 @@
 import { db, auth } from "./shared505/indexps0134aq2bfc1c2ba40ao.js";
-const LOGIN_ORIGIN = "https://portal-luckydraw.vercel.app";
 const LOGIN_URL = `${location.origin}/luckywheel/login/`;
 const SESSION_HOURS = 6;
 import {
@@ -71,9 +70,9 @@ function hasAdminSession(){
 
 function setAdminSession(uid, email){
   const until = Date.now() + SESSION_HOURS * 60 * 60 * 1000;
-  sessionStorage.setItem("admin_uid", uid);
-  sessionStorage.setItem("admin_email", email || "");
-  sessionStorage.setItem("admin_until", String(until));
+  localStorage.setItem("admin_uid", uid);
+  localStorage.setItem("admin_email", email || "");
+  localStorage.setItem("admin_until", String(until));
 }
 
 function clearAdminSession(){
