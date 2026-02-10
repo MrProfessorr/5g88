@@ -1,5 +1,4 @@
 import { db, auth } from "./shared505/indexps0134aq2bfc1c2ba40ao.js";
-const LOGIN_URL = `${location.origin}/luckywheel/login/`;
 const SESSION_HOURS = 6;
 import {
   ref, set, get, child, onValue, query, limitToLast, remove, update
@@ -49,6 +48,8 @@ function getBasePath(){
   if (last === "drawheel" || last === "login") parts.pop();
   return "/" + parts.join("/");
 }
+
+const LOGIN_URL = `${location.origin}${getBasePath()}/login/`;
 
 function goLogin(){
   const rt = encodeURIComponent(location.href);
