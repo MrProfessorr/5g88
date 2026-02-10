@@ -1,6 +1,6 @@
 import { db, auth } from "./shared505/indexps0134aq2bfc1c2ba40ao.js";
 const LOGIN_ORIGIN = "https://portal-luckydraw.vercel.app";
-const LOGIN_URL = "https://portal-luckydraw.vercel.app/";
+const LOGIN_URL = `${location.origin}/luckywheel/login/`;
 const SESSION_HOURS = 6;
 import {
   ref, set, get, child, onValue, query, limitToLast, remove, update
@@ -64,8 +64,8 @@ function getTicketFromUrl(){
 }
 
 function hasAdminSession(){
-  const uid = sessionStorage.getItem("admin_uid");
-  const until = Number(sessionStorage.getItem("admin_until") || 0);
+  const uid = localStorage.getItem("admin_uid");
+  const until = Number(localStorage.getItem("admin_until") || 0);
   return !!uid && Date.now() < until;
 }
 
@@ -77,9 +77,9 @@ function setAdminSession(uid, email){
 }
 
 function clearAdminSession(){
-  sessionStorage.removeItem("admin_uid");
-  sessionStorage.removeItem("admin_email");
-  sessionStorage.removeItem("admin_until");
+  localStorage.removeItem("admin_uid");
+  localStorage.removeItem("admin_email");
+  localStorage.removeItem("admin_until");
 }
 
 async function claimTicketIfAny(){
@@ -157,7 +157,7 @@ window.addEventListener("DOMContentLoaded", async ()=>{
       // user null tak apa sebab kita guna session custom
       const nameEl = document.getElementById("navUsername");
       if(nameEl){
-        const em = sessionStorage.getItem("admin_email") || "Admin";
+       const em = localStorage.getItem("admin_email") || "Admin";
         nameEl.textContent = (em.includes("@") ? em.split("@")[0] : em);
       }
     }
