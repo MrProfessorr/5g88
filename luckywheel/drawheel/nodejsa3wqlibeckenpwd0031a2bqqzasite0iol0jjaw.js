@@ -1,5 +1,5 @@
 import { db, auth } from "./shared505/indexps0134aq2bfc1c2ba40ao.js";
-const LOGIN_ORIGIN = "https://backoffice-dashboard-login.vercel.app/";
+const LOGIN_ORIGIN = "https://portal-luckydraw.vercel.app/";
 import {
   ref, set, get, child, onValue, query, limitToLast, remove, update
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
