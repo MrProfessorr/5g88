@@ -13,10 +13,13 @@
 <meta http-equiv="Content-Security-Policy" content="
 default-src 'self';
 base-uri 'self';
+object-src 'none';
+frame-ancestors 'none';
 img-src 'self' data: https://i.imgur.com https://*.googleusercontent.com;
 style-src 'self' 'unsafe-inline';
-script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.googleapis.com https://cdn.jsdelivr.net;
+script-src 'self' https://www.gstatic.com https://www.googleapis.com https://cdn.jsdelivr.net;
 connect-src 'self'
+  https://www.gstatic.com
   https://*.googleapis.com
   https://identitytoolkit.googleapis.com
   https://securetoken.googleapis.com
@@ -24,8 +27,8 @@ connect-src 'self'
   https://*.firebasedatabase.app
   wss://*.firebaseio.com
   wss://*.firebasedatabase.app;
-frame-src 'self' https://accounts.google.com https://*.google.com;
-form-action 'self' https://accounts.google.com;
+form-action 'self';
+upgrade-insecure-requests;
 ">
 <link rel="stylesheet" href="./page1siteabb2co32a407bc2zip09.css">
 <link rel="stylesheet" href="./login.css">
