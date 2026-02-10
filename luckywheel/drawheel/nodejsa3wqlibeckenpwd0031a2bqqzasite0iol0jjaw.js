@@ -1,5 +1,7 @@
 import { db, auth } from "./shared505/indexps0134aq2bfc1c2ba40ao.js";
-const LOGIN_ORIGIN = "https://portal-luckydraw.vercel.app/";
+const LOGIN_ORIGIN = "https://portal-luckydraw.vercel.app";
+const LOGIN_URL = "https://portal-luckydraw.vercel.app/";
+const SESSION_HOURS = 6;
 import {
   ref, set, get, child, onValue, query, limitToLast, remove, update
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
@@ -50,47 +52,115 @@ function getBasePath(){
 }
 
 function goLogin(){
-  location.replace(`${LOGIN_ORIGIN}`);
+  const rt = encodeURIComponent(location.href);
+  location.replace(`${LOGIN_URL}?redirect=${rt}`);
+}
+function getTicketFromUrl(){
+  try{
+    return new URL(location.href).searchParams.get("ticket");
+  }catch(_){
+    return null;
+  }
 }
 
+function hasAdminSession(){
+  const uid = sessionStorage.getItem("admin_uid");
+  const until = Number(sessionStorage.getItem("admin_until") || 0);
+  return !!uid && Date.now() < until;
+}
+
+function setAdminSession(uid, email){
+  const until = Date.now() + SESSION_HOURS * 60 * 60 * 1000;
+  sessionStorage.setItem("admin_uid", uid);
+  sessionStorage.setItem("admin_email", email || "");
+  sessionStorage.setItem("admin_until", String(until));
+}
+
+function clearAdminSession(){
+  sessionStorage.removeItem("admin_uid");
+  sessionStorage.removeItem("admin_email");
+  sessionStorage.removeItem("admin_until");
+}
+
+async function claimTicketIfAny(){
+  const ticket = getTicketFromUrl();
+  if(!ticket) return false;
+
+  const snap = await get(ref(db, `adminTickets/${ticket}`));
+  if(!snap.exists()) return false;
+
+  const data = snap.val() || {};
+  const now = Date.now();
+
+  if(!data.uid || now > Number(data.expiresAt || 0)){
+    await remove(ref(db, `adminTickets/${ticket}`));
+    return false;
+  }
+
+  // sekali guna
+  await remove(ref(db, `adminTickets/${ticket}`));
+
+  setAdminSession(data.uid, data.email || "");
+
+  // buang ticket dari URL
+  const clean = new URL(location.href);
+  clean.searchParams.delete("ticket");
+  history.replaceState({}, "", clean.toString());
+
+  return true;
+}
 async function isAllowedAdmin(uid){
   const snap = await get(ref(db, `isloading/${uid}`));
   return snap.exists() && snap.val() === true;
 }
 window.addEventListener("DOMContentLoaded", async ()=>{
+  // 1) claim ticket kalau ada
   try{
-    // ✅ penting: simpan session supaya tak "null sekejap"
+    await claimTicketIfAny();
+  }catch(e){
+    console.error("claimTicket error", e);
+  }
+
+  // 2) kalau tiada session admin → pergi login
+  if(!hasAdminSession()){
+    goLogin();
+    return;
+  }
+
+  // 3) optional: cuba setPersistence (untuk UI sahaja)
+  try{
     await setPersistence(auth, browserLocalPersistence);
   }catch(e){
     console.warn("setPersistence failed", e);
   }
 
-  let firstNull = true;
-
+  // 4) auth state untuk display name sahaja (JANGAN redirect bila user null)
   onAuthStateChanged(auth, async (user)=>{
-    if(!user){
-      // ✅ guard supaya tak redirect terlalu cepat
-      if(firstNull){
-        firstNull = false;
-        setTimeout(()=>{
-          if(!auth.currentUser) goLogin();
-        }, 900);
-        return;
+    if(user){
+      try{
+        const ok = await isAllowedAdmin(user.uid);
+        if(!ok){
+          showToast("error","Not allowed as admin.");
+          try{ await signOut(auth); }catch(_){}
+          clearAdminSession();
+          goLogin();
+          return;
+        }
+
+        const nameEl = document.getElementById("navUsername");
+        if(nameEl) nameEl.textContent = getNiceUsername(user);
+
+      }catch(e){
+        console.warn(e);
       }
-      goLogin();
-      return;
+    }else{
+      // user null tak apa sebab kita guna session custom
+      const nameEl = document.getElementById("navUsername");
+      if(nameEl){
+        const em = sessionStorage.getItem("admin_email") || "Admin";
+        nameEl.textContent = (em.includes("@") ? em.split("@")[0] : em);
+      }
     }
-
-    const ok = await isAllowedAdmin(user.uid);
-    if(!ok){
-      showToast("error", "Not allowed as admin.");
-      await signOut(auth);
-      goLogin();
-      return;
-    }
-
-    const nameEl = document.getElementById("navUsername");
-    if(nameEl) nameEl.textContent = getNiceUsername(user);
 
     document.documentElement.style.visibility = "visible";
   });
@@ -762,8 +832,8 @@ $("sideLogout").onclick = async ()=>{
   try{
     closeSidebar();
     showToast?.("info", "Logging out...");
-    await signOut(auth);
-  }catch(e){
+    clearAdminSession();          // ✅ tambah ini
+    try{ await signOut(auth); }catch(_){}
   }finally{
     goLogin();
   }
@@ -813,13 +883,6 @@ document.getElementById("dropPrize")?.addEventListener("click", async ()=>{
   openPrizeModal();
 });
 
-document.getElementById("dropLogout")?.addEventListener("click", async ()=>{
-  document.getElementById("userMenu")?.classList.remove("open");
-
-  // terus logout (tanpa confirm)
-  await signOut(auth);
-  goLogin();
-});
 $("sidePrize").onclick = async ()=>{
   closeSidebar();
   await loadPrizeConfig();
@@ -1415,7 +1478,8 @@ if(dropLogoutBtn){
   dropLogoutBtn.onclick = async ()=>{
     try{
       document.getElementById("userMenu")?.classList.remove("open");
-      await signOut(auth);
+      clearAdminSession();        // ✅ tambah ini
+      try{ await signOut(auth); }catch(_){}
     }finally{
       goLogin();
     }
