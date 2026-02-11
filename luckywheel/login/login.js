@@ -4,7 +4,7 @@ import {
   signInWithEmailAndPassword, signOut
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 import {
-  ref, get
+  ref, get, set
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
   const $ = (id)=>document.getElementById(id);
   const SESSION_HOURS = 6;
