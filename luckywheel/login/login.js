@@ -157,10 +157,11 @@ u.searchParams.set("ticket", ticket);
 setTimeout(()=>{
   location.replace(u.toString());
 }, 300);
-  }catch(err){
-    toast("Login failed");
-    setLoginButton("idle");
-  }
+} catch (err) {
+  console.error("LOGIN ERROR:", err);
+  toast(err?.code ? `Login failed: ${err.code}` : `Login failed: ${err?.message || err}`);
+  setLoginButton("idle");
+}
 }
 
   $("btnLogin").addEventListener("click", doLogin);
