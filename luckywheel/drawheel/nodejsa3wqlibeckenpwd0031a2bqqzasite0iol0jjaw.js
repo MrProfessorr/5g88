@@ -105,7 +105,7 @@ async function isAllowedAdmin(uid){
   const snap = await get(ref(db, `isloading/${uid}`));
   return snap.exists() && snap.val() === true;
 }
-windowwindow.addEventListener("DOMContentLoaded", async ()=>{
+window.addEventListener("DOMContentLoaded", async ()=>{
   // ✅ pastikan auth session kekal
   try{
     await setPersistence(auth, browserLocalPersistence);
@@ -120,7 +120,6 @@ windowwindow.addEventListener("DOMContentLoaded", async ()=>{
       return;
     }
 
-    // ✅ check allow admin (kau dah ada function ni)
     try{
       const ok = await isAllowedAdmin(user.uid);
       if(!ok){
