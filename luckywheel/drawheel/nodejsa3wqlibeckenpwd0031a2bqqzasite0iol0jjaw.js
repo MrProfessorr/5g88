@@ -45,7 +45,7 @@ window.addEventListener("DOMContentLoaded", initUserMenuUI);
 const LOGIN_PORTAL = "https://portal-luckydraw.vercel.app/";
 function goLogin(){
   const rt = encodeURIComponent(location.href);
-  location.replace(`${LOGIN_PORTAL}?redirect=${rt}`);
+  location.replace(`${LOGIN_PORTAL}?redirect=${rt}&t=${Date.now()}`);
 }
 function getTicketFromUrl(){
   try{
@@ -79,10 +79,8 @@ async function claimTicketIfAny(){
   if(!ticket) return false;
 
   // ✅ mesti ada user auth untuk tahu uid
-  const user = auth.currentUser;
-  if(!user || !user.uid) return false;
-
-  const uid = user.uid;
+  const uid = localStorage.getItem("admin_uid");
+  if(!uid) return false;
 
   const snap = await get(ref(db, `adminTicketsByUid/${uid}`));
   if(!snap.exists()) return false;
@@ -100,7 +98,7 @@ async function claimTicketIfAny(){
   // sekali guna
   await remove(ref(db, `adminTicketsByUid/${uid}`));
 
-  setAdminSession(uid, data.email || user.email || "");
+  setAdminSession(uid, data.email || localStorage.getItem("admin_email") || "");
 
   // buang ticket dari URL
   const clean = new URL(location.href);
@@ -116,16 +114,24 @@ window.addEventListener("DOMContentLoaded", async ()=>{
   onAuthStateChanged(auth, async (user)=>{
     try{
       // kalau belum login auth, redirect portal login
-      if(!user){
-        if(!hasAdminSession()){
-          goLogin();
-          return;
-        }
-        // ada session local tapi auth tak ada -> kau boleh decide
-        // biasanya paksa login semula
-        goLogin();
-        return;
-      }
+if(!user){
+  if(!hasAdminSession()){
+    goLogin();
+    return;
+  }
+
+  // ada session local → validate admin
+  const uidLS = localStorage.getItem("admin_uid");
+  const ok = await isAllowedAdmin(uidLS);
+  if(!ok){
+    clearAdminSession();
+    goLogin();
+    return;
+  }
+
+  document.documentElement.style.visibility = "visible";
+  return;
+}
 
       // ✅ claim ticket hanya bila auth dah ada
       await claimTicketIfAny();
@@ -192,6 +198,10 @@ function initSitePicker(){
 window.addEventListener("DOMContentLoaded", initSitePicker);
 
 const $ = (id)=>document.getElementById(id);
+async function isAllowedAdmin(uid){
+  const snap = await get(ref(db, `isloading/${uid}`));
+  return snap.exists() && snap.val() === true;
+}
 function showToast(type, msg, opt = {}) {
   const el = document.getElementById("toast");
   if (!el) return;
