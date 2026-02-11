@@ -89,6 +89,33 @@ function getRedirectTarget(){
     return snap.exists() && snap.val() === true;
   }
 
+function genTicket(len = 28){
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let out = "";
+  for(let i=0;i<len;i++) out += chars[Math.floor(Math.random()*chars.length)];
+  return out;
+}
+
+async function createAdminTicket(uid, email){
+  // cuba beberapa kali elak collision
+  for(let i=0;i<5;i++){
+    const ticket = genTicket();
+    const path = `adminTickets/${ticket}`;
+    const snap = await get(ref(db, path));
+    if(snap.exists()) continue;
+
+    const expiresAt = Date.now() + (2 * 60 * 1000); // 2 minit
+    await set(ref(db, path), { uid, email: email || "", expiresAt });
+
+    return ticket;
+  }
+  // fallback
+  const ticket = genTicket(36);
+  const expiresAt = Date.now() + (2 * 60 * 1000);
+  await set(ref(db, `adminTickets/${ticket}`), { uid, email: email || "", expiresAt });
+  return ticket;
+}
+
 async function doLogin(){
   const id = $("uid").value.trim();
   const pw = $("pw").value;
@@ -120,12 +147,16 @@ async function doLogin(){
 toast("Login success");
 setLoginButton("success");
 
-// ✅ penting: bagi drawheel lulus check session
 setAdminSession(cred.user.uid, cred.user.email || "");
 
+const target = getRedirectTarget();
+const ticket = await createAdminTicket(cred.user.uid, cred.user.email || "");
+const u = new URL(target);
+u.searchParams.set("ticket", ticket);
+
 setTimeout(()=>{
-  location.replace(getRedirectTarget());
-}, 600);
+  location.replace(u.toString());
+}, 300);
   }catch(err){
     toast("Login failed");
     setLoginButton("idle");
