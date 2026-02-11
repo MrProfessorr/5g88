@@ -78,21 +78,29 @@ async function claimTicketIfAny(){
   const ticket = getTicketFromUrl();
   if(!ticket) return false;
 
-  const snap = await get(ref(db, `adminTickets/${ticket}`));
+  // ✅ mesti ada user auth untuk tahu uid
+  const user = auth.currentUser;
+  if(!user || !user.uid) return false;
+
+  const uid = user.uid;
+
+  const snap = await get(ref(db, `adminTicketsByUid/${uid}`));
   if(!snap.exists()) return false;
 
   const data = snap.val() || {};
   const now = Date.now();
 
-  if(!data.uid || now > Number(data.expiresAt || 0)){
-    await remove(ref(db, `adminTickets/${ticket}`));
+  // validate
+  if(data.ticket !== ticket || now > Number(data.expiresAt || 0)){
+    // expired / mismatch -> buang record
+    await remove(ref(db, `adminTicketsByUid/${uid}`));
     return false;
   }
 
   // sekali guna
-  await remove(ref(db, `adminTickets/${ticket}`));
+  await remove(ref(db, `adminTicketsByUid/${uid}`));
 
-  setAdminSession(data.uid, data.email || "");
+  setAdminSession(uid, data.email || user.email || "");
 
   // buang ticket dari URL
   const clean = new URL(location.href);
@@ -103,38 +111,56 @@ async function claimTicketIfAny(){
 }
 
 window.addEventListener("DOMContentLoaded", async ()=>{
-  try{
-    await claimTicketIfAny();
-  }catch(e){
-    console.error("claimTicket error", e);
-  }
-  if(!hasAdminSession()){
-    goLogin();
-    return;
-  }
-  const uid = localStorage.getItem("admin_uid");
-  const email = localStorage.getItem("admin_email") || "";
+  await setPersistence(auth, browserLocalPersistence);
 
-  try{
-    const ok = await isAllowedAdmin(uid);
-    if(!ok){
-      showToast("error", "Not allowed as admin.");
+  onAuthStateChanged(auth, async (user)=>{
+    try{
+      // kalau belum login auth, redirect portal login
+      if(!user){
+        if(!hasAdminSession()){
+          goLogin();
+          return;
+        }
+        // ada session local tapi auth tak ada -> kau boleh decide
+        // biasanya paksa login semula
+        goLogin();
+        return;
+      }
+
+      // ✅ claim ticket hanya bila auth dah ada
+      await claimTicketIfAny();
+
+      if(!hasAdminSession()){
+        goLogin();
+        return;
+      }
+
+      const uid = localStorage.getItem("admin_uid");
+      const email = localStorage.getItem("admin_email") || user.email || "";
+
+      const ok = await isAllowedAdmin(uid);
+      if(!ok){
+        showToast("error", "Not allowed as admin.");
+        clearAdminSession();
+        try{ await signOut(auth); }catch(_){}
+        goLogin();
+        return;
+      }
+
+      const nameEl = document.getElementById("navUsername");
+      if(nameEl){
+        nameEl.textContent = email.includes("@") ? email.split("@")[0] : (email || "Admin");
+      }
+
+      document.documentElement.style.visibility = "visible";
+    }catch(e){
+      console.error("boot auth/ticket error", e);
+      showToast("error", "Auth/Ticket failed");
       clearAdminSession();
+      try{ await signOut(auth); }catch(_){}
       goLogin();
-      return;
     }
-  }catch(e){
-    console.warn(e);
-    showToast("error", "Auth check failed");
-    clearAdminSession();
-    goLogin();
-    return;
-  }
-  const nameEl = document.getElementById("navUsername");
-  if(nameEl){
-    nameEl.textContent = email.includes("@") ? email.split("@")[0] : (email || "Admin");
-  }
-  document.documentElement.style.visibility = "visible";
+  });
 });
 let selectedSite = "";
 
