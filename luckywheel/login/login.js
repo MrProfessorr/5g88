@@ -68,25 +68,21 @@ function toast(msg){
     const clean = String(id||"").trim().toLowerCase();
     return clean ? `${clean}@5g88.admin` : "";
   }
-
-function getBasePath(){
-  // contoh: /5g88/luckywheel/login/ -> /5g88/luckywheel
-  // contoh: /login/ -> ""
-  const parts = location.pathname.split("/").filter(Boolean);
-
-  // buang "login" jika memang sedang dalam /login
-  const last = parts[parts.length - 1];
-  if (last === "login") parts.pop();
-
-  return "/" + parts.join("/");
-}
-
+const ADMIN_ORIGIN = "https://dashboard-prize.vercel.app";
+const DEFAULT_ADMIN_AFTER = "https://dashboard-prize.vercel.app/";
 function getRedirectTarget(){
   const u = new URL(location.href);
   const rt = u.searchParams.get("redirect");
-  if(rt) return rt;
-  const base = getBasePath();
-  return `${location.origin}${base}/drawheel/`;
+  if(!rt) return DEFAULT_ADMIN_AFTER;
+
+  try{
+    const target = new URL(rt);
+    if(target.origin !== ADMIN_ORIGIN) return DEFAULT_ADMIN_AFTER;
+
+    return target.href;
+  }catch(_){
+    return DEFAULT_ADMIN_AFTER;
+  }
 }
 
   async function isAllowedAdmin(uid){
