@@ -106,42 +106,38 @@ async function isAllowedAdmin(uid){
   return snap.exists() && snap.val() === true;
 }
 window.addEventListener("DOMContentLoaded", async ()=>{
-  // ✅ pastikan auth session kekal
   try{
-    await setPersistence(auth, browserLocalPersistence);
+    await claimTicketIfAny();
   }catch(e){
-    console.warn("setPersistence failed", e);
+    console.error("claimTicket error", e);
   }
+  if(!hasAdminSession()){
+    goLogin();
+    return;
+  }
+  const uid = localStorage.getItem("admin_uid");
+  const email = localStorage.getItem("admin_email") || "";
 
-  // ✅ ini adalah guard sebenar admin
-  onAuthStateChanged(auth, async (user)=>{
-    if(!user){
+  try{
+    const ok = await isAllowedAdmin(uid);
+    if(!ok){
+      showToast("error", "Not allowed as admin.");
+      clearAdminSession();
       goLogin();
       return;
     }
-
-    try{
-      const ok = await isAllowedAdmin(user.uid);
-      if(!ok){
-        showToast("error","Not allowed as admin.");
-        try{ await signOut(auth); }catch(_){}
-        goLogin();
-        return;
-      }
-
-      const nameEl = document.getElementById("navUsername");
-      if(nameEl) nameEl.textContent = getNiceUsername(user);
-
-    }catch(e){
-      console.warn(e);
-      showToast("error","Auth check failed");
-      try{ await signOut(auth); }catch(_){}
-      goLogin();
-      return;
-    }
-
-    document.documentElement.style.visibility = "visible";
-  });
+  }catch(e){
+    console.warn(e);
+    showToast("error", "Auth check failed");
+    clearAdminSession();
+    goLogin();
+    return;
+  }
+  const nameEl = document.getElementById("navUsername");
+  if(nameEl){
+    nameEl.textContent = email.includes("@") ? email.split("@")[0] : (email || "Admin");
+  }
+  document.documentElement.style.visibility = "visible";
 });
 let selectedSite = "";
 
