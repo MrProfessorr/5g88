@@ -15,7 +15,6 @@ function setAdminSession(uid, email){
   localStorage.setItem("admin_email", email || "");
   localStorage.setItem("admin_until", String(until));
 }
-
   function initPasswordToggle(){
   const pwInput = $("pw");
   const btn = document.querySelector(".togglePw");
