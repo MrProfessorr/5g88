@@ -42,18 +42,10 @@ function initUserMenuUI(){
 
 window.addEventListener("DOMContentLoaded", initUserMenuUI);
 
-function getBasePath(){
-  const parts = location.pathname.split("/").filter(Boolean);
-  const last = parts[parts.length - 1];
-  if (last === "drawheel" || last === "login") parts.pop();
-  return "/" + parts.join("/");
-}
-
-const LOGIN_URL = `${location.origin}${getBasePath()}/login/`;
-
+const LOGIN_PORTAL = "https://portal-luckydraw.vercel.app/";
 function goLogin(){
   const rt = encodeURIComponent(location.href);
-  location.replace(`${LOGIN_URL}?redirect=${rt}`);
+  location.replace(`${LOGIN_PORTAL}?redirect=${rt}`);
 }
 function getTicketFromUrl(){
   try{
@@ -113,53 +105,40 @@ async function isAllowedAdmin(uid){
   const snap = await get(ref(db, `isloading/${uid}`));
   return snap.exists() && snap.val() === true;
 }
-window.addEventListener("DOMContentLoaded", async ()=>{
-  // 1) claim ticket kalau ada
-  try{
-    await claimTicketIfAny();
-  }catch(e){
-    console.error("claimTicket error", e);
-  }
-
-  // 2) kalau tiada session admin → pergi login
-  if(!hasAdminSession()){
-    goLogin();
-    return;
-  }
-
-  // 3) optional: cuba setPersistence (untuk UI sahaja)
+windowwindow.addEventListener("DOMContentLoaded", async ()=>{
+  // ✅ pastikan auth session kekal
   try{
     await setPersistence(auth, browserLocalPersistence);
   }catch(e){
     console.warn("setPersistence failed", e);
   }
 
-  // 4) auth state untuk display name sahaja (JANGAN redirect bila user null)
+  // ✅ ini adalah guard sebenar admin
   onAuthStateChanged(auth, async (user)=>{
-    if(user){
-      try{
-        const ok = await isAllowedAdmin(user.uid);
-        if(!ok){
-          showToast("error","Not allowed as admin.");
-          try{ await signOut(auth); }catch(_){}
-          clearAdminSession();
-          goLogin();
-          return;
-        }
+    if(!user){
+      goLogin();
+      return;
+    }
 
-        const nameEl = document.getElementById("navUsername");
-        if(nameEl) nameEl.textContent = getNiceUsername(user);
-
-      }catch(e){
-        console.warn(e);
+    // ✅ check allow admin (kau dah ada function ni)
+    try{
+      const ok = await isAllowedAdmin(user.uid);
+      if(!ok){
+        showToast("error","Not allowed as admin.");
+        try{ await signOut(auth); }catch(_){}
+        goLogin();
+        return;
       }
-    }else{
-      // user null tak apa sebab kita guna session custom
+
       const nameEl = document.getElementById("navUsername");
-      if(nameEl){
-       const em = localStorage.getItem("admin_email") || "Admin";
-        nameEl.textContent = (em.includes("@") ? em.split("@")[0] : em);
-      }
+      if(nameEl) nameEl.textContent = getNiceUsername(user);
+
+    }catch(e){
+      console.warn(e);
+      showToast("error","Auth check failed");
+      try{ await signOut(auth); }catch(_){}
+      goLogin();
+      return;
     }
 
     document.documentElement.style.visibility = "visible";
