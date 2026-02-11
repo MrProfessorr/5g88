@@ -103,13 +103,12 @@ async function doLogin(){
     await setPersistence(auth, browserLocalPersistence);
 
     const cred = await signInWithEmailAndPassword(
-      console.log("LOGIN UID =", cred.user.uid);
-      console.log("LOGIN EMAIL =", cred.user.email);
       auth,
       toAdminEmail(id),
       pw
     );
-
+    console.log("LOGIN UID =", cred.user.uid);
+    console.log("LOGIN EMAIL =", cred.user.email);
     const ok = await isAllowedAdmin(cred.user.uid);
 
     if(!ok){
