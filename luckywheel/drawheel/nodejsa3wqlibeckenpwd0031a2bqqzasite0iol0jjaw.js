@@ -101,10 +101,7 @@ async function claimTicketIfAny(){
 
   return true;
 }
-async function isAllowedAdmin(uid){
-  const snap = await get(ref(db, `isloading/${uid}`));
-  return snap.exists() && snap.val() === true;
-}
+
 window.addEventListener("DOMContentLoaded", async ()=>{
   try{
     await claimTicketIfAny();
