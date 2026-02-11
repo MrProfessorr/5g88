@@ -100,20 +100,12 @@ async function createAdminTicket(uid, email){
   const ticket = genTicket(32);
   const expiresAt = Date.now() + (2 * 60 * 1000); // 2 minit
 
-  // simpan ikut uid (senang rules)
   await set(ref(db, `adminTicketsByUid/${uid}`), {
     ticket,
-    uid,
-    email: email || "",
-    expiresAt
+    expiresAt,
+    email: email || ""
   });
 
-  return ticket;
-}
-  // fallback
-  const ticket = genTicket(36);
-  const expiresAt = Date.now() + (2 * 60 * 1000);
-  await set(ref(db, `adminTickets/${ticket}`), { uid, email: email || "", expiresAt });
   return ticket;
 }
 
