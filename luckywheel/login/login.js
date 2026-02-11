@@ -52,7 +52,7 @@ initPasswordToggle();
 
   if(state === "success"){
     btn.disabled = true;
-    btn.textContent = "Logged in ✓";
+    btn.textContent = "Logged in";
   }
 }
 function toast(msg){
