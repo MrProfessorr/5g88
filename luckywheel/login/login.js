@@ -97,18 +97,19 @@ function genTicket(len = 28){
 }
 
 async function createAdminTicket(uid, email){
-  // cuba beberapa kali elak collision
-  for(let i=0;i<5;i++){
-    const ticket = genTicket();
-    const path = `adminTickets/${ticket}`;
-    const snap = await get(ref(db, path));
-    if(snap.exists()) continue;
+  const ticket = genTicket(32);
+  const expiresAt = Date.now() + (2 * 60 * 1000); // 2 minit
 
-    const expiresAt = Date.now() + (2 * 60 * 1000); // 2 minit
-    await set(ref(db, path), { uid, email: email || "", expiresAt });
+  // simpan ikut uid (senang rules)
+  await set(ref(db, `adminTicketsByUid/${uid}`), {
+    ticket,
+    uid,
+    email: email || "",
+    expiresAt
+  });
 
-    return ticket;
-  }
+  return ticket;
+}
   // fallback
   const ticket = genTicket(36);
   const expiresAt = Date.now() + (2 * 60 * 1000);
