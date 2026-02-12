@@ -62,7 +62,6 @@ function toast(msg){
   clearTimeout(window.__t);
   window.__t = setTimeout(()=> t.classList.remove("show"), 2200);
 }
-
   function toAdminEmail(id){
     const clean = String(id||"").trim().toLowerCase();
     return clean ? `${clean}@5g88.admin` : "";
