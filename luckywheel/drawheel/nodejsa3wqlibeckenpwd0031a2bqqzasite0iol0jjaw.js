@@ -3,7 +3,7 @@ const SESSION_HOURS = 6;
 import {
   ref, set, get, child, onValue, query, limitToLast, remove, update
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
- 
+
 import {
   onAuthStateChanged, signOut,
   setPersistence, browserLocalPersistence
@@ -30,6 +30,7 @@ function initUserMenuUI(){
     e.stopPropagation();
     menu.classList.toggle("open");
   });
+
   document.addEventListener("click", (e)=>{
     if(!menu.contains(e.target)) menu.classList.remove("open");
   });
@@ -38,12 +39,21 @@ function initUserMenuUI(){
     if(e.key === "Escape") menu.classList.remove("open");
   });
 }
+
 window.addEventListener("DOMContentLoaded", initUserMenuUI);
 
-const LOGIN_PORTAL = "https://portal-luckydraw.vercel.app/";
+function getBasePath(){
+  const parts = location.pathname.split("/").filter(Boolean);
+  const last = parts[parts.length - 1];
+  if (last === "drawheel" || last === "login") parts.pop();
+  return "/" + parts.join("/");
+}
+
+const LOGIN_URL = `${location.origin}${getBasePath()}/login/`;
+
 function goLogin(){
   const rt = encodeURIComponent(location.href);
-  location.replace(`${LOGIN_PORTAL}?redirect=${rt}&t=${Date.now()}`);
+  location.replace(`${LOGIN_URL}?redirect=${rt}`);
 }
 function getTicketFromUrl(){
   try{
@@ -82,7 +92,7 @@ async function claimTicketIfAny(){
   const data = snap.val() || {};
   const now = Date.now();
 
-  if(now > Number(data.expiresAt || 0) || !data.uid){
+  if(!data.uid || now > Number(data.expiresAt || 0)){
     await remove(ref(db, `adminTickets/${ticket}`));
     return false;
   }
@@ -90,7 +100,6 @@ async function claimTicketIfAny(){
   // sekali guna
   await remove(ref(db, `adminTickets/${ticket}`));
 
-  // set session dekat domain admin
   setAdminSession(data.uid, data.email || "");
 
   // buang ticket dari URL
@@ -100,53 +109,61 @@ async function claimTicketIfAny(){
 
   return true;
 }
-
+async function isAllowedAdmin(uid){
+  const snap = await get(ref(db, `isloading/${uid}`));
+  return snap.exists() && snap.val() === true;
+}
 window.addEventListener("DOMContentLoaded", async ()=>{
-  await setPersistence(auth, browserLocalPersistence);
-
- onAuthStateChanged(auth, async (user)=>{
+  // 1) claim ticket kalau ada
   try{
-    // ✅ 1) claim ticket dulu (tak perlu auth)
     await claimTicketIfAny();
+  }catch(e){
+    console.error("claimTicket error", e);
+  }
 
-    // ✅ 2) kalau tak ada session lepas claim → pergi login
-    if(!hasAdminSession()){
-      goLogin();
-      return;
-    }
+  // 2) kalau tiada session admin → pergi login
+  if(!hasAdminSession()){
+    goLogin();
+    return;
+  }
 
-    // ✅ 3) validate admin guna uid dari session (bukan user.uid)
-    const uid = localStorage.getItem("admin_uid");
-    const email = localStorage.getItem("admin_email") || "";
+  // 3) optional: cuba setPersistence (untuk UI sahaja)
+  try{
+    await setPersistence(auth, browserLocalPersistence);
+  }catch(e){
+    console.warn("setPersistence failed", e);
+  }
 
-    const ok = await isAllowedAdmin(uid);
-    if(!ok){
-      clearAdminSession();
-      try{ await signOut(auth); }catch(_){}
-      goLogin();
-      return;
-    }
+  // 4) auth state untuk display name sahaja (JANGAN redirect bila user null)
+  onAuthStateChanged(auth, async (user)=>{
+    if(user){
+      try{
+        const ok = await isAllowedAdmin(user.uid);
+        if(!ok){
+          showToast("error","Not allowed as admin.");
+          try{ await signOut(auth); }catch(_){}
+          clearAdminSession();
+          goLogin();
+          return;
+        }
 
-    // ✅ 4) optional: kalau user auth wujud, sync email (tak wajib)
-    if(user?.uid && user.uid === uid){
-      setAdminSession(uid, user.email || email || "");
-    }
+        const nameEl = document.getElementById("navUsername");
+        if(nameEl) nameEl.textContent = getNiceUsername(user);
 
-    const nameEl = document.getElementById("navUsername");
-    if(nameEl){
-      const em = localStorage.getItem("admin_email") || email || "Admin";
-      nameEl.textContent = em.includes("@") ? em.split("@")[0] : em;
+      }catch(e){
+        console.warn(e);
+      }
+    }else{
+      // user null tak apa sebab kita guna session custom
+      const nameEl = document.getElementById("navUsername");
+      if(nameEl){
+       const em = localStorage.getItem("admin_email") || "Admin";
+        nameEl.textContent = (em.includes("@") ? em.split("@")[0] : em);
+      }
     }
 
     document.documentElement.style.visibility = "visible";
-  }catch(e){
-    console.error("boot auth/ticket error", e);
-    showToast("error", "Auth/Ticket failed");
-    clearAdminSession();
-    try{ await signOut(auth); }catch(_){}
-    goLogin();
-  }
-});
+  });
 });
 let selectedSite = "";
 
@@ -178,10 +195,6 @@ function initSitePicker(){
 window.addEventListener("DOMContentLoaded", initSitePicker);
 
 const $ = (id)=>document.getElementById(id);
-async function isAllowedAdmin(uid){
-  const snap = await get(ref(db, `isloading/${uid}`));
-  return snap.exists() && snap.val() === true;
-}
 function showToast(type, msg, opt = {}) {
   const el = document.getElementById("toast");
   if (!el) return;
