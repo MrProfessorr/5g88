@@ -3,7 +3,7 @@ const SESSION_HOURS = 6;
 import {
   ref, set, get, child, onValue, query, limitToLast, remove, update
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
-
+ 
 import {
   onAuthStateChanged, signOut,
   setPersistence, browserLocalPersistence
