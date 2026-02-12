@@ -78,27 +78,22 @@ async function claimTicketIfAny(){
   const ticket = getTicketFromUrl();
   if(!ticket) return false;
 
-  // ✅ mesti ada user auth untuk tahu uid
-  const uid = localStorage.getItem("admin_uid");
-  if(!uid) return false;
-
-  const snap = await get(ref(db, `adminTicketsByUid/${uid}`));
+  const snap = await get(ref(db, `adminTickets/${ticket}`));
   if(!snap.exists()) return false;
 
   const data = snap.val() || {};
   const now = Date.now();
 
-  // validate
-  if(data.ticket !== ticket || now > Number(data.expiresAt || 0)){
-    // expired / mismatch -> buang record
-    await remove(ref(db, `adminTicketsByUid/${uid}`));
+  if(now > Number(data.expiresAt || 0) || !data.uid){
+    await remove(ref(db, `adminTickets/${ticket}`));
     return false;
   }
 
   // sekali guna
-  await remove(ref(db, `adminTicketsByUid/${uid}`));
+  await remove(ref(db, `adminTickets/${ticket}`));
 
-  setAdminSession(uid, data.email || localStorage.getItem("admin_email") || "");
+  // set session dekat domain admin
+  setAdminSession(data.uid, data.email || "");
 
   // buang ticket dari URL
   const clean = new URL(location.href);
@@ -111,62 +106,49 @@ async function claimTicketIfAny(){
 window.addEventListener("DOMContentLoaded", async ()=>{
   await setPersistence(auth, browserLocalPersistence);
 
-  onAuthStateChanged(auth, async (user)=>{
-    try{
-      // kalau belum login auth, redirect portal login
-if(!user){
-  if(!hasAdminSession()){
-    goLogin();
-    return;
-  }
+ onAuthStateChanged(auth, async (user)=>{
+  try{
+    // ✅ 1) claim ticket dulu (tak perlu auth)
+    await claimTicketIfAny();
 
-  // ada session local → validate admin
-  const uidLS = localStorage.getItem("admin_uid");
-  const ok = await isAllowedAdmin(uidLS);
-  if(!ok){
-    clearAdminSession();
-    goLogin();
-    return;
-  }
+    // ✅ 2) kalau tak ada session lepas claim → pergi login
+    if(!hasAdminSession()){
+      goLogin();
+      return;
+    }
 
-  document.documentElement.style.visibility = "visible";
-  return;
-}
+    // ✅ 3) validate admin guna uid dari session (bukan user.uid)
+    const uid = localStorage.getItem("admin_uid");
+    const email = localStorage.getItem("admin_email") || "";
 
-      // ✅ claim ticket hanya bila auth dah ada
-      await claimTicketIfAny();
-
-      if(!hasAdminSession()){
-        goLogin();
-        return;
-      }
-
-      const uid = localStorage.getItem("admin_uid");
-      const email = localStorage.getItem("admin_email") || user.email || "";
-
-      const ok = await isAllowedAdmin(uid);
-      if(!ok){
-        showToast("error", "Not allowed as admin.");
-        clearAdminSession();
-        try{ await signOut(auth); }catch(_){}
-        goLogin();
-        return;
-      }
-
-      const nameEl = document.getElementById("navUsername");
-      if(nameEl){
-        nameEl.textContent = email.includes("@") ? email.split("@")[0] : (email || "Admin");
-      }
-
-      document.documentElement.style.visibility = "visible";
-    }catch(e){
-      console.error("boot auth/ticket error", e);
-      showToast("error", "Auth/Ticket failed");
+    const ok = await isAllowedAdmin(uid);
+    if(!ok){
       clearAdminSession();
       try{ await signOut(auth); }catch(_){}
       goLogin();
+      return;
     }
-  });
+
+    // ✅ 4) optional: kalau user auth wujud, sync email (tak wajib)
+    if(user?.uid && user.uid === uid){
+      setAdminSession(uid, user.email || email || "");
+    }
+
+    const nameEl = document.getElementById("navUsername");
+    if(nameEl){
+      const em = localStorage.getItem("admin_email") || email || "Admin";
+      nameEl.textContent = em.includes("@") ? em.split("@")[0] : em;
+    }
+
+    document.documentElement.style.visibility = "visible";
+  }catch(e){
+    console.error("boot auth/ticket error", e);
+    showToast("error", "Auth/Ticket failed");
+    clearAdminSession();
+    try{ await signOut(auth); }catch(_){}
+    goLogin();
+  }
+});
 });
 let selectedSite = "";
 
