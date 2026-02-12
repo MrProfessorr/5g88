@@ -42,6 +42,15 @@
     <span class="dropText">Prize Settings</span>
   </button>
 
+<button class="dropItem" id="dropChangePw">
+  <!-- icon lock -->
+  <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M17 8h-1V6a4 4 0 0 0-8 0v2H7a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2zm-7-2a2 2 0 0 1 4 0v2h-4V6zm8 13H6v-9h12v9zm-6-3a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+  </svg>
+
+  <span class="dropText">Change Password</span>
+</button>
+  
   <button class="dropItem" id="dropLogout">
     <!-- icon logout -->
     <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
@@ -101,6 +110,34 @@
   </div>
 </div>
 
+<!-- Change Password Modal -->
+<div id="pwOverlay" class="modalOverlay">
+  <div class="modalCard">
+    <div class="modalHead">
+      <div class="modalTitle">Change Password</div>
+      <button id="pwX" class="modalX">✕</button>
+    </div>
+
+    <div class="modalBody">
+      <label>Old Password</label>
+      <input id="pwOld" type="password" placeholder="Old password" autocomplete="current-password"/>
+
+      <label>New Password</label>
+      <input id="pwNew" type="password" placeholder="New password" autocomplete="new-password"/>
+
+      <label>Confirm Password</label>
+      <input id="pwConfirm" type="password" placeholder="Confirm password" autocomplete="new-password"/>
+
+      <div id="pwErr" style="display:none;margin-top:10px;color:#ff6b6b;font-size:12px;font-weight:700;"></div>
+    </div>
+
+    <div class="modalFoot">
+      <button id="pwCancel" class="btn2">Cancel</button>
+      <button id="pwChange" class="btn">Change</button>
+    </div>
+  </div>
+</div>
+  
 <div class="wrap">
   <div class="grid">
     <div class="card">
