@@ -6,7 +6,8 @@ import {
 
 import {
   onAuthStateChanged, signOut,
-  setPersistence, browserLocalPersistence
+  setPersistence, browserLocalPersistence,
+  EmailAuthProvider, reauthenticateWithCredential, updatePassword
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 function getNiceUsername(user){
   const dn = (user?.displayName || "").trim();
@@ -221,6 +222,101 @@ function showToast(type, msg, opt = {}) {
 
 // alias lama kalau masih ada panggilan toast("...")
 const toast = (msg)=> showToast("info", msg);
+function openPwModal(){
+  const m = document.getElementById("pwModal");
+  if(!m) return;
+  m.classList.add("show");
+  m.setAttribute("aria-hidden","false");
+
+  document.getElementById("pwOld").value = "";
+  document.getElementById("pwNew").value = "";
+  document.getElementById("pwConfirm").value = "";
+  hidePwErr();
+
+  setTimeout(()=> document.getElementById("pwOld")?.focus(), 30);
+}
+function closePwModal(){
+  const m = document.getElementById("pwModal");
+  if(!m) return;
+  m.classList.remove("show");
+  m.setAttribute("aria-hidden","true");
+}
+function showPwErr(msg){
+  const el = document.getElementById("pwErr");
+  if(!el) return;
+  el.textContent = msg;
+  el.style.display = "block";
+}
+function hidePwErr(){
+  const el = document.getElementById("pwErr");
+  if(!el) return;
+  el.textContent = "";
+  el.style.display = "none";
+}
+
+async function handleChangePassword(){
+  hidePwErr();
+
+  const user = auth.currentUser;
+
+  // ✅ kalau auth null (kau guna ticket session), bagi arahan jelas
+  if(!user || !user.email){
+    showPwErr("Session Firebase not found. Please logout and login again, then try.");
+    return;
+  }
+
+  const oldPw = (document.getElementById("pwOld").value || "").trim();
+  const newPw = (document.getElementById("pwNew").value || "").trim();
+  const cfPw  = (document.getElementById("pwConfirm").value || "").trim();
+
+  if(!oldPw || !newPw || !cfPw) return showPwErr("Please fill all fields.");
+  if(newPw.length < 6) return showPwErr("New password must be at least 6 characters.");
+  if(newPw !== cfPw) return showPwErr("Confirm password not match.");
+  if(oldPw === newPw) return showPwErr("New password cannot be same as old password.");
+
+  try{
+    const cred = EmailAuthProvider.credential(user.email, oldPw);
+    await reauthenticateWithCredential(user, cred);
+    await updatePassword(user, newPw);
+
+    showToast("success","Password changed ✅");
+    closePwModal();
+  }catch(err){
+    const code = err?.code || "";
+    if(code.includes("wrong-password")) showPwErr("Old password wrong.");
+    else if(code.includes("requires-recent-login")) showPwErr("Please logout & login again, then try.");
+    else showPwErr(err?.message || "Change password failed.");
+  }
+}
+
+function initChangePasswordUI(){
+  // dropdown button
+  document.getElementById("dropChangePw")?.addEventListener("click", ()=>{
+    document.getElementById("userMenu")?.classList.remove("open"); // tutup dropdown
+    openPwModal();
+  });
+
+  // modal actions
+  document.getElementById("pwX")?.addEventListener("click", closePwModal);
+  document.getElementById("pwCancel")?.addEventListener("click", closePwModal);
+  document.getElementById("pwChange")?.addEventListener("click", handleChangePassword);
+
+  // click luar modal tutup
+  document.getElementById("pwModal")?.addEventListener("click", (e)=>{
+    if(e.target === document.getElementById("pwModal")) closePwModal();
+  });
+
+  // enter submit / esc close
+  ["pwOld","pwNew","pwConfirm"].forEach(id=>{
+    document.getElementById(id)?.addEventListener("keydown",(e)=>{
+      if(e.key === "Enter") handleChangePassword();
+      if(e.key === "Escape") closePwModal();
+    });
+  });
+}
+
+// ✅ panggil sekali (kau dah banyak DOMContentLoaded, ini selamat)
+window.addEventListener("DOMContentLoaded", initChangePasswordUI);
 let pointsCSApi = null;
 let prizeFilterCSApi = null;
 let statusFilterCSApi = null;
