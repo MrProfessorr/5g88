@@ -6,16 +6,19 @@ import {
 import {
   ref, get, set
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
-  const $ = (id)=>document.getElementById(id);
-  const SESSION_HOURS = 6;
 
-function setAdminSession(uid, email){
-  const until = Date.now() + SESSION_HOURS * 60 * 60 * 1000;
-  localStorage.setItem("admin_uid", uid);
-  localStorage.setItem("admin_email", email || "");
-  localStorage.setItem("admin_until", String(until));
-}
-  function initPasswordToggle(){
+const $ = (id)=>document.getElementById(id);
+
+// =========================
+// CONFIG
+// =========================
+const ADMIN_ORIGIN = "https://dashboard-prize.vercel.app";
+const DEFAULT_ADMIN_AFTER = "https://dashboard-prize.vercel.app/";
+
+// =========================
+// UI helpers
+// =========================
+function initPasswordToggle(){
   const pwInput = $("pw");
   const btn = document.querySelector(".togglePw");
   if(!pwInput || !btn) return;
@@ -36,37 +39,34 @@ function setAdminSession(uid, email){
 }
 initPasswordToggle();
 
-  function setLoginButton(state){
+function setLoginButton(state){
   const btn = $("btnLogin");
+  if(!btn) return;
 
   if(state === "idle"){
     btn.disabled = false;
     btn.textContent = "Login";
-  }
-
-  if(state === "loading"){
+  } else if(state === "loading"){
     btn.disabled = true;
     btn.textContent = "Logging in...";
-  }
-
-  if(state === "success"){
+  } else if(state === "success"){
     btn.disabled = true;
     btn.textContent = "Logged in";
   }
 }
+
 function toast(msg){
   const t = $("toast");
+  if(!t) return;
   t.textContent = msg;
   t.classList.add("show");
   clearTimeout(window.__t);
   window.__t = setTimeout(()=> t.classList.remove("show"), 2200);
 }
-  function toAdminEmail(id){
-    const clean = String(id||"").trim().toLowerCase();
-    return clean ? `${clean}@5g88.admin` : "";
-  }
-const ADMIN_ORIGIN = "https://dashboard-prize.vercel.app";
-const DEFAULT_ADMIN_AFTER = "https://dashboard-prize.vercel.app/";
+
+// =========================
+// Redirect target (strict)
+// =========================
 function getRedirectTarget(){
   const u = new URL(location.href);
   const rt = u.searchParams.get("redirect");
@@ -75,27 +75,37 @@ function getRedirectTarget(){
   try{
     const target = new URL(rt);
     if(target.origin !== ADMIN_ORIGIN) return DEFAULT_ADMIN_AFTER;
-
     return target.href;
   }catch(_){
     return DEFAULT_ADMIN_AFTER;
   }
 }
 
-  async function isAllowedAdmin(uid){
-    const snap = await get(ref(db, `isloading/${uid}`));
-    return snap.exists() && snap.val() === true;
-  }
+// =========================
+// Auth helpers
+// =========================
+function toAdminEmail(id){
+  const clean = String(id||"").trim().toLowerCase();
+  return clean ? `${clean}@5g88.admin` : "";
+}
 
-function genTicket(len = 28){
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  let out = "";
-  for(let i=0;i<len;i++) out += chars[Math.floor(Math.random()*chars.length)];
-  return out;
+async function isAllowedAdmin(uid){
+  const snap = await get(ref(db, `isloading/${uid}`));
+  return snap.exists() && snap.val() === true;
+}
+
+// =========================
+// Strong ticket (crypto)
+// =========================
+function genTicket(){
+  const arr = new Uint8Array(24);
+  crypto.getRandomValues(arr);
+  return btoa(String.fromCharCode(...arr))
+    .replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
 }
 
 async function createAdminTicket(uid, email){
-  const ticket = genTicket(32);
+  const ticket = genTicket();
   const expiresAt = Date.now() + (2 * 60 * 1000); // 2 minit
 
   await set(ref(db, `adminTicketsByUid/${uid}`), {
@@ -107,14 +117,18 @@ async function createAdminTicket(uid, email){
   return ticket;
 }
 
+// =========================
+// Login
+// =========================
 async function doLogin(){
-  const id = $("uid").value.trim();
-  const pw = $("pw").value;
+  const id = $("uid")?.value?.trim();
+  const pw = $("pw")?.value;
 
   if(!id || !pw){
     toast("Please fill Username & Password");
     return;
   }
+
   setLoginButton("loading");
 
   try{
@@ -125,35 +139,33 @@ async function doLogin(){
       toAdminEmail(id),
       pw
     );
-    console.log("LOGIN UID =", cred.user.uid);
-    console.log("LOGIN EMAIL =", cred.user.email);
-    const ok = await isAllowedAdmin(cred.user.uid);
 
+    const ok = await isAllowedAdmin(cred.user.uid);
     if(!ok){
       toast("This account is not allowed.");
-      await signOut(auth);
+      try{ await signOut(auth); }catch(_){}
       setLoginButton("idle");
       return;
     }
-toast("Login success");
-setLoginButton("success");
 
-setAdminSession(cred.user.uid, cred.user.email || "");
+    toast("Login success");
+    setLoginButton("success");
 
-const target = getRedirectTarget();
-const ticket = await createAdminTicket(cred.user.uid, cred.user.email || "");
-const u = new URL(target);
-u.searchParams.set("ticket", ticket);
+    // ✅ Create ticket & redirect to admin (with anti-cache)
+    const target = getRedirectTarget();
+    const ticket = await createAdminTicket(cred.user.uid, cred.user.email || "");
+    const u = new URL(target);
+    u.searchParams.set("ticket", ticket);
+    u.searchParams.set("t", String(Date.now()));
 
-setTimeout(()=>{
-  location.replace(u.toString());
-}, 300);
-} catch (err) {
-  console.error("LOGIN ERROR:", err);
-  toast(err?.code ? `Login failed: ${err.code}` : `Login failed: ${err?.message || err}`);
-  setLoginButton("idle");
+    setTimeout(()=> location.replace(u.toString()), 200);
+
+  }catch(err){
+    console.error("LOGIN ERROR:", err);
+    toast(err?.code ? `Login failed: ${err.code}` : `Login failed: ${err?.message || err}`);
+    setLoginButton("idle");
+  }
 }
-}
 
-  $("btnLogin").addEventListener("click", doLogin);
-  $("pw").addEventListener("keydown", (e)=>{ if(e.key==="Enter") doLogin(); });
+$("btnLogin")?.addEventListener("click", doLogin);
+$("pw")?.addEventListener("keydown", (e)=>{ if(e.key==="Enter") doLogin(); });
