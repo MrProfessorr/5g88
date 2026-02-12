@@ -250,8 +250,6 @@ async function handleChangePassword(){
   hidePwErr();
 
   const user = auth.currentUser;
-
-  // ⚠️ penting: kalau auth null, means kau tak logged-in firebase sekarang
   if(!user || !user.email){
     showPwErr("Firebase session not found. Please Logout & Login again, then try.");
     return;
@@ -273,12 +271,29 @@ async function handleChangePassword(){
 
     showToast("success", "Password changed ✅");
     closePwModal();
-  }catch(err){
-    const code = err?.code || "";
-    if(code.includes("wrong-password")) showPwErr("Old password wrong.");
-    else if(code.includes("requires-recent-login")) showPwErr("Please logout & login again, then try.");
-    else showPwErr(err?.message || "Change password failed.");
+} catch(err){
+  const code = String(err?.code || "");
+  console.log("ChangePassword error:", code, err);
+  if(
+    code === "auth/wrong-password" ||
+    code === "auth/invalid-credential" ||
+    code === "auth/invalid-login-credentials"
+  ){
+    showPwErr("Password lama salah.");
+    $("pwOld")?.focus();
+    $("pwOld")?.select?.();
+    return;
   }
+  if(code === "auth/requires-recent-login"){
+    showPwErr("Session dah lama. Logout & Login semula, lepas tu try lagi.");
+    return;
+  }
+  if(code === "auth/too-many-requests"){
+    showPwErr("Terlalu banyak percubaan. Cuba lagi lepas beberapa minit.");
+    return;
+  }
+  showPwErr("Change password failed. Try again.");
+ }
 }
 
 function initChangePasswordUI(){
