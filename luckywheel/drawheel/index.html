@@ -42,15 +42,6 @@
     <span class="dropText">Prize Settings</span>
   </button>
 
-<button class="dropItem" id="dropChangePass">
-  <!-- icon lock -->
-  <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M12 17a2 2 0 0 0 2-2c0-.7-.37-1.31-.93-1.65V12a1.07 1.07 0 1 0-2.14 0v1.35c-.56.34-.93.95-.93 1.65a2 2 0 0 0 2 2zm6-7h-1V8a5 5 0 0 0-10 0v2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2zM9 8a3 3 0 0 1 6 0v2H9V8zm9 11H6v-7h12v7z"/>
-  </svg>
-
-  <span class="dropText">Change Password</span>
-</button>
-  
   <button class="dropItem" id="dropLogout">
     <!-- icon logout -->
     <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
@@ -106,40 +97,6 @@
     <div class="modalFoot">
       <button id="prizeCancel" class="btn2">Cancel</button>
       <button id="prizeSave" class="btn">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- Change Password Modal -->
-<div id="passOverlay" class="modalOverlay">
-  <div class="modalCard">
-    <div class="modalHead">
-      <div class="modalTitle">Change Password</div>
-      <button id="passX" class="modalX">✕</button>
-    </div>
-
-    <div class="modalBody">
-      <label class="field">
-        <span>Old Password</span>
-        <input id="oldPass" type="password" autocomplete="current-password" placeholder="Old password">
-      </label>
-
-      <label class="field">
-        <span>New Password</span>
-        <input id="newPass" type="password" autocomplete="new-password" placeholder="New password (min 6)">
-      </label>
-
-      <label class="field">
-        <span>Confirm Password</span>
-        <input id="confirmPass" type="password" autocomplete="new-password" placeholder="Confirm new password">
-      </label>
-
-      <div class="hintText" id="passHint">For Email/Password accounts only.</div>
-    </div>
-
-    <div class="modalFoot">
-      <button id="passCancel" class="btn2">Cancel</button>
-      <button id="passSave" class="btn">Save</button>
     </div>
   </div>
 </div>
