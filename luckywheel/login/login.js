@@ -19,7 +19,6 @@ function setAdminSession(uid, email){
   const pwInput = $("pw");
   const btn = document.querySelector(".togglePw");
   if(!pwInput || !btn) return;
-
   const eyeShow = btn.querySelector(".show");
   const eyeHide = btn.querySelector(".hide");
 
