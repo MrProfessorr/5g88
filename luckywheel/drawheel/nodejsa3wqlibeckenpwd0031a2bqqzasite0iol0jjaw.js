@@ -223,32 +223,24 @@ function showToast(type, msg, opt = {}) {
 // alias lama kalau masih ada panggilan toast("...")
 const toast = (msg)=> showToast("info", msg);
 function openPwModal(){
-  const m = document.getElementById("pwModal");
-  if(!m) return;
-  m.classList.add("show");
-  m.setAttribute("aria-hidden","false");
-
-  document.getElementById("pwOld").value = "";
-  document.getElementById("pwNew").value = "";
-  document.getElementById("pwConfirm").value = "";
+  $("pwOverlay").style.display = "grid";
+  $("pwOld").value = "";
+  $("pwNew").value = "";
+  $("pwConfirm").value = "";
   hidePwErr();
-
-  setTimeout(()=> document.getElementById("pwOld")?.focus(), 30);
+  setTimeout(()=> $("pwOld")?.focus(), 30);
 }
 function closePwModal(){
-  const m = document.getElementById("pwModal");
-  if(!m) return;
-  m.classList.remove("show");
-  m.setAttribute("aria-hidden","true");
+  $("pwOverlay").style.display = "none";
 }
 function showPwErr(msg){
-  const el = document.getElementById("pwErr");
+  const el = $("pwErr");
   if(!el) return;
   el.textContent = msg;
   el.style.display = "block";
 }
 function hidePwErr(){
-  const el = document.getElementById("pwErr");
+  const el = $("pwErr");
   if(!el) return;
   el.textContent = "";
   el.style.display = "none";
@@ -259,15 +251,15 @@ async function handleChangePassword(){
 
   const user = auth.currentUser;
 
-  // ✅ kalau auth null (kau guna ticket session), bagi arahan jelas
+  // ⚠️ penting: kalau auth null, means kau tak logged-in firebase sekarang
   if(!user || !user.email){
-    showPwErr("Session Firebase not found. Please logout and login again, then try.");
+    showPwErr("Firebase session not found. Please Logout & Login again, then try.");
     return;
   }
 
-  const oldPw = (document.getElementById("pwOld").value || "").trim();
-  const newPw = (document.getElementById("pwNew").value || "").trim();
-  const cfPw  = (document.getElementById("pwConfirm").value || "").trim();
+  const oldPw = ($("pwOld").value || "").trim();
+  const newPw = ($("pwNew").value || "").trim();
+  const cfPw  = ($("pwConfirm").value || "").trim();
 
   if(!oldPw || !newPw || !cfPw) return showPwErr("Please fill all fields.");
   if(newPw.length < 6) return showPwErr("New password must be at least 6 characters.");
@@ -279,7 +271,7 @@ async function handleChangePassword(){
     await reauthenticateWithCredential(user, cred);
     await updatePassword(user, newPw);
 
-    showToast("success","Password changed ✅");
+    showToast("success", "Password changed ✅");
     closePwModal();
   }catch(err){
     const code = err?.code || "";
@@ -290,32 +282,31 @@ async function handleChangePassword(){
 }
 
 function initChangePasswordUI(){
-  // dropdown button
-  document.getElementById("dropChangePw")?.addEventListener("click", ()=>{
-    document.getElementById("userMenu")?.classList.remove("open"); // tutup dropdown
+  // dropdown click
+  $("dropChangePw")?.addEventListener("click", ()=>{
+    $("userMenu")?.classList.remove("open");
     openPwModal();
   });
 
-  // modal actions
-  document.getElementById("pwX")?.addEventListener("click", closePwModal);
-  document.getElementById("pwCancel")?.addEventListener("click", closePwModal);
-  document.getElementById("pwChange")?.addEventListener("click", handleChangePassword);
+  // modal buttons
+  $("pwX")?.addEventListener("click", closePwModal);
+  $("pwCancel")?.addEventListener("click", closePwModal);
+  $("pwChange")?.addEventListener("click", handleChangePassword);
 
-  // click luar modal tutup
-  document.getElementById("pwModal")?.addEventListener("click", (e)=>{
-    if(e.target === document.getElementById("pwModal")) closePwModal();
+  // click outside modal close
+  $("pwOverlay")?.addEventListener("click", (e)=>{
+    if(e.target === $("pwOverlay")) closePwModal();
   });
 
   // enter submit / esc close
   ["pwOld","pwNew","pwConfirm"].forEach(id=>{
-    document.getElementById(id)?.addEventListener("keydown",(e)=>{
+    $(id)?.addEventListener("keydown", (e)=>{
       if(e.key === "Enter") handleChangePassword();
       if(e.key === "Escape") closePwModal();
     });
   });
 }
 
-// ✅ panggil sekali (kau dah banyak DOMContentLoaded, ini selamat)
 window.addEventListener("DOMContentLoaded", initChangePasswordUI);
 let pointsCSApi = null;
 let prizeFilterCSApi = null;
