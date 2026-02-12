@@ -9,9 +9,6 @@ import {
 
 const $ = (id)=>document.getElementById(id);
 
-// =========================
-// CONFIG
-// =========================
 const ADMIN_ORIGIN = "https://dashboard-prize.vercel.app";
 const DEFAULT_ADMIN_AFTER = "https://dashboard-prize.vercel.app/";
 
