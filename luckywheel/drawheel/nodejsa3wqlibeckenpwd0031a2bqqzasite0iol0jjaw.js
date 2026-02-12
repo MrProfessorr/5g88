@@ -30,7 +30,6 @@ function initUserMenuUI(){
     e.stopPropagation();
     menu.classList.toggle("open");
   });
-
   document.addEventListener("click", (e)=>{
     if(!menu.contains(e.target)) menu.classList.remove("open");
   });
@@ -39,7 +38,6 @@ function initUserMenuUI(){
     if(e.key === "Escape") menu.classList.remove("open");
   });
 }
-
 window.addEventListener("DOMContentLoaded", initUserMenuUI);
 
 const LOGIN_PORTAL = "https://portal-luckydraw.vercel.app/";
