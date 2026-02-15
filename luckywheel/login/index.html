@@ -18,22 +18,22 @@
 
 <meta http-equiv="Content-Security-Policy" content="
 default-src 'self';
-base-uri 'self';
-object-src 'none';
-img-src 'self' data: https://i.imgur.com https://*.googleusercontent.com;
-style-src 'self' 'unsafe-inline';
-script-src 'self' https://www.gstatic.com https://www.googleapis.com https://cdn.jsdelivr.net;
-connect-src 'self'
+script-src 'self' 'unsafe-inline' 'unsafe-eval'
   https://www.gstatic.com
-  https://*.googleapis.com
-  https://identitytoolkit.googleapis.com
+  https://www.googleapis.com
+  https://cdn.jsdelivr.net;
+style-src 'self' 'unsafe-inline';
+img-src 'self' data: https:;
+connect-src 'self'
+  https://www.googleapis.com
   https://securetoken.googleapis.com
+  https://identitytoolkit.googleapis.com
   https://*.firebaseio.com
   https://*.firebasedatabase.app
   wss://*.firebaseio.com
   wss://*.firebasedatabase.app;
-form-action 'self';
-upgrade-insecure-requests;
+frame-src https://*.firebaseapp.com https://accounts.google.com;
+font-src 'self' data: https:;
 ">
 <link rel="stylesheet" href="./page1siteabb2co32a407bc2zip09.css">
 <link rel="stylesheet" href="./login.css">
