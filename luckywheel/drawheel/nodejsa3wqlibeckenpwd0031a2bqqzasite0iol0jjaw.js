@@ -9,7 +9,6 @@ import {
   setPersistence, browserLocalPersistence,
   EmailAuthProvider, reauthenticateWithCredential, updatePassword
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-const SESSION_HOURS = 6;
 
 // ✅ FIX BASE (GitHub Pages project path)
 const BASE = location.hostname.endsWith("github.io")
