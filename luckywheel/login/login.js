@@ -69,28 +69,24 @@ function toast(msg){
     return clean ? `${clean}@5g88.admin` : "";
   }
 
+function getBasePath(){
+  // contoh: /5g88/luckywheel/login/ -> /5g88/luckywheel
+  // contoh: /login/ -> ""
+  const parts = location.pathname.split("/").filter(Boolean);
+
+  // buang "login" jika memang sedang dalam /login
+  const last = parts[parts.length - 1];
+  if (last === "login") parts.pop();
+
+  return "/" + parts.join("/");
+}
+
 function getRedirectTarget(){
   const u = new URL(location.href);
-  const rt = (u.searchParams.get("redirect") || "").trim();
-
-  // default: lepas login pergi admin
-  const fallback = "/drawheel/";
-
-  if(!rt) return fallback;
-
-  // SECURITY: hanya benarkan redirect dalam site sendiri
-  // ✅ allow "/drawheel/" atau "/drawheel/?x=1"
-  if(rt.startsWith("/")) return rt;
-
-  // ✅ kalau user bagi full URL tapi domain sama, ambik pathname+search+hash
-  try{
-    const x = new URL(rt, location.origin);
-    if(x.origin === location.origin){
-      return x.pathname + x.search + x.hash;
-    }
-  }catch(e){}
-
-  return fallback;
+  const rt = u.searchParams.get("redirect");
+  if(rt) return rt;
+  const base = getBasePath();
+  return `${location.origin}${base}/drawheel/`;
 }
 
   async function isAllowedAdmin(uid){
