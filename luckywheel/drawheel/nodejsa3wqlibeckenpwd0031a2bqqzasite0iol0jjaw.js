@@ -44,17 +44,14 @@ function initUserMenuUI(){
 window.addEventListener("DOMContentLoaded", initUserMenuUI);
 
 function getBasePath(){
-  const parts = location.pathname.split("/").filter(Boolean);
-  const last = parts[parts.length - 1];
-  if (last === "drawheel" || last === "login") parts.pop();
-  return "/" + parts.join("/");
+  return BASE;
 }
-
-const LOGIN_URL = `${location.origin}${getBasePath()}/login/`;
+const LOGIN_URL = `${location.origin}${BASE}/login/`;
 
 function goLogin(){
-  const next = encodeURIComponent("/drawheel/");
-  location.replace(`/login/?redirect=${next}`);
+  // redirect balik ke drawheel selepas login
+  const next = encodeURIComponent(`${BASE}/drawheel/`);
+  location.replace(`${LOGIN_URL}?redirect=${next}`);
 }
 function getTicketFromUrl(){
   try{
