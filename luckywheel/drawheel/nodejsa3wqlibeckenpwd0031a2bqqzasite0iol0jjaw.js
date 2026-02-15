@@ -53,8 +53,8 @@ function getBasePath(){
 const LOGIN_URL = `${location.origin}${getBasePath()}/login/`;
 
 function goLogin(){
-  const rt = encodeURIComponent(location.href);
-  location.replace(`${LOGIN_URL}?redirect=${rt}`);
+  const next = encodeURIComponent("/drawheel/");
+  location.replace(`/login/?redirect=${next}`);
 }
 function getTicketFromUrl(){
   try{
