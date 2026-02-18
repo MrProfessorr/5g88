@@ -1087,33 +1087,38 @@ background:#141414 !important;
   border-color: rgba(255,4,4,.55);
   color:#f20606;
 }
-/* ===== FORCE BLUE FOCUS (INPUT/SELECT/TEXTAREA) ===== */
-input:focus,
-select:focus,
-textarea:focus,
-.niceInput:focus,
-.csBtn:focus {
+/* ===== KILL DEFAULT WHITE FOCUS RING (TAB KEY) ===== */
+button:focus,
+a:focus,
+.pill:focus,
+.tabBtn:focus,
+.btn:focus,
+.btn2:focus,
+.btn3:focus,
+.dropItem:focus,
+.siteBtn:focus,
+.siteChip:focus,
+.menuBtn:focus,
+.userBtn:focus,
+.csBtn:focus{
   outline: none !important;
-  border-color: #1668dc !important;
-  box-shadow: 0 0 0 3px rgba(22,104,220,.35) !important;
 }
 
-/* Keyboard focus sahaja (lebih cantik) */
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible,
-.niceInput:focus-visible,
-.csBtn:focus-visible {
+/* ===== BLUE FOCUS RING (KEYBOARD TAB) ===== */
+button:focus-visible,
+a:focus-visible,
+.pill:focus-visible,
+.tabBtn:focus-visible,
+.btn:focus-visible,
+.btn2:focus-visible,
+.btn3:focus-visible,
+.dropItem:focus-visible,
+.siteBtn:focus-visible,
+.siteChip:focus-visible,
+.menuBtn:focus-visible,
+.userBtn:focus-visible,
+.csBtn:focus-visible{
   outline: none !important;
-  border-color: #1668dc !important;
   box-shadow: 0 0 0 3px rgba(22,104,220,.45) !important;
-}
-/* ===== CHROME AUTOFILL FIX ===== */
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus{
-  -webkit-text-fill-color: var(--txt) !important;
-  box-shadow: 0 0 0 3px rgba(22,104,220,.35), 0 0 0 1000px rgba(0,0,0,.22) inset !important;
-  transition: background-color 9999s ease-in-out 0s;
-  border-color:#1668dc !important;
+  border-color: #1668dc !important;
 }
